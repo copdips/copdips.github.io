@@ -1,12 +1,4 @@
-- [Create Github Page on Github.co](#create-github-page-on-githubco)
-- [Setup custom domain](#setup-custom-domain)
-  - [Register a custon domain](#register-a-custon-domain)
-  - [Setup DNS on your DNS registrar](#setup-dns-on-your-dns-registrar)
-    - [Add subdomain](#add-subdomain)
-    - [Add APEX domain](#add-apex-domain)
-  - [Enbale custom domain on Github.com](#enbale-custom-domain-on-githubcom)
-- [Enable HTTPS for custom domain with Cloudflare](#enable-https-for-custom-domain-with-cloudflare)
-
+{% include toc title="Table of content" %}
 # Create Github Page on Github.com
 
 1. On Github create a repo with name : githubUserName.github.io
