@@ -17,15 +17,15 @@ Register a custon domain on your preferred domain name registrar
 
 <https://help.github.com/articles/setting-up-a-www-subdomain/>
 
-- Add CNAME **www** to copdips.github.io
-- Add CNAME **blog** to copdips.github.io
+- Add DNS CNAME type **www** to **copdips.github.io**
+- Add DNS CNAME type **blog** to **copdips.github.io**
 
 ### Add APEX domain
 
 <https://help.github.com/articles/setting-up-an-apex-domain/#configuring-a-records-with-your-dns-provider>
 
-- Add A @ to **192.30.252.153**
-- Add A @ to **192.30.252.154**
+- Add DNS A type **@** to **192.30.252.153**
+- Add DNS A type **@** to **192.30.252.154**
 
 ## Enbale custom domain on Github.com
 
