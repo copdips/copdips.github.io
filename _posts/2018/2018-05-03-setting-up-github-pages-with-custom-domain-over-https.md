@@ -1,37 +1,38 @@
 {% include toc title="Table of content" %}
-# Create Github Page on Github.com
+
+# Create Github pages on Github.com
 
 1. On Github create a repo with name : githubUserName.github.io
 2. Push a file `index.html` to branch `master` or `gh-pages`
 3. Now you can access your github page by going to githubUserName.github.io
 
-   From now on, you've created a fully operational blog on http://githubUserName.github.io, you can also enable HTTPS on it by going to the repo's settings menu, everthing is free.
+   From now on, you've created a fully operational blog on http://githubUserName.github.io, you can also enable HTTPS on it by going to the repo's settings menu, everything is free.
 
    If you dont need to use a custom domain like http://yourname.com, you can stop here, but if you want it, please go ahead.
 
-# Setup custom domain
-
-## Register a custom domain
+# Register a custom domain
 
 Register a custom domain on your preferred domain name registrar
 
-## Setup DNS on your DNS registrar
+# Setup DNS on DNS registrar
 
-### Add subdomain
+1. Add subdomain
 
-<https://help.github.com/articles/setting-up-a-www-subdomain/>
+   <https://help.github.com/articles/setting-up-a-www-subdomain/>
 
-- Add a **CNAME** type DNS entry pointing **www** to **copdips.github.io**
-- Add a **CNAME** type DNS entry pointing **blog** to **copdips.github.io**
+   - Add a **CNAME** type DNS entry pointing **www** to **copdips.github.io**
+   - Add a **CNAME** type DNS entry pointing **blog** to **copdips.github.io**
 
-### Add APEX domain
+1. Add APEX domain
 
-<https://help.github.com/articles/setting-up-an-apex-domain/#configuring-a-records-with-your-dns-provider>
+   <https://help.github.com/articles/setting-up-an-apex-domain/#configuring-a-records-with-your-dns-provider>
 
-- Add a **A** type DNS entry pointing **@** to **192.30.252.153**
-- Add a **A** type DNS entry pointing **@** to **192.30.252.154**
+    - Add a **A** type DNS entry pointing **@** to **185.199.108.1533**
+    - Add a **A** type DNS entry pointing **@** to **185.199.109.1533**
+    - Add a **A** type DNS entry pointing **@** to **185.199.110.1533**
+    - Add a **A** type DNS entry pointing **@** to **185.199.111.1533**
 
-## Enable custom domain on Github.com
+# Enable custom domain on Github.com
 
 1. Go to github repo
 
@@ -42,7 +43,9 @@ Register a custom domain on your preferred domain name registrar
    - The commit message is 'Create CNAME'
 1. Enable HTTPS is grayed out, because Github can only support HTTPS for github.io domain. We will setup the HTTPS with Cloudflare later.
 
-# Enable HTTPS for custom domain with Cloudflare
+# (DEPRECATED) Enable HTTPS for custom domain with Cloudflare
+
+> This solution is `deprecated` as [Github supports natively HTTPS for custom domains](#Enable-HTTPS-For-Custom-Domain-With-Github) now
 
   Some tutorials :
   [tutorial 1](https://hackernoon.com/set-up-ssl-on-github-pages-with-custom-domains-for-free-a576bdf51bc)
@@ -58,3 +61,7 @@ Register a custom domain on your preferred domain name registrar
      - Cloudflare DNS example: vida.ns.cloudflare.com, zod.ns.cloudflare.com
   1. Go to `Crypto` tab, verify SSL is set to Full
   1. Go to `Page Rules` tab, add a page rule : http://*customdomain.com/* with `Always Use HTTPS`
+
+# Enable HTTPS for custom domain With Github
+
+Github announced very recently (since May 1st, 2018) [the support of HTTPS for custom domains](https://blog.github.com/2018-05-01-github-pages-custom-domains-https/), we dont need to use any third party solutions, great feature, thx Github !
