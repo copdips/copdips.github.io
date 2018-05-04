@@ -62,6 +62,8 @@ Register a custom domain on your preferred domain name registrar
   1. Go to `Crypto` tab, verify SSL is set to Full
   1. Go to `Page Rules` tab, add a page rule : http://*customdomain.com/* with `Always Use HTTPS`
 
+  If everything goes well, you can access your custom domain by HTTPS. And if you verify the HTTPS certificate, it should be signed by COMODO, the certificate's CN is a cloudflare.com server and one of the SAN is your custom domain.
+
 # Enable HTTPS for custom domain With Github
 
 Github announced very recently (since May 1st, 2018) [the support of HTTPS for custom domains](https://blog.github.com/2018-05-01-github-pages-custom-domains-https/), we dont need to use any third party solutions, great feature, thx Github !
