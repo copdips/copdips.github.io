@@ -1,0 +1,7 @@
+{
+    "cSpell.language": "en",
+    "pasteImage.path": "${projectRoot}/_image/blog/${currentFileNameWithoutExt}",
+    "pasteImage.basePath": "${projectRoot}/_image/blog/${currentFileNameWithoutExt}",
+    "pasteImage.forceUnixStyleSeparator": true,
+    "pasteImage.prefix": "/_image/blog/"
+}
