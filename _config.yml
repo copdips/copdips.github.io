@@ -101,7 +101,7 @@ analytics:
 # Site Author
 author:
   name             : "Xiang ZHU"
-  avatar           : "/images/avatars/XiangZHU_Mascarot.PNG" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
+  avatar           : "/_image/avatars/XiangZHU_Mascarot.PNG" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
   bio              : "Infra Devops"
   location         : "Paris"
   email            : "xiang.zhu@outlook.com"
