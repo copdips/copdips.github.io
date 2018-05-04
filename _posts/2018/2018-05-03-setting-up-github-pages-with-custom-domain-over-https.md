@@ -6,9 +6,9 @@
 2. Push a file `index.html` to branch `master` or `gh-pages`
 3. Now you can access your github page by going to githubUserName.github.io
 
-   From now on, you've created a fully operational blog on http://githubUserName.github.io, you can also enable HTTPS on it by going to the repo's settings menu, everything is free.
+  From now on, you've created a fully operational blog on http://githubUserName.github.io, you can also enable HTTPS on it by going to the repo's settings menu, everything is free.
 
-   If you dont need to use a custom domain like http://yourname.com, you can stop here, but if you want it, please go ahead.
+  If you dont need to use a custom domain like http://yourname.com, you can stop here, but if you want it, please go ahead.
 
 # Register a custom domain
 
@@ -47,22 +47,22 @@ Register a custom domain on your preferred domain name registrar
 
 > This solution is `deprecated` as [Github supports natively HTTPS for custom domains](#Enable-HTTPS-For-Custom-Domain-With-Github) now
 
-  Some tutorials :
-  [tutorial 1](https://hackernoon.com/set-up-ssl-on-github-pages-with-custom-domains-for-free-a576bdf51bc)
-  ,
-  [tutorial 2](https://www.jonathan-petitcolas.com/2017/01/13/using-https-with-custom-domain-name-on-github-pages.html)
+Some tutorials :
+[tutorial 1](https://hackernoon.com/set-up-ssl-on-github-pages-with-custom-domains-for-free-a576bdf51bc)
+,
+[tutorial 2](https://www.jonathan-petitcolas.com/2017/01/13/using-https-with-custom-domain-name-on-github-pages.html)
 
-  Simplified steps :
+Simplified steps :
 
-  1. Sign up for a free Cloudflare Account
-  1. Follow the wizard, give your custom domain, Cloudflare should find all your CNAME and A entries.
-  1. Cloudflare should ask you to change your custom domain's default DNS servers given by your DNS registrar to the Cloudflare ones.
-     - The change may take several hours to take effect
-     - Cloudflare DNS example: vida.ns.cloudflare.com, zod.ns.cloudflare.com
-  1. Go to `Crypto` tab, verify SSL is set to Full
-  1. Go to `Page Rules` tab, add a page rule : http://*customdomain.com/* with `Always Use HTTPS`
+1. Sign up for a free Cloudflare Account
+1. Follow the wizard, give your custom domain, Cloudflare should find all your CNAME and A entries.
+1. Cloudflare should ask you to change your custom domain's default DNS servers given by your DNS registrar to the Cloudflare ones.
+    - The change may take several hours to take effect
+    - Cloudflare DNS example: vida.ns.cloudflare.com, zod.ns.cloudflare.com
+1. Go to `Crypto` tab, verify SSL is set to Full
+1. Go to `Page Rules` tab, add a page rule : http://*customdomain.com/* with `Always Use HTTPS`
 
-  If everything goes well, you can access your custom domain by HTTPS. And if you verify the HTTPS certificate, it should be signed by COMODO, the certificate's CN is a cloudflare.com server and one of the SAN is your custom domain.
+If everything goes well, you can access your custom domain by HTTPS. And if you verify the HTTPS certificate, it should be signed by COMODO, the certificate's CN is a cloudflare.com server and one of the SAN is your custom domain.
 
 # Enable HTTPS for custom domain With Github
 
