@@ -5,9 +5,9 @@
 2. Push a file `index.html` to branch `master` or `gh-pages`
 3. Now you can access your github page by going to githubUserName.github.io
 
-From now on, you've created a fully operational blog on http://githubUserName.github.io, you can also enable HTTPS on it by going to the repo's settings menu, everthing is free.
+   From now on, you've created a fully operational blog on http://githubUserName.github.io, you can also enable HTTPS on it by going to the repo's settings menu, everthing is free.
 
-If you dont need to use a custom domain like http://yourname.com, you can stop here, but if you want it, please go ahead.
+   If you dont need to use a custom domain like http://yourname.com, you can stop here, but if you want it, please go ahead.
 
 # Setup custom domain
 
