@@ -20,17 +20,17 @@ Register a custom domain on your preferred domain name registrar
 
    <https://help.github.com/articles/setting-up-a-www-subdomain/>
 
-   - Add a **CNAME** type DNS entry pointing **www** to **copdips.github.io**
-   - Add a **CNAME** type DNS entry pointing **blog** to **copdips.github.io**
+   - Add a **CNAME** DNS record pointing **www** to **copdips.github.io**
+   - Add a **CNAME** DNS record pointing **blog** to **copdips.github.io**
 
 1. Add APEX domain
 
    <https://help.github.com/articles/setting-up-an-apex-domain/#configuring-a-records-with-your-dns-provider>
 
-    - Add a **A** type DNS entry pointing **@** to **185.199.108.1533**
-    - Add a **A** type DNS entry pointing **@** to **185.199.109.1533**
-    - Add a **A** type DNS entry pointing **@** to **185.199.110.1533**
-    - Add a **A** type DNS entry pointing **@** to **185.199.111.1533**
+    - Add a **A** DNS record pointing **@** to **185.199.108.153**
+    - Add a **A** DNS record pointing **@** to **185.199.109.153**
+    - Add a **A** DNS record pointing **@** to **185.199.110.153**
+    - Add a **A** DNS record pointing **@** to **185.199.111.153**
 
 # Enable custom domain on Github.com
 
@@ -43,9 +43,9 @@ Register a custom domain on your preferred domain name registrar
    - The commit message is 'Create CNAME'
 1. Enable HTTPS is grayed out, because Github can only support HTTPS for github.io domain. We will setup the HTTPS with Cloudflare later.
 
-# (DEPRECATED) Enable HTTPS for custom domain with Cloudflare
+# (DEPRECATED SOON) Enable HTTPS for custom domain with Cloudflare
 
-> This solution is `deprecated` as [Github supports natively HTTPS for custom domains](#Enable-HTTPS-For-Custom-Domain-With-Github) now
+> This solution will be `deprecated` soon as [Github supports natively HTTPS for custom domains](#Enable-HTTPS-For-Custom-Domain-With-Github) now. But I failed to enable it with the Github solution, maybe DNS CAA record is mandatory, and my DNS registrar doesn't support it for my free plan. So Cloudflare HTTPS solution is still a good choice.
 
 Some tutorials :
 [tutorial 1](https://hackernoon.com/set-up-ssl-on-github-pages-with-custom-domains-for-free-a576bdf51bc)
