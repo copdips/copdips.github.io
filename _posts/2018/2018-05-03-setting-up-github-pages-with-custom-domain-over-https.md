@@ -1,6 +1,10 @@
 {% include toc title="Table of content" %}
 
-# Create Github pages on Github.com
+# Setting Up Github Pages With Custom Domain over HTTPS
+
+> With Github pages, we can create our blogs in our own domain over HTTPS completely free (Of course you should pay for your domain name at the Registrar).
+
+## Create Github pages on Github.com
 
 1. On Github create a repo with name : githubUserName.github.io
 2. Push a file `index.html` to branch `master` or `gh-pages`
@@ -10,11 +14,11 @@ From now on, you've created a fully operational blog on http://githubUserName.gi
 
 If you dont need to use a custom domain like http://yourname.com, you can stop here, but if you want it, please go ahead.
 
-# Register a custom domain
+## Register a custom domain
 
 Register a custom domain on your preferred domain name registrar
 
-# Setup DNS on DNS registrar
+## Setup DNS on DNS registrar
 
 1. Add subdomain
 
@@ -32,7 +36,7 @@ Register a custom domain on your preferred domain name registrar
     - Add a **A** DNS record pointing **@** to **185.199.110.153**
     - Add a **A** DNS record pointing **@** to **185.199.111.153**
 
-# Enable custom domain on Github.com
+## Enable custom domain on Github.com
 
 1. Go to github repo
 
@@ -44,7 +48,7 @@ Register a custom domain on your preferred domain name registrar
    - The commit message is 'Create CNAME'
 1. Enable HTTPS is grayed out, because Github can only support HTTPS for github.io domain. We will setup the HTTPS with Cloudflare later.
 
-# (DEPRECATED SOON) Enable HTTPS for custom domain with Cloudflare
+## (DEPRECATED SOON) Enable HTTPS for custom domain with Cloudflare
 
 > This solution will be `deprecated` soon as [Github supports natively HTTPS for custom domains](#Enable-HTTPS-For-Custom-Domain-With-Github) now. But Cloudflare HTTPS solution is still a very good choice if you don't use Github pages.
 
@@ -65,6 +69,6 @@ Simplified steps :
 
 If everything goes well, you can access your custom domain by HTTPS. And if you verify the HTTPS certificate, it should be signed by COMODO, the certificate's CN is a cloudflare.com server and one of the SAN is your custom domain.
 
-# Enable HTTPS for custom domain With Github
+## Enable HTTPS for custom domain With Github
 
 Github announced very recently (on May 01, 2018) [the support of HTTPS for custom domains](https://blog.github.com/2018-05-01-github-pages-custom-domains-https/), this is really a great feature. After the test, I found that the HTTPS certificate is signed by letsencrypt.org where the CN is [your github.io's CNAME](#Enable-custom-domain-on-Github.com), and everything is free. Thx Github and LetsEncrypt !
