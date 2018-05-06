@@ -46,9 +46,9 @@ Register a custom domain on your preferred domain name registrar
    - The commit message is 'Create CNAME'
 1. Enable HTTPS is grayed out, because Github can only support HTTPS for github.io domain. We will setup the HTTPS with Cloudflare later.
 
-# (DEPRECATED SOON) Enable HTTPS for custom domain with Cloudflare
+# (DEPRECATED) Enable HTTPS for custom domain with Cloudflare
 
-> This solution will be `deprecated` soon as [Github supports natively HTTPS for custom domains](#Enable-HTTPS-For-Custom-Domain-With-Github) now. But Cloudflare HTTPS solution is still a very good choice if you don't use Github pages.
+> This solution is `deprecated` as [Github supports natively HTTPS for custom domains](#Enable-HTTPS-For-Custom-Domain-With-Github) now. But Cloudflare HTTPS solution is still a very good choice if you don't use Github pages.
 
 Some tutorials :
 [tutorial 1](https://hackernoon.com/set-up-ssl-on-github-pages-with-custom-domains-for-free-a576bdf51bc)
