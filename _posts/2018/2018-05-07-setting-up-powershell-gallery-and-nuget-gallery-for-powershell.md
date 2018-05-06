@@ -4,7 +4,7 @@
 
 > As like [pypi](https://pypi.org/) for Python, [npm](https://www.npmjs.com/) for Node.js, we also have [Powershell Gallery](https://www.powershellgallery.com/) for Powershell to add some extra Powershell modules, and [Nuget Gallery](https://www.nuget.org/) for Powershell to add some extra executables.
 
-## Configure proxy in Powershell
+# Configure proxy in Powershell
 
 If you're at office, your computer is probably behind a company proxy to access Internet. If your Internet Explorer's proxy has already been configured, you can use below command to tell Powershell to use the same proxy setting as Internet Explorer:
 
@@ -53,7 +53,7 @@ Add-Content ($PROFILE | % CurrentUserAllHost) "`n(New-Object -TypeName System.Ne
 
 > As a best practice, it would be better to add the above line on the top of your profile.
 
-## Set up Powershell Gallery for Powershell
+# Set up Powershell Gallery for Powershell
 
 This is pretty easy for Powershell v5+ :
 
@@ -71,7 +71,7 @@ Name                      InstallationPolicy   SourceLocation
 PSGallery                 Trusted              https://www.powershellgallery.com/api/v2/
 ```
 
-## Use Powershell Gallery
+# Use Powershell Gallery
 
 ```powershell
 # Search a module which name like poshrs*
@@ -85,7 +85,7 @@ PoshRSJob                      1.7.4.4          PSGallery        Provides an alt
 > find-module poshrs* | install-module -Scope CurrentUser
 ```
 
-## Set up Nuget for Powershell
+# Set up Nuget for Powershell
 
 > Nuget is well-known among the Windows developers.
 
@@ -105,7 +105,7 @@ Nuget                            NuGet            True       http://www.nuget.or
 PSGallery                        PowerShellGet    True       https://www.powershellgallery.com/api/v2/
 ```
 
-## Use Nuget
+# Use Nuget
 
 ```powershell
 # install the latest version of GitForWindows without admin privileges
