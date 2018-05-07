@@ -5,6 +5,7 @@ excerpt: "As like [pypi](https://pypi.org/) for Python, [npm](https://www.npmjs.
 permalink:
 tags:
   - nuget
+  - powershell
   - powershell gallery
   - proxy
 published: true
