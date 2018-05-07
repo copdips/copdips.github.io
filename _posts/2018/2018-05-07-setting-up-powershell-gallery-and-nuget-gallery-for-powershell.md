@@ -114,8 +114,11 @@ find-package gitforwindows | install-package -Scope CurrentUser
 # install the latest version of Python without admin privileges
 find-package python | install-package -Scope CurrentUser
 
-# find the path of the installation for Python
+# find the path of Python installation
 get-package python | % source
+
+# You need to add manually the package executable path to your USER PATH, and to get the current USER Path
+[System.Environment]::GetEnvironmentVariable('Path', 'User')
 ```
 
 > In fact, you can find out from the output of `Get-PackageSource` that `Find-Package` can search the packages and modules in both Nuget Gallery and Powershell Gallery
