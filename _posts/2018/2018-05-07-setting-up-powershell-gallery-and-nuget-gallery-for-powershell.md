@@ -22,7 +22,7 @@ gallery:
     title: ''
 ---
 
-<!-- {% include toc title="Table of content" %} -->
+{% include toc title="Table of content" %}
 
 > As like [pypi](https://pypi.org/) for Python, [npm](https://www.npmjs.com/) for Node.js, we also have [Powershell Gallery](https://www.powershellgallery.com/) for Powershell to add some extra Powershell modules, and [Nuget Gallery](https://www.nuget.org/) for Powershell to add some extra executables.
 
