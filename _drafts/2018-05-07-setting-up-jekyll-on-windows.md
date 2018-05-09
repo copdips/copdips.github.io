@@ -34,3 +34,30 @@ gem install jekyll-remote-theme
 ```python
 pip install Pygments
 ```
+
+# Comment by Disqus
+Create a shortname:
+https://disqus.com/admin/create/
+
+_config.yml
+
+```yml
+comments:
+  provider               : "disqus" # false (default), "disqus", "discourse", "facebook", "google-plus", "staticman", "staticman_v2" "custom"
+  disqus:
+    shortname            : "copdips" #
+
+# Defaults
+defaults:
+  # _posts
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: single
+      author_profile: true
+      read_time: true
+      comments: # true
+      share: true
+      related: true
+```

@@ -22,13 +22,13 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
+<!-- {% include toc title="Table of content" %} -->
 
 > As like [pypi](https://pypi.org/) for Python, [npm](https://www.npmjs.com/) for Node.js, we also have [Powershell Gallery](https://www.powershellgallery.com/) for Powershell to add some extra Powershell modules, and [Nuget Gallery](https://www.nuget.org/) for Powershell to add some extra executables.
 
 # Configure proxy in Powershell
 
-If you're at office, your computer is probably behind a company proxy to access Internet. If your Internet Explorer's proxy has already been configured, you can use below command to tell Powershell to use the same proxy setting as Internet Explorer:
+If you're at office, your computer is probably behind a company proxy to access Internet. If your Internet Explorer's proxy setting has already been configured, you can use the below command to tell Powershell to reuse the same proxy setting :
 
 ```powershell
 (New-Object -TypeName System.Net.WebClient).Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials
@@ -47,7 +47,6 @@ $PROFILE | gm | ? membertype -eq noteproperty
 ```
 
 The output of the above command :
-> The two CurrentUser profile locations might differ on different computers, all depends on your `Documents` location, and if you're using Powershell Core, all the four locations are different than the ones in Windows Powershell.
 
 ```powershell
 # For Windows Powershell :
@@ -61,7 +60,9 @@ AllUsersCurrentHost    NoteProperty string AllUsersCurrentHost=C:\Windows\System
 CurrentUserAllHosts    NoteProperty string CurrentUserAllHosts=d:\xiang\Documents\WindowsPowerShell\profile.ps1
 CurrentUserCurrentHost NoteProperty string CurrentUserCurrentHost=d:\xiang\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
 ```
-I often use `CurrentUserAllHost` which is at :
+
+> The two CurrentUser profile locations might differ on different computers, all depends on your `Documents` location, and if you're using Powershell Core, all the four locations are different than the ones in Windows Powershell.
+I use usually `CurrentUserAllHost` because the change will only affect my profile, and even if I'm not the admin of the computer, I can still get it work. The profile location can be found at :
 
 ```powershell
 $PROFILE | % CurrentUserAllHosts
@@ -70,10 +71,10 @@ $PROFILE | % CurrentUserAllHosts
 Add proxy setting in the end of your `CurrentUserAllHost` powershell profile :
 
 ```powershell
-Add-Content ($PROFILE | % CurrentUserAllHost) "`n(New-Object -TypeName System.Net.WebClient).Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials"
+Add-Content ($PROFILE | % CurrentUserAllHost) "`n(New-Object -TypeName System.Net.WebClient).Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials`n"
 ```
 
-> As a best practice, it would be better to add the above line on the top of your profile.
+> As a best practice, it would be better to add the above line at the top of your profile.
 
 # Set up Powershell Gallery for Powershell
 
@@ -96,7 +97,7 @@ PSGallery                 Trusted              https://www.powershellgallery.com
 # Use Powershell Gallery
 
 ```powershell
-# Search a module which name like poshrs*
+# Search a module which name is like poshrs*
 > find-module poshrs*
 
 Name                           Version          Source           Summary
@@ -139,8 +140,12 @@ find-package python | install-package -Scope CurrentUser
 # find the path of Python installation
 get-package python | % source
 
-# You need to add manually the package executable path to your USER PATH, and to get the current USER Path
+# You need to add manually the package executable path to your USER PATH.
+# To get the current USER Path
 [System.Environment]::GetEnvironmentVariable('Path', 'User')
+
+# To set the current USER Path
+[System.Environment]::SetEnvironmentVariable('Path', $newPathInSingleStringSeparatedByColumn, 'User')
 ```
 
-> In fact, you can find out from the output of `Get-PackageSource` that `Find-Package` can search the packages and modules in both Nuget Gallery and Powershell Gallery
+> In fact, you can find out from the output of `Get-PackageSource` that `Find-Package` can search the packages and modules in both Nuget Gallery and Powershell Gallery.
