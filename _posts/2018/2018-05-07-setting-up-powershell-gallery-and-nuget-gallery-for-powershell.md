@@ -28,7 +28,11 @@ gallery:
 
 # Configure proxy in Powershell
 
-If you're at the office, your computer is probably behind a company proxy to access Internet. If your Internet Explorer's proxy setting has already been configured, you can use the below command to tell Powershell to reuse the same proxy setting :
+Both Powershell Gallery et Nuget Gallery can be installed locally that we don't need external Internet access to retrieve the packages from them, but setting up an internal Powershell Gallery or an internal Nuget Gallery is [out of scope of this post](#Set-up-internal-Powershell-Gallery-or-Nuget-Gallery).
+
+
+
+To use the [public Powershell Gallery](https://www.powershellgallery.com/) or the [public Nuget Gallery](https://www.nuget.org/), you must have Internet access. If you're at the office, your computer is probably behind a company proxy to access Internet. If your Internet Explorer's proxy setting has already been configured, you can use the below command to tell Powershell to reuse the same proxy setting :
 
 ```powershell
 (New-Object -TypeName System.Net.WebClient).Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials
@@ -149,3 +153,14 @@ get-package python | % source
 ```
 
 > In fact, you can find out from the output of `Get-PackageSource` that `Find-Package` can search the packages and modules in both Nuget Gallery and Powershell Gallery.
+
+# Set up internal Powershell Gallery or Nuget Gallery
+
+Some resources on setting up internal Powershell Gallery and Nuget Gallery:
+
+1. [Setting up an Internal PowerShellGet Repository](https://blogs.msdn.microsoft.com/powershell/2014/05/20/setting-up-an-internal-powershellget-repository/)
+1. [Powershell: Your first internal PSScript repository](https://kevinmarquette.github.io/2017-05-30-Powershell-your-first-PSScript-repository/)
+1. [PowerShell/PSPrivateGallery](https://github.com/PowerShell/PSPrivateGallery)
+1. [Overview of Hosting Your Own NuGet Feeds](https://docs.microsoft.com/en-us/nuget/hosting-packages/overview)
+1. [NuGet/NuGetGallery](https://github.com/NuGet/NuGetGallery/wiki/Hosting-the-NuGet-Gallery-Locally-in-IIS)
+
