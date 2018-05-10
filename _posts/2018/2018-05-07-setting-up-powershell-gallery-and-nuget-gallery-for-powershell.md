@@ -28,7 +28,7 @@ gallery:
 
 # Configure proxy in Powershell
 
-If you're at office, your computer is probably behind a company proxy to access Internet. If your Internet Explorer's proxy setting has already been configured, you can use the below command to tell Powershell to reuse the same proxy setting :
+If you're at the office, your computer is probably behind a company proxy to access Internet. If your Internet Explorer's proxy setting has already been configured, you can use the below command to tell Powershell to reuse the same proxy setting :
 
 ```powershell
 (New-Object -TypeName System.Net.WebClient).Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials
