@@ -36,11 +36,11 @@
     {% endif %} -->
 
     <p class="page__meta">
-      {% if site.custom.landingpage.publisheddate and include.type != "grid" %}
+      {% if post.date %}
       <i class="fas fa-calendar-alt" aria-hidden="true"></i> {{ post.date | date: "%B %d, %Y" }} &nbsp;|&nbsp;
       {% endif %}
 
-      {% if page.read_time %}
+      {% if post.read_time %}
       <i class="far fa-clock" aria-hidden="true"></i> {% include read-time.html %}
       {% endif %}
     </p>
