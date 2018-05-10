@@ -45,6 +45,10 @@ https://jekyllrb.com/docs/templates/#code-snippet-highlighting
 ```python
 pip install Pygments
 ```
+# Official Doc
+
+https://mmistakes.github.io/minimal-mistakes/docs/quick-start-guide/
+
 
 # Comment by Disqus
 Create a shortname:
@@ -72,3 +76,62 @@ defaults:
       share: true
       related: true
 ```
+
+# Configure Jekyll page
+
+## _config.yml
+global config can be accessed by variable site, for example:
+
+`site.author.bio`
+
+
+## global page layout
+_layouts\single.html # layout defined by layout option in each post
+
+Add update date:
+
+```css
+<p class="page__meta">
+  {% if page.date %}
+    <i class="far fa-calendar-alt" aria-hidden="true"></i> Updated: {{ page.date | date: "%B %d, %Y" }}
+    &nbsp;|&nbsp;
+  {% endif %}
+
+  {% if page.read_time %}
+    <i class="far fa-clock" aria-hidden="true"></i> {% include read-time.html %}
+  {% endif %}
+</p>
+```
+
+## per page layout
+```yml
+---
+layout: single
+title: "Setting Up Powershell Gallery And Nuget Gallery" # title shown in home page
+excerpt: "As like [pypi](https://pypi.org/) for Python, [npm](https://www.npmjs.com/) for Node.js, we also have [Powershell Gallery](https://www.powershellgallery.com/) for Powershell to add some extra Powershell modules, and [Nuget Gallery](https://www.nuget.org/) for Powershell to add some extra executables." # excerpt shown in home page under title
+permalink: # global permalink is set in_config.yml
+tags:
+  - nuget
+  - powershell
+  - powershell gallery
+  - proxy
+published: true
+comments: true
+author_profile: true
+# header:
+#   teaserlogo:
+#   teaser: ''
+#   image: ''
+#   caption:
+gallery:
+  - image_path: ''
+    url: ''
+    title: ''
+---
+```
+
+## Homepage
+_includes\archive-single.html # defined by _layouts\home.html
+
+## Navigation
+_data\navigation.yml
