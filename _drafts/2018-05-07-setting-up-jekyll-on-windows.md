@@ -2,8 +2,15 @@
 
 https://github.com/juthilo/run-jekyll-on-windows/
 
+Install Ruby + Devkit :
 https://rubyinstaller.org/downloads/
-Install Ruby + Devkit
+
+> Which Development Kit?
+>
+>  rubyinstaller.org: Starting with Ruby 2.4.0 we use the MSYS2 toolchain as our development kit. When using the Ruby+Devkit installer version, it is a selectable component, so that no additional downloads/installs are required.
+>
+>  When using the Ruby without Devkit version, the MSYS2 Devkit can be installed separately by running ridk install. MSYS2 is required to build native C/C++ extensions for Ruby and is necessary for Ruby on Rails. Moreover it allows the download and usage of hundreds of Open Source libraries which Ruby gems can depend on.
+
 
 Change gem source if banned in China:
 ```ruby
@@ -25,11 +32,15 @@ gem install jekyll-paginate
     jekyll-paginate 是 paginate 属性用的，可以用来显示文章列表、文章摘要
 
 gem install bundler
+bundler install
 gem install wdm (should already been installed alone with gem install jekyll)
 gem install rouge (should already been installed alone with gem install jekyll)
 gem install github-pages
 gem install jekyll-remote-theme
 ```
+
+Code Highlighting :
+https://jekyllrb.com/docs/templates/#code-snippet-highlighting
 
 ```python
 pip install Pygments
