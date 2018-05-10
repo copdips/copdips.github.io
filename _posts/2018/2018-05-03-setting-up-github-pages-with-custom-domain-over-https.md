@@ -70,7 +70,7 @@ Register a custom domain on your preferred domain name registrar
 
 # Enable HTTPS for custom domain with Cloudflare
 
-> This solution is `partially deprecated` as [Github supports natively HTTPS for custom domains](#Enable-HTTPS-For-Custom-Domain-With-Github) now, but Github pages doesn't provide the wildcard certificate yet. For a better compatibility, Cloudflare HTTPS solution is still one of the best choices.
+> This solution is `partially deprecated` as [Github supports natively HTTPS for custom domains](#enable-https-for-custom-domain-with-github) now, but Github pages doesn't provide the wildcard certificate yet. For a better compatibility, Cloudflare HTTPS solution is still one of the best choices.
 
 Some tutorials :
 [tutorial 1](https://hackernoon.com/set-up-ssl-on-github-pages-with-custom-domains-for-free-a576bdf51bc)
@@ -91,7 +91,7 @@ If everything goes well, you can access your custom domain by HTTPS. And if you 
 
 # Enable HTTPS for custom domain With Github
 
-Github announced very recently (on May 01, 2018) [the support of HTTPS for custom domains](https://blog.github.com/2018-05-01-github-pages-custom-domains-https/), this is really a great feature. After the test, I found that the HTTPS certificate is signed by letsencrypt.org where the CN is [your github.io's CNAME](#Enable-custom-domain-on-Github.com), and everything is free. Thx Github and LetsEncrypt !
+Github announced very recently (on May 01, 2018) [the support of HTTPS for custom domains](https://blog.github.com/2018-05-01-github-pages-custom-domains-https/), this is really a great feature. After the test, I found that the HTTPS certificate is signed by letsencrypt.org where the CN is [your github.io's CNAME](#enable-custom-domain-on-githubcom), and everything is free. Thx Github and LetsEncrypt !
 
 HTTPS tests:
 
@@ -99,5 +99,5 @@ HTTPS tests:
 - typed http://www.copdips.com, redirected to https://www.copdips.com
 - typed https://copdips.com, redirected to the same https://copdips.com with a certificate error, as LetsEncrypt only signed to www.copdips.com in the CN.
 
-> With [Cloudflare's HTTPS solution](#Enable-HTTPS-for-custom-domain-with-Cloudflare), there's no such error, as Cloudflare signed a wildcard certificate to *.copdips.com in the SAN.
+> With [Cloudflare's HTTPS solution](#enable-https-for-custom-domain-with-cloudflare), there's no such error, as Cloudflare signed a wildcard certificate to *.copdips.com in the SAN.
 

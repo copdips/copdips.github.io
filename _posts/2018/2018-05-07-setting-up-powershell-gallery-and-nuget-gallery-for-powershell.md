@@ -28,7 +28,7 @@ gallery:
 
 # Configure proxy in Powershell
 
-Both Powershell Gallery et Nuget Gallery can be installed locally that we don't need external Internet access to retrieve the packages from them, but setting up an internal Powershell Gallery or an internal Nuget Gallery is [out of scope of this post](#Set-up-internal-Powershell-Gallery-or-Nuget-Gallery).
+Both Powershell Gallery et Nuget Gallery can be installed locally that we don't need external Internet access to retrieve the packages from them, but setting up an internal Powershell Gallery or an internal Nuget Gallery is [out of scope of this post](#set-up-internal-powershell-gallery-or-nuget-gallery).
 
 
 
