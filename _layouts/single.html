@@ -68,6 +68,12 @@ classes: wide
 
       {% if page.share %}{% include social-share.html %}{% endif %}
 
+      <script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+      <div id="qrcode"></div>
+      <script type="text/javascript">
+        var qrcode = new QRCode('qrcode', {width: 100, height: 100, text: location.href});
+      </script>
+
       {% include post_pagination.html %}
     </div>
 
