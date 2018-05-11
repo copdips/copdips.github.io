@@ -65,7 +65,7 @@ CurrentUserAllHosts    NoteProperty string CurrentUserAllHosts=d:\xiang\Document
 CurrentUserCurrentHost NoteProperty string CurrentUserCurrentHost=d:\xiang\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
 ```
 
-> The two CurrentUser profile locations might differ on different computers, all depends on your `MyDocuments` location ( `[Environment]::GetFolderPath("MyDocuments")` ), and if you're using Powershell Core, all the four locations are different than the ones in Windows Powershell.
+The two CurrentUser profile locations might differ on different computers, all depends on your `MyDocuments` location ( `[Environment]::GetFolderPath("MyDocuments")` ), and if you're using Powershell Core, all the four locations are different than the ones in Windows Powershell.
 I use usually `CurrentUserAllHost` because the change will only affect my profile, and even if I'm not the admin of the computer, I can still get it work. The profile location can be found at :
 
 ```powershell
@@ -78,7 +78,7 @@ Add proxy setting in the end of your `CurrentUserAllHost` powershell profile :
 Add-Content ($PROFILE | % CurrentUserAllHost) "`n(New-Object -TypeName System.Net.WebClient).Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials`n"
 ```
 
-> As a best practice, it would be better to add the above line at the top of your profile.
+As a best practice, it would be better to add the above line at the top of your profile.
 
 # Set up Powershell Gallery for Powershell
 
@@ -114,7 +114,7 @@ PoshRSJob                      1.7.4.4          PSGallery        Provides an alt
 
 # Set up Nuget for Powershell
 
-> Nuget is well-known among the Windows developers.
+Nuget is well-known among the Windows developers.
 
 ```powershell
 # I also add the Trusted switch
