@@ -1,7 +1,7 @@
 ---
 layout: single
 title: "Setting Up Github Pages With Custom Domain Over HTTPS"
-excerpt: "With Github pages, we can create our blogs in our own domain over HTTPS completely free (Of course you should pay for your domain name at the Registrar)."
+excerpt: "With Github pages, we can create our blogs in our own domain over HTTPS completely free. Of course you should pay for your domain name at the Registrar."
 permalink:
 tags:
   - Github
@@ -22,7 +22,7 @@ gallery:
 
 {% include toc title="Table of content" %}
 
-> With Github pages, we can create our blogs in our own domain over HTTPS completely free (Of course you should pay for your domain name at the Registrar).
+> With Github pages, we can create our blogs in our own domain over HTTPS completely free. Of course you should pay for your domain name at the Registrar.
 
 # Create Github pages on Github.com
 
