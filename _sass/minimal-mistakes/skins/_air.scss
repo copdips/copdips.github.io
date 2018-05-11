@@ -16,10 +16,9 @@ $masthead-link-color: $text-color !default;
 $masthead-link-color-hover: $text-color !default;
 $navicon-link-color-hover: mix(#fff, $text-color, 80%) !default;
 
-// $code-background-color      : #cccccc !default;
-// $code-background-color-dark : #cccccc !default;
-$code-background-color      : #cce6ff !default;
-$code-background-color-dark : #cce6ff !default;
+$code-color                 : #0059b3 !default;
+$code-background-color      : #e6f2ff !default;
+$code-background-color-dark : #e6f2ff !default;
 $success-color              : #27ae60 !default;
 $warning-color              : #e67e22 !default;
 $danger-color               : #c0392b !default;
