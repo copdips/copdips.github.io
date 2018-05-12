@@ -4,11 +4,9 @@ excerpt: "As like [pypi](https://pypi.org/) for Python, [npm](https://www.npmjs.
 tags:
   - nuget
   - powershell
-  - powershell gallery
+  - powershell-gallery
+  - package-management
   - proxy
-categories:
-  - Powershell
-  - PackageManagement
 published: true
 # header:
 #   teaserlogo:
