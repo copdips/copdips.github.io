@@ -46,9 +46,7 @@ Register a custom domain on your preferred domain name registrar
 
 1. Add APEX domain
 
-   <https://help.github.com/articles/setting-up-an-apex-domain/#configuring-a-records-with-your-dns-provider>
-
-   My DNS registrar doesn't support ALIAS nor ANAME, I should go will the A record :
+   My DNS registrar doesn't support [ALIAS nor ANAME](https://help.github.com/articles/setting-up-an-apex-domain/#configuring-an-alias-or-aname-record-with-your-dns-provider), I should go with the [A records](https://help.github.com/articles/setting-up-an-apex-domain/#configuring-a-records-with-your-dns-provider) :
 
     - Add a **A** DNS record pointing **@** to **185.199.108.153**
     - Add a **A** DNS record pointing **@** to **185.199.109.153**
