@@ -34,7 +34,7 @@ To use the [public Powershell Gallery](https://www.powershellgallery.com/) or th
 ```powershell
 (New-Object -TypeName System.Net.WebClient).Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials
 
-# Or batch version by using netsh (not tested) :
+# Or batch version by using netsh (need admin privileges) :
 netsh winhttp show proxy
 netsh winhttp import proxy source=ie
 ```
