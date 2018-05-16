@@ -17,6 +17,8 @@ gallery:
     title: ''
 ---
 
+{% include toc title="Table of content" %}
+
 > A friend of mine told me about the Powershell stop-parsing (\-\-%) last year, he said the stop-parsing tells powershell to treat the remaining characters in the line as a literal, but I'd never known where to use it. Recently working on git ssh made it happened.
 
 The use case is I needed to git push by using a ssh key instead of the https wincred. So at first I needed to generate a ssh key pair. I used the `ssh-keygen.exe` provided by [GitForWindows](https://copdips.com/2018/05/setting-up-powershell-gallery-and-nuget-gallery-for-powershell.html#use-nuget).
