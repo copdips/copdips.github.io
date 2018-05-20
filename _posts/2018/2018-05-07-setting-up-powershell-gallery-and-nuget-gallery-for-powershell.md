@@ -23,6 +23,11 @@ gallery:
 
 > As like [pypi](https://pypi.org/) for Python, [npm](https://www.npmjs.com/) for Node.js, we also have [Powershell Gallery](https://www.powershellgallery.com/) for Powershell to add some extra Powershell modules, and [Nuget Gallery](https://www.nuget.org/) for Powershell to add some extra executables.
 
+# Powershell version
+
+All commands provided here are tested on Windows 10 with Windows Powershell v5.1.
+{: .notice--info}
+
 # Configure proxy in Powershell
 
 Both Powershell Gallery et Nuget Gallery can be installed locally that we don't need external Internet access to retrieve the packages from them, but setting up an internal Powershell Gallery or an internal Nuget Gallery is [out of scope of this post](#set-up-internal-powershell-gallery-or-nuget-gallery).
@@ -86,6 +91,12 @@ This is pretty easy for Powershell v5+ :
 Register-PSRepository -Default -InstallationPolicy Trusted
 ```
 
+For Powershell with version less than v5:
+
+```powershell
+Register-PSRepository -Name PSGallery -SourceLocation https://www.powershellgallery.com/api/v2/ -InstallationPolicy Trusted
+```
+
 Test :
 ```powershell
 > Get-PSRepository
@@ -111,11 +122,25 @@ PoshRSJob                      1.7.4.4          PSGallery        Provides an alt
 
 # Set up Nuget for Powershell
 
-Nuget is well-known among the Windows developers.
+[Nuget](https://docs.microsoft.com/en-us/nuget/) is well-known among the Windows developers.
 
 ```powershell
 # I also add the Trusted switch
 Register-PackageSource -Name Nuget -Location "http://www.nuget.org/api/v2" –ProviderName Nuget -Trusted
+```
+
+My Nuget client is at v2, so I can only target at Nuget v2 API.
+
+```powershell
+> Get-PackageProvider
+
+Name                     Version          DynamicOptions
+----                     -------          --------------
+msi                      3.0.0.0          AdditionalArguments
+msu                      3.0.0.0
+NuGet                    2.8.5.208        Destination, ExcludeVersion, Scope, SkipDependencies, Headers, FilterOnTag, ...
+PowerShellGet            1.0.0.1          PackageManagementProvider, Type, Scope, AllowClobber, SkipPublisherCheck, In...
+Programs                 3.0.0.0          IncludeWindowsInstaller, IncludeSystemComponent
 ```
 
 Test :
