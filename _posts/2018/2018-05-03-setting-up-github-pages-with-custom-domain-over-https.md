@@ -1,5 +1,5 @@
 ---
-title: "Setting Up Github Pages With Custom Domain Over HTTPS"
+title: "Setting up Github Pages With custom domain over HTTPS"
 excerpt: "With Github pages, we can create our blogs in our own domain over HTTPS completely free. Of course you should pay for your domain name at the Registrar."
 tags:
   - github
