@@ -1,5 +1,5 @@
 ---
-title: "Setting Up Powershell Gallery And Nuget Gallery"
+title: "Setting Up Powershell gallery And Nuget gallery"
 excerpt: "As like [pypi](https://pypi.org/) for Python, [npm](https://www.npmjs.com/) for Node.js, we also have [Powershell Gallery](https://www.powershellgallery.com/) and Nuget Gallery for Powershell."
 tags:
   - nuget

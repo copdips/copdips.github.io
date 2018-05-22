@@ -1,5 +1,5 @@
 ---
-title: "Setting Up Jekyll With Minimal Mistakes Theme On Windows"
+title: "Setting up Jekyll with Minimal Mistakes theme on Windows"
 excerpt: "Preview Jekyll blog locally on Windows with the Minimal Mistakes theme."
 tags:
   - jekyll
