@@ -1,6 +1,6 @@
 ---
 title: "Setting Up Powershell Gallery And Nuget Gallery"
-excerpt: "As like [pypi](https://pypi.org/) for Python, [npm](https://www.npmjs.com/) for Node.js, we also have [Powershell Gallery](https://www.powershellgallery.com/) for Powershell to add some extra Powershell modules, and [Nuget Gallery](https://www.nuget.org/) for Powershell to add some extra executables."
+excerpt: "As like [pypi](https://pypi.org/) for Python, [npm](https://www.npmjs.com/) for Node.js, we also have [Powershell Gallery](https://www.powershellgallery.com/) and Nuget Gallery for Powershell."
 tags:
   - nuget
   - powershell
