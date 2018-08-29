@@ -64,6 +64,10 @@ PythonConverter.dll            1.0.0            Nuget            Package descrip
 > Install-Package python2 -Scope CurrentUser
 ```
 
+**Note 2018-08-29:**
+Current `Find-Package python* -AllVersion` gives the lastest python version is `v3.7.0`, but this version doesn't work, the last worked Nuget python version is `v3.6.6`
+{: .notice--warning}
+
 # Add Python to user path
 
 I will show you the way to add Python3 into the user PATH, it will be the same way for Python2.
@@ -72,7 +76,7 @@ I use the user PATH because I'm not admin on the Windows server, I cannot modify
 ```powershell
 # Get python3 package info path
 > Get-Package python | % source
-C:\Users\xiang\AppData\Local\PackageManagement\NuGet\Packages\python.3.6.5\python.3.6.5.nupkg
+C:\Users\xiang\AppData\Local\
 
 # For Nuget packages, the executable is always under the tools folder, and the tools folder is at the same level as .nupkg file.
 > ls C:\Users\xiang\AppData\Local\PackageManagement\NuGet\Packages\python.3.6.5\tools\
