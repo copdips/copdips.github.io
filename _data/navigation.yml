@@ -12,3 +12,5 @@ main:
   #   url: /sitemap/
   - title: "Home"
     url: /
+  - title: "Tags"
+    url: /tags/
