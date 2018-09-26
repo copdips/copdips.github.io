@@ -31,12 +31,18 @@ classes: wide
           <p class="page__meta">
             {% if page.date %}
               <i class="far fa-calendar-alt" aria-hidden="true"></i> Updated: {{ page.date | date: "%B %d, %Y" }}
-              &nbsp;|&nbsp;
             {% endif %}
 
             {% if page.read_time %}
+               &nbsp;|&nbsp;
               <i class="far fa-clock" aria-hidden="true"></i> {% include read-time.html %}
             {% endif %}
+
+            {% if page.hit_count %}
+              &nbsp;|&nbsp;
+              <i class="far fa-eye" aria-hidden="true"></i> {% include hit-count.html %}
+            {% endif %}
+
           </p>
         </header>
       {% endunless %}
