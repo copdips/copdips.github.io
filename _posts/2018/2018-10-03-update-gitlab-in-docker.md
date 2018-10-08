@@ -53,7 +53,7 @@ xiang@ubuntu1804:~$ docker ps
 CONTAINER ID        IMAGE                          COMMAND             CREATED             STATUS                 PORTS                                                            NAMES
 707439b39dd1        gitlab/gitlab-ce:10.8.3-ce.0   "/assets/wrapper"   3 weeks ago         Up 2 hours (healthy)   0.0.0.0:80->80/tcp, 0.0.0.0:443->443/tcp, 0.0.0.0:2222->22/tcp   gitlab
 xiang@ubuntu1804:~$
-xiang@ubuntu1804:~$ docker container inspect -f "{{ json .HostConfig.Binds }}" gitlab | python3 -m json.tool
+xiang@ubuntu1804:~$ docker container inspect -f {% raw %}"{{ json .HostConfig.Binds }}"{% endraw %} gitlab | python3 -m json.tool
 [
     "/srv/gitlab/config:/etc/gitlab",
     "/srv/gitlab/logs:/var/log/gitlab",
