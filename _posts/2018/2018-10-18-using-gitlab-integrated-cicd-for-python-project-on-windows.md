@@ -1,6 +1,6 @@
 ---
 title: "Using Gitlab integrated CICD for Python project on Windows"
-excerpt: "Gitlab includes its own free CICD solution which works pretty well. This post will give a example of .gitlab-ci.yml for a Python project running on Windows."
+excerpt: "Gitlab ships with its own free CICD which works pretty well. This post will give a .gitlab-ci.yml demo for a Python project running on Gitlab Windows runner."
 tags:
   - gitlab
   - cicd
@@ -20,7 +20,7 @@ gallery:
 
 {% include toc title="Table of content" %}
 
-> Gitlab includes its own free CICD solution which works pretty well. This post will show you how to configure the Gitlab runner and give a example of the CICD configuration file `.gitlab-ci.yml` for a Python project running on Windows.
+> Gitlab ships with its own free CICD which works pretty well. This post will give you an example of the CICD file `.gitlab-ci.yml` for a Python project running on [Gitlab Windows runner](https://copdips.com/2018/09/install-gitlab-runner-on-windows-by-powershell-psremoting.html).
 
 # Some docs on the Internet
 
@@ -69,17 +69,30 @@ This regex will find the coverage which is at `81%`.
 
 ## .gitlab-ci.yml file content
 
-I'm still working on this file, the example given here will be updated as long as I add new things inside.
+I cloned the project [flask_log_request_id](https://github.com/Workable/flask-log-request-id) and try to run CICD over it.
+
+I'm still working on this CICD `.gitlab-ci.yml` file, the example given here will be updated as long as I add new things inside.
 {: .notice--info}
 
 ```yml
 before_script:
+  - >
+    function Write-PythonPath {
+        $pythonPath = $(Get-Command python | % source)
+        Write-Output "The python path is at: '$pythonPath'"
+    }
   - Get-Location
   - git --version
   - python --version
-  - gci env:\CI_* | select Name, Value | ft -a
-  - gci variable:\ | select Name, Value | ft -a
+  - Write-PythonPath
+  - Get-ChildItem env:\CI_* | Select-Object Name, Value | ft -a
+  - Get-ChildItem variable:\ | Select-Object Name, Value | ft -a
   - $venvPath = "$env:temp/venv/$($env:CI_COMMIT_SHA)"
+  - >
+    function Enable-Venv {
+        Invoke-Expression "$venvPath/Scripts/activate.ps1"
+        Write-PythonPath
+    }
 
 stages:
     - venv
@@ -91,30 +104,30 @@ venv:
   stage: venv
   script:
     - python -m venv $venvPath
-    - iex "$venvPath/Scripts/activate.ps1"
+    - Enable-Venv
     - python -m pip install -U pip setuptools wheel
     - pip install flake8 nose pytest mock coverage pytest-cov celery flask
 
 pytest:
   stage: test
   script:
-    - iex "$venvPath/Scripts/activate.ps1"
-    - pytest --cov=python_project
+    - Enable-Venv
+    - pytest --cov=flask_log_request_id
   coverage: '/^TOTAL.*\s+(\d+\%)$/'
 
 
 nosetests:
   stage: test
   script:
-    - iex "$venvPath/Scripts/activate.ps1"
-    - nosetests
+    - Enable-Venv
+    - nosetests.exe
   coverage: '/^TOTAL.*\s+(\d+\%)$/'
 
 flake8:
   stage: test
   script:
-    - iex "$venvPath/Scripts/activate.ps1"
-    - flake8 .\python_project
+    - Enable-Venv
+    - flake8.exe .\flask_log_request_id
 ```
 
 ## .gitlab-ci.yml results from pipeline view
