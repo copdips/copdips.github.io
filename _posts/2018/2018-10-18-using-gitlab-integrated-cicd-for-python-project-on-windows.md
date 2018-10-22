@@ -64,6 +64,7 @@ This regex will find the coverage which is at `81%`.
 2. The regular expression must be surrounded by single quote `'`, double quote is not allowed.
 3. Inside the single quotes, must be surrounded by `/`.
 4. You can use <http://rubular.com> to test your regex.
+5. The overage regex returns the last catch group value from the output. Even if it is not in the last line, or if the regex catches more than one values among all the lines.
 
 # .gitlab-ci.yml example for Python project on a Windows runner
 
@@ -112,8 +113,11 @@ pytest:
   stage: test
   script:
     - Enable-Venv
-    - pytest --cov=flask_log_request_id
-  coverage: '/^TOTAL.*\s+(\d+\%)$/'
+    - pytest --cov=flask_log_request_id --cov-report=html
+    - $coverageLine = (Get-Content .\htmlcov\index.html | Select-String "pc_cov").line
+    - $coverageString = ($coverageLine -replace "<[^>]*>", "").trim()
+    - Write-Output "Total Coverage $coverageString"
+  coverage: '/^(?i)(TOTAL).*\s+(\d+\%)$/'
 
 
 nosetests:
