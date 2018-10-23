@@ -77,17 +77,46 @@ I'm still working on this CICD `.gitlab-ci.yml` file, the example given here wil
 
 ```yml
 before_script:
+  - $gitApiUrl = 'https://gitlab.copdips.local/api/v4'
+  # will save git api token more securely later.
+  - $gitApiToken = $env:GitApiToken
+  - $gitApiHeader = @{"PRIVATE-TOKEN" = $gitApiToken}
+  - >
+    function Set-SecurityProtocolType {
+        # [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+        # $AllProtocols = [System.Net.SecurityProtocolType]'Ssl3,Tls,Tls11,Tls12'
+        $AllProtocols = [System.Net.SecurityProtocolType]'Tls12'
+        [System.Net.ServicePointManager]::SecurityProtocol = $AllProtocols
+    }
   - >
     function Write-PythonPath {
         $pythonPath = $(Get-Command python | % source)
         Write-Output "The python path is at: '$pythonPath'"
     }
+  - >
+    function Get-UpstreamProject {
+        $apiParam = @{
+          Headers = $gitApiHeader
+          Uri = "$gitApiUrl/projects?search=$($env:CI_PROJECT_NAME)"
+        }
+        if ($PSVersionTable.PSVersion.Major -gt 5) {
+          $apiParam.SkipCertificateCheck = $true
+        }
+        $projectList = Invoke-RestMethod @apiParam
+        $upstreamProject = $projectList | ? forked_from_project -eq $null
+        return $upstreamProject
+    }
+  - >
+    function Get-UpstreamProjectId {
+        $upstreamProject = Get-UpstreamProject
+        return $upstreamProject.id
+    }
   - Get-Location
   - git --version
   - python --version
   - Write-PythonPath
-  - Get-ChildItem env:\CI_* | Select-Object Name, Value | ft -a
-  - Get-ChildItem variable:\ | Select-Object Name, Value | ft -a
+  - $PSVersionTable | ft -a
+  - Get-ChildItem env:\ | Select-Object Name, Value | ft -a
   - $venvPath = "$env:temp/venv/$($env:CI_COMMIT_SHA)"
   - >
     function Enable-Venv {
@@ -104,6 +133,7 @@ stages:
 venv:
   stage: venv
   script:
+    # TODO: add new venv only if requirements.txt changed
     - python -m venv $venvPath
     - Enable-Venv
     - python -m pip install -U pip setuptools wheel
@@ -112,13 +142,15 @@ venv:
 pytest:
   stage: test
   script:
+    - $upstreamProjectId = Get-UpstreamProjectId
+    - Write-Output "upstreamProjectId = $upstreamProjectId"
+    # TODO: add check master last commit coverage
     - Enable-Venv
     - pytest --cov=flask_log_request_id --cov-report=html
     - $coverageLine = (Get-Content .\htmlcov\index.html | Select-String "pc_cov").line
     - $coverageString = ($coverageLine -replace "<[^>]*>", "").trim()
-    - Write-Output "Total Coverage $coverageString"
+    - Write-Output "Total Coverage = $coverageString"
   coverage: '/^(?i)(TOTAL).*\s+(\d+\%)$/'
-
 
 nosetests:
   stage: test
