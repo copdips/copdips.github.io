@@ -76,11 +76,19 @@ I'm still working on this CICD `.gitlab-ci.yml` file, the example given here wil
 {: .notice--info}
 
 ```yml
+stages:
+    - venv
+    - test
+    - build
+    - deploy
+
 before_script:
   - $gitApiUrl = 'https://gitlab.copdips.local/api/v4'
   # will save git api token more securely later.
   - $gitApiToken = $env:GitApiToken
   - $gitApiHeader = @{"PRIVATE-TOKEN" = $gitApiToken}
+  - $cicdReportsFolderPath = Join-Path (Get-Location) "cicd_reports"
+  - $venvPath = "$env:temp/venv/$($env:CI_PROJECT_NAME)"
   - >
     function Set-SecurityProtocolType {
         # [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -111,59 +119,124 @@ before_script:
         $upstreamProject = Get-UpstreamProject
         return $upstreamProject.id
     }
+
+  - >
+    function Test-CreateVenv {
+        param($VenvPath, $GitCommitSHA)
+        $gitShowCommand = "git show $GitCommitSHA --name-only"
+        $gitShowResult = Invoke-Expression $gitShowCommand
+        Write-Host "$gitShowCommand`n"
+        $gitShowResult | ForEach-Object {Write-Host $_}
+        $changedFiles = Invoke-Expression "git diff-tree --no-commit-id --name-only -r $GitCommitSHA"
+        $requirementsFiles = @()
+        $requirementsFiles += "requirements.txt"
+        foreach ($requirements in $requirementsFiles) {
+            if ($requirements -in $changedFiles) {
+                Write-Host "`nFound $requirements in the changed files, need to create venv."
+                return $True
+            }
+        }
+        if (-not (Test-Path $VenvPath)) {
+            Write-Host "`nCannot found venv at $VenvPath, need to create venv."
+            return $True
+        }
+
+        Write-Host "`nNo need to create venv."
+        return $False
+    }
+  - >
+    function Enable-Venv {
+        param($VenvPath)
+
+        Invoke-Expression (Join-Path $VenvPath "Scripts/activate.ps1")
+        Write-Host "venv enabled at: $VenvPath"
+        Write-PythonPath
+    }
+  - >
+    function Create-Venv {
+        param($VenvPath)
+
+        Write-Output "Creating venv at $venvPath ."
+        python -m venv $VenvPath
+        Write-Output "venv created at $venvPath ."
+    }
+  - >
+    function Install-PythonRequirements {
+        param($VenvPath)
+
+        Enable-Venv $VenvPath
+        python -m pip install -U pip setuptools wheel
+        pip install -r requirements.txt
+    }
+  - >
+    function Remove-Venv {
+        param($VenvPath)
+
+        if (Test-Path $VenvPath) {
+            Remove-Item $VenvPath -Recurse -Force
+            Write-Host "venv removed from: $VenvPath"
+        } else {
+            Write-Host "venv not found at: $VenvPath"
+        }
+    }
   - Get-Location
   - git --version
   - python --version
   - Write-PythonPath
   - $PSVersionTable | ft -a
   - Get-ChildItem env:\ | Select-Object Name, Value | ft -a
-  - $venvPath = "$env:temp/venv/$($env:CI_COMMIT_SHA)"
-  - >
-    function Enable-Venv {
-        Invoke-Expression "$venvPath/Scripts/activate.ps1"
-        Write-PythonPath
-    }
-
-stages:
-    - venv
-    - test
-    - build
-    - deploy
 
 venv:
   stage: venv
   script:
-    # TODO: add new venv only if requirements.txt changed
-    - python -m venv $venvPath
-    - Enable-Venv
-    - python -m pip install -U pip setuptools wheel
-    - pip install flake8 nose pytest mock coverage pytest-cov celery flask
+    - >
+      if (Test-CreateVenv $venvPath $env:CI_COMMIT_SHA) {
+          Remove-Venv $venvPath
+          Create-Venv $venvPath
+          Install-PythonRequirments $venvPath
+      }
+      Install-PythonRequirements $venvPath
 
 pytest:
   stage: test
   script:
+    - $reportFolder = Join-Path $cicdReportsFolderPath "pytest"
+    - New-Item -Path $reportFolder -Type Directory -Force
     - $upstreamProjectId = Get-UpstreamProjectId
     - Write-Output "upstreamProjectId = $upstreamProjectId"
     # TODO: add check master last commit coverage
-    - Enable-Venv
-    - pytest --cov=flask_log_request_id --cov-report=html
-    - $coverageLine = (Get-Content .\htmlcov\index.html | Select-String "pc_cov").line
+    - Enable-Venv $venvPath
+    - pytest --cov=flask_log_request_id --cov-report=html:$reportFolder
+    - $coverageLine = (Get-Content (Join-Path $reportFolder index.html) | Select-String "pc_cov").line
     - $coverageString = ($coverageLine -replace "<[^>]*>", "").trim()
     - Write-Output "Total Coverage = $coverageString"
   coverage: '/^(?i)(TOTAL).*\s+(\d+\%)$/'
 
+
 nosetests:
   stage: test
   script:
-    - Enable-Venv
+    - Enable-Venv $venvPath
     - nosetests.exe
   coverage: '/^TOTAL.*\s+(\d+\%)$/'
 
 flake8:
   stage: test
   script:
-    - Enable-Venv
+    - Enable-Venv $venvPath
     - flake8.exe .\flask_log_request_id
+
+mypy:
+  stage: test
+  script:
+    - Enable-Venv $venvPath
+    - $reportFolder = Join-Path $cicdReportsFolderPath "mypy"
+    - New-Item -Path $reportFolder -Type Directory -Force
+    - $mypyResult = mypy ./flask_log_request_id --ignore-missing-imports --html-report $reportFolder --xml-report $reportFolder
+    - Write-Output "MyPy result = `n $mypyResult"
+    - if ($mypyResult.count -gt 2) {
+          return $False
+      }
 ```
 
 ## .gitlab-ci.yml results from pipeline view
