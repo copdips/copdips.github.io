@@ -193,7 +193,6 @@ venv:
       if (Test-CreateVenv $venvPath $env:CI_COMMIT_SHA) {
           Remove-Venv $venvPath
           Create-Venv $venvPath
-          Install-PythonRequirments $venvPath
       }
       Install-PythonRequirements $venvPath
 
@@ -233,12 +232,13 @@ mypy:
     - $reportFolder = Join-Path $cicdReportsFolderPath "mypy"
     - New-Item -Path $reportFolder -Type Directory -Force
     - $mypyResult = mypy ./flask_log_request_id --ignore-missing-imports --html-report $reportFolder --xml-report $reportFolder
-    - Write-Output "MyPy result = `n $mypyResult"
+    - Write-Output "MyPy result = `""
+    - $mypyResult | % { Write-Output $_}
+    - Write-Output "`"`nEnd of MyPy result."
     - if ($mypyResult.count -gt 2) {
           return $False
       }
 ```
-
 ## .gitlab-ci.yml results from pipeline view
 
 ![](https://github.com/copdips/copdips.github.io/raw/master/_image/blog/2018-10-18-using-gitlab-integrated-cicd-for-python-project-on-windows/gitlab-ci.yml_result_from_pipeline_view.PNG)
