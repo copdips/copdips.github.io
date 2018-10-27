@@ -25,7 +25,7 @@ gallery:
 # Some docs on the Internet
 
 1. [Official GitLab Continuous Integration (GitLab CI/CD)](https://docs.gitlab.com/ee/ci/README.html)
-2. [Official Configuration of your jobs with .gitlab-ci.yml ](https://docs.gitlab.com/ee/ci/yaml/README.html)
+2. [Official Configuration of your jobs with .gitlab-ci.yml](https://docs.gitlab.com/ee/ci/yaml/README.html)
 3. [Official Gitlab Pipelines settings](https://docs.gitlab.com/ee/user/project/pipelines/settings.html)
 4. [Official Publish code coverage report with GitLab Pages](https://about.gitlab.com/2016/11/03/publish-code-coverage-report-with-gitlab-pages/)
 5. [introduction-gitlab-ci](https://blog.eleven-labs.com/fr/introduction-gitlab-ci/)
@@ -36,7 +36,8 @@ gallery:
 The official doc on how to use coverage is not very clear.
 
 My coverage tool's output (from `pytest --cov=`) is something like :
-```
+
+```shell
 ----------- coverage: platform win32, python 3.7.0-final-0 -----------
 Name                                      Stmts   Miss  Cover
 -------------------------------------------------------------
@@ -60,6 +61,7 @@ coverage: '/^TOTAL.*\s+(\d+\%)$/'
 This regex will find the coverage which is at `81%`.
 
 **Be aware that**:
+
 1. The coverage only use regular expression to find the coverage percentage from coverage tool's output.
 2. The regular expression must be surrounded by single quote `'`, double quote is not allowed.
 3. Inside the single quotes, must be surrounded by `/`.
@@ -239,14 +241,15 @@ mypy:
           return $False
       }
 ```
+
 ## .gitlab-ci.yml results from pipeline view
 
-![](https://github.com/copdips/copdips.github.io/raw/master/_image/blog/2018-10-18-using-gitlab-integrated-cicd-for-python-project-on-windows/gitlab-ci.yml_result_from_pipeline_view.PNG)
+![.gitlab-ci.yml results from pipeline view](https://github.com/copdips/copdips.github.io/raw/master/_image/blog/2018-10-18-using-gitlab-integrated-cicd-for-python-project-on-windows/gitlab-ci.yml_result_from_pipeline_view.PNG)
 
 ## .gitlab-ci.yml results from job view
 
-![](https://github.com/copdips/copdips.github.io/raw/master/_image/blog/2018-10-18-using-gitlab-integrated-cicd-for-python-project-on-windows/gitlab-ci.yml_result_from_job_view.PNG)
+![.gitlab-ci.yml results from job view](https://github.com/copdips/copdips.github.io/raw/master/_image/blog/2018-10-18-using-gitlab-integrated-cicd-for-python-project-on-windows/gitlab-ci.yml_result_from_job_view.PNG)
 
 ## .gitlab-ci.yml results from merge_request view
 
-![](https://github.com/copdips/copdips.github.io/raw/master/_image/blog/2018-10-18-using-gitlab-integrated-cicd-for-python-project-on-windows/gitlab-ci.yml_result_from_merge_request_view.PNG)
+![.gitlab-ci.yml results from merge_request view](https://github.com/copdips/copdips.github.io/raw/master/_image/blog/2018-10-18-using-gitlab-integrated-cicd-for-python-project-on-windows/gitlab-ci.yml_result_from_merge_request_view.PNG)
