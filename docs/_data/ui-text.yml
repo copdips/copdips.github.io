@@ -1080,6 +1080,97 @@ hu: &DEFAULT_HU
 hu-HU:
   <<: *DEFAULT_HU
 
+# Romanian
+# -----------------
+ro: &DEFAULT_RO
+  page                       : "Pagina"
+  pagination_previous        : "Anterior"
+  pagination_next            : "Următor"
+  breadcrumb_home_label      : "Acasă"
+  breadcrumb_separator       : "/"
+  menu_label                 : "Comută meniul"
+  toc_label                  : "Pe această pagină"
+  ext_link_label             : "Link direct"
+  less_than                  : "mai puțin de"
+  minute_read                : "minute de citit"
+  share_on_label             : "Distribuie pe"
+  meta_label                 :
+  tags_label                 : "Etichete:"
+  categories_label           : "Categorii:"
+  date_label                 : "Actualizat:"
+  comments_label             : "Lasă un comentariu"
+  comments_title             : "Comentarii"
+  more_label                 : "Citește mai departe"
+  related_label              : "S-ar putea să-ți placă"
+  follow_label               : "Urmărește:"
+  feed_label                 : "Feed RSS"
+  powered_by                 : "Cu sprijinul"
+  website_label              : "Site"
+  email_label                : "Email"
+  recent_posts               : "Articole recente"
+  undefined_wpm              : "Parametru words_per_minute nedefinit în _config.yml"
+  comment_form_info          : "Adresa ta de email nu va fi făcută publică. Câmpurile marcate sunt obligatorii"
+  comment_form_comment_label : "Comentariu"
+  comment_form_md_info       : "Markdown este suportat."
+  comment_form_name_label    : "Nume"
+  comment_form_email_label   : "Adresă de email"
+  comment_form_website_label : "Site (opțional)"
+  comment_btn_submit         : "Trimite comentariul"
+  comment_btn_submitted      : "Trimis"
+  comment_success_msg        : "Mulțumesc pentru comentariu! Va apărea pe site în momentul în care va fi aprobat."
+  comment_error_msg          : "Scuze, este o problemă cu comentariul tău. Asigură-te că toate câmpurile obligatorii au fost completate și încearcă din nou."
+  loading_label              : "Se încarcă..."
+  search_placeholder_text    : "Caută ceva..."
+  results_found              : "Rezultate găsite"
+  back_to_top                : "Înapoi în susul paginii"
+ro-RO:
+  <<: *DEFAULT_RO
+
+# Punjabi
+# -----------------
+pa: &DEFAULT_PA
+  page                       : "ਸਫ਼ਾ"
+  pagination_previous        : "ਪਿਛਲਾ"
+  pagination_next            : "ਅਗਲਾ "
+  breadcrumb_home_label      : "ਘਰ"
+  breadcrumb_separator       : "/"
+  menu_label                 : "ਟੌਗਲ ਮੀਨੂ"
+  toc_label                  : "ਇਸ ਸਫ਼ੇ 'ਤੇ"
+  ext_link_label             : "ਸਿੱਧਾ ਸੰਪਰਕ"
+  less_than                  : "ਤੋਂ ਘੱਟ"
+  minute_read                : "ਮਿੰਟ ਵਿੱਚ ਪੜਿਆ ਜਾ ਸਕਦਾ ਹੈ"
+  share_on_label             : "ਸਾਂਝਾ ਕਰੋ"
+  meta_label                 :
+  tags_label                 : "ਟੈਗ"
+  categories_label           : "ਵਰਗ"
+  date_label                 : "ਅਪਡੇਟ ਕੀਤਾ:"
+  comments_label             : "ਇੱਕ ਟਿੱਪਣੀ ਛੱਡੋ"
+  comments_title             : "ਟਿੱਪਣੀਆਂ"
+  more_label                 : "ਹੋਰ ਜਾਣੋ"
+  related_label              : "ਤੁਸੀਂ ਇਸਦਾ ਆਨੰਦ ਵੀ ਲੈ ਸਕਦੇ ਹੋ"
+  follow_label               : "ਫਾਲੋ ਅੱਪ ਕਰੋ:"
+  feed_label                 : "ਫੀਡ"
+  powered_by                 : "ਦੁਆਰਾ ਸੰਚਾਲਿਤ"
+  website_label              : "ਵੈੱਬਸਾਇਟ"
+  email_label                : "ਈਮੇਲ"
+  recent_posts               : "ਹਾਲ ਹੀ ਦੇ ਪੋਸਟ"
+  undefined_wpm              : "_config.yml ਤੇ ਅਣ-ਪ੍ਰਭਾਸ਼ਿਤ ਪੈਰਾਮੀਟਰ words_per_minute"
+  comment_form_info          : "ਤੁਹਾਡਾ ਈਮੇਲ ਪਤਾ ਪ੍ਰਕਾਸ਼ਿਤ ਨਹੀਂ ਕੀਤਾ ਜਾਵੇਗਾ। ਅਨੁਮਾਨਿਤ ਸਥਾਨਾਂ ਨੂੰ ਅੰਡਰਲਾਈਨ ਕੀਤਾ ਗਿਆ ਹੈ"
+  comment_form_comment_label : "ਟਿੱਪਣੀ"
+  comment_form_md_info       : "ਮਾਰਕਡਾਊਨ ਵਰਤ ਸਕਦੇ ਹੋ।"
+  comment_form_name_label    : "ਨਾਮ"
+  comment_form_email_label   : "ਈਮੇਲ ਪਤਾ"
+  comment_form_website_label : "ਵੈਬਸਾਈਟ (ਵਿਕਲਪਿਕ)"
+  comment_btn_submit         : "ਕੋਈ ਟਿੱਪਣੀ ਭੇਜੋ"
+  comment_btn_submitted      : "ਪੇਸ਼ ਕੀਤਾ"
+  comment_success_msg        : "ਤੁਹਾਡੀਆਂ ਟਿੱਪਣੀਆਂ ਲਈ ਧੰਨਵਾਦ! ਇਹ ਮਨਜ਼ੂਰੀ ਮਿਲਣ ਦੇ ਬਾਅਦ ਸਾਈਟ 'ਤੇ ਦਿਖਾਇਆ ਜਾਵੇਗਾ।"
+  comment_error_msg          : "ਮੁਆਫ ਕਰਨਾ, ਤੁਹਾਡੀ ਅਧੀਨਗੀ ਵਿੱਚ ਕੋਈ ਗਲਤੀ ਹੋਈ ਸੀ ਕਿਰਪਾ ਕਰਕੇ ਯਕੀਨੀ ਬਣਾਓ ਕਿ ਸਾਰੇ ਲੋੜੀਂਦੇ ਖੇਤਰ ਪੂਰੇ ਹੋ ਗਏ ਹਨ ਅਤੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+  loading_label              : "ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ..."
+  search_placeholder_text    : "ਆਪਣੀ ਖੋਜ ਦੇ ਸ਼ਬਦ ਨੂੰ ਦਰਜ ਕਰੋ..."
+  results_found              : "ਨਤੀਜਾ ਮਿਲਿਆ/ਮਿਲੇ"
+  back_to_top                : "ਵਾਪਸ ਚੋਟੀ 'ਤੇ ਜਾਓ"
+pa-IN:
+  <<: *DEFAULT_PA
 # Another locale
 # --------------
 #

@@ -2,7 +2,7 @@
 title: "Configuration"
 permalink: /docs/configuration/
 excerpt: "Settings for configuring and customizing the theme."
-last_modified_at: 2018-08-15T09:50:11-04:00
+last_modified_at: 2018-11-21T14:46:33-05:00
 toc: true
 ---
 
@@ -274,7 +274,7 @@ To disable reading time for a post, add `read_time: false` its YAML Front Matter
 
 ### Comments
 
-[**Disqus**](https://disqus.com/), [**Discourse**](https://www.discourse.org/), [**Facebook**](https://developers.facebook.com/docs/plugins/comments), **Google+**, and static-based commenting via [**Staticman**](https://staticman.net/) are built into the theme. First set the comment provider you'd like to use:
+[**Disqus**](https://disqus.com/), [**Discourse**](https://www.discourse.org/), [**Facebook**](https://developers.facebook.com/docs/plugins/comments), **Google+**, [**utterances**](https://utteranc.es/), and static-based commenting via [**Staticman**](https://staticman.net/) are built into the theme. First set the comment provider you'd like to use:
 
 | Name             | Comment Provider          |
 | ---------------- | ------------------------- |
@@ -284,6 +284,7 @@ To disable reading time for a post, add `read_time: false` its YAML Front Matter
 | **google-plus**  | Google+ Comments          |
 | **staticman_v2** | Staticman v2              |
 | **staticman**    | Staticman v1 (deprecated) |
+| **utterances**   | utterances                |
 | **custom**       | Other                     |
 
 Then add `comments: true` to each document you want comments visible on.
@@ -323,9 +324,9 @@ For guidance on how to set up Discourse for embedding comments from a topic on a
 
 ```yaml
 comments:
-  provider               : "discourse"
+  provider: "discourse"
   discourse:
-    server               : # meta.discourse.org
+    server: # meta.discourse.org
 ```
 
 **Note:** Do not include `http://` or `https://` when setting your Discourse `server`. The theme automatically prepends the URL `//`, following a scheme-less pattern.
@@ -337,11 +338,31 @@ To enable Facebook Comments choose how many comments you'd like visible per post
 
 ```yaml
 comments:
-  provider               : "facebook"
+  provider: "facebook"
   facebook:
-    appid                : # optional
-    num_posts            : # 5 (default)
-    colorscheme          : # "light" (default), "dark"
+    appid: # optional
+    num_posts: # 5 (default)
+    colorscheme: # "light" (default), "dark"
+```
+
+#### utterances Comments
+
+To use utterances you will need to [install the app](https://github.com/apps/utterances) to your GitHub repository by adding the following to `_config.yml`:
+
+```yaml
+repository: # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
+```
+
+**Note:** Make sure the repo is public, otherwise your readers will not be able to view the issues/comments. The [issues feature](https://guides.github.com/features/issues/) also needs to be active on your repo.
+{: .notice--warning}
+
+To enable utterances on the front end set `comments.provider` and the color theme of the widget. 
+
+```yaml
+comments:
+  provider: "utterances"
+  utterances:
+    theme: "github-light" # "github-dark"
 ```
 
 #### Static-Based Comments via Staticman
@@ -351,6 +372,9 @@ Transform user comments into `_data` files that live inside of your GitHub repos
 **Note:** Looking to migrate comments from a WordPress based site? Give [this tool](https://github.com/arthurlacoste/wordpress-comments-jekyll-staticman) a try.
 {: .notice--info}
 
+**Note:** Please note that as of September 2018, Staticman is reaching GitHub API limits due to its popularity, and it is recommended by its maintainer that users deploy their own instances for production (use `site.staticman.endpoint`).
+{: .notice--warning}
+
 ##### Add Staticman as a Collaborator
 
 1. Allow Staticman push access to your GitHub repository by clicking on **Settings**, then the **Collaborators** tab and adding `staticmanapp` as a collaborator.
@@ -358,7 +382,11 @@ Transform user comments into `_data` files that live inside of your GitHub repos
 
 ##### Configure Staticman
 
-**Staticman v2**
+###### Staticman v3
+
+Due to the support for GitLab, the URL scheme has been changed.  Bewteen `v3` and `/entry`, one needs to input a Git service provider (either `github` or `gitlab`).  Apart from that, the setup for GitHub remains the same.
+
+###### Staticman v2
 
 Default settings have been provided in [`staticman.yml`](https://github.com/mmistakes/minimal-mistakes/blob/master/staticman.yml) and are commented to guide you through setup. View the [full list of configurations](https://staticman.net/docs/configuration).
 
@@ -389,17 +417,17 @@ These settings need to be added to your `_config.yml` file as well:
 repository  : # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
 comments:
   provider  : "staticman_v2"
-staticman:
-  branch    : "master"
+  staticman:
+    branch    : "master"
 ```
 
 **Branch setting:** This is the branch comment files will be sent to via pull requests. If you host your site on GitHub Pages it will likely be `master` unless your repo is setup as a project --- use `gh-pages` in that case.
 {: .notice--info}
 
-**Note:** Staticman is currently only compatible with GitHub based repositories. [Support for GitLab Pages](https://github.com/eduardoboucas/staticman/issues/22) is planned but not available yet.
+**Note:** Staticman is currently compatible with GitHub and GitLab based repositories. [Support for GitLab Pages](https://github.com/eduardoboucas/staticman/issues/22) is already available at [Staticman v3](https://github.com/eduardoboucas/staticman/pull/219).
 {: .notice--warning}
 
-**Staticman v1 (deprecated)**
+###### Staticman v1 (deprecated)
 
 Default settings have been provided in `_config.yml`. The important ones to set are `provider: "staticman"`, `branch`, and `path`. View the [full list of configurations](https://staticman.net/docs/configuration).
 
@@ -491,6 +519,7 @@ For faster and more relevant search ([see demo](https://mmistakes.github.io/mini
      gem "jekyll-seo-tag"
      gem "jekyll-sitemap"
      gem "jekyll-paginate"
+     gem "jekyll-include-cache"
      gem "jekyll-algolia"
    end
    ```
@@ -701,7 +730,7 @@ Analytics is disabled by default. To enable globally select one of the following
 | -------------------- | --------------------------------------------------------------- |
 | **google**           | [Google Standard Analytics](https://www.google.com/analytics/)  |
 | **google-universal** | [Google Universal Analytics](https://www.google.com/analytics/) |
-| **google-gtag**      | [Google Analytics Global Site Tag)](https://www.google.com/analytics/) |
+| **google-gtag**      | [Google Analytics Global Site Tag](https://www.google.com/analytics/) |
 | **custom**           | Other analytics providers                                       |
 
 For Google Analytics add your Tracking Code:
@@ -731,17 +760,71 @@ Used as the defaults for defining what appears in the author sidebar.
 
 ```yaml
 author:
-  name   : "Your Name"
-  avatar : "/assets/images/bio-photo.jpg"
-  bio    : "My awesome biography constrained to a sentence or two goes here."
-  email  : # optional
-  uri    : "http://your-site.com"
-  home   : # null (default), "absolute or relative url to link to author home"
+  name     : "Your Name"
+  avatar   : "/assets/images/bio-photo.jpg"
+  bio      : "My awesome biography constrained to a sentence or two goes here."
+  location : "Somewhere, USA" 
 ```
 
-Social media links are all optional, include the ones you want visible. In most cases you just need to add the username. If you're unsure double check `_includes/author-profile.html` to see how the URL is constructed.
+Author links are all optional, include the ones you want visible under the `author.links` array.
 
-To add social media links not included with the theme or customize the author sidebar further, read the full [layout documentation]({{ "/docs/layouts/#author-profile" | relative_url }}).
+| Name | Description |
+| --- | --- |
+| **label** | Link label (e.g. `"Twitter"`) |
+| **icon** | [Font Awesome icon](https://fontawesome.com/icons?d=gallery) classes (e.g. `"fab fa-fw fa-twitter-square"`) |
+| **url** | Link URL (e.g. `"https://twitter.com/mmistakes"`) |
+
+```yaml
+author:
+  name: "Your Name"
+  avatar: "/assets/images/bio-photo.jpg"
+  bio: "I am an amazing person."
+  location: "Somewhere"
+  links:
+    - label: "Made Mistakes"
+      icon: "fas fa-fw fa-link"
+      url: "https://mademistakes.com"
+    - label: "Twitter"
+      icon: "fab fa-fw fa-twitter-square"
+      url: "https://twitter.com/mmistakes"
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/mmistakes"
+    - label: "Instagram"
+      icon: "fab fa-fw fa-instagram"
+      url: "https://instagram.com/mmistakes"
+```
+
+To customize the author sidebar, read the full [layout documentation]({{ "/docs/layouts/#author-profile" | relative_url }}).
+
+## Site Footer
+
+Footer links can be added under the `footer.links` array.
+
+| Name | Description |
+| --- | --- |
+| **label** | Link label (e.g. `"Twitter"`) |
+| **icon** | [Font Awesome icon](https://fontawesome.com/icons?d=gallery) classes (e.g. `"fab fa-fw fa-twitter-square"`) |
+| **url** | Link URL (e.g. `"https://twitter.com/mmistakes"`) |
+
+```yaml
+footer:
+  links:
+    - label: "Twitter"
+      icon: "fab fa-fw fa-twitter-square"
+      url: "https://twitter.com/mmistakes"
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/mmistakes"
+    - label: "Instagram"
+      icon: "fab fa-fw fa-instagram"
+      url: "https://instagram.com/mmistakes"
+```
+
+**Note:** Twitter and Facebook footer links no longer automatically pull from `site.twitter.username` and `site.facebook.username`. This behavior has been deprecated in favor of the `footer.links` array above.
+{: .notice--danger}
+
+To change "Follow:" text that precedes footer links, edit the `follow_label` key in `_data/ui-text.yml`.
 
 ## Reading Files
 
@@ -836,21 +919,26 @@ timezone: America/New_York
 
 When hosting with GitHub Pages a small [set of gems](https://pages.github.com/versions/) have been whitelisted for use. The theme uses a few of them which can be found under `gems`. Additional settings and configurations are documented in the links below.
 
-| Plugin                             | Description                                                                               |
-| ---------------------------------- | ----------------------------------------------------------------------------------------- |
-| [jekyll-paginate][jekyll-paginate] | Pagination Generator for Jekyll.                                                          |
-| [jekyll-sitemap][jekyll-sitemap]   | Jekyll plugin to silently generate a sitemaps.org compliant sitemap for your Jekyll site. |
-| [jekyll-gist][jekyll-gist]         | Liquid tag for displaying GitHub Gists in Jekyll sites.                                   |
-| [jekyll-feed][jekyll-feed]         | A Jekyll plugin to generate an Atom (RSS-like) feed of your Jekyll posts.                 |
-| [jemoji][jemoji]                   | GitHub-flavored emoji plugin for Jekyll.                                                  |
+| Plugin | Description                                                                               |
+| --- | --- |
+| [jekyll-paginate][jekyll-paginate] | Pagination Generator for Jekyll. |
+| [jekyll-sitemap][jekyll-sitemap] | Jekyll plugin to silently generate a sitemaps.org compliant sitemap for your Jekyll site. |
+| [jekyll-gist][jekyll-gist] | Liquid tag for displaying GitHub Gists in Jekyll sites. |
+| [jekyll-feed][jekyll-feed] | A Jekyll plugin to generate an Atom (RSS-like) feed of your Jekyll posts. |
+| [jemoji][jemoji] | GitHub-flavored emoji plugin for Jekyll. |
+| [jekyll-include-cache][jekyll-include-cache] | Liquid tag that caches Liquid includes. |
 
 [jekyll-paginate]: https://github.com/jekyll/jekyll-paginate
 [jekyll-sitemap]: https://github.com/jekyll/jekyll-sitemap
 [jekyll-gist]: https://github.com/jekyll/jekyll-gist
 [jekyll-feed]: https://github.com/jekyll/jekyll-feed
 [jemoji]: https://github.com/jekyll/jemoji
+[jekyll-include-cache]: https://github.com/benbalter/jekyll-include-cache
 
 If you're hosting elsewhere then you don't really have to worry about what is whitelisted as you are free to include whatever [Jekyll plugins](https://jekyllrb.com/docs/plugins/) you desire.
+
+**Note:** The [jekyll-include-cache](https://github.com/benbalter/jekyll-include-cache) plugin needs to be installed in your `Gemfile` and added to the `plugins` array of `_config.yml`. Otherwise you'll throw `Unknown tag 'include_cached'` errors at build.
+{: .notice--warning}
 
 ## Archive Settings
 

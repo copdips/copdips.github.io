@@ -10,18 +10,13 @@
   @include clearfix;
   margin: 0 auto;
   max-width: 100%;
-  padding-left: 2em;
-  padding-right: 2em;
+  padding-left: 1em;
+  padding-right: 1em;
   font-family: $sans-serif;
   -webkit-animation: $intro-transition;
   animation: $intro-transition;
   -webkit-animation-delay: 0.3s;
   animation-delay: 0.3s;
-
-  @include breakpoint($large) {
-    padding-left: 1em;
-    padding-right: 1em;
-  }
 
   @include breakpoint($x-large) {
     max-width: $x-large;
@@ -34,11 +29,11 @@
 
     @include breakpoint($large) {
       float: right;
-      width: span(10 of 12);
+      width: calc(100% - #{$right-sidebar-width-narrow});
     }
 
     @include breakpoint($x-large) {
-      padding-left: gutter(0.5 of 12);
+      width: calc(100% - #{$right-sidebar-width});
     }
   }
 
@@ -340,7 +335,7 @@
     display: none;
   }
 
-  @include breakpoint(max-width($large - 1px)) {
+  @include breakpoint(max-width $large - 1px) {
     label {
       position: relative;
       display: inline-block;
@@ -446,7 +441,7 @@
     font-weight: bold;
   }
 
-  @include breakpoint(max-width($large - 1px)) {
+  @include breakpoint(max-width $large - 1px) {
     position: relative;
     max-height: 0;
     opacity: 0%;
@@ -460,7 +455,7 @@
   }
 }
 
-@include breakpoint(max-width($large - 1px)) {
+@include breakpoint(max-width $large - 1px) {
   .nav__list input:checked ~ .nav__items {
     -webkit-transition: 0.5s ease-in-out;
     transition: 0.5s ease-in-out;
