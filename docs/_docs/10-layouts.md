@@ -7,7 +7,7 @@ single_layout_gallery:
     alt: "single layout with header example"
   - image_path: /assets/images/mm-layout-single-meta.png
     alt: "single layout with comments and related posts"
-last_modified_at: 2018-03-20T15:59:52-04:00
+last_modified_at: 2018-11-13T09:29:44-05:00
 toc: true
 toc_label: "Included Layouts"
 toc_icon: "columns"
@@ -337,7 +337,7 @@ Feature blocks can be assigned and aligned to the `left`, `right`, or `center` w
 
 ## Search Page Layout
 
-A page with a search form. Add `layout: search` to the YAML Front Matter similar to [this example](https://github.com/mmistakes/minimal-mistakes/blob/master/docs/_pages/search.md) on the demo site.
+A page with a search form. Add `layout: search` to the YAML Front Matter similar to [this example](https://github.com/mmistakes/minimal-mistakes/blob/master/test/_pages/search.md) on the test site.
 
 ![search page layout example]({{ "/assets/images/search-layout-example.png" | relative_url }})
 
@@ -411,8 +411,9 @@ To overlay text on top of a header image you have a few more options:
 | **overlay_filter**       | Color/opacity to overlay on top of the header image eg: `0.5` or `rgba(255, 0, 0, 0.5)`. |
 | **show_overlay_excerpt** | Display excerpt in the overlay text | true |
 | **excerpt**              | Auto-generated page excerpt is added to the overlay text or can be overridden. | |
-| **cta_label**            | Call to action button text label. | `more_label` in UI Text data file |
-| **cta_url**              | Call to action button URL. | |
+| **actions**              | Call to action button links (`actions` array: `label` and `url`). More than one button link can be assigned. | |
+| **cta_label**            | Deprecated, use `actions` instead. Call to action button text label. | `more_label` in UI Text data file |
+| **cta_url**              | Deprecated, use `actions` instead. Call to action button URL. | |
 
 With this YAML Front Matter:
 
@@ -421,8 +422,9 @@ excerpt: "This post should display a **header with an overlay image**, if the th
 header:
   overlay_image: /assets/images/unsplash-image-1.jpg
   caption: "Photo credit: [**Unsplash**](https://unsplash.com)"
-  cta_label: "More Info"
-  cta_url: "https://unsplash.com"
+  actions:
+    - label: "More Info"
+      url: "https://unsplash.com"
 ```
 
 You'd get a header image overlaid with text and a call to action button like this:
@@ -449,8 +451,9 @@ header:
   overlay_image: /assets/images/unsplash-image-1.jpg
   overlay_filter: 0.5 # same as adding an opacity of 0.5 to a black background
   caption: "Photo credit: [**Unsplash**](https://unsplash.com)"
-  cta_label: "More Info"
-  cta_url: "https://unsplash.com"
+  actions:
+    - label: "Download"
+      url: "https://github.com"
 ```
 
 Or if you want to do more fancy things, go full rgba:
@@ -463,8 +466,23 @@ header:
   overlay_image: /assets/images/unsplash-image-1.jpg
   overlay_filter: rgba(255, 0, 0, 0.5)
   caption: "Photo credit: [**Unsplash**](https://unsplash.com)"
-  cta_label: "More Info"
-  cta_url: "https://unsplash.com"
+  actions:
+    - label: "Download"
+      url: "https://github.com"
+```
+
+Multiple call to action button links can be assigned like this:
+
+```yaml
+excerpt: "This post should display a **header with an overlay image**, if the theme supports it."
+header:
+  overlay_image: /assets/images/unsplash-image-1.jpg
+  caption: "Photo credit: [**Unsplash**](https://unsplash.com)"
+  actions:
+    - label: "Foo Button"
+      url: "#foo"
+    - label: "Bar Button"
+      url: "#bar"
 ```
 
 ### OpenGraph & Twitter Card Images
@@ -507,68 +525,36 @@ defaults:
 **Note:** To disable the author sidebar profile for a specific post or page, add `author_profile: false` to the YAML Front Matter instead.
 {: .notice--warning}
 
-The theme comes pre-built with a selection of links for the most common social media networks. These are all optional and can be [assigned in `_config.yml`]({{ "/docs/configuration/" | relative_url }}).
+To assign more author links, add to the `author.links` array  in [`_config.yml`]({{ "/docs/configuration/" | relative_url }}) link so. Any of [Font Awesome's icons](https://fontawesome.com/icons?d=gallery) are available for use.
 
-To add more links you'll need to crack open [`_includes/author-profile-custom-links.html`](https://github.com/mmistakes/minimal-mistakes/blob/master/_includes/author-profile-custom-links.html) and add the appropriate `<li>` markup shown below. 
+```yaml
+author:
+  name: "Your Name"
+  avatar: "/assets/images/bio-photo.jpg"
+  bio: "I am an amazing person."
+  location: "Somewhere"
+  links:
+    - label: "Made Mistakes"
+      icon: "fas fa-fw fa-link"
+      url: "https://mademistakes.com"
+    - label: "Twitter"
+      icon: "fab fa-fw fa-twitter-square"
+      url: "https://twitter.com/mmistakes"
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/mmistakes"
+    - label: "Instagram"
+      icon: "fab fa-fw fa-instagram"
+      url: "https://instagram.com/mmistakes"
+```
 
-**Please note:** Links added here will appear after the ones in [`_includes/author-profile.html`](https://github.com/mmistakes/minimal-mistakes/blob/master/_includes/author-profile.html). If you'd like to change the order of appearance you'll need to edit that file directly.
+**Note:** Depending on the icon and theme skin used, colors may not be used. Popular social networks like Twitter, Facebook, Instagram, Google+, etc. have the appropriate brand color set in CSS. To change or add missing colors edit [`_utilities.scss`](https://github.com/mmistakes/minimal-mistakes/blob/master/_sass/minimal-mistakes/_utilities.scss) in `<site root>/_sass/minimal-mistakes/`.
 {: .notice--info}
 
-#### Social network link example
-
-```html
-<li>
-  <a href="https://whatever-social-network.com/username">
-    <i class="fab fa-fw" aria-hidden="true"></i> Awesome Social Network
-  </a>
-</li>
-```
-
-To add a new link you'll need three things:
-
-1. Destination URL
-2. [Font Awesome icon](https://fontawesome.com/icons?d=gallery) (`fa-` class)
-3. Label for the link
-
-It's up to you if you want to wrap it in a `{% raw %}{% if %} ... {% endif %}{% endraw %}`conditional and add a variable to `_config.yml`. If you don't plan to change it then hard-coding the string is perfectly acceptable.
-
-Let's run through how you'd add a new link that points to a Reddit profile. Starting with the three things from above:
-
-1. `https://www.reddit.com/user/username`
-2. [`fa-reddit`](http://fontawesome.io/icon/reddit/)
-3. `Reddit`
-
-And plug them into the appropriate locations:
-
-```html
-<li>
-  <a href="[1]">
-    <i class="fab fa-fw [2]" aria-hidden="true"></i> [3]
-  </a>
-</li>
-```
-
-To end up with:
-
-```html
-<li>
-  <a href="https://www.reddit.com/user/username">
-    <i class="fab fa-fw fa-reddit" aria-hidden="true"></i> Reddit
-  </a>
-</li>
-```
-
-![Reddit link in author profile]({{ "/assets/images/mm-author-profile-reddit-gs.png" | relative_url }})
-
-To add a touch of color to the default black (`#000`) icon a few more steps are necessary.
-
-Start by copying [`_utilities.scss`](https://github.com/mmistakes/minimal-mistakes/blob/master/_sass/minimal-mistakes/_utilities.scss) `<site root>/_sass`. Open it up to the icon section (it's near the bottom) and nest a new class beneath `.social-icons` that matches the one used to declare the Font Awesome icon. In our case `.fa-reddit`.
-
-Simply add a `color` declaration and the corresponding hex code.
+For example, to color a Reddit icon, simply add a `color` declaration and the corresponding hex code like so:
 
 ```scss
 .social-icons {
-  
   .fa-reddit {
     color: #ff4500;
   }
@@ -576,12 +562,6 @@ Simply add a `color` declaration and the corresponding hex code.
 ``` 
 
 ![Reddit link in author profile with color]({{ "/assets/images/mm-author-profile-reddit-color.png" | relative_url }})
-
-**ProTip:** For bonus points you can add it as a Sass `$variable` that you set in [`_variables.scss`](https://github.com/mmistakes/minimal-mistakes/blob/master/_sass/minimal-mistakes/_variables.scss) like the other ["brand" colors](http://brandcolors.net/). You'll need to add this file to `/_sass/` as well if you're using the Ruby Gem version of the theme.
-{: .notice--info}
-
-**Please please please** don't submit [pull requests]({{ "/docs/contributing/" | relative_url }}) adding in support for "missing" social media links. I'm trying to keep things down to the minimum (hence the theme's name) and have no interest in merging such PRs :expressionless:.
-{: .notice--warning}
 
 ### Custom Sidebar Content
 
