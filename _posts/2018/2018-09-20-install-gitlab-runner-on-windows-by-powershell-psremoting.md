@@ -63,9 +63,13 @@ Copy-Item C:\temp\gitlab-runner-windows-amd64.exe D:\app\gitlab-runner
 Rename-Item D:\app\gitlab-runner\gitlab-runner-windows-amd64.exe gitlab-runner.exe
 
 # Install without any other params will install a windows service named gitlab-runner running under the built-in system account.
+Set-Location D:\app\gitlab-runner
+./gitlab-runner.exe install
+
 # If you need to bind a domain account to the gitlab runner service:
-# gitlab-runner install --user ENTER-YOUR-USERNAME --password ENTER-YOUR-PASSWORD
-D:\app\gitlab-runner\gitlab-runner.exe install
+# I encountered some issue when installing gitlab runner service with the full exe path : D:\app\gitlab-runner\gitlab-runner.exe install, so I firstly go to the gitlab-runner.exe folder, than run the exe directly from there.
+Set-Location D:\app\gitlab-runner
+./gitlab-runner install --user ENTER-YOUR-USERNAME --password ENTER-YOUR-PASSWORD
 
 D:\app\gitlab-runner\gitlab-runner.exe status
 ```
