@@ -2,6 +2,85 @@
 
 ### Enhancements
 
+- Add missing Vietnamese localized UI text strings. [#2097](https://github.com/mmistakes/minimal-mistakes/pull/2097)
+- Replace jQuery Smooth Scroll with Smooth Scroll + Gumshoe. [#2082](https://github.com/mmistakes/minimal-mistakes/pull/2082)
+- Add styling for [GFM task lists](https://help.github.com/en/articles/about-task-lists#creating-task-lists). [#2092](https://github.com/mmistakes/minimal-mistakes/issues/2092)
+- Update Google Universal Analytics to load async. [#2079](https://github.com/mmistakes/minimal-mistakes/pull/2079)
+- Remove Google+ social sharing button, comment provider, and author link configs from theme.
+- Add missing Chinese text strings. [#2072](https://github.com/mmistakes/minimal-mistakes/pull/2072)
+
+### Bug Fixes
+
+- Fix typo in French `results_found` text string. [#2096](https://github.com/mmistakes/minimal-mistakes/pull/2096)
+- Fix figures inside of list elements. [#2094](https://github.com/mmistakes/minimal-mistakes/pull/2094)
+- Remove Font Awesome `data-search-pseudo-elements` attribute as it degrades smooth scroll performance. [#2075](https://github.com/mmistakes/minimal-mistakes/issues/2075#issuecomment-472437014)
+- Fix footnote links incompatibility with smooth scroll plugin. [#2075](https://github.com/mmistakes/minimal-mistakes/issues/2075)
+- Loosen Bundler dependency in ruby gem.
+
+## [4.15.2](https://github.com/mmistakes/minimal-mistakes/releases/tag/4.15.2)
+
+### Enhancements
+
+- Close search overlay with <kbd>Esc</kbd>. [#2055](https://github.com/mmistakes/minimal-mistakes/pull/2055)
+- Update Swedish localized UI text strings. [#2056](https://github.com/mmistakes/minimal-mistakes/pull/2056)
+- Update Font Awesome to 5.7.1 and add `data-search-pseudo-elements` attribute. [#2053](https://github.com/mmistakes/minimal-mistakes/pull/2053)
+- Add Malayalam localized UI text strings. [#2037](https://github.com/mmistakes/minimal-mistakes/pull/2037)
+
+### Bug Fixes
+
+- Fix table of contents errors with non-English chracters in the headings. [#2042](https://github.com/mmistakes/minimal-mistakes/pull/2042)
+- Fix `site.logo` false positives. [#2026](https://github.com/mmistakes/minimal-mistakes/pull/2026#issuecomment-455770730)
+- Add empty `alt` attribute to `site.logo` image. [#2035](https://github.com/mmistakes/minimal-mistakes/pull/2035)
+
+## [4.15.1](https://github.com/mmistakes/minimal-mistakes/releases/tag/4.15.1)
+
+### Bug Fixes
+
+- Fix empty `<img>` when `site_logo` is not assigned. [#2026](https://github.com/mmistakes/minimal-mistakes/pull/2026#issuecomment-454809876)
+
+## [4.15.0](https://github.com/mmistakes/minimal-mistakes/releases/tag/4.15.0)
+
+### Enhancements
+
+- Add logo and title customization to the masthead. [#2026](https://github.com/mmistakes/minimal-mistakes/pull/2026)
+- Add support to customize `issue-term` for utterances comment provider. [#2022](https://github.com/mmistakes/minimal-mistakes/pull/2022)
+- Allow custom canonical url on a page-by-page basis. [#2021](https://github.com/mmistakes/minimal-mistakes/pull/2021)
+- Update table of contents navigation based on scroll position to indicate which link is currently active in the viewport. [#2020](https://github.com/mmistakes/minimal-mistakes/pull/2020)
+- Clicking table of contents links changes URL has fragment. [#2019](https://github.com/mmistakes/minimal-mistakes/pull/2019) [#2023](https://github.com/mmistakes/minimal-mistakes/pull/2023)
+
+## [4.14.2](https://github.com/mmistakes/minimal-mistakes/releases/tag/4.14.2)
+
+### Enhancements
+
+- Improve accessibility by adding label text to search button toggle. [#2014](https://github.com/mmistakes/minimal-mistakes/pull/2014)
+- Update Lunr to 2.3.5. [#2010](https://github.com/mmistakes/minimal-mistakes/pull/2010)
+- Shorten Internet Explorer conditional statement in `_includes/head.html`. [#2006](https://github.com/mmistakes/minimal-mistakes/pull/2006)
+- Add Persian localized UI text strings. [#2004](https://github.com/mmistakes/minimal-mistakes/pull/2004)
+- Remove unused JavaScript variables from Staticman comment script. [#1996](https://github.com/mmistakes/minimal-mistakes/pull/1996)
+- Update Font Awesome to 5.6.0. [#1995](https://github.com/mmistakes/minimal-mistakes/pull/1995)
+- Change remaining schema.org markup to `https`. [#1978](https://github.com/mmistakes/minimal-mistakes/pull/1978)
+- Update NPM dependencies.
+
+### Bug Fixes
+
+- Fix wide tables that overflow parent container. [#2008](https://github.com/mmistakes/minimal-mistakes/issues/2008)
+- Fix Spanish `comments_label` and `comments_title` UI text strings. [#1997](https://github.com/mmistakes/minimal-mistakes/pull/1997)
+- Allow sidebar navigation with custom sidebar content. [#1986](https://github.com/mmistakes/minimal-mistakes/issues/1986)
+- Fix Google Custom Search JavaScript error when not using Instant Search. [#1983](https://github.com/mmistakes/minimal-mistakes/pull/1983)
+
+## [4.14.1](https://github.com/mmistakes/minimal-mistakes/releases/tag/4.14.1)
+
+### Bug Fixes
+
+- Fix closed navicon on hover.
+
+## [4.14.0](https://github.com/mmistakes/minimal-mistakes/releases/tag/4.14.0)
+
+### Enhancements
+
+- Change schema.org markup to `https`. [#1969](https://github.com/mmistakes/minimal-mistakes/pull/1969)
+- Add Google Drive as video provider. [#1967](https://github.com/mmistakes/minimal-mistakes/pull/1967)
+- Match `:focus` color to skin.
 - Add support for [utterances](https://utteranc.es/) comments. [#1909](https://github.com/mmistakes/minimal-mistakes/issues/1909)
 - Use privacy aware embed options for YouTube and Vimeo in [responsive video helper](https://mmistakes.github.io/minimal-mistakes/docs/helpers/#responsive-video-embed). [#1964](https://github.com/mmistakes/minimal-mistakes/pull/1964)
 - Add `rel="nofollow noopener noreferrer"` to author profile links. [#1924](https://github.com/mmistakes/minimal-mistakes/pull/1924)
@@ -20,6 +99,8 @@
 
 ### Bug Fixes
 
+- Prevent current post from showing in the related posts section. [#1976](https://github.com/mmistakes/minimal-mistakes/pull/1976)
+- Fix dark skins syntax highlighting colors. [#1973](https://github.com/mmistakes/minimal-mistakes/issues/1973)
 - Remove unnecessary closing bracket in analytics documentation. [#1915](https://github.com/mmistakes/minimal-mistakes/pull/1915)
 - Fix breadcrumb navigation alignment. [#1917](https://github.com/mmistakes/minimal-mistakes/issues/1917)
 - Fix Algolia search link positioning. [#1904](https://github.com/mmistakes/minimal-mistakes/pull/1904)
