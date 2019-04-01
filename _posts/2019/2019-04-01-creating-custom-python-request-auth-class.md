@@ -20,7 +20,7 @@ gallery:
 
 > When you need to use a complicated, or a non-standard API authentication method,
 > or your dev and prd environments don't use the same API authentication method,
-> it might better a create a Python requests auth method to reduce your work.
+> it might be better to create a Python requests auth method to reduce your work.
 
 # Create the class MyAuth
 
