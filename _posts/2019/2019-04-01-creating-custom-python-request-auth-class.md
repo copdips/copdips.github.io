@@ -83,7 +83,7 @@ requests.get(url, headers=headers)
 
 ## With the class MyAuth
 
-We just need pass it to the param auth:
+We just need pass it to the param `auth`:
 
 ```python
 import requests
@@ -102,7 +102,7 @@ You may not find the power of the MyAuth from te above examples. True.
 But suppose if your **dev API uses HTTPBasicAuth**,
 and your **prd API uses a special key ("token") in the request's headers**.
 And suppose you have many APIs to target in this manner.
-What would you do without the class MyAuth ? With `if..else..` block everywhere ?
+What would you do without the class MyAuth ? Adding `if..else..` block everywhere ?
 
 With the class MyAuth, we just need to add only once `if..else..` block in the `__call__()` method.
 
