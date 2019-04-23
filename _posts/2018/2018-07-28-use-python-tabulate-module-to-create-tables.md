@@ -29,11 +29,11 @@ gallery:
 
 # How to use tabulate
 
-[The official doc](https://bitbucket.org/astanin/python-tabulate) has already included nearly everything
+[The official doc](https://bitbucket.org/astanin/python-tabulate) has already included nearly everything.
 
 # How to print in markdown, rst, wiki, html formats
 
-For rst, wiki, html formats, the official doc has already clealy given it, but for markdown, it's not mentioned. After the test, the `"pipe"` format from [PHP Markdown Extra](https://michelf.ca/projects/php-markdown/extra/#table) is comptiable to markdown.
+For rst, wiki, html formats, the official doc has already clearly given it, but for markdown, it's not mentioned. After the test, the `"pipe"` format from [PHP Markdown Extra](https://michelf.ca/projects/php-markdown/extra/#table) is compatible to markdown.
 
 | file         | tabulate format (tablefmt)   |
 |:-------------|:-----------------------------|
@@ -42,18 +42,25 @@ For rst, wiki, html formats, the official doc has already clealy given it, but f
 | mediawiki    | "mediawiki"                  |
 | html         | "html"                       |
 
+Update 2019-04-23: When I tested the lastest tabulate version 0.8.3, it added support also `github` format.
+{: .notice--info}
+
 Html code can be injected into Markdown file.
 {: .notice--info}
 
 # Visualize all the formats
 
 ```python
-from tabulate import tabulate
+from tabulate import _table_formats, tabulate
 
-format_list = ['plain', 'simple', 'grid', 'fancy_grid', 'pipe', 'orgtbl', 'jira', 'presto', 'psql', 'rst', 'mediawiki', 'moinmoin', 'youtrack', 'html', 'latex', 'latex_raw', 'latex_booktabs']
+
+format_list = list(_table_formats.keys())
+# current format list in tabulate version 0.8.3:
+# ['simple', 'plain', 'grid', 'fancy_grid', 'github', 'pipe', 'orgtbl', 'jira', 'presto', 'psql', 'rst', 'mediawiki', 'moinmoin', 'youtrack', 'html', 'latex', 'latex_raw', 'latex_booktabs', 'tsv', 'textile']
+
 
 # Each element in the table list is a row in the generated table
-table = [["spam",42],["eggs",451],["bacon",0]]
+table = [["spam",42], ["eggs", 451], ["bacon", 0]]
 headers = ["item", "qty"]
 
 for f in format_list:
