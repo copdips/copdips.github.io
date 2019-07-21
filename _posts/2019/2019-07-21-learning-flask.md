@@ -27,11 +27,12 @@ gallery:
 
 Flask provides by default [some basic converters](https://flask.palletsprojects.com/en/master/quickstart/#variable-rules):
 
-- string (this is the default one and the string will be converted to an unicode string)
+- string (this is the default one and the string will be converted to an unicode string) (regex: '[^/]+')
 - int
 - float
-- path
+- path (regex: '[^/].*?')
 - uuid
+- any (regex: '[^/]+') (same as string)
 
 An example by converting the input string to an uuid:
 
@@ -85,3 +86,24 @@ Don't use this setting in a production environment.
   > calling `/api/jobs` will [be redirected to](https://flask.palletsprojects.com/en/master/quickstart/#unique-urls-redirection-behavior) `/api/jobs/`.
 - If the endpoint is to return a single element, **do not add** the trailing slash (`/api/job/<job_id>`).
   > calling `/api/job/<job_id>/` will throw a **404 Not Found** error.
+
+## Response
+
+We can sent the response by `jsonify()` function which creates a Flask Response object.
+
+```python
+from flask import jsonify
+
+@app.route('/api/hello/<name>')
+def hello(name):
+    response = jsonify({'Hello': name})
+    return response
+```
+
+Otherwise, Flask can try to parse some objects into Response object with following rules:
+
+- `str`: The data gets encoded as UTF-8 and used as the HTTP response body.
+- `bytes/bytesarray`: Used as the body.
+- `A (response, status, headers) tuple`: Where response can be a Response object or one of the previous types. **status is an integer value** that overwrites the response status, and headers is a mapping that extends the response headers.
+- `A (response, status) tuple`: Like the previous one, but without specific headers
+- `A (response, headers) tuple`: Like the preceding one, but with just extra headers
