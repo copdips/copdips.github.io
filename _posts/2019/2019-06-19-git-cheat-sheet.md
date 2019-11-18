@@ -20,6 +20,28 @@ gallery:
 > This is not a complete Git cheat sheet for everyone, this is just a personal cheat sheet for some often forgotten git commands.
 
 
+# Alias
+
+User level alias
+
+Edit `~/.gitconfig`
+
+```ini
+[alias]
+        st = status
+        br = branch
+        co = checkout
+        cm = checkout master
+        unstage = reset HEAD
+        ci = commit
+        amend = commit --amend -C HEAD
+        sh = show
+        df = diff
+        last = log -1 HEAD
+        lga = log --graph --decorate --oneline --all
+        ll = log --graph --all --pretty=format:'%C(auto)%h%Creset <%an>: %s %Creset%C(auto)%d%Creset %C(bold black)(%cr)%Creset' --abbrev-commit --date=relative
+```
+
 # Undo
 
 
