@@ -93,14 +93,14 @@ git reset head~
 git reset head~1
 
 # Undo last 2 commits to working directory
-git reset head~2
+git reset HEAD~2
 
 # Undo till a special commit to working directory,
 # the special commit and every commits before are still committed.
 git reset <commit number>
 ```
 
-`git reset head` will do nothing, as the head is already at the last commit.
+`git reset HEAD` will do nothing, as the HEAD is already at the last commit.
 {: .notice--info}
 
 
@@ -112,23 +112,23 @@ git reset <commit number>
 
 ```bash
 # Undo last commit to staging area
-git reset --soft head~
+git reset --soft HEAD~
 # same as to
-git reset --soft head~1
+git reset --soft HEAD~1
 
 # Undo the last 2nd commit to staging area,
 # and all the after (the last commit in this case) to working directory
-git reset --soft head~2
+git reset --soft HEAD~2
 
 # Undo till a special commit to staging area,
 # the special commit and every commits before are still committed.
 git reset --soft <commit number>
 ```
 
-`git reset head` will do nothing, as the head is already at the last commit.
+`git reset HEAD` will do nothing, as the HEAD is already at the last commit.
 {: .notice--info}
 
-`git reset --hard head~` will undo the last commit (head~) and also delete the changes from the working directory. This is like doing `git reset head~ ; git checkout .` .
+`git reset --hard HEAD~` will undo the last commit (HEAD~) and also delete the changes from the working directory. This is like doing `git reset HEAD~ ; git checkout .` .
 If you want to rollback the `reset --hard`, and you have the discarded commit number, you can rollback by `git cherry-pick <commit number>`
 {: .notice--warning}
 
