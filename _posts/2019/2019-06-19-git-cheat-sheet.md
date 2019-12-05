@@ -88,9 +88,9 @@ Dont use `git rm --cached <filename>` to unstage, it works only for newly create
 
 ```bash
 # Undo last commit to working directory
-git reset head~
+git reset HEAD~
 # same as to
-git reset head~1
+git reset HEAD~1
 
 # Undo last 2 commits to working directory
 git reset HEAD~2
