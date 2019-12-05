@@ -132,6 +132,16 @@ git reset --soft <commit number>
 If you want to rollback the `reset --hard`, and you have the discarded commit number, you can rollback by `git cherry-pick <commit number>`
 {: .notice--warning}
 
+# Disable host key checking
+
+Sometimes during CICD, we need to use git to do something, if the remote repository is accessed by SSH, the first time when you use git (git clone for example), you need to accept the remote host key. This might be a problem for CICD as it cannot type `Y` for you as you do in an interactive session. To let git to disable the host key checking or precisely accept automatically the remote host key, you need to add the following line in git config:
+
+```bash
+> git config --global core.sshcommand 'ssh -i [YouPrivateKeyPath] -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -F /dev/null'
+```
+
+You may need to use `git config --system` to set the config at system level.
+
 # GUI
 
 GitForWindows ships with a GUI tool, very cool.
