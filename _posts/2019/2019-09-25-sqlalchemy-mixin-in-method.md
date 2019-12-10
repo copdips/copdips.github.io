@@ -16,8 +16,11 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
 
+Sorry, wrong code given, I should remove it.
+
+<s>
+{% include toc title="Table of content" %}
 If I'm not wrong, the [SQLAlchemy official doc](https://docs.sqlalchemy.org/en/latest/orm/extensions/declarative/mixins.html) provides some examples to explain how to share a set of common columns, some common table options, or other mapped properties, across many classes. But I cannot find how to share common methods (e.g. your customized to_dict() method). This post will just show you a POC to achieve that.
 
 ## Share the common method to_dict() across two SQLAlchemy models
@@ -58,3 +61,4 @@ class ModelB(CommonMethodsMixin, Base):
     modelb_id = Column(Integer, primary_key=True)
     name = Column(String)
 ```
+</s>
