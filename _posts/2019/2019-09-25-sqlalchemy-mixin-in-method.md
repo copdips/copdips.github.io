@@ -22,6 +22,11 @@ If I'm not wrong, the [SQLAlchemy official doc](https://docs.sqlalchemy.org/en/l
 
 ## Share the common method to_dict() across two SQLAlchemy models
 
+The code below is not prod ready, **it has still many drawbacks**.
+For example, the rows returned by the query can use the `to_dict()` method but a new object created from the model cannot use the `to_dict()`. It will throw an error saying that the mocked object is not iterable. I think I should take a look at how does the [sqlalchemy-mixin](https://github.com/absent1706/sqlalchemy-mixins) module work.
+{: .notice--warning}
+
+
 ```python
 from unittest.mock import Mock
 
@@ -32,23 +37,24 @@ Base = declarative_base()
 
 
 class CommonMethodsMixin(object):
-    def __init__(self):
-        self.__table__ = Mock("mocked_table")
+    def __init__(cls, **kwargs):
+        cls.__table__ = Mock("mocked_table")
+        super(CommonMethodsMixin, cls).__init__(**kwargs)
 
-    def to_dict(self):
-        return {c.name: str(getattr(self, c.name)) for c in self.__table__.columns}
+    def to_dict(cls):
+        return {c.name: str(getattr(cls, c.name)) for c in cls.__table__.columns}
 
 
 class ModelA(CommonMethodsMixin, Base):
     __tablename__ = "model_a"
 
-    id = Column(Integer, primary_key=True)
+    mdoela_id = Column(Integer, primary_key=True)
     name = Column(String)
 
 
 class ModelB(CommonMethodsMixin, Base):
     __tablename__ = "model_b"
 
-    id = Column(Integer, primary_key=True)
+    modelb_id = Column(Integer, primary_key=True)
     name = Column(String)
 ```
