@@ -1,6 +1,6 @@
 ---
 title: "SQLAlchemy mixin in method"
-last_modified_at:
+last_modified_at: "2019-12-10T23:41:09"
 excerpt: "Share common methods across SQLAlchemy db model classes by using mixin."
 tags:
   - python
