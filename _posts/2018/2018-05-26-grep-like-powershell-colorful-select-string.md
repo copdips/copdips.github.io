@@ -22,6 +22,8 @@ gallery:
 
 Update 2019-12-28: It's very exciting to see that **since [Powershell 7](https://github.com/PowerShell/PowerShell/pull/8963), the Select-String has highlighting (internal name: emphasis) by default**. It uses similar way (index, length) to find and highlight the matches. The emphasis uses negative colors based on your PowerShell background and text colors. To [disable the emphasis](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/select-string?view=powershell-7), use the `-NoEmphasis` switch. **So I highly recommend everyone to switch to Powershell 7 ([RC is supported by Microsoft](https://devblogs.microsoft.com/powershell/announcing-the-powershell-7-0-release-candidate/))**, it has also many other new powerful features.
 
+BTW, in Powershell 7, Select-String `-AllMatches` is set as $false by default. I think it would be nice to have an inverse switch -NoAllMatches just like -NoEmphasis, and let -AllMatches to be $true by default.
+
 The original post before the Emphasis has been introduced in Powershell 7:
 
 > [Select-String](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/select-string?view=powershell-6) in Powershell is a very powerful cmdlet to search a string or a pattern in input or files. It's very much like the famous command-line [grep](https://www.gnu.org/savannah-checkouts/gnu/grep/manual/grep.html) in Unix. But from my personal point of view, it's a little bit pity that Select-String doesn't highlight the matching patterns, so I will show you in this post how to make it possible (more or less) with Select-ColorString.
