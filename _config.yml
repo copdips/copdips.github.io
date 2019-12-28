@@ -293,7 +293,7 @@ defaults:
       layout: single
       author_profile: true
       read_time: true
-      hit_count: true
+      hit_count: false
       comments: true
       share: true
       related: true
