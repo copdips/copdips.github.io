@@ -1,4 +1,5 @@
 ---
+last_modified_at: 2019-12-28 14:06:43
 title: "Git Cheat Sheet"
 excerpt: "Some personal often forgotten git commands."
 tags:
@@ -20,7 +21,7 @@ gallery:
 > This is not a complete Git cheat sheet for everyone, this is just a personal cheat sheet for some often forgotten git commands.
 
 
-# Alias
+## Alias
 
 User level alias
 
@@ -42,10 +43,10 @@ Edit `~/.gitconfig`
         ll = log --graph --all --pretty=format:'%C(auto)%h%Creset <%an>: %s %Creset%C(auto)%d%Creset %C(bold black)(%cr)%Creset' --abbrev-commit --date=relative
 ```
 
-# Undo
+## Undo
 
 
-## Discard changes in working directory
+### Discard changes in working directory
 
 ```bash
 # discard changes to a file in working directory
@@ -61,7 +62,7 @@ Untracked files cannot be discarded by checkout.
 {: .notice--info}
 
 
-## Unstage from staging area
+### Unstage from staging area
 
 [StackOverflow: How do I undo git add before commit?](https://stackoverflow.com/questions/348170/how-do-i-undo-git-add-before-commit)
 
@@ -80,7 +81,7 @@ Dont use `git rm --cached <filename>` to unstage, it works only for newly create
 {: .notice--warning}
 
 
-## Undo commit to working directory
+### Undo commit to working directory
 
 [StackOverflow: How do I undo the most recent local commits in Git?](https://stackoverflow.com/questions/927358/how-do-i-undo-the-most-recent-local-commits-in-git)
 
@@ -104,7 +105,7 @@ git reset <commit number>
 {: .notice--info}
 
 
-## Undo commit to staging area
+### Undo commit to staging area
 
 [StackOverflow: How do I undo the most recent local commits in Git?](https://stackoverflow.com/questions/927358/how-do-i-undo-the-most-recent-local-commits-in-git)
 
@@ -132,7 +133,7 @@ git reset --soft <commit number>
 If you want to rollback the `reset --hard`, and you have the discarded commit number, you can rollback by `git cherry-pick <commit number>`
 {: .notice--warning}
 
-# Disable host key checking
+## Disable host key checking
 
 Sometimes during CICD, we need to use git to do something, if the remote repository is accessed by SSH, the first time when you use git (git clone for example), you need to accept the remote host key. This might be a problem for CICD as it cannot type `Y` for you as you do in an interactive session. To let git to disable the host key checking or precisely accept automatically the remote host key, you need to add the following line in git config:
 
@@ -142,7 +143,24 @@ Sometimes during CICD, we need to use git to do something, if the remote reposit
 
 You may need to use `git config --system` to set the config at system level.
 
-# GUI
+## Proxy
+
+Usually, in an enterprise environment, we need to use a proxy to connect to the Internet resources.
+And from Powershell, we can ask Powershell to [inherit the IE proxy settings](https://copdips.com/2018/05/setting-up-powershell-gallery-and-nuget-gallery-for-powershell.html#configure-proxy-in-powershell).
+
+With this proxy setting in Powershell, we should be able to use `git clone` to connect to the external www.github.com or to the internally hosted for example [github.your_enterprise_local_domain](github.your_enterprise_local_domain).
+
+But trust me, some enterprises' proxy settings (often for those who use a [.pac](https://en.wikipedia.org/wiki/Proxy_auto-config) file) are so complicated that Powershell cannot use the proxy the same way as IE.
+
+In such case, fortunately, git has its own proxy setting. I think the [official doc](https://git-scm.com/docs/git-config) doesn't explain very well how to set the proxy. But this [gist](https://gist.github.com/evantoli/f8c23a37eb3558ab8765) gives some good examples.
+
+So, normally, you just need to set this config to ask git to use the `$internet_proxy` only for the url github.com, and all the other urls, git won't use the proxy.
+
+```bash
+git config --global http.https://github.com.proxy $internet_proxy
+```
+
+## GUI
 
 GitForWindows ships with a GUI tool, very cool.
 
