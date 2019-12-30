@@ -1,4 +1,5 @@
 ---
+last_modified_at: 2019-12-30 17:31:08
 title: "Install Python on Windows with Powershell without administrator privileges"
 excerpt: "To fast deploy Python on Windows OS and without administrator privileges, we can use Powershell Install-Package to archive it."
 tags:
@@ -22,7 +23,13 @@ gallery:
 
 > As a Windows DevOps, I often use Powershell and Python, Powershell is installed by Windows out of box, but this is not for Python. And for my working environment, I don't have the administrator privileges on some servers. I will show you in this post how to rapidly deploy Python on Windows as a standard user by using Powershell with Nuget.
 
-# Find Python packages
+## Update 2019-12-30 Installing Python by Scoop
+
+Installing Python on Windows by [Scoop](https://github.com/lukesampson/scoop) is the simplest way so far if you have Internet access.
+
+To switch between different Python versions, please check this [doc](https://github.com/lukesampson/scoop/wiki/Switching-Ruby-and-Python-Versions).
+
+## Finding Python packages
 
 If you cannot use Find-Package to search pacakges in Nuget repository, please check my post on [Setting Up Nuget for Powershell](https://copdips.com/2018/05/setting-up-powershell-gallery-and-nuget-gallery-for-powershell.html#set-up-nuget-for-powershell).
 
@@ -54,7 +61,7 @@ PythonSelect                   1.0.0            PSGallery        Select a Python
 PythonConverter.dll            1.0.0            Nuget            Package description
 ```
 
-# Install Python
+## Installing Python
 
 ```powershell
 # To install Python 3
@@ -68,7 +75,7 @@ PythonConverter.dll            1.0.0            Nuget            Package descrip
 Current `Find-Package python* -AllVersion` gives the lastest python version is `v3.7.0`, but this version doesn't work, the last worked Nuget python version is `v3.6.6`
 {: .notice--warning}
 
-# Add Python to user path
+## Adding Python to user path
 
 I will show you the way to add Python3 into the user PATH, it will be the same way for Python2.
 I use the user PATH because I'm not admin on the Windows server, I cannot modify the system PATH.
@@ -106,7 +113,7 @@ d-----       2018-06-26     00:15                Tools
 > [System.Environment]::SetEnvironmentVariable('path', $path, 'user')
 ```
 
-# Reinstall pip
+## Reinstalling pip
 
 The default pip3.exe and pip2.exe have some strange behavior that just don't work :
 
@@ -166,7 +173,7 @@ Mode                LastWriteTime         Length Name
 The pip version has been jumped from v10 to [`v18`](https://pip.pypa.io/en/stable/news/#id1) directly, because PyPA switches the software versioning to [`CalVer`](https://calver.org/)
 {: .notice--info}
 
-# Configure pip for PyPI
+## Configuring pip for PyPI
 
 If you're in enterprise environment, you may probably dont have access to the public Python packages repository https://pypi.org/, and in this case, your enterprise should have a local Artifactory which mirrors the public https://pypi.org/. So you need to add your enterprise Artifactory PyPI URL to you Python pip conf.
 
