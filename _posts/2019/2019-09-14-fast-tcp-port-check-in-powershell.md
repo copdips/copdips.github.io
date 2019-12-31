@@ -1,6 +1,7 @@
 ---
+last_modified_at: 2019-12-31 22:49:18
 title: "A fast way to check TCP port in Powershell"
-excerpt: "Test-NetConnect is too slow if the remote port is not opened due to its timeout setting. Use System.Net.Sockets.TcpClient instead."
+excerpt: "Test-NetConnection is too slow if the remote port is not opened due to its timeout setting. Use System.Net.Sockets.TcpClient instead."
 tags:
   - powershell
   - network
@@ -18,9 +19,12 @@ gallery:
 
 {% include toc title="Table of content" %}
 
-The [Test-NetConnect](https://docs.microsoft.com/en-us/powershell/module/nettcpip/test-netconnection) cmdlet is great and verbose but too slow if the remote port to check is not opened. This is due to its timeout setting and cannot be modified. In this port, I will show you a custom function that leverages the power of  [System.Net.Sockets.TcpClient](https://docs.microsoft.com/dotnet/api/system.net.sockets.tcpclient) to accelerate the port test.
+The [Test-NetConnection](https://docs.microsoft.com/en-us/powershell/module/nettcpip/test-netconnection) cmdlet is great and verbose but too slow if the remote port to check is not opened. This is due to its timeout setting and cannot be modified. In this port, I will show you a custom function that leverages the power of  [System.Net.Sockets.TcpClient](https://docs.microsoft.com/dotnet/api/system.net.sockets.tcpclient) to accelerate the port test.
 
-## Test-NetConnect is slow if the port is not opened
+**Update 2019-12-31**: I didn't mention `Test-Connection` previously because although it has the parameter `-TimeoutSeconds`, its output only has `True` or `False`. What a pity. But things are going to be changed, as per this [github issue](https://github.com/PowerShell/PowerShell/issues/11440), [@jackdcasey](https://github.com/jackdcasey) is preparing a pull request to make Test-Connection's output verbose enough.
+{: .notice--info}
+
+## Test-NetConnection is slow if the port is not opened
 
 If the port is opened, it's OK.
 
