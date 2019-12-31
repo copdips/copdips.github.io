@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2019-12-28 15:09:33
+last_modified_at: 2019-12-31 22:24:25
 title: "Select-ColorString : A Unix's grep-like Powershell Cmdlet Based On Select-String With Color"
 excerpt: "Select-String with color, make Select-String of Powershell to highlight the search pattern like grep in Unix."
 tags:
@@ -25,6 +25,8 @@ gallery:
 Update 2019-12-28: It's very exciting to see that **since [Powershell 7](https://github.com/PowerShell/PowerShell/pull/8963), the Select-String has highlighting (internal name: emphasis) by default**. It uses similar way (index, length) to find and highlight the matches. The emphasis uses negative colors based on your PowerShell background and text colors. To [disable the emphasis](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/select-string?view=powershell-7), use the `-NoEmphasis` switch. **So I highly recommend everyone to switch to Powershell 7 ([RC is supported by Microsoft](https://devblogs.microsoft.com/powershell/announcing-the-powershell-7-0-release-candidate/))**, it has also many other new powerful features.
 
 BTW, in Powershell 7, Select-String `-AllMatches` is set as $false by default. I think it would be nice to have an inverse switch -NoAllMatches just like -NoEmphasis, and let -AllMatches to be $true by default.
+
+**Update 2019-12-31**: I just found [a workaround here](https://github.com/PowerShell/PowerShell/issues/11447#issuecomment-569854982), by specifying `$PSDefaultParameterValues['Select-String:AllMatches'] = $true` in the Profile.ps1. I don't know if you have the same feeling as the mine, this feature is killing, it will help me for many other things :)
 
 Powershell 7 Select-String default highlighting demo:
 
