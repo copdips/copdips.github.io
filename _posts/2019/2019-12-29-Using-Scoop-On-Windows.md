@@ -1,4 +1,5 @@
 ---
+last_modified_at: 2020-01-10 21:51:23
 title: "Using Scoop On Windows"
 excerpt: "Some tips to use Scoop."
 tags:
@@ -39,3 +40,10 @@ scoop config '7ZIPEXTRACT_USE_EXTERNAL' $true
 This tips is not documented yet in the [Scoop Wiki](https://github.com/lukesampson/scoop/wiki).
 
 BTW: Maybe coping manually the 7Zip files to `$env:SCOOP\apps\7zip` will work too, but I haven't tested yet.
+
+# Scoop TLS/SSL support
+
+Scoop uses following methods to supports different TLS/SSL versions.
+https://github.com/lukesampson/scoop/issues/2040#issuecomment-368298352
+
+We can reuse elsewhere.
