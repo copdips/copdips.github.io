@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2020-01-10 21:51:23
+last_modified_at: 2020-01-11 11:47:42
 title: "Using Scoop On Windows"
 excerpt: "Some tips to use Scoop."
 tags:
@@ -41,9 +41,23 @@ This tips is not documented yet in the [Scoop Wiki](https://github.com/lukesamps
 
 BTW: Maybe coping manually the 7Zip files to `$env:SCOOP\apps\7zip` will work too, but I haven't tested yet.
 
-# Scoop TLS/SSL support
+## Scoop TLS/SSL support
 
 Scoop uses following methods to supports different TLS/SSL versions.
 https://github.com/lukesampson/scoop/issues/2040#issuecomment-368298352
 
 We can reuse elsewhere.
+
+## Scoop aria2 skip certificate check
+
+To use aria2 within Scoop to download packages in multithreading:
+
+```powershell
+scoop config aria2-enabled true
+```
+
+But aria2 by default checks the certificate, to skip the check, use [aria2-options](https://github.com/lukesampson/scoop/pull/3780):
+
+```powershell
+scoop config aria2-options @('--check-certificate=false')
+```
