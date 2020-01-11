@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2020-01-11 11:47:42
+last_modified_at: 2020-01-11 21:45:02
 title: "Using Scoop On Windows"
 excerpt: "Some tips to use Scoop."
 tags:
@@ -43,10 +43,72 @@ BTW: Maybe coping manually the 7Zip files to `$env:SCOOP\apps\7zip` will work to
 
 ## Scoop TLS/SSL support
 
-Scoop uses following methods to supports different TLS/SSL versions.
-https://github.com/lukesampson/scoop/issues/2040#issuecomment-368298352
+Scoop uses following methods to support different TLS/SSL versions:
 
-We can reuse elsewhere.
+Previously:
+
+```powershell
+# https://github.com/lukesampson/scoop/issues/2040#issuecomment-368298352
+
+function set_https_protocols($protocols) {
+    try {
+        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType] $protocols
+    } catch {
+        [System.Net.ServicePointManager]::SecurityProtocol = "Tls,Tls11,Tls12"
+    }
+}
+
+function use_any_https_protocol() {
+    $original = "$([System.Net.ServicePointManager]::SecurityProtocol)"
+    $available = [string]::join(', ', [Enum]::GetNames([System.Net.SecurityProtocolType]))
+
+    # use whatever protocols are available that the server supports
+    set_https_protocols $available
+
+    return $original
+}
+
+function do_dl($url, $to, $cookies) {
+    $original_protocols = use_any_https_protocol
+    $progress = [console]::isoutputredirected -eq $false
+
+    try {
+        $url = handle_special_urls $url
+        dl $url $to $cookies $progress
+    } catch {
+        $e = $_.exception
+        if($e.innerexception) { $e = $e.innerexception }
+        throw $e
+    } finally {
+        set_https_protocols $original_protocols
+    }
+}
+```
+
+Now:
+
+```powershell
+# https://github.com/lukesampson/scoop/blob/48bb96a3d80ed722317a88afbae126c40ee205e8/lib/core.ps1#L1
+
+function Optimize-SecurityProtocol {
+    # .NET Framework 4.7+ has a default security protocol called 'SystemDefault',
+    # which allows the operating system to choose the best protocol to use.
+    # If SecurityProtocolType contains 'SystemDefault' (means .NET4.7+ detected)
+    # and the value of SecurityProtocol is 'SystemDefault', just do nothing on SecurityProtocol,
+    # 'SystemDefault' will use TLS 1.2 if the webrequest requires.
+    $isNewerNetFramework = ([System.Enum]::GetNames([System.Net.SecurityProtocolType]) -contains 'SystemDefault')
+    $isSystemDefault = ([System.Net.ServicePointManager]::SecurityProtocol.Equals([System.Net.SecurityProtocolType]::SystemDefault))
+
+    # If not, change it to support TLS 1.2
+    if (!($isNewerNetFramework -and $isSystemDefault)) {
+        # Set to TLS 1.2 (3072), then TLS 1.1 (768), and TLS 1.0 (192). Ssl3 has been superseded,
+        # https://docs.microsoft.com/en-us/dotnet/api/system.net.securityprotocoltype?view=netframework-4.5
+        [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192
+    }
+}
+```
+
+We can reuse it elsewhere.
 
 ## Scoop aria2 skip certificate check
 
