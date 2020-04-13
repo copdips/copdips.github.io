@@ -139,6 +139,7 @@ Adding a split on `pieces[0]` object can workaround the issue, but to fix it def
 /pull/1105/commits/d2e7da3be5e46a5c8b432f67f78b662541b957de](https://github.com/prompt-toolkit/python-prompt-toolkit/pull/1105/commits/d2e7da3be5e46a5c8b432f67f78b662541b957de)
 
 ```diff
+# prompt_toolkit/input/win32.py
 # On a key press, generate both the mouse down and up event.
 for event_type in [MouseEventType.MOUSE_DOWN, MouseEventType.MOUSE_UP]:
     data = ";".join(
