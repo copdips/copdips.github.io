@@ -1,5 +1,5 @@
 ---
-# last_modified_at: 2020-01-11 21:45:02
+last_modified_at: 2020-04-25 15:38:04
 title: "Making isort compatible with black"
 excerpt: "Making isort compatible with black"
 tags:
@@ -52,7 +52,13 @@ There's also a param `-w 88` to set the max line length to 88, but with multi li
 
 There's also a param `-rc` to recursively sort on all files in the project.
 
-We can also use isort custom profile to overwrite the default settings as shown [here](https://github.com/timothycrosley/isort#configuring-isort).
+We can also use isort custom profile to overwrite the default settings as shown [here](https://github.com/timothycrosley/isort#configuring-isort). And to use the custom profile in VSCode:
+```json
+# https://github.com/microsoft/vscode/issues/83586#issuecomment-557334564
+"python.sortImports.args": [
+    "--settings-path=${workspaceFolder}/setup.cfg"
+]
+```
 {: .notice--info}
 
 ## isort with VSCode
@@ -67,11 +73,16 @@ We can also use isort custom profile to overwrite the default settings as shown 
   ],
   "[python]":{
     "editor.codeActionsOnSave":{
-        "source.organizeImports":true
+        "source.organizeImports.python":true # it was "source.organizeImports":true in my first version of this post
     }
   }
 }
 ```
+
+After some days of using above settings, I found a very frustrating behavior that when I pressed Ctrl+S multiple times to save manually a python file, the imports part changed upon each save, and sometimes it even [deleted some imports](https://github.com/microsoft/vscode/issues/83586#issuecomment-607497052)...
+Digged in github, people have already reported the issue. See [issues/83586](https://github.com/microsoft/vscode/issues/83586), and [issues/9889](https://github.com/microsoft/vscode-python/issues/9889)
+The solution (workaround) is [here](https://github.com/microsoft/vscode/issues/90221#issuecomment-583664840). Replace `"source.organizeImports":true` by `source.organizeImports.python` to allow codeActionsOnSave to specify which extension to use for a given on save action, the way `editor.defaultFormatter` or `python.formatting.provider` work.
+{: .notice--warning}
 
 ## isort with git hook
 
