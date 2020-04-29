@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2019-12-28 14:06:43
+last_modified_at: 2020-04-29 22:23:45
 title: "Git Cheat Sheet"
 excerpt: "Some personal often forgotten git commands."
 tags:
@@ -99,6 +99,9 @@ git reset HEAD~2
 # Undo till a special commit to working directory,
 # the special commit and every commits before are still committed.
 git reset <commit number>
+
+# Unstage a file
+git restore --staged <file>
 ```
 
 `git reset HEAD` will do nothing, as the HEAD is already at the last commit.
@@ -124,14 +127,35 @@ git reset --soft HEAD~2
 # Undo till a special commit to staging area,
 # the special commit and every commits before are still committed.
 git reset --soft <commit number>
+
+# If we want to remove (unstage) a file from the current staging area to working directory
+git reset HEAD <file>
+or
+git reset <file>
+or
+git rm --cached <file>
+
+# We can merge above 2 steps by
+git reset
 ```
+
+`git reset HEAD~1 <file>` will create a delete <file> index in staging area. Normally we don't need this command.
+{: .notice--info}
 
 `git reset HEAD` will do nothing, as the HEAD is already at the last commit.
 {: .notice--info}
 
 `git reset --hard HEAD~` will undo the last commit (HEAD~) and also delete the changes from the working directory. This is like doing `git reset HEAD~ ; git checkout .` .
 If you want to rollback the `reset --hard`, and you have the discarded commit number, you can rollback by `git cherry-pick <commit number>`
-{: .notice--warning}
+{: .notice--warning}git reset HEAD <file>
+
+## Force local branch to the same with remote branch
+
+```bash
+git reset --hard upstream/master
+or
+git checkout -B master origin/master # sometimes this one might not work
+```
 
 ## Disable host key checking
 
