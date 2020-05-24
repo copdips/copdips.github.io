@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2020-04-25 15:38:04
+last_modified_at: 2020-05-25 09:24:00
 title: "Making isort compatible with black"
 excerpt: "Making isort compatible with black"
 tags:
@@ -69,11 +69,13 @@ We can also use isort custom profile to overwrite the default settings as shown 
   "python.sortImports.path": "isort",
   "python.sortImports.args":[
     "-m 3",
-    "-rc",
+    "-tc",
   ],
   "[python]":{
     "editor.codeActionsOnSave":{
-        "source.organizeImports.python":true # it was "source.organizeImports":true in my first version of this post
+         # it was `"source.organizeImports": true` in my first version of this post,
+         # see below comment for explanation.
+        "source.organizeImports.python": true
     }
   }
 }
