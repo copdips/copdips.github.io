@@ -1,5 +1,5 @@
 ---
-last_modified_at:
+last_modified_at: 2020-06-08 12:35:21
 title: "Compiling SQLAlchemy query to nearly real raw sql query"
 excerpt: "Compiling SQLAlchemy query to nearly real raw sql query"
 tags:
@@ -128,6 +128,7 @@ Base on this [stackoverflow example](https://stackoverflow.com/a/32772915/509563
 
 <!-- {% raw %} -->
 ```python
+from datetime import date, datetime, timedelta
 from sqlalchemy.orm import Query
 
 def render_query(statement, db_session):
