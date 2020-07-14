@@ -156,7 +156,7 @@ footer:
       icon: "fab fa-fw fa-instagram"
       # url:
     - label: "Uptime"
-      icon: "far fa-clock"
+      icon: "fas fa-clock"
       url: "https://uptimerobot.com/dashboard#mainDashboard"
 
 
