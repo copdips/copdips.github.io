@@ -1,6 +1,6 @@
 ---
 title: "SQLAlchemy mixin in method"
-last_modified_at: "2019-12-10T23:41:09"
+last_modified_at: "2020-07-26 13:47:04"
 excerpt: "Share common methods across SQLAlchemy db model classes by using mixin."
 tags:
   - python
@@ -10,7 +10,7 @@ published: true
 #   teaserlogo:
 #   teaser: ''
 #   image: ''
-#   caption:
+#   caption
 gallery:
   - image_path: ''
     url: ''
@@ -18,48 +18,48 @@ gallery:
 ---
 
 
-Sorry, wrong code given, I should remove it.
-
-<s>
 {% include toc title="Table of content" %}
-If I'm not wrong, the [SQLAlchemy official doc](https://docs.sqlalchemy.org/en/latest/orm/extensions/declarative/mixins.html) provides some examples to explain how to share a set of common columns, some common table options, or other mapped properties, across many classes. But I cannot find how to share common methods (e.g. your customized to_dict() method). This post will just show you a POC to achieve that.
+If I'm not wrong, the [SQLAlchemy official doc](https://docs.sqlalchemy.org/en/latest/orm/extensions/declarative/mixins.html) provides some examples to explain how to share a set of common columns, some common table options, or other mapped properties, across many classes. But I cannot find how to share common methods (e.g. your customized to_dict() method). This post will just show you a POC to achieve this goal by using [Python Mixin](https://realpython.com/inheritance-composition-python/).
 
 ## Share the common method to_dict() across two SQLAlchemy models
 
-The code below is not prod ready, **it has still many drawbacks**.
-For example, the rows returned by the query can use the `to_dict()` method but a new object created from the model cannot use the `to_dict()`. It will throw an error saying that the mocked object is not iterable. I think I should take a look at how does the [sqlalchemy-mixin](https://github.com/absent1706/sqlalchemy-mixins) module work.
-{: .notice--warning}
-
-
 ```python
-from unittest.mock import Mock
-
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
 
-class CommonMethodsMixin(object):
-    def __init__(cls, **kwargs):
-        cls.__table__ = Mock("mocked_table")
-        super(CommonMethodsMixin, cls).__init__(**kwargs)
+class ModelMixin(object):
 
-    def to_dict(cls):
-        return {c.name: str(getattr(cls, c.name)) for c in cls.__table__.columns}
+    def to_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
-class ModelA(CommonMethodsMixin, Base):
+class ModelA(Base, ModelMixin):
     __tablename__ = "model_a"
 
-    mdoela_id = Column(Integer, primary_key=True)
+    model_id = Column(Integer, primary_key=True)
     name = Column(String)
 
 
-class ModelB(CommonMethodsMixin, Base):
+class ModelB(Base, ModelMixin):
     __tablename__ = "model_b"
 
-    modelb_id = Column(Integer, primary_key=True)
+    model_id = Column(Integer, primary_key=True)
     name = Column(String)
 ```
-</s>
+
+Test:
+
+```python
+# to_dict() method from ModelMixin is shared between ModelA and ModelB
+
+>>> a = ModelA(model_id=11, name='a1')
+>>> a.to_dict()
+{'model_id': 11, 'name': 'a1'}
+
+>>> b = ModelB(model_id=22, name='b1')
+>>> b.to_dict()
+{'model_id': 22, 'name': 'b1'}
+```
