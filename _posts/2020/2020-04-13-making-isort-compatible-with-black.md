@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2020-05-25 09:24:00
+last_modified_at: 2020-12-06 01:00:25
 title: "Making isort compatible with black"
 excerpt: "Making isort compatible with black"
 tags:
@@ -19,6 +19,9 @@ gallery:
 ---
 
 {% include toc title="Table of content" %}
+
+Update 2020-12-06, thanks to [Christian Jauvin's comment](https://www.copdips.com/2020/04/making-isort-compatible-with-black.html#comment-5178374085), since isort v5, it has introduced `--profile=black` option, so the life is much easier now:)
+{: .notice--info}
 
 > Both [isort](https://github.com/timothycrosley/isort) and [black](https://github.com/psf/black) are a must have in my python life, but with their default settings, I will get different imports formats.
 
@@ -63,6 +66,10 @@ We can also use isort custom profile to overwrite the default settings as shown 
 
 ## isort with VSCode
 
+isort v5-:
+
+[https://pycqa.github.io/isort/docs/configuration/profiles/](https://pycqa.github.io/isort/docs/configuration/profiles/)
+
 ```json
 {
   "editor.formatOnSave":true,
@@ -70,6 +77,25 @@ We can also use isort custom profile to overwrite the default settings as shown 
   "python.sortImports.args":[
     "-m 3",
     "-tc",
+  ],
+  "[python]":{
+    "editor.codeActionsOnSave":{
+         # it was `"source.organizeImports": true` in my first version of this post,
+         # see below comment for explanation.
+        "source.organizeImports.python": true
+    }
+  }
+}
+```
+
+isort v5+:
+
+```json
+{
+  "editor.formatOnSave":true,
+  "python.sortImports.path": "isort",
+  "python.sortImports.args":[
+    "--profile=black",
   ],
   "[python]":{
     "editor.codeActionsOnSave":{
