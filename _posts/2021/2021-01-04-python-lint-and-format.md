@@ -86,4 +86,4 @@ If file path is not specified, black only works on files inside a Python module,
 
 Just my 2 cents, try the [errorlens](https://marketplace.visualstudio.com/items?itemName=usernamehw.errorlens) extension in VSCode, it will lint all the warnings/errors on live when coding, it's really cool.
 
-And don't forget to install the official [SonarLint](https://marketplace.visualstudio.com/items?itemName=SonarSource.sonarlint-vscode) extension, it will give you extra lint. It eats a lot of memory with its java process nevertheless.
+And don't forget to install the official [SonarLint](https://marketplace.visualstudio.com/items?itemName=SonarSource.sonarlint-vscode) extension, it will give you extra lint. It eats a lot of memory with its java processes nevertheless.
