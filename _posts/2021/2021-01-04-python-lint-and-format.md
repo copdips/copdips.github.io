@@ -79,9 +79,6 @@ black .
 black [a_file_path]
 ```
 
-If file path is not specified, black only works on files inside a Python module, the folder with `__init__.py` inside.
-{: .notice--warning}
-
 ## VSCode
 
 Just my 2 cents, try the [errorlens](https://marketplace.visualstudio.com/items?itemName=usernamehw.errorlens) extension in VSCode, it will lint all the warnings/errors on live when coding, it's really cool.
