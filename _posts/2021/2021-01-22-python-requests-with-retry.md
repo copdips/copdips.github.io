@@ -39,8 +39,12 @@ from logging import Logger
 import backoff
 import requests
 from requests.exceptions import HTTPError
+import urllib3
 
-# in an internal enterprise environment, we often need to disable the proxy and ignore the ssl check.
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+
+# in an internal enterprise environment, we often need to disable the proxy and ignore the ssl check. Of course, if you don't trust the target, then verify the ssl.
 NO_PROXY = {"http": None, "https": None}
 COMMON_REQUESTS_PARAMS = {"verify": False, "proxies": NO_PROXY}
 
