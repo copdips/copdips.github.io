@@ -71,9 +71,9 @@ pipreqs has also some other useful [options](https://github.com/bndr/pipreqs#usa
 
 [pip-tools github](https://github.com/jazzband/pip-tools)
 
-Another missing feature of the native pip is that `pip freeze` doesn't provide the packages dependencies. All the packages installed in the venv are listed in a single requirements.txt file, in the same top level with only the version info. Pipenv and Poetry resolve this issue, and introduce some lock system. But they're not the native requirements.txt way. By using pip-tools, we can resolve this issue too and at the same time keep using requirements.txt. I found this tool occasionally by check [Flask project requirements](https://github.com/pallets/flask/blob/master/requirements/dev.txt).
+Another missing feature of the native pip is that `pip freeze` doesn't provide the packages dependencies. All the packages installed in the venv are listed in a single requirements.txt file, in the same top level with only the version info. Pipenv and Poetry resolve this issue, and introduce some lock system. But they're not the native requirements.txt way. By using pip-tools, we can resolve this issue too and at the same time keep using requirements.txt. I found this tool occasionally by checking [Flask project requirements](https://github.com/pallets/flask/blob/master/requirements/dev.txt).
 
-The idea of pip-tools is to maintain a project basic dependency in a file called `requirements.in`, then use pip-tools to generate the `requirements.txt` file with all dependencies including the underlying dependencies info inside but in the comments part.
+The idea of pip-tools is to maintain a project basic dependency in a file called `requirements.in`, then use pip-tools to generate the `requirements.txt` file with all the dependencies including the underlying dependencies info inside but in the comments part.
 
 Please be aware that: **pip-tools = pip-compile + pip-sync**
 
@@ -110,7 +110,7 @@ werkzeug==1.0.1
 
 The Solution for with `setup.py` is [here](https://github.com/jazzband/pip-tools#requirements-from-setuppy).
 
-## pip-sync
+### pip-sync
 
 Let's see an example of pip-sync:
 
@@ -141,7 +141,7 @@ Successfully installed Werkzeug-1.0.1
 
 ### pipdeptree for dependency tree
 
-The pip-tools github page introduces also a dependency tree generation tool: [pipdeptree](https://github.com/jazzband/pip-tools#other-useful-tools) which is also very nice:
+The pip-tools' github page introduces also a dependency tree generation tool: [pipdeptree](https://github.com/jazzband/pip-tools#other-useful-tools) which is also very nice:
 
 ```bash
 (venv)$ pipdeptree
