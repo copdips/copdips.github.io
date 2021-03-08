@@ -1,5 +1,5 @@
 ---
-last_modified_at:
+last_modified_at: 2021-03-08 23:03:15
 title: "Python Lint And Format"
 excerpt: "Some commands to lint and format Python files"
 tags:
@@ -56,6 +56,29 @@ pylint . -j 0 --disable=C0116
 # ignore W503 because of black format. BTW, flake8 also has W504 which is in contrary to W503.
 flake8 . --exclude=venv --ignore=W503
 flake8 [a_file_path]
+```
+
+### bandit
+
+The bandit config file format is not well documented, I passed a lot of time to test the config.
+
+```bash
+$ cat .bandit
+# https://github.com/PyCQA/bandit/issues/400
+exclude_dirs:
+  - "./venv/*"
+
+# https://github.com/PyCQA/bandit/pull/633
+assert_used:
+  skips:
+    - "*/*_test.py"
+    - "*/test_*.py"
+```
+
+```bash
+# without specifying -c ./bandit, it doesn't work
+$ bandit . -r -c ./.bandit
+
 ```
 
 ## Format
