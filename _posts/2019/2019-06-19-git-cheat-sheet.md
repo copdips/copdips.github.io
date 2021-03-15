@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2020-04-29 22:23:45
+last_modified_at: 2021-03-15 23:50:01
 title: "Git Cheat Sheet"
 excerpt: "Some personal often forgotten git commands."
 tags:
@@ -33,6 +33,7 @@ Edit `~/.gitconfig`
         br = branch
         co = checkout
         cm = checkout master
+        re = restore
         unstage = reset HEAD
         ci = commit
         amend = commit --amend -C HEAD
@@ -41,6 +42,14 @@ Edit `~/.gitconfig`
         last = log -1 HEAD
         lga = log --graph --decorate --oneline --all
         ll = log --graph --all --pretty=format:'%C(auto)%h%Creset <%an>: %s %Creset%C(auto)%d%Creset %C(bold black)(%cr)%Creset' --abbrev-commit --date=relative
+```
+
+## Restore
+
+### Restore a file to an old version
+
+```bash
+git restore --source [old_commit_hash] [file_name]
 ```
 
 ## Undo
@@ -148,6 +157,13 @@ git reset
 `git reset --hard HEAD~` will undo the last commit (HEAD~) and also delete the changes from the working directory. This is like doing `git reset HEAD~ ; git checkout .` .
 If you want to rollback the `reset --hard`, and you have the discarded commit number, you can rollback by `git cherry-pick <commit number>`
 {: .notice--warning}git reset HEAD <file>
+
+## Recovering a deleted branch
+
+```bash
+git reflog
+git branch [branch_name] [commit_hash_that_preceded_the_delete_commit]
+```
 
 ## Force local branch to the same with remote branch
 
