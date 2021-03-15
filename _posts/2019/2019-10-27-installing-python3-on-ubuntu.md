@@ -1,4 +1,5 @@
 ---
+last_modified_at: 2021-03-15 23:59:01
 title: "Install Python3 on Ubuntu"
 excerpt: "Install Python3 on Ubuntu by using official source."
 tags:
@@ -57,7 +58,7 @@ wget https://www.python.org/ftp/python/3.6.9/Python-3.6.9.tgz
 tar xzvf Python-3.6.9.tgz
 cd Python-3.6.9
 sudo ./configure --prefix=/opt/python3.6
-sudo make
+make -j $(nproc)
 sudo make install
 sudo ln -s /opt/python3.6/bin/python3.6 /usr/bin/python3.6
 ```
@@ -65,10 +66,19 @@ sudo ln -s /opt/python3.6/bin/python3.6 /usr/bin/python3.6
 Python3.5 is preinstalled by default on Ubuntu 16.04, `python3 -V` gives `Python 3.5.2`, many system tools rely on it, please **DO NOT** bind python3 to any versions other than Python3.5, otherwise your system might have unexpected problems.
 {: .notice--warning}
 
+For a general Python installation not only for this Python3.6, if you have `gcc v8+`, you can add the flag `--enable-optimizations` to `./configure` to gain an extra runtime speed, otherwise you might encounter `Could not import runpy module` error
+{: .notice--info}
+
 ### Using Python3.6 pip
 
 ```bash
 python3.6 -m pip install [a python module]
+```
+
+### Prevent pip install without an active venv
+
+```bash
+echo 'export PIP_REQUIRE_VIRTUALENV=true' >> ~/.bashrc
 ```
 
 ## Installing Python3.7 on Ubuntu 16.04
