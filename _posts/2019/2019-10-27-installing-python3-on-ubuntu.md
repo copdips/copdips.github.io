@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2021-03-15 23:59:01
+last_modified_at: 2021-03-17 00:12:13
 title: "Install Python3 on Ubuntu"
 excerpt: "Install Python3 on Ubuntu by using official source."
 tags:
@@ -84,3 +84,43 @@ echo 'export PIP_REQUIRE_VIRTUALENV=true' >> ~/.bashrc
 ## Installing Python3.7 on Ubuntu 16.04
 
 Just tested installing Python3.7.5 with the same procedure, all works.
+
+## Installing Python3.9.2 with sqlite3 on Ubuntu 20.04 in WSL
+
+```bash
+# install build packages
+sudo apt update
+sudo apt install -y build-essential zlib1g-dev libssl-dev libffi-dev
+
+# install sqlite3 from source, if you need a specific sqlite3 version in Python, you must install it before compiling Python, because the compilation needs the lib libsqlite3.so
+mkdir ~/src
+cd ~/src/
+wget https://www.sqlite.org/2021/sqlite-autoconf-3350100.tar.gz
+tar xvf sqlite-autoconf-3350100.tar.gz
+cd sqlite-autoconf-3350100/
+./configure --prefix=/usr/local
+make -j $(nproc)
+sudo make install
+make clean
+ll /usr/local/bin/sqlite*
+ll /usr/local/lib/*sqlite*
+
+# let below Python compilation to use the newly installed sqlite3 lib
+export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+
+# install python3.9.2 from source
+cd ~/src/
+wget https://www.python.org/ftp/python/3.9.2/Python-3.9.2.tgz
+tar xvf Python-3.9.2.tgz
+cd Python-3.9.2/
+
+# ubuntu 20.04 has gcc v9, so you can add the flag --enable-optimizations to ./configure
+./configure --prefix=$HOME/opt/python3.9
+make -j $(nproc)
+sudo make install
+make clean
+sudo ln -s ~/opt/python3.9/bin/python3.9 /usr/bin/python3.9
+ll $(which python3.9)
+echo -e '\nexport PIP_REQUIRE_VIRTUALENV=true' >> ~/.bashrc
+python3.9 -c 'import sqlite3 ; print(sqlite3.sqlite_version)'
+```
