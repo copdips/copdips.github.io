@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2021-03-08 23:03:15
+last_modified_at: 2021-03-20 00:21:16
 title: "Python Lint And Format"
 excerpt: "Some commands to lint and format Python files"
 tags:
@@ -128,3 +128,76 @@ black [a_file_path]
 Just my 2 cents, try the [errorlens](https://marketplace.visualstudio.com/items?itemName=usernamehw.errorlens) extension in VSCode, it will lint all the warnings/errors on live when coding, it's really cool.
 
 And don't forget to install the official [SonarLint](https://marketplace.visualstudio.com/items?itemName=SonarSource.sonarlint-vscode) extension, it will give you extra lint. It eats a lot of memory with its java processes nevertheless.
+
+## Git pre-commit
+
+https://pre-commit.com/
+> "Git hook scripts are useful for identifying simple issues before submission to code review. We run our hooks on every commit to automatically point out issues in code such as missing semicolons, trailing whitespace, and debug statements. By pointing these issues out before code review, this allows a code reviewer to focus on the architecture of a change while not wasting time with trivial style nitpicks."
+
+1. create a file named `.pre-commit-config.yaml` to the root of your project
+
+```yml
+repos:
+  - repo: local
+    hooks:
+      - id: pylint
+        name: pylint
+        stages: [commit]
+        language: system
+        entry: pylint --disable=C0116 --ignore=venv
+        types: [python]
+
+      - id: flake8
+        name: flake8
+        stages: [commit]
+        language: system
+        entry: flake8
+        types: [python]
+
+      - id: bandit
+        name: bandit
+        stages: [commit]
+        language: system
+        entry: bandit
+        types: [python]
+
+      - id: mypy
+        name: mypy
+        stages: [commit]
+        language: system
+        entry: mypy
+        types: [python]
+
+      - id: isort
+        name: isort
+        stages: [commit]
+        language: system
+        entry: isort --profile=black --virtual-env=venv
+        types: [python]
+
+      - id: black
+        name: black
+        stages: [commit]
+        language: system
+        entry: black
+        types: [python]
+```
+
+2. Install the git hook scripts
+
+```bash
+$ pre-commit install
+pre-commit installed at .git/hooks/pre-commit
+```
+
+3. (optional) Run against all the files
+
+> "it's usually a good idea to run the hooks against all of the files when adding new hooks (usually pre-commit will only run on the changed files during git hooks)"
+
+```bash
+$ pre-commit run --all-files
+```
+
+4. git commit
+
+Each time we use git commit to stage some files, these filew will be sent to pre-commit to be checked against to the hooks defined in `.pre-commit-config.yaml`. Internally, the tool runs `.pre-commit-config.yaml` on commit
