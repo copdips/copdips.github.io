@@ -81,6 +81,27 @@ $ bandit . -r -c ./.bandit
 
 ```
 
+### mypy
+
+For projects having sqlalchemy, we often install the `sqlalchemy-stubs` plugin as sqlalchemy uses some dynamic classes.
+
+And also [django-stubs](https://pypi.org/project/django-stubs/)
+
+[mypy config file](https://mypy.readthedocs.io/en/stable/config_file.html):
+
+```ini
+[mypy]
+ignore_missing_imports = True # We recommend using this approach only as a last resort: it’s equivalent to adding a # type: ignore to all unresolved imports in your codebase.
+plugins = sqlmypy # sqlalchemy-stubs
+```
+
+running mypy:
+
+```bash
+mypy .
+mypy . --exclude [a regular expression that matches file path]
+mypy . --exclude venv[//] # exclude venv folder under the root
+```
 ## Format
 
 ### isort
