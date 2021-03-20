@@ -1,5 +1,5 @@
 ---
-last_modified_at:
+last_modified_at: 2021-03-20 08:31:41
 title: "Python Requests With Retry"
 excerpt: "Make python requests retry easily to use"
 tags:
@@ -78,7 +78,7 @@ def request_with_retry(
     if should_log:
         params_message = ""
         for key in requests_params_keys_to_log:
-            if "key" in request_params:
+            if key in request_params:
                 params_message += " with {} {}".format(key, request_params[key])
         log_message = "[{}] {} with params{}.".format(
             full_params["method"], full_params["url"], params_message
