@@ -27,7 +27,7 @@ As mentioned by [the official doc](https://redislabs.com/ebook/appendix-a/a-3-in
 
 # Create single Redis service on Windows
 
-[The official doc](https://redislabs.com/blog/redis-on-windows-8-1-and-previous-versions/) is good enough to get job down. You can create the service by a simple command:
+[The official doc](https://redislabs.com/blog/redis-on-windows-8-1-and-previous-versions/) is good enough to get the job done. You can create the service by a simple command:
 
 ```powershell
 > redis-server --service-install
