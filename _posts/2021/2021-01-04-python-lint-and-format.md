@@ -136,6 +136,9 @@ https://pre-commit.com/
 
 1. create a file named `.pre-commit-config.yaml` to the root of your project
 
+You could also add pytest (or unittest, or nose, etc.) hook in the pre-commit to make sure all the tests (mostly the unit tests only) are passed before each commit.
+{: .notice--info}
+
 ```yml
 repos:
   - repo: local
