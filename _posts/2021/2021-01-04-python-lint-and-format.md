@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2021-03-20 00:21:16
+last_modified_at: 2021-03-21 22:39:33
 title: "Python Lint And Format"
 excerpt: "Some commands to lint and format Python files"
 tags:
@@ -191,7 +191,16 @@ repos:
 ```bash
 $ pre-commit install
 pre-commit installed at .git/hooks/pre-commit
+
+$ pre-commit install --hook-type post-merge
+pre-commit installed at .git/hooks/post-merge
+
+$ pre-commit install --hook-type pre-merge-commit
+pre-commit installed at .git/hooks/pre-merge-commit
 ```
+
+You could also run `pre-commit install --hook-type pre-push` to register pre-push hooks.
+{: .notice--info}
 
 ### (optional) Run against all the files
 
@@ -208,3 +217,11 @@ Each time we use git commit to stage some files, these files will be sent to pre
 ### Temporarily disabling hooks
 
 The [official doc](https://pre-commit.com/#temporarily-disabling-hooks) gives the example how to disable explicitly hooks by hooks' ids: `SKIP=flake8 git commit -m "foo"`, but if you want to disable completely all the hooks, an easy way might be found [here](https://stackoverflow.com/a/7230886) by using `git commit --no-verify` or its shortcut `git commit -n`. If you use [pre-commit during push](https://pre-commit.com/#pre-commit-during-push), you can disable pre-commit during push by `git push --no-verify` or `git push -n`.
+
+### Automatically enabling pre-commit on repositories
+
+https://pre-commit.com/#automatically-enabling-pre-commit-on-repositories
+
+### Usage in continuous integration
+
+https://pre-commit.com/#usage-in-continuous-integration
