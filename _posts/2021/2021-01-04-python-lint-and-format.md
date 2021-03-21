@@ -203,4 +203,8 @@ $ pre-commit run --all-files
 
 ### Git commit
 
-Each time we use git commit to stage some files, these filew will be sent to pre-commit to be checked against to the hooks defined in `.pre-commit-config.yaml`. Internally, the tool runs `.pre-commit-config.yaml` on commit
+Each time we use git commit to stage some files, these files will be sent to pre-commit to be checked against to the hooks defined in `.pre-commit-config.yaml`.
+
+### Temporarily disabling hooks
+
+The [official doc](https://pre-commit.com/#temporarily-disabling-hooks) gives the example how to disable explicitly hooks by hooks' ids: `SKIP=flake8 git commit -m "foo"`, but if you want to disable completely all the hooks, an easy way might be found [here](https://stackoverflow.com/a/7230886) by using `git commit --no-verify` or its shortcut `git commit -n`. If you use [pre-commit during push](https://pre-commit.com/#pre-commit-during-push), you can disable pre-commit during push by `git push --no-verify` or `git push -n`.
