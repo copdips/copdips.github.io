@@ -134,7 +134,7 @@ And don't forget to install the official [SonarLint](https://marketplace.visuals
 https://pre-commit.com/
 > "Git hook scripts are useful for identifying simple issues before submission to code review. We run our hooks on every commit to automatically point out issues in code such as missing semicolons, trailing whitespace, and debug statements. By pointing these issues out before code review, this allows a code reviewer to focus on the architecture of a change while not wasting time with trivial style nitpicks."
 
-1. create a file named `.pre-commit-config.yaml` to the root of your project
+### Create a file named `.pre-commit-config.yaml` to the root of your project
 
 You could also add pytest (or unittest, or nose, etc.) hook in the pre-commit to make sure all the tests (mostly the unit tests only) are passed before each commit.
 {: .notice--info}
@@ -186,14 +186,14 @@ repos:
         types: [python]
 ```
 
-2. Install the git hook scripts
+### Install the git hook scripts
 
 ```bash
 $ pre-commit install
 pre-commit installed at .git/hooks/pre-commit
 ```
 
-3. (optional) Run against all the files
+### (optional) Run against all the files
 
 > "it's usually a good idea to run the hooks against all of the files when adding new hooks (usually pre-commit will only run on the changed files during git hooks)"
 
@@ -201,6 +201,6 @@ pre-commit installed at .git/hooks/pre-commit
 $ pre-commit run --all-files
 ```
 
-4. git commit
+### Git commit
 
 Each time we use git commit to stage some files, these filew will be sent to pre-commit to be checked against to the hooks defined in `.pre-commit-config.yaml`. Internally, the tool runs `.pre-commit-config.yaml` on commit
