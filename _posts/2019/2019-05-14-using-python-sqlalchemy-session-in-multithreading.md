@@ -1,9 +1,10 @@
 ---
+last_modified_at: 2021-03-21 22:28:44
 title: "Using Python SQLAlchemy session in multithreading"
 excerpt: "Using Python SQLAlchemy session in multithreading by using contextmanager or scope_session."
 tags:
   - python
-  - SQLAlchemy
+  - sqlalchemy
   - multithreading
 published: true
 # header:
