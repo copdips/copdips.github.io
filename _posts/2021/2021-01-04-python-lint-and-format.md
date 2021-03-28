@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2021-03-21 22:39:33
+last_modified_at: 2021-03-28 11:49:07
 title: "Python Lint And Format"
 excerpt: "Some commands to lint and format Python files"
 tags:
@@ -131,7 +131,8 @@ And don't forget to install the official [SonarLint](https://marketplace.visuals
 
 ## Git pre-commit
 
-https://pre-commit.com/
+[https://pre-commit.com/](https://pre-commit.com/)
+
 > "Git hook scripts are useful for identifying simple issues before submission to code review. We run our hooks on every commit to automatically point out issues in code such as missing semicolons, trailing whitespace, and debug statements. By pointing these issues out before code review, this allows a code reviewer to focus on the architecture of a change while not wasting time with trivial style nitpicks."
 
 ### Create a file named `.pre-commit-config.yaml` to the root of your project
@@ -220,8 +221,8 @@ The [official doc](https://pre-commit.com/#temporarily-disabling-hooks) gives th
 
 ### Automatically enabling pre-commit on repositories
 
-https://pre-commit.com/#automatically-enabling-pre-commit-on-repositories
+[https://pre-commit.com/#automatically-enabling-pre-commit-on-repositories](https://pre-commit.com/#automatically-enabling-pre-commit-on-repositories)
 
 ### Usage in continuous integration
 
-https://pre-commit.com/#usage-in-continuous-integration
+[https://pre-commit.com/#usage-in-continuous-integration](https://pre-commit.com/#usage-in-continuous-integration)
