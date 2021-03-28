@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2020-12-06 01:00:25
+last_modified_at: 2021-03-28 11:58:35
 title: "Making isort compatible with black"
 excerpt: "Making isort compatible with black"
 tags:
@@ -115,3 +115,5 @@ The solution (workaround) is [here](https://github.com/microsoft/vscode/issues/9
 ## isort with git hook
 
 Just in case you're interested in git hook, the settings is [here](https://github.com/timothycrosley/isort#git-hook).
+
+Update 2021-03-28: [using git pre-commit](https://copdips.com/2021/01/python-lint-and-format.html#git-pre-commit).
