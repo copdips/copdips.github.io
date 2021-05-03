@@ -16,8 +16,6 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
-
 > Different than Windows Powershell, Powershell Core doesn't [use the system proxy setting on Windows](https://copdips.com/2018/05/setting-up-powershell-gallery-and-nuget-gallery-for-powershell.html#configure-proxy-in-powershell). This post will show you an one-line command to set Powershell Core web cmdlets proxy.
 
 My office working environment is behind an Internet proxy, and I use [Scoop](https://github.com/lukesampson/scoop) to install many dev tools on my Windows desktop.

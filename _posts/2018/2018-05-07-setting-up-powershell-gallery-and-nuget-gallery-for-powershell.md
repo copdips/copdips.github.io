@@ -19,8 +19,6 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
-
 > As like [pypi](https://pypi.org/) for Python, [npm](https://www.npmjs.com/) for Node.js, we also have [Powershell Gallery](https://www.powershellgallery.com/) for Powershell to add some extra Powershell modules, and [Nuget Gallery](https://www.nuget.org/) for Powershell to add some extra executables.
 
 # Powershell version
@@ -185,4 +183,3 @@ Some resources on setting up internal Powershell Gallery and Nuget Gallery:
 1. [PowerShell/PSPrivateGallery](https://github.com/PowerShell/PSPrivateGallery)
 1. [Overview of Hosting Your Own NuGet Feeds](https://docs.microsoft.com/en-us/nuget/hosting-packages/overview)
 1. [NuGet/NuGetGallery](https://github.com/NuGet/NuGetGallery/wiki/Hosting-the-NuGet-Gallery-Locally-in-IIS)
-

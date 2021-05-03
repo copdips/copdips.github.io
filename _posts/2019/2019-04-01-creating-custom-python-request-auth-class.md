@@ -16,8 +16,6 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
-
 > When you need to use a complicated, or a non-standard API authentication method,
 > or your dev and prd environments don't use the same API authentication method,
 > it might be better to create a Python requests auth method to reduce your work.

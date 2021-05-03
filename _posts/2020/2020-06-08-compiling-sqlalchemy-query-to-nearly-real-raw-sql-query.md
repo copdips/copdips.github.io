@@ -17,7 +17,7 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
+
 
 ## Some useful links
 

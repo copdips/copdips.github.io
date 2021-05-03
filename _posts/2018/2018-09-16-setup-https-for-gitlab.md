@@ -19,8 +19,6 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
-
 > Gitlab-CE default installation goes with HTTPS disable. We need to generate a SSL certificate, and bind it to the HTTPS of Gitlab-CE.
 
 # Some docs on the Internet

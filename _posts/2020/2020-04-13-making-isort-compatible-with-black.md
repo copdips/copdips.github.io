@@ -18,7 +18,7 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
+
 
 Update 2020-12-06, thanks to [Christian Jauvin's comment](https://www.copdips.com/2020/04/making-isort-compatible-with-black.html#comment-5178374085), since isort v5, it has introduced `--profile=black` option, so the life is much easier now:)
 {: .notice--info}

@@ -17,8 +17,6 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
-
 > If you want to create some tables from a python list, you can use the `tabulate` module, it can generate the table easily in text mode and in many formats, than you can past it into markdown, wiki files or add the print version to your python CLI in order to give a beautiful output to the CLI users.
 
 # Install python tabulate module

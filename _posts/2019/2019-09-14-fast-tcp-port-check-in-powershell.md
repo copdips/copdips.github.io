@@ -17,7 +17,7 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
+
 
 The [Test-NetConnection](https://docs.microsoft.com/en-us/powershell/module/nettcpip/test-netconnection) cmdlet is great and verbose but too slow if the remote port to check is not opened. This is due to its timeout setting and cannot be modified. In this port, I will show you a custom function that leverages the power of  [System.Net.Sockets.TcpClient](https://docs.microsoft.com/dotnet/api/system.net.sockets.tcpclient) to accelerate the port test.
 

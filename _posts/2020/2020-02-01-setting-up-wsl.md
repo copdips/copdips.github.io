@@ -17,7 +17,7 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
+
 
 ## Cleaning up manually the WSL instance
 

@@ -17,7 +17,7 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
+
 
 flask-restplus' (or flask-restx) [reqparse module is deprecated](https://flask-restx.readthedocs.io/en/latest/parsing.html), so I decided to use the native flask request object to parse the incoming inputs.
 

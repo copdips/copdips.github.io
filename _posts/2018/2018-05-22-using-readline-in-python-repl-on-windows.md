@@ -17,8 +17,6 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
-
 > As an ex-sysadmin, I'm in love with the [Readline](https://en.wikipedia.org/wiki/GNU_Readline). In Powershell, we have its variation [PSReadline](https://github.com/lzybkr/PSReadLine). In Python REPL on Windows OS, I'll show you the [PyReadline](https://pythonhosted.org/pyreadline/) and the [PtPython](https://github.com/jonathanslenders/ptpython).
 
 # PyReadline

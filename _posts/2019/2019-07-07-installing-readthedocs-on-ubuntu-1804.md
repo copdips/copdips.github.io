@@ -17,8 +17,6 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
-
 > This is not a step by step tutorial to install Readthedocs, but just some tips and tricks.
 
 ## Official doc

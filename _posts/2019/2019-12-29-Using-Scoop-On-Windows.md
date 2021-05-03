@@ -17,8 +17,6 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
-
 > I've been using [Scoop](https://github.com/lukesampson/scoop) for setting up my personal and professional Windows development desktops since nearly 2 years.
 For me, it's much more useful than another famous Windows package management tool [Chocolatey](https://github.com/lukesampson/scoop/wiki/Chocolatey-Comparison), because with Scoop, everything is run & installed without any administrator privileges.
 This is very important in an enterprise environment, that all the enterprise Windows administrators are trying their best to prevent you from installing anything on Windows. This post will share my ways to use it **especially in such an enterprise environment**. BTW, Scoop is completely a Powershell open source project and free for use.

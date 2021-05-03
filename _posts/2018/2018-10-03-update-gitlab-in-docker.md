@@ -19,8 +19,6 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
-
 > Gitlab has several methods to update to newer version depending on the type of the original installation and the Gitlab version. This post will show you the way for docker version of Gitlab, which is the simplest among others.
 
 # Some docs on the Internet

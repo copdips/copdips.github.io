@@ -16,8 +16,6 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
-
 > A recent working experience needed me to write doc on Atlassian Confluance documentation product. I will show you how to convert your markdown doc to Confluance version.
 
 # Convert markdown or rst to Confluance
@@ -40,4 +38,3 @@ Here's [the tutorial on how to insert the HTML marco](https://confluence.atlassi
 # Convert mediawiki to Confluance
 
 Checked on [the official doc](https://confluence.atlassian.com/doc/confluence-wiki-markup-251003035.html#ConfluenceWikiMarkup-CanItypewikimarkupintotheeditor?), it says that Confluence supports wiki import, but I haven't tested yet.
-

@@ -17,8 +17,6 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
-
 > Pandas dataframe is like a small database,
 > we can use it to inject some data and do some in-memory filtering without any external SQL.
 > This post is much like a summary of this [StackOverflow thread](https://stackoverflow.com/questions/17071871/select-rows-from-a-dataframe-based-on-values-in-a-column-in-pandas).

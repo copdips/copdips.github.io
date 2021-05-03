@@ -18,7 +18,7 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
+
 
 If you're working in an enterprise environment, and you don't have the admin rights on your Windows desktop to install additional fonts, or your enterprise admin cannot do that, then I suggest you to **ignore this post**, powerline will be installed, but very ugly. If you have a Linux desktop, all will be OK, installing fonts doesn't need to be root.
 {: .notice--warning}

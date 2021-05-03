@@ -19,8 +19,6 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
-
 > This post will walk you through the steps to migrate Gitlab from one docker container to another. The steps need you to know how to install a new Gitlab container and how to backup and restore Gitlab container, because the migration is just a restoration of a backup to another container.
 
 # Some docs on the Internet

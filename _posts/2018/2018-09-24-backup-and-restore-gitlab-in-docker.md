@@ -19,8 +19,6 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
-
 > Gitlab hosts everything about the code including the docs and the pipeline data, etc. It's crucial to back it up. You can also use restore to migrate the Gitlab to another server. This post will show you how to backup and restore the Gitlab-CE docker version.
 
 # Some docs on the Internet

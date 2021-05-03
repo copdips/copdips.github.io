@@ -17,8 +17,6 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
-
 > Each [official Flask doc](https://flask.palletsprojects.com/en/master/) page worths to read.
 
 ## Request variables

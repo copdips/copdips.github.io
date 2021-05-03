@@ -16,8 +16,6 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
-
 > This is not a complete Git cheat sheet for everyone, this is just a personal cheat sheet for some often forgotten git commands.
 
 

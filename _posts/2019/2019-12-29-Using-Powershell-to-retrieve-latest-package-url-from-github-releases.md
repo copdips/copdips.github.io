@@ -15,8 +15,6 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
-
 > Github can host package releases, I will show you how to use Powershell to retrieve the latest release download url.
 
 ## Download latest Powershell release for Windows x64 zip version

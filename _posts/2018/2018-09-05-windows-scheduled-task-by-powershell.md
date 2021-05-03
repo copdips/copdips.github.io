@@ -16,8 +16,6 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
-
 > A recent project made me to use the Windows scheduled task to execute periodically some python scripts. After the project, I find using Powershell to manage the Windows scheduled task is not so straightforward, that's why I opened this post to share my experience on some common usage, and hope this can save your time if you also need to use it.
 
 # Scheduled task Powershell cmdlets

@@ -17,8 +17,6 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
-
 > Even Salvatore Sanfilippo (creator of Redis) thinks it's [a bad idea](https://stackoverflow.com/a/36498590) to use multiple DBs in Redis. So we can install as many Redis instances as the number of DBs we need. This post will show you how to create multiple Redis instance as Windows service on the same Windows server.
 
 # Choose Redis Windows port version

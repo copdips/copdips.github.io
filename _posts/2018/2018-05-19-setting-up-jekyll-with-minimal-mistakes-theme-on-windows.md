@@ -18,8 +18,6 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
-
 > Do you want to preview Jekyll blog locally on Windows before publishing it to Internet? Many online tutorials about setting up Jekyll on Windows are out of date, I will show you in this post the 2018 version and with the Minimal Mistakes theme.
 
 # Some online tutorials

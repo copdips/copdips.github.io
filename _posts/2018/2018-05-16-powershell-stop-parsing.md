@@ -17,7 +17,7 @@ gallery:
     title: ''
 ---
 
-<!-- {% include toc title="Table of content" %} -->
+<!--  -->
 
 > A friend of mine told me about the Powershell stop-parsing (\-\-%) last year, he said the stop-parsing tells powershell to treat the remaining characters in the line as a literal, but I'd never known where to use it. Recently working on git ssh made it happened.
 

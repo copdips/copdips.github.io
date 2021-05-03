@@ -16,7 +16,7 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
+
 
 Python has several tools to upload packages to PyPi or some private Artifactory locations. The mostly used one should be [twine](https://twine.readthedocs.io/en/latest/). Although twine is not a Python originate tool, but it's officially [recommended by Python.org](https://packaging.python.org/tutorials/packaging-projects/#uploading-the-distribution-archives).
 

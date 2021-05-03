@@ -17,8 +17,6 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
-
 > Relative to [pipenv](https://github.com/pypa/pipenv), and [poetry](https://github.com/python-poetry/poetry), if you're searching for some lightweight python package managers for a small project, I will introduce 2 handy tools for you: [pipreqs](https://github.com/bndr/pipreqs) and [pip-tools](https://github.com/jazzband/pip-tools).
 
 ## pipreqs

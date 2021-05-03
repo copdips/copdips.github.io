@@ -18,7 +18,7 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
+
 
 # Update 2019-12-28 Powershell 7 Select-String default highlighting
 

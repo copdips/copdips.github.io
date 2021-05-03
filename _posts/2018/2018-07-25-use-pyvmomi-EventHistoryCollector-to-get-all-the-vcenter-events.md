@@ -17,8 +17,6 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
-
 > pyVmomi eventManager's QueryEvents() method returns by default only the last 1000 events occurred on the vCenter. I will show you how to use another method CreateCollectorForEvents() to create an EventHistoryCollector object and then we use this object to collect all the events in a given time range by using its method ReadNextEvents().
 
 # An example of QueryEvents method from the eventManager object

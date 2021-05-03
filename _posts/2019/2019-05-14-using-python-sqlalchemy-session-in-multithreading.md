@@ -18,8 +18,6 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
-
 > SQLAlchemy DB session is [not thread safe](https://docs.sqlalchemy.org/en/13/orm/session_basics.html#is-the-session-thread-safe). In this post, I will show you 2 ways to use it in a multithreading context.
 
 

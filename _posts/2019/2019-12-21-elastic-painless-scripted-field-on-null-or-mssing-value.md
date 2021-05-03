@@ -15,7 +15,7 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
+
 
 This post shows how to use elastic painless language in scripted field to work on documents' keys which might not exist in some documents.
 

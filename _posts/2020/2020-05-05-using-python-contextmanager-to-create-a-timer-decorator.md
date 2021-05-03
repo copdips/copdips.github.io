@@ -17,7 +17,7 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
+
 
 This [stackoverflow post](https://stackoverflow.com/a/30024601/5095636) has already given an example on how to use contextmanager to create a timer decorator:
 
@@ -81,4 +81,3 @@ Out[70]: 0.9998141000005489
 
 # the duration is less than 1s, it's default_timer of timeit.
 ```
-

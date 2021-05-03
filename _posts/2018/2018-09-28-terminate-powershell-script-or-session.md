@@ -15,8 +15,6 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
-
 > I always asked myself how to terminate a Powershell script or session, each time I needed to do some tests by myself and also searched on Google. But I could never remember it. So I would like to take this post to note it down, the next time I need to terminate, just need to come back to here.
 
 # Terminate the current Powershell script

@@ -18,8 +18,6 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
-
 > Gitlab ships with its own free CICD which works pretty well. This post will give you an example of the CICD file `.gitlab-ci.yml` for a Python project running on [Gitlab Windows runner](https://copdips.com/2018/09/install-gitlab-runner-on-windows-by-powershell-psremoting.html).
 
 # Some docs on the Internet

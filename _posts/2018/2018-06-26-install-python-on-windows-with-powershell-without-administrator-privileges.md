@@ -19,8 +19,6 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
-
 > As a Windows DevOps, I often use Powershell and Python, Powershell is installed by Windows out of box, but this is not for Python. And for my working environment, I don't have the administrator privileges on some servers. I will show you in this post how to rapidly deploy Python on Windows as a standard user by using Powershell with Nuget.
 
 ## Update 2019-12-30 Installing Python by Scoop

@@ -17,8 +17,6 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
-
 > Gitlab runner can be installed on Windows OS. For people like me who is more familiar with Windows, we would like to use Windows as a Gitlab runner. This post will give you a simplified procedure (winrm PsRemoting full command line) about its installation with some tips and tricks that I haven't seen anywhere on the Internet.
 
 # Some docs on the Internet

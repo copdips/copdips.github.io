@@ -18,8 +18,6 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
-
 > Gitlab-CE (Community Edition) is a completely free and powerful web-based Git-repository manager with wiki, issue-tracking and CI/CD pipeline features, using an open-source license, developed by GitLab Inc. There're already many much better docs on the net, I've never worked with Docker and Linux before, so I wrote this post to save my way to install the Gitlab docker version on Ubuntu, the post is more or less for personal purpose.
 
 # Install Ubuntu server on Hyper-V
@@ -105,4 +103,3 @@ If you like to use HTTPS, you need to generate a SSL certificate and add it to G
 # Run Gitlab in Kubernetes
 
 IBM has provided a [doc](https://github.com/IBM/Kubernetes-container-service-GitLab-sample/blob/master/README.md) about it.
-

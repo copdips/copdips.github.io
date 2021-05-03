@@ -17,7 +17,7 @@ gallery:
     title: ''
 ---
 
-{% include toc title="Table of content" %}
+
 
 There're several solutions to retry a HTTP request with [Requests](https://requests.readthedocs.io/en/master/) module, some of them are:
 
