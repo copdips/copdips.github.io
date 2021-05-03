@@ -110,18 +110,7 @@ The layout can be found at : `_layouts\single.html`
 
 ### Add update date in each post under the post title
 
-```css
-<p class="page__meta">
-  {% if page.date %}
-    <i class="far fa-calendar-alt" aria-hidden="true"></i> Updated: {{ page.date | date: "%B %d, %Y" }}
-    &nbsp;|&nbsp;
-  {% endif %}
 
-  {% if page.read_time %}
-    <i class="far fa-clock" aria-hidden="true"></i> {% include read-time.html %}
-  {% endif %}
-</p>
-```
 
 ## Per page layout
 
