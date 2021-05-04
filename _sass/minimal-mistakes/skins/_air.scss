@@ -24,7 +24,7 @@ $warning-color              : #e67e22 !default;
 $danger-color               : #c0392b !default;
 $info-color                 : #03a9f4 !default;
 $link-color-hover           : mix(#000, $link-color, 25%) !default;
-$link-color-visited         : mix(#fff, $link-color, 50%) !default;
+$link-color-visited         : mix(#fff, $link-color, 40%) !default;
 
 .page__content {
   .notice,
