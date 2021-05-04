@@ -105,7 +105,7 @@ analytics:
 author:
   name             : "Xiang ZHU"
   avatar           : "/image/avatar/zhuxiang-smile.jpg" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : "Infra DevOps"
+  bio              : "Python DevOps"
   location         : "Paris"
   email            : "xiang.zhu@outlook.com"
   links:
