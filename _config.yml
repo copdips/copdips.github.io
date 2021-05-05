@@ -301,4 +301,7 @@ defaults:
       comments: true
       share: true
       related: true
+      # https://mmistakes.github.io/minimal-mistakes/layout-table-of-contents-sticky/#top
+      # https://mmistakes.github.io/minimal-mistakes/docs/helpers/#table-of-contents
       toc: true
+      toc_sticky: true
