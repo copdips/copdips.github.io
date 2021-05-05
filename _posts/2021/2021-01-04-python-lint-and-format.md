@@ -2,8 +2,6 @@
 last_modified_at: 2021-03-28 11:49:07
 title: "Python Lint And Format"
 excerpt: "Some commands to lint and format Python files"
-toc: true
-toc_sticky: true
 tags:
   - python
   - format
