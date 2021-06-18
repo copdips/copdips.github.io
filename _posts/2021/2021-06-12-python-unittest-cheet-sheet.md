@@ -89,6 +89,15 @@ https://docs.pytest.org/en/stable/usage.html#dropping-to-pdb-python-debugger-at-
 
 > allows one to drop into the PDB prompt immediately at the start of each test via a command line option.
 
+## pytest --disable-socket
+
+This is using a third party plugin [pytest-socket](https://github.com/miketheman/pytest-socket) to disable all network calls flowing through Python's socket interface. Unit test should not have any network calls, even any local file operations.
+
+To work with async: `pytest --disable-socket --allow-unix-socket`
+
+To allow specific hosts: `pytest --disable-socket --allow-hosts=127.0.0.1,8.8.8.8`
+Not easy with IPs other than 127.0.0.1, as you might need to open sockets to more IPs for intermediate connections. So normally just --allow-hosts=127.0.0.1 if you have a local service (database for e.g.) for the unit tests.
+{: .notice--warning}
 ## @pytest.mark
 
 https://docs.pytest.org/en/stable/example/markers.html
@@ -183,7 +192,7 @@ https://docs.python.org/3/library/unittest.mock-examples.html#side-effect-functi
 
 We used to use side_effect to force a mock object to raise an exception. But we can also use side_effect to define different return values. This is useful when we have a same mock function used multiple times in a testing function, and this mock function should return different values.
 
-**functions**
+**functions:**
 
 ```python
 >>> vals = {(1, 2): 1, (2, 3): 2}
@@ -197,7 +206,7 @@ We used to use side_effect to force a mock object to raise an exception. But we 
 2
 ```
 
-**iterables**
+**iterables:**
 
 ```python
 >>> mock = MagicMock(side_effect=[4, 5, 6])
@@ -208,5 +217,33 @@ We used to use side_effect to force a mock object to raise an exception. But we 
 >>> mock()
 6
 ```
+## mock any class with Mock
 
-## side_effect to return different values with a function
+```python
+from dataclasses import dataclass
+from unittest.mock import Mock
+
+
+@dataclass
+class A:
+    name: str
+
+
+@dataclass
+class B:
+    name: str
+
+
+@dataclass
+class InventoryItem:
+    a: A
+    b: B
+
+
+def test_class_inventory_item():
+    mock_inventory_item = InventoryItem(*[Mock() for _ in range(2)])
+
+    # or using inspect to get dynamically the class parameters count
+    from inspect import signature
+    mock_inventory_item = InventoryItem(*[Mock() for _ in range(len(signature(InventoryItem).parameters))])
+```
