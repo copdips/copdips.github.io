@@ -20,13 +20,13 @@ gallery:
 
 > Some small & quick examples on how to use Python unittest framwork, especially with Pytest framework. This post is not finished yet.
 
-## pytest --pdb
+## pytest \-\-pdb
 
 https://docs.pytest.org/en/stable/usage.html#dropping-to-pdb-python-debugger-on-failures
 
 This will invoke the Python debugger on every failure (or KeyboardInterrupt).
 
-## pytest --pdb --pdbcls=IPython.terminal.debugger:TerminalPdb
+## pytest \-\-pdb \-\-pdbcls=IPython.terminal.debugger:TerminalPdb
 
 https://docs.pytest.org/en/stable/usage.html#using-the-builtin-breakpoint-function
 
@@ -83,13 +83,13 @@ AssertionError('assert result == "ok"',)
 <class 'AssertionError'>
 ```
 
-## pytest --trace
+## pytest \-\-trace
 
 https://docs.pytest.org/en/stable/usage.html#dropping-to-pdb-python-debugger-at-the-start-of-a-test
 
 > allows one to drop into the PDB prompt immediately at the start of each test via a command line option.
 
-## pytest --disable-socket
+## pytest \-\-disable-socket
 
 This is using a third party plugin [pytest-socket](https://github.com/miketheman/pytest-socket) to disable all network calls flowing through Python's socket interface. Unit test should not have any network calls, even any local file operations.
 
