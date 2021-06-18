@@ -99,6 +99,9 @@ To allow specific hosts: `pytest --disable-socket --allow-hosts=127.0.0.1,8.8.8.
 Not easy with IPs other than 127.0.0.1, as you might need to open sockets to more IPs for intermediate connections. So normally just --allow-hosts=127.0.0.1 if you have a local service (database for e.g.) for the unit tests.
 {: .notice--warning}
 
+Pay extra attention to this [cavet](https://github.com/miketheman/pytest-socket#frequently-asked-questions). If you create another fixture that creates a socket usage that has a "higher" instantiation order, such as at the module/class/session, then the higher order fixture will be resolved first, and won't be disabled during the tests.
+{: .notice--warning}
+
 ## @pytest.mark
 
 https://docs.pytest.org/en/stable/example/markers.html
