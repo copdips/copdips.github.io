@@ -18,17 +18,17 @@ gallery:
     title: ''
 ---
 
-> Some small & quick examples on how to use Python unittest framwork, especially with Pytest framework. This post is not finished yet.
+> Python unittest and Pytest is a big deal, this post just gives some small & quick examples on how to use Python unittest framwork, especially with Pytest framework. This post is not finished yet.
 
 ## pytest \-\-pdb
 
-https://docs.pytest.org/en/stable/usage.html#dropping-to-pdb-python-debugger-on-failures
+[https://docs.pytest.org/en/stable/usage.html#dropping-to-pdb-python-debugger-on-failures](https://docs.pytest.org/en/stable/usage.html#dropping-to-pdb-python-debugger-on-failures)
 
 This will invoke the Python debugger on every failure (or KeyboardInterrupt).
 
 ## pytest \-\-pdb \-\-pdbcls=IPython.terminal.debugger:TerminalPdb
 
-https://docs.pytest.org/en/stable/usage.html#using-the-builtin-breakpoint-function
+[https://docs.pytest.org/en/stable/usage.html#using-the-builtin-breakpoint-function](https://docs.pytest.org/en/stable/usage.html#using-the-builtin-breakpoint-function)
 
 ```bash
 $ pytest --help | grep -i ipython
@@ -62,7 +62,7 @@ Although we get the `Debug Cell`, it seems that it doesn't work in test, should 
 
 ## sys.last_value, sys.last_type and sys.last_traceback
 
-https://docs.pytest.org/en/stable/usage.html#dropping-to-pdb-python-debugger-on-failures
+[https://docs.pytest.org/en/stable/usage.html#dropping-to-pdb-python-debugger-on-failures](https://docs.pytest.org/en/stable/usage.html#dropping-to-pdb-python-debugger-on-failures)
 
 > Note that on any failure the exception information is stored on sys.last_value, sys.last_type and sys.last_traceback. In interactive use, this allows one to drop into postmortem debugging with any debug tool. One can also manually access the exception information, for example:
 
@@ -85,7 +85,7 @@ AssertionError('assert result == "ok"',)
 
 ## pytest \-\-trace
 
-https://docs.pytest.org/en/stable/usage.html#dropping-to-pdb-python-debugger-at-the-start-of-a-test
+[https://docs.pytest.org/en/stable/usage.html#dropping-to-pdb-python-debugger-at-the-start-of-a-test](https://docs.pytest.org/en/stable/usage.html#dropping-to-pdb-python-debugger-at-the-start-of-a-test)
 
 > allows one to drop into the PDB prompt immediately at the start of each test via a command line option.
 
@@ -104,7 +104,7 @@ Pay extra attention to this [cavet](https://github.com/miketheman/pytest-socket#
 
 ## @pytest.mark
 
-https://docs.pytest.org/en/stable/example/markers.html
+[https://docs.pytest.org/en/stable/example/markers.html](https://docs.pytest.org/en/stable/example/markers.html)
 
 We can use `@pytest.mark.foo` decorator to add a marker (label) on any test, and use `pytest -m foo` to run the tests only with mark name is `foo`.
 This method is often used by the pytest extensions to for example enable or disable the extension on some specific tests. Like [@pytest.mark.enable_socket for the pytest-socket extension](https://github.com/miketheman/pytest-socket#usage)
@@ -116,7 +116,7 @@ We can also [marking the whole classs or modules](https://docs.pytest.org/en/sta
 
 ## pytest -k expr
 
-https://docs.pytest.org/en/stable/example/markers.html#using-k-expr-to-select-tests-based-on-their-name
+[https://docs.pytest.org/en/stable/example/markers.html#using-k-expr-to-select-tests-based-on-their-name](https://docs.pytest.org/en/stable/example/markers.html#using-k-expr-to-select-tests-based-on-their-name)
 
 > You can use the -k command line option to specify an expression which implements a substring match on the test names `or class names or file names` instead of the exact match on markers that -m provides. This makes it easy to select tests based on their names.
 
@@ -130,7 +130,7 @@ $ pytest -k "send_http or quick" -v
 
 ## @pytest.mark.xfail(strict=True, reason="")
 
-https://docs.pytest.org/en/reorganize-docs/new-docs/user/xfail.html#strict-parameter
+[https://docs.pytest.org/en/reorganize-docs/new-docs/user/xfail.html#strict-parameter](https://docs.pytest.org/en/reorganize-docs/new-docs/user/xfail.html#strict-parameter)
 
 > Having the xfail marker will still run the test but won’t report a traceback once it fails. Instead terminal reporting will list it in the “expected to fail” (`XFAIL`) section. If the test doesn’t fail it will be reported as “unexpectedly passing” (`XPASS`). set strict=True to ensure `XPASS` (unexpectedly passing) causes the tests to be recorded as a failure.
 
@@ -143,7 +143,7 @@ def test_function():
 
 ## @pytest.mark.parametrize
 
-https://docs.pytest.org/en/stable/example/parametrize.html
+[https://docs.pytest.org/en/stable/example/parametrize.html](https://docs.pytest.org/en/stable/example/parametrize.html)
 
 I put `@pytest.mark.parametrize` out of `@pytest.mark` because they're really different. In fact, I discovered pytest from this functionnality.
 
@@ -162,7 +162,7 @@ def test_sum(a, b, expected):
 
 ### Apply indirect on particular arguments
 
-https://docs.pytest.org/en/stable/example/parametrize.html#apply-indirect-on-particular-arguments
+[https://docs.pytest.org/en/stable/example/parametrize.html#apply-indirect-on-particular-arguments](https://docs.pytest.org/en/stable/example/parametrize.html#apply-indirect-on-particular-arguments)
 
 > Very often parametrization uses more than one argument name. There is opportunity to apply indirect parameter on particular arguments. It can be done by passing list or tuple of arguments’ names to indirect. In the example below there is a function test_indirect which uses two fixtures: x and y. Here we give to indirect the list, which contains the name of the fixture x. The indirect parameter will be applied to this argument only, and the value a will be passed to respective fixture function.
 
@@ -192,7 +192,7 @@ def test_indirect(x, y):
 
 ## side_effect functions and iterables
 
-https://docs.python.org/3/library/unittest.mock-examples.html#side-effect-functions-and-iterables
+[https://docs.python.org/3/library/unittest.mock-examples.html#side-effect-functions-and-iterables](https://docs.python.org/3/library/unittest.mock-examples.html#side-effect-functions-and-iterables)
 
 We used to use side_effect to force a mock object to raise an exception. But we can also use side_effect to define different return values. This is useful when we have a same mock function used multiple times in a testing function, and this mock function should return different values.
 
@@ -250,4 +250,106 @@ def test_class_inventory_item():
     # or using inspect to get dynamically the class parameters count
     from inspect import signature
     mock_inventory_item = InventoryItem(*[Mock() for _ in range(len(signature(InventoryItem).parameters))])
+```
+
+## monkeypatch
+
+[monkeypatch](https://docs.pytest.org/en/stable/monkeypatch.html) is a pytest native fixture, all modifications will be undone after the requesting test function or fixture has finished.
+
+### Monkeypatching functions or the property of a class
+
+https://docs.pytest.org/en/stable/monkeypatch.html#simple-example-monkeypatching-functions
+
+Very similar to Python standard lib `unittest.mock.patch` decorator since Python 3, but `monkeypatch` is a fixture. Some people find `monkeypatch` is less effort to write than `unittest.mock.patch`. Ref. https://github.com/pytest-dev/pytest/issues/4576
+# There's also a plugin `pytest-mock`.
+
+```python
+monkeypatch.setattr(obj, name, value, raising=True)
+monkeypatch.delattr(obj, name, raising=True)
+```
+
+### Monkeypatching environment variables
+
+https://docs.pytest.org/en/stable/monkeypatch.html#monkeypatching-environment-variables
+
+```python
+# contents of our test file e.g. test_code.py
+import pytest
+
+
+@pytest.fixture
+def mock_env_user(monkeypatch):
+    monkeypatch.setenv("USER", "TestingUser")
+
+
+@pytest.fixture
+def mock_env_missing(monkeypatch):
+    monkeypatch.delenv("USER", raising=False)
+
+
+# notice the tests reference the fixtures for mocks
+def test_upper_to_lower(mock_env_user):
+    assert get_os_user_lower() == "testinguser"
+
+
+def test_raise_exception(mock_env_missing):
+    with pytest.raises(OSError):
+        _ = get_os_user_lower()
+```
+### monkeypatch with parametrize
+
+As said above monkeypatch is a fixture, so we can use [pytest-lazy-fixture](https://github.com/tvorog/pytest-lazy-fixture) to parametrize the fixtures. I cannot remember where is the link, in fact on one page from pytest official doc, it says that pytest cannot do it for the moment, that's why `pytest-lazy-fixture` is introduced here.
+###
+
+It is worth saying that following monkeypatch on env won't work:
+
+```python
+# file a.py
+TEST_USER = os.getenv("TEST_USER")
+
+def get_test_user():
+    return(TEST_USER)
+
+
+# file test_a.py
+import pytest
+
+from a import get_test_user
+
+@pytest.fixture
+def mock_env_user(monkeypatch):
+    monkeypatch.setenv("TEST_USER", "TestingUser")
+
+def test_get_test_user(mock_env_user):
+    assert get_test_user() == "testinguser"
+```
+
+The test will fail, because the line `TEST_USER = os.getenv("TEST_USER")` in the file `a.py` is always imported before `mock_env_user` by `test_a.py`, `from a import get_test_user` is at the beginning of the test file. During the import, at this moment, the env var `TEST_USER` doesn't exist yet in os, it will always have the value `None`. To fix this problem, we need to put the `os.getenv` into `get_test_user` like:
+
+```python
+# file a.py
+
+def get_test_user():
+    TEST_USER = os.getenv("TEST_USER")
+    return(TEST_USER)
+```
+
+### Monkeypatching dictionaries
+
+```python
+# patch one key at each patch
+monkeypatch.setitem(app.DEFAULT_CONFIG, "user", "test_user")
+monkeypatch.setitem(app.DEFAULT_CONFIG, "database", "test_db")
+monkeypatch.delitem(app.DEFAULT_CONFIG, "name", raising=False)
+```
+### Modifying sys.path
+
+```python
+monkeypatch.syspath_prepend(path)
+```
+
+### Changing the context of the current working directory during a test
+
+```python
+monkeypatch.chdir(path)
 ```
