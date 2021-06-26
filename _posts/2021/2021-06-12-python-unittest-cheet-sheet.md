@@ -270,7 +270,10 @@ monkeypatch.delattr(obj, name, raising=True)
 
 ### Monkeypatching environment variables
 
-https://docs.pytest.org/en/stable/monkeypatch.html#monkeypatching-environment-variables
+[https://docs.pytest.org/en/stable/monkeypatch.html#monkeypatching-environment-variables](https://docs.pytest.org/en/stable/monkeypatch.html#monkeypatching-environment-variables)
+
+Can be replaced by python native unittest.mock [@patch.dict('os.environ', {'newkey': 'newvalue'})](https://docs.python.org/3/library/unittest.mock.html#unittest.mock.patch.dict)
+{: .notice--info}
 
 ```python
 # contents of our test file e.g. test_code.py
@@ -336,6 +339,9 @@ def get_test_user():
 
 ### Monkeypatching dictionaries
 
+Can be replaced by python native unittest.mock [@patch.dict()](https://docs.python.org/3/library/unittest.mock.html#unittest.mock.patch.dict)
+{: .notice--info}
+
 ```python
 # patch one key at each patch
 monkeypatch.setitem(app.DEFAULT_CONFIG, "user", "test_user")
@@ -353,3 +359,26 @@ monkeypatch.syspath_prepend(path)
 ```python
 monkeypatch.chdir(path)
 ```
+
+## pytest-xdist to run tests in parallel
+
+[https://github.com/pytest-dev/pytest-xdist](https://github.com/pytest-dev/pytest-xdist)
+
+Especially useful when your tests are unit tests for exmaple, which dont have dependencies from one  with each other, and don't share any changing data, which means your tests should be stateless.
+
+```bash
+# run on 4 CPUs
+pytest -n 4
+
+# run on a number of CPUs calculated automatically by the python built-in multiprocessing module
+pytest -n auto
+
+# run on a number of CPUs calculated automatically by the module psutil, you need such module if you have logical cpus as well as certain imposed limitations (like container runtimes with cpu limits)
+# ref. https://stackoverflow.com/a/14840102/5095636
+# ref. https://docs.python.org/3/library/multiprocessing.html#multiprocessing.cpu_count
+pip install pytest-xdist[psutil]
+pytest -n auto
+```
+
+There's another module [pytest-parallel](https://github.com/browsertron/pytest-parallel), the author says his module can run the tests in concurrency, and very efficient in integration tests, which tests might be stateful or sequential. I haven't tested yet, so cannot say anything here.
+{: .notice--info}
