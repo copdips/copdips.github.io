@@ -382,3 +382,97 @@ pytest -n auto
 
 There's another module [pytest-parallel](https://github.com/browsertron/pytest-parallel), the author says his module can run the tests in concurrency, and very efficient in integration tests, which tests might be stateful or sequential. I haven't tested yet, so cannot say anything here.
 {: .notice--info}
+
+## speccing
+
+[https://docs.python.org/3/library/unittest.mock.html#autospeccing](https://docs.python.org/3/library/unittest.mock.html#autospeccing)
+
+mock.patch returns a mock object, a mock object can have whatever atrributes and methods.
+
+`mock.asssert_called_once_with(4, 5, 6)` doesn't fail as shown as follows:
+
+```bash
+>>> mock = Mock(name='Thing', return_value=None)
+>>> mock(1, 2, 3)
+>>> mock.asssert_called_once_with(4, 5, 6)
+<Mock name='Thing.asssert_called_once_with()' id='140160334650144'>
+```
+
+### simple speccing
+
+```bash
+>>> from urllib import request
+>>> mock = Mock()
+>>> mock.asssert_called_with()
+<Mock name='mock.asssert_called_with()' id='140160336271776'>
+
+# using simple speccing, mock.asssert_called_with() is detected as an error
+>>> mock = Mock(spec=request.Request)
+>>> mock.asssert_called_with()
+---------------------------------------------------------------------------
+AttributeError                            Traceback (most recent call last)
+...
+AttributeError: Mock object has no attribute 'asssert_called_with'
+
+# still using simple speccing, mock.data.asssert_called_with() is detected as an mocked method, no errors.
+# so simple speccing doesnt' work for nested objects
+>>> mock.data.asssert_called_with()
+<Mock name='mock.data.asssert_called_with()' id='140160336027120'>
+```
+
+### auto-speccing
+
+#### Using patch(autospec=True)
+
+```bash
+>>> from urllib import request
+>>> patcher = patch('__main__.request', autospec=True)
+>>> mock_request = patcher.start()
+
+>>> request is mock_request
+True
+
+# mock_request.Request has the spec='Request' now
+>>> mock_request.Request
+<MagicMock name='request.Request' spec='Request' id='...'>
+
+# the real request object doesn't have the static data attribute, so autospecced object doesn't have it neither.
+>>> mock_request.data
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/usr/lib/python3.8/unittest/mock.py", line 637, in __getattr__
+    raise AttributeError("Mock object has no attribute %r" % name)
+AttributeError: Mock object has no attribute 'data'
+```
+
+#### Using create_autospec()
+
+```bash
+>>> from urllib import request
+>>> mock_request = create_autospec(request)
+>>> mock_request.Request('foo', 'bar')
+<NonCallableMagicMock name='mock.Request()' spec='Request' id='...'>
+```
+
+autospec works well on methods and static attributes, but a serious problem is that it is common for instance attributes to be created in the __init__() method and not to exist on the class at all. autospec can’t know about any dynamically created attributes and restricts the api to visible attributes. This is why autospeccing is not the patch default behaviour. Search the above phrase in the [python official doc](https://docs.python.org/3/library/unittest.mock.html#autospeccing) to get more details and solutions.
+{: .notice--warning}
+
+## unittest.mock.ANY
+
+[https://docs.python.org/3/library/unittest.mock.html#any](https://docs.python.org/3/library/unittest.mock.html#any)
+
+```bash
+>>> from unittest.mock import Mock
+>>> mock = Mock(return_value=None)
+>>> mock('foo', bar=object())
+>>> mock.assert_called_once_with('foo', bar=ANY)
+```
+
+```bash
+>>> from unittest.mock import Mock, call
+>>> m = Mock(return_value=None)
+>>> m(1)
+>>> m(1, 2)
+>>> m(object())
+>>> m.mock_calls == [call(1), call(1, 2), ANY]
+```
