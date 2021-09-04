@@ -5,7 +5,7 @@ excerpt: ""
 tags:
   - python
   - async
-published: false
+published: true
 # header:
 #   teaserlogo:
 #   teaser: ''
@@ -21,7 +21,7 @@ gallery:
 
 The [`concurrent.futures`](https://docs.python.org/3.9/library/concurrent.futures.html) is a high-level abstraction for the `threading` and `multiprocessing` modules.
 
-```mermaid
+```mermaid!
 flowchart LR
   concurrent.futures ---> |abstraction for| threading
   concurrent.futures ---> |abstraction for| multiprocessing
