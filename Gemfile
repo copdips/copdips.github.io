@@ -1,4 +1,4 @@
 source "https://rubygems.org"
 gemspec
 
-gem 'jekyll-spaceship', '~> 0.6'
+gem 'jekyll-spaceship'

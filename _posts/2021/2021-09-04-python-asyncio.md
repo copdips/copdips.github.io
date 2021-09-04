@@ -19,12 +19,12 @@ gallery:
 
 ## concurrent.futures
 
-The [`concurrent.futures`](https://docs.python.org/3.9/library/concurrent.futures.html) is a high-level abstraction for the `threading` and `multiprocessing` modules.
+The [concurrent.futures](https://docs.python.org/3.9/library/concurrent.futures.html) is a high-level abstraction for the `threading` and `multiprocessing` modules.
 
 ```mermaid!
 flowchart LR
-  concurrent.futures ---> |abstraction for| threading
-  concurrent.futures ---> |abstraction for| multiprocessing
-  threading ---> |abstraction for| _thread
+  concurrent.futures --->| on top of | threading
+  concurrent.futures --->| on top of | multiprocessing
+  threading --->| on top of | _thread
   click concurrent.futures "https://docs.python.org/3.9/library/concurrent.futures.html" _blank
 ```
