@@ -1,4 +1,5 @@
 ---
+last_modified_at: 2021-09-05 19:20:33
 title: "Setting up Jekyll with Minimal Mistakes theme on Windows"
 excerpt: "Preview Jekyll blog locally on Windows with the Minimal Mistakes theme."
 tags:
@@ -255,3 +256,7 @@ Configuration file: D:/xiang/git/copdips.github.io/_config.yml
 The outputs tell that you can visit your site from : [http://127.0.0.1:4000](http://127.0.0.1:4000)
 
 Except you modify the `_config.yml` file, all the other modifications can trigger automatically the regeneration of the blog pages, and just refresh your blog page from the navigator, you can read the new version right away. But any modification in _config.yml needs the relaunch of `bundle exec jekyll serve -w` command to see the result.
+
+# Add non-whitelisted plugins (gems)
+
+GitHub Pages runs in `safe` mode and only allows [a set of whitelisted plugins](https://pages.github.com/versions/). To use the gem in GitHub Pages, one of the workarounds is to use CI (e.g. travis, github workflow) and deploy to your `gh-pages` branch like: [jekyll-deploy-action](https://github.com/jeffreytse/jekyll-deploy-action), and I use this plugin: [jekyll-spaceship](https://github.com/jeffreytse/jekyll-spaceship) in my github pages.
