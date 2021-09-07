@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2021-03-15 23:50:01
+last_modified_at: 2021-09-07 18:00:33
 title: "Git Cheat Sheet"
 excerpt: "Some personal often forgotten git commands."
 tags:
@@ -39,7 +39,7 @@ Edit `~/.gitconfig`
         df = diff
         last = log -1 HEAD
         lga = log --graph --decorate --oneline --all
-        ll = log --graph --all --pretty=format:'%C(auto)%h%Creset <%an>: %s %Creset%C(auto)%d%Creset %C(bold black)(%cr)%Creset' --abbrev-commit --date=relative
+        ll = log --graph --all --pretty=format:'%C(auto)%h%Creset <%an>: %s %Creset%C(auto)%d%Creset %C(bold black)(%cr)%Creset %C(bold black)(%ci)%Creset'
 ```
 
 ## Restore
@@ -68,6 +68,11 @@ git checkout *
 Untracked files cannot be discarded by checkout.
 {: .notice--info}
 
+### Discard last commit (completely remove)
+
+```bash
+git reset --hard HEAD~
+```
 
 ### Unstage from staging area
 
@@ -169,6 +174,38 @@ git branch [branch_name] [commit_hash_that_preceded_the_delete_commit]
 git reset --hard upstream/master
 or
 git checkout -B master origin/master # sometimes this one might not work
+```
+
+## get last commit of another local branch
+
+```bash
+git cherry-pick another_local_branch
+```
+
+## get all commits of another local other_branch
+
+```bash
+get rebase another_local_branch
+```
+
+## show content in staging area
+
+```bash
+git diff --cached
+```
+
+## show content in the last commit local repository
+
+```bash
+git show
+git show HEAD
+```
+
+## show content in the second last commit in local repository
+
+```bash
+git show HEAD~
+git show HEAD~1
 ```
 
 ## Disable host key checking
