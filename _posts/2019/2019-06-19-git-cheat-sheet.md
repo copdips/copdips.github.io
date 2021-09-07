@@ -171,8 +171,9 @@ git reset
 If you want to rollback the `reset --hard`, and you have the discarded commit number, you can rollback by `git cherry-pick <commit number>`
 {: .notice--warning}git reset HEAD <file>
 
+## Branch
 
-## Force local branch to the same with remote branch
+### Force local branch to the same with remote branch
 
 ```bash
 git reset --hard upstream/master
@@ -180,19 +181,20 @@ or
 git checkout -B master origin/master # sometimes this one might not work
 ```
 
-## get last commit of another local branch
+### get last commit of another local branch
 
 ```bash
 git cherry-pick another_local_branch
 ```
 
-## get all commits of another local other_branch
+### get all commits of another local other_branch
 
 ```bash
 get rebase another_local_branch
 ```
 
 ## Show diff
+
 ### show content in staging area
 
 ```bash
