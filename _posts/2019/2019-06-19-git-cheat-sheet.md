@@ -50,8 +50,14 @@ Edit `~/.gitconfig`
 git restore --source [old_commit_hash] [file_name]
 ```
 
-## Undo
+### Restore a deleted branch
 
+```bash
+git reflog
+git branch [branch_name] [commit_hash_that_preceded_the_delete_commit]
+```
+
+## Undo
 
 ### Discard changes in working directory
 
@@ -71,8 +77,12 @@ Untracked files cannot be discarded by checkout.
 ### Discard last commit (completely remove)
 
 ```bash
+# better to show git log history before using --hard for rollback purpose.
 git reset --hard HEAD~
 ```
+
+We can recover the commit disarded by --hard with the git cherry-pick [commit number] if we displayed or saved it before. Whatever you can also use git reflog to get the commit number too.
+{: .notice--info}
 
 ### Unstage from staging area
 
@@ -161,12 +171,6 @@ git reset
 If you want to rollback the `reset --hard`, and you have the discarded commit number, you can rollback by `git cherry-pick <commit number>`
 {: .notice--warning}git reset HEAD <file>
 
-## Recovering a deleted branch
-
-```bash
-git reflog
-git branch [branch_name] [commit_hash_that_preceded_the_delete_commit]
-```
 
 ## Force local branch to the same with remote branch
 
@@ -188,20 +192,21 @@ git cherry-pick another_local_branch
 get rebase another_local_branch
 ```
 
-## show content in staging area
+## Show diff
+### show content in staging area
 
 ```bash
 git diff --cached
 ```
 
-## show content in the last commit local repository
+### show content in the last commit local repository
 
 ```bash
 git show
 git show HEAD
 ```
 
-## show content in the second last commit in local repository
+### show content in the second last commit in local repository
 
 ```bash
 git show HEAD~
