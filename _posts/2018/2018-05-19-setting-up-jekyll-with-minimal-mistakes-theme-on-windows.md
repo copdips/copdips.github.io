@@ -265,12 +265,14 @@ GitHub Pages runs in `safe` mode and only allows [a set of whitelisted plugins](
 
 ## Using mermaid in github pages
 
-Above `jekyll-spaceship` plugin can render mermaid code but not very well as described [here](https://github.com/jeffreytse/jekyll-spaceship/issues/60).
+Above `jekyll-spaceship` plugin can render the mermaid code but not very well as described [here](https://github.com/jeffreytse/jekyll-spaceship/issues/60).
 
-Currently, a better solution is to use directly the [mermaid javascript API](https://mermaid-js.github.io/mermaid/#/n00b-gettingStarted?id=_3-calling-the-javascript-api). The solution is inspired by this [post](https://jojozhuang.github.io/tutorial/jekyll-diagram-with-mermaid/). You can refer to this [commit](https://github.com/copdips/copdips.github.io/commit/6e9fde29abff7691ccfd7b7b0ad7158651931ed5) to see how to use it. Recently
+Currently, there're two better solutions by using use the [mermaid javascript API](https://mermaid-js.github.io/mermaid/#/n00b-gettingStarted?id=_3-calling-the-javascript-api).
 
-The high level steps are:
+The **first solution** is to use the mermaid API directly, it's inspired by this [post](https://jojozhuang.github.io/tutorial/jekyll-diagram-with-mermaid/). You can refer to this [commit](https://github.com/copdips/copdips.github.io/commit/6e9fde29abff7691ccfd7b7b0ad7158651931ed5) to see how to use it. The steps are as follows:
 
 1. create a file `mermaid.html` inside the folder `_includes`. The file content could be found on the [mermaid js official website](https://mermaid-js.github.io/mermaid/#/n00b-gettingStarted?id=_3-calling-the-javascript-api).
 2. update the file `_includes/head.html` to include the new file `mermaid.html` with or without the condition on the var `page.mermaid`
 3. in post where we need to render the mermaid diagrams, just put the code in side a html div block by set the class to `mermaid` like: `<div class="mermaid"></div>`. If the step 2 has set a condition on the var `page.mermaid`, you need to aslo add a variable named `mermaid` and set its value to `true` in the post header.
+
+The **seconde solution** is to install the gem plugin [jekyll-mermaid](https://github.com/jasonbellamy/jekyll-mermaid) where the underlying implementation uses the mermaid API too, This is what I'm using as per this [commit](https://github.com/copdips/copdips.github.io/commit/61af59a1ed4b18c392b1eeed1dbcb9293c8be650), it's a little bitter easier than the first solution.
