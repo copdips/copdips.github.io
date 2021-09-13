@@ -240,6 +240,7 @@ plugins:
   - jekyll-feed
   - jekyll-include-cache
   - jekyll-spaceship
+  - jekyll-mermaid
 
 # mimic GitHub Pages with --safe
 whitelist:
@@ -306,3 +307,6 @@ defaults:
       # https://mmistakes.github.io/minimal-mistakes/docs/helpers/#table-of-contents
       toc: true
       toc_sticky: true
+
+mermaid:
+  src: 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js'
