@@ -267,7 +267,7 @@ GitHub Pages runs in `safe` mode and only allows [a set of whitelisted plugins](
 
 Above `jekyll-spaceship` plugin can render the mermaid code but not very well as described [here](https://github.com/jeffreytse/jekyll-spaceship/issues/60).
 
-Currently, there're two better solutions by using use the [mermaid javascript API](https://mermaid-js.github.io/mermaid/#/n00b-gettingStarted?id=_3-calling-the-javascript-api).
+Currently, there're two better solutions by using the [mermaid javascript API](https://mermaid-js.github.io/mermaid/#/n00b-gettingStarted?id=_3-calling-the-javascript-api).
 
 The **first solution** is to use the mermaid API directly, it's inspired by this [post](https://jojozhuang.github.io/tutorial/jekyll-diagram-with-mermaid/). You can refer to this [commit](https://github.com/copdips/copdips.github.io/commit/6e9fde29abff7691ccfd7b7b0ad7158651931ed5) to see how to use it. The steps are as follows:
 
