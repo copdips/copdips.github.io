@@ -299,7 +299,7 @@ defaults:
       author_profile: true
       read_time: true
       show_date: true
-      hit_count: false
+      hit_count: true
       comments: true
       share: true
       related: true
