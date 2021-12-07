@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2021-03-28 11:49:07
+last_modified_at: 2021-12-07 10:12:33
 title: "Python Lint And Format"
 excerpt: "Some commands to lint and format Python files"
 tags:
@@ -47,14 +47,14 @@ disable=C0116
 But we can also ignore some warnings directly in the pylint command:
 
 ```bash
-pylint . -j 0 --disable=C0116
+pylint . -j 0 --disable=C0116,C0330,C0326
 ```
 
 ### flake8
 
 ```bash
 # ignore W503 because of black format. BTW, flake8 also has W504 which is in contrary to W503.
-flake8 . --exclude=venv --ignore=W503
+flake8 . --exclude=venv --extend-ignore=E203,W503 --max-line-length=88 --show-source --statistics --count
 flake8 [a_file_path]
 ```
 
@@ -91,7 +91,7 @@ And also [django-stubs](https://pypi.org/project/django-stubs/)
 
 ```ini
 [mypy]
-ignore_missing_imports = True # We recommend using this approach only as a last resort: it’s equivalent to adding a # type: ignore to all unresolved imports in your codebase.
+ignore_missing_imports = True # We recommend using this approach only as a last resort: it's equivalent to adding a # type: ignore to all unresolved imports in your codebase.
 plugins = sqlmypy # sqlalchemy-stubs
 ```
 
@@ -102,6 +102,7 @@ mypy .
 mypy . --exclude [a regular expression that matches file path]
 mypy . --exclude venv[//] # exclude venv folder under the root
 ```
+
 ## Format
 
 ### isort
@@ -123,6 +124,8 @@ black .
 black [a_file_path]
 ```
 
+Using black with other tools: [https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html](https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html)
+
 ## VSCode
 
 Just my 2 cents, try the [errorlens](https://marketplace.visualstudio.com/items?itemName=usernamehw.errorlens) extension in VSCode, it will lint all the warnings/errors on live when coding, it's really cool.
@@ -134,6 +137,10 @@ And don't forget to install the official [SonarLint](https://marketplace.visuals
 [https://pre-commit.com/](https://pre-commit.com/)
 
 > "Git hook scripts are useful for identifying simple issues before submission to code review. We run our hooks on every commit to automatically point out issues in code such as missing semicolons, trailing whitespace, and debug statements. By pointing these issues out before code review, this allows a code reviewer to focus on the architecture of a change while not wasting time with trivial style nitpicks."
+
+### Online examples
+
+[pylint github pre-commit-config.yaml](https://github.com/PyCQA/pylint/blob/main/.pre-commit-config.yaml)
 
 ### Create a file named `.pre-commit-config.yaml` to the root of your project
 
@@ -208,7 +215,7 @@ You could also run `pre-commit install --hook-type pre-push` to register pre-pus
 > "it's usually a good idea to run the hooks against all of the files when adding new hooks (usually pre-commit will only run on the changed files during git hooks)"
 
 ```bash
-$ pre-commit run --all-files
+pre-commit run --all-files
 ```
 
 ### Git commit
