@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2021-09-07 18:00:33
+last_modified_at: 2022-01-26 23:16:18
 title: "Git Cheat Sheet"
 excerpt: "Some personal often forgotten git commands."
 tags:
@@ -252,3 +252,7 @@ git gui
 ```
 
 ![git-gui](https://github.com/copdips/copdips.github.io/raw/master/_image/blog/2019-06-19-git-cheat-sheet/git-gui.PNG)
+
+## Pull Requests with Rebase
+
+Azure devops doc: [https://devblogs.microsoft.com/devops/pull-requests-with-rebase/](https://devblogs.microsoft.com/devops/pull-requests-with-rebase/)
