@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2021-12-07 10:12:33
+last_modified_at: 2022-01-29 18:15:15
 title: "Python Lint And Format"
 excerpt: "Some commands to lint and format Python files"
 tags:
@@ -54,9 +54,20 @@ pylint . -j 0 --disable=C0116,C0330,C0326
 
 ```bash
 # ignore W503 because of black format. BTW, flake8 also has W504 which is in contrary to W503.
-flake8 . --exclude=venv --extend-ignore=E203,W503 --max-line-length=88 --show-source --statistics --count
+flake8 . \
+  --exclude=venv \
+  --extend-ignore=E203,W503 \
+  --max-line-length=88 \
+  --max-complexity=7 \
+  --show-source \
+  --statistics \
+  --count \
+  --jobs=auto
+
 flake8 [a_file_path]
 ```
+
+There's a very nich flake9 plugin called [**flake8-cognitive-complexity**](https://github.com/Melevir/flake8-cognitive-complexity) which checks the [Cognitive Complexity](https://blog.sonarsource.com/cognitive-complexity-because-testability-understandability) in addition to the Cyclomatic Complexity provided by flake8 out of the box. We dont need to add extra parameter to use the Cognitive Complexity in flake8, it's set to `--max-cognitive-complexity=7` by default once the plugin is installed. By the way, Sonar sets the Cognitive Complexity threshold to 15 by default.
 
 ### bandit
 
@@ -78,9 +89,27 @@ assert_used:
 ```bash
 # without specifying -c ./bandit, it doesn't work
 $ bandit . -r -c ./.bandit
-
 ```
 
+### ossaudit
+
+[ossaudit](https://github.com/illikainen/ossaudit) uses [Sonatype OSS Index](https://ossindex.sonatype.org/) to audit Python packages for known vulnerabilities.
+
+It can check installed packages and/or packages specified in dependency files. The following formats are supported with [dparse](https://github.com/pyupio/dparse):
+
+- PIP requirement files
+- Pipfile
+- Pipfile.lock
+- tox.ini
+- conda.yml
+
+```bash
+# check installed packages and packages listed in two requirements files
+$ ossaudit --installed --file requirements.txt --file requirements-dev.txt
+Found 0 vulnerabilities in 214 packages
+```
+
+Github has already provided, free of charge, the [vulnerable dependencies alert](https://docs.github.com/en/code-security/supply-chain-security/managing-vulnerabilities-in-your-projects-dependencies/about-alerts-for-vulnerable-dependencies).
 ### mypy
 
 For projects having sqlalchemy, we often install the `sqlalchemy-stubs` plugin as sqlalchemy uses some dynamic classes.
