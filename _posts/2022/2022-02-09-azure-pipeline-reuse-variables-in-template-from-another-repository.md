@@ -33,7 +33,7 @@ I can split the variables into 3 groups:
 Suppose I'm writing an Azure pipeline called `cicd.yml` for the `repositoryA` located at: `organizationA/projectA/repositoryA`, I will save the above 3 groups of variables to 3 places:
 
 1. organization level variables -> to a new repository outside of the project, for e.g. `organizationA/sharedProject/sharedRepository`
-2. project level variables -> to a new repository inside the same project, for e.g. `organizationA/projectA/sharedRepository`
+2. project level variables -> to a new repository inside of the same project, for e.g. `organizationA/projectA/sharedRepository`
 3. repository level variables -> to the same repository: `organizationA/projectA/repositoryA`
 
 By checking following two official docs (in fact in the same doc :-)) : [Variable reuse](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#variable-reuse), [Use other repositories](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#use-other-repositories), the file content of each variable group could be:
