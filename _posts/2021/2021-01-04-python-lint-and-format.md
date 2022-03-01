@@ -67,7 +67,7 @@ flake8 . \
 flake8 [a_file_path]
 ```
 
-There's a very nich flake9 plugin called [**flake8-cognitive-complexity**](https://github.com/Melevir/flake8-cognitive-complexity) which checks the [Cognitive Complexity](https://blog.sonarsource.com/cognitive-complexity-because-testability-understandability) in addition to the Cyclomatic Complexity provided by flake8 out of the box. We dont need to add extra parameter to use the Cognitive Complexity in flake8, it's set to `--max-cognitive-complexity=7` by default once the plugin is installed. By the way, Sonar sets the Cognitive Complexity threshold to 15 by default.
+There's a very nice flake8 plugin called [**flake8-cognitive-complexity**](https://github.com/Melevir/flake8-cognitive-complexity) which checks the [Cognitive Complexity](https://blog.sonarsource.com/cognitive-complexity-because-testability-understandability) in addition to the Cyclomatic Complexity provided by flake8 out of the box. We dont need to add extra parameter to use the Cognitive Complexity in flake8, it's set to `--max-cognitive-complexity=7` by default once the plugin is installed. By the way, Sonar sets the Cognitive Complexity threshold to 15 by default.
 
 ### bandit
 
