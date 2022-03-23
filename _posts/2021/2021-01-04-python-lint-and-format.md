@@ -122,6 +122,10 @@ And also [django-stubs](https://pypi.org/project/django-stubs/)
 [mypy]
 ignore_missing_imports = True # We recommend using this approach only as a last resort: it's equivalent to adding a # type: ignore to all unresolved imports in your codebase.
 plugins = sqlmypy # sqlalchemy-stubs
+exclude = (?x)(
+    ^venv
+    | ^build
+  )
 ```
 
 running mypy:
