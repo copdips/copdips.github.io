@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2021-09-14 00:51:21
+last_modified_at: 2022-04-10 17:56:52
 title: "Setting up Jekyll with Minimal Mistakes theme on Windows"
 excerpt: "Preview Jekyll blog locally on Windows with the Minimal Mistakes theme."
 tags:
@@ -180,6 +180,11 @@ Append a new line under the text bloc, and insert the notice tag there :
 Other external notice methods :
 - <https://idratherbewriting.com/documentation-theme-jekyll/mydoc_alerts.html>
 - <https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/#colorful-sections>
+
+
+### Larger width
+
+The `$x-large` size defined in the file `_Variables.scss` is set at `1280px`, which is good as per the maintainer's idea of in favor of the [readability](https://github.com/mmistakes/minimal-mistakes/issues/2214#issuecomment-1087605993), but is still too narrow for me, I have large 34" screen, and I like the width https://docs.microsoft.com/, so just set `$x-large: 1520px !default;` to have similar size as Microsoft docs.
 
 ## Write a post
 
