@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2022-01-29 18:15:15
+last_modified_at: 2022-04-14 10:23:16
 title: "Python Lint And Format"
 excerpt: "Some commands to lint and format Python files"
 tags:
@@ -135,6 +135,16 @@ mypy .
 mypy . --exclude [a regular expression that matches file path]
 mypy . --exclude venv[//] # exclude venv folder under the root
 ```
+
+### ignore lint error in one line
+
+| linter           | ingore in one line                                                           |
+|------------------|------------------------------------------------------------------------------|
+| pylint           | (2 spaces)# pylint: disable={errorIdentifier}                                           |
+| flake8           | (2 spaces)# noqa: {errorIdentifier}                                                    |
+| bandit           | (2 spaces)# nosec                                                                      |
+| mypy             | (2 spaces)# type: ignore                                                               |
+| multiple linters | (2 spaces)# type: ignore # noqa: {errorIdentifier} # pylint: disable={errorIdentifier} |
 
 ## Format
 
