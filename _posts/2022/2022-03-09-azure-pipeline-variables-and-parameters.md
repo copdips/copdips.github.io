@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2022-04-22 22:58:51
+last_modified_at: 2022-04-23 18:30:14
 title: "Azure pipeline variables and parameters"
 excerpt: ""
 tags:
@@ -58,7 +58,7 @@ aJsonVar: '{ \"dev\": \"foo\", \"prd\": \"bar\" }'
 
 ### Object parameter
 
-Parameter has a type of [`object`](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/runtime-parameters?view=azure-devops&tabs=script#parameter-data-types) which can take any YAML structure. If it's related to a `array/list` type, we can use `${{ each element in paramters.elements}}` to loop through it, but if it's releated to a `mapping/dict` type, it will not be easy as Microsoft [hasn't provided any official docs](https://github.com/microsoft/azure-pipelines-yaml/issues/427) (and [this one](https://stackoverflow.com/a/59987335/5095636)) on how to use complex paramter with the pipeline native syntax, and my tests with different approaches failed too. Hopefully, for `mapping/dict` object type of parameter, we can workaround it by doing some transformation in a script task with [convertToJson](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/expressions?view=azure-devops#converttojson) like: `echo '${{ convertToJson(parameters.elements) }}'`
+Parameter has a type of [`object`](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/runtime-parameters?view=azure-devops&tabs=script#parameter-data-types) which can take any YAML structure. If it's related to a `array/list` type, we can use `${% raw %}{{ each element in paramters.elements}}{% endraw %}` to loop through it, but if it's releated to a `mapping/dict` type, it will not be easy as Microsoft [hasn't provided any official docs](https://github.com/microsoft/azure-pipelines-yaml/issues/427) (and [this one](https://stackoverflow.com/a/59987335/5095636)) on how to use complex paramter with the pipeline native syntax, and my tests with different approaches failed too. Hopefully, for `mapping/dict` object type of parameter, we can workaround it by doing some transformation in a script task with [convertToJson](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/expressions?view=azure-devops#converttojson) like: `echo '${% raw %}{{ convertToJson(parameters.elements) }}{% endraw %}'`
 
 Must use `single quotes` around the convetToJson expression. If we use `double quotes`, the output will [remove the double quotes from the json data](https://github.com/MicrosoftDocs/azure-devops-docs/issues/11983#issuecomment-1055651836).
 {: .notice--warning}
@@ -67,9 +67,11 @@ Must use `single quotes` around the convetToJson expression. If we use `double q
 
 We can [loop through parameters](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/runtime-parameters?view=azure-devops&tabs=script#loop-through-parameters) with:
 
+<!-- {% raw %} -->
 ```yaml
 steps:
 - ${{ each parameter in parameters }}:
   - script: echo ${{ parameter.Key }}
   - script: echo ${{ parameter.Value }}
 ```
+<!-- {% endraw %} -->
