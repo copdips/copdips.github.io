@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2022-04-23 18:30:14
+last_modified_at: 2022-05-14 14:26:48
 title: "Azure pipeline variables and parameters"
 excerpt: ""
 tags:
@@ -75,3 +75,25 @@ steps:
   - script: echo ${{ parameter.Value }}
 ```
 <!-- {% endraw %} -->
+
+The above example provided by the official doc loops through the parameters script by script.
+In the pipeline, we will see as many tasks as the number of parameters which looks a bit heavy, hereunder how to iterate all the parameters in a single script.
+
+<!-- {% raw %} -->
+```yaml
+# suppose the blow pipeline is defined in a template which takes the parameter with name `parameters`, so we can reuse it in any other pipelines.
+parameters:
+  - name: parameters
+    displayName: parameters
+    type: object
+
+steps:
+  - script: |
+      parameters_in_json=$(echo '${{ convertToJson(parameters.parameters) }}' | jq -c)
+      echo "##vso[task.logissue type=warning]parameters: $parameters_in_json"
+    displayName: echo parameters
+```
+<!-- {% endraw %} -->
+
+The above example uses only one script to iterate all the parameters and pipe it to jc, as long as js can handle the parameters, we can handle everything.
+Here, we use `jq -c` to convert all the parameters into a single line json, which will be better displayed by `##vso[task.logissue type=warning]`, as it takes only one line.
