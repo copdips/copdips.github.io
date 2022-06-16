@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2022-05-14 14:26:48
+last_modified_at: 2022-06-16 21:57:13
 title: "Azure pipeline variables and parameters"
 excerpt: ""
 tags:
@@ -55,6 +55,17 @@ aJsonVar: '{ \"dev\": \"foo\", \"prd\": \"bar\" }'
 ```
 
 ## Parameter
+
+### Boolean parameter
+
+```yml
+parameters:
+- name: myBoolean
+  type: boolean
+  default: true
+```
+
+In the pipeline syntax, we compare the value by YAML's boolean type `true` or `false`, but in script, we should compare it with string format of `True` or `False`
 
 ### Object parameter
 
