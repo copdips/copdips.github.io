@@ -1,5 +1,5 @@
 ---
-last_modified_at:
+last_modified_at: 2022-07-12 10:27:24
 title: "Using Databricks Connect inside a container"
 excerpt: "Using Databricks Connect inside a container with VSCode remote containers with spark, jre, python, databricks-connect pre-installed."
 tags:
@@ -21,7 +21,30 @@ gallery:
 
 ## Why use Databricks Connect
 
-From the very beginning of the Databricks Connect [official doc](https://docs.databricks.com/dev-tools/databricks-connect.html), it says already that Databricks Connect has some [limitations](https://docs.databricks.com/dev-tools/databricks-connect.html#limitations) and is more or less deprecated in favor of [dbx](https://docs.databricks.com/dev-tools/dbx.html). But for some usages like local IDE live debug, Databricks Connect is still a very good tool where as dbx cannot do it at all. At the time of writing, dbx is mainly a Databricks jobs' API wrapper to deploy and run Databricks jobs.
+From the very beginning of the Databricks Connect [official doc](https://docs.databricks.com/dev-tools/databricks-connect.html), it says already that Databricks Connect has some [limitations](https://docs.databricks.com/dev-tools/databricks-connect.html#limitations) and is more or less deprecated in favor of [dbx](https://docs.databricks.com/dev-tools/dbx.html). But for some usages like local IDE live debug, Databricks Connect is still a very good tool where as dbx cannot do it at all. At the time of writing, dbx is mainly a Databricks jobs' API wrapper to deploy and run Databricks jobs. A very important point to be taken into account is that if we plan to deploy production ready Databricks workflows, it's recommended to use `dbx`. currently it's not official supported by Databricks (version number starts with 0), but it's good enough to use, I've already used it since several months. And as it's a deployment tool, even if it bugs, it will be much less dangerous for production.
+
+Just a quick helper information of `dbx`:
+
+```bash
+$ dbx --version
+DataBricks eXtensions aka dbx, version ~> 0.6.4
+
+$ dbx --help
+Usage: dbx [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --version   Show the version and exit.
+  -h, --help  Show this message and exit.
+
+Commands:
+  configure    Configures project environment in the current folder.
+  datafactory  Azure Data Factory integration utilities.
+  deploy       Deploy project to artifact storage.
+  execute      Executes given job on the interactive cluster.
+  init         Generates new project from the template
+  launch       Launch the job by it's name on the given environment.
+  sync         Sync local files to Databricks and watch for changes, with support for syncing to either a path
+```
 
 ## Using Databricks Connect outside a container
 
