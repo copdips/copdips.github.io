@@ -20,6 +20,25 @@ gallery:
 
 > Python unittest and Pytest is a big deal, this post just gives some small & quick examples on how to use Python unittest framwork, especially with Pytest framework. This post is not finished yet.
 
+## pytest in Makefile
+
+```Makefile
+# Makefile
+# https://github.com/databrickslabs/dbx/blob/main/Makefile
+
+SHELL=/bin/bash
+VENV_NAME := $(shell [ -d venv ] && echo venv || echo .venv)
+PYTHON=${VENV_NAME}/bin/python
+FOLDER_FOR_COV=module1_folder module2_folder
+COVERAGE_THRESHOLD=80
+
+test:
+	$(PYTHON) -m pytest tests/unit/ -v -s -n auto --cov ${FOLDER_FOR_COV} \
+		--cov-report=html \
+		--cov-report=term-missing:skip-covered \
+        --cov-fail-under=$(COVERAGE_THERSHOLD)
+```
+
 ## pytest \-\-pdb
 
 [https://docs.pytest.org/en/stable/usage.html#dropping-to-pdb-python-debugger-on-failures](https://docs.pytest.org/en/stable/usage.html#dropping-to-pdb-python-debugger-on-failures)
