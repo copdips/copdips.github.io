@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2022-04-10 17:56:52
+last_modified_at: 2022-08-14 18:04:18
 title: "Setting up Jekyll with Minimal Mistakes theme on Windows"
 excerpt: "Preview Jekyll blog locally on Windows with the Minimal Mistakes theme."
 tags:
@@ -180,7 +180,6 @@ Append a new line under the text bloc, and insert the notice tag there :
 Other external notice methods :
 - <https://idratherbewriting.com/documentation-theme-jekyll/mydoc_alerts.html>
 - <https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/#colorful-sections>
-
 
 ### Larger width
 
