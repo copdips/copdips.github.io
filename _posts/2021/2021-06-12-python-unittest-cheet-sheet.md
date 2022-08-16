@@ -280,7 +280,49 @@ def test_class_inventory_item():
 https://docs.pytest.org/en/stable/monkeypatch.html#simple-example-monkeypatching-functions
 
 Very similar to Python standard lib `unittest.mock.patch` decorator since Python 3, but `monkeypatch` is a fixture. Some people find `monkeypatch` is less effort to write than `unittest.mock.patch`. Ref. https://github.com/pytest-dev/pytest/issues/4576
-# There's also a plugin `pytest-mock`.
+
+To use the native `unittest.mock.patch`, use the [`wraps` parameter](https://stackoverflow.com/a/59460964/5095636):
+
+```python
+# replace function bar of module x by another function fake_bar with unittest.mock.patch
+# we can assert the mocked function with mock_bar
+from unittest.mock import patch
+
+def foo(arg1, arg2):
+    r = bar(arg1)
+
+def test_foo():
+   with patch("x.bar", wraps=fake_bar) as mock_bar:
+      actual = foo(arg1, arg2)
+      assert actual == expected
+      mock_bar.assert_called_once_with(arg1)
+```
+
+```python
+# replace function bar of module x by another function fake_bar with monkeypatch
+# we cannot assert the mocked function, but we dont need to give the x module in full string format.
+
+def foo(arg1, arg2):
+    r = bar(arg1)
+
+def test_foo(monkeypatch):
+    monkeypatch.setattr(x, "bar", fake_bar)
+```
+
+```python
+# replace function bar of module x by another function fake_bar with pytest-mock
+# we assert the mocked function
+
+def foo(arg1, arg2):
+    r = bar(arg1)
+
+def test_foo(monkeypatch):
+    mock_bar = mocker.patch("x.bar", wraps=fake_bar)
+```
+
+There's also a plugin `pytest-mock`, which provides `spy` and `stub` utilities.
+{: .notice--info}
+
 
 ```python
 monkeypatch.setattr(obj, name, value, raising=True)
