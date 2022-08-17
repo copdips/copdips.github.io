@@ -323,6 +323,9 @@ def test_foo(monkeypatch):
 There's also a plugin `pytest-mock`, which provides `spy` and `stub` utilities.
 {: .notice--info}
 
+The `wraps` parameter in the native `unittest.mock.patch` can also be used to [spy function](https://stackoverflow.com/a/43065411/5095636), if you don't want to use `pytest-mock.spy`.
+{: .notice--info}
+
 
 ```python
 monkeypatch.setattr(obj, name, value, raising=True)
