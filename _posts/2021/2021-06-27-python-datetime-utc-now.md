@@ -1,5 +1,5 @@
 ---
-last_modified_at:
+last_modified_at: 2022-09-05 10:39:43
 title: "Python datetime utcnow"
 excerpt: ""
 tags:
@@ -17,7 +17,7 @@ gallery:
     title: ''
 ---
 
-Previously, when I needed a real utc now with [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format, I used to use the [strftime](https://docs.python.org/3.9/library/datetime.html#datetime.date.strftime) function or the [pytz](https://pypi.org/project/pytz/) module. But recently I just found that Python at least since [v3.5](https://docs.python.org/3.5/library/datetime.html#datetime.datetime.utcnow) has already provide it with builtin module: `datetime.now(timezone.utc)`
+Previously, when I needed a real UTC now with [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format, I used to use the [strftime](https://docs.python.org/3.9/library/datetime.html#datetime.date.strftime) function or the [pytz](https://pypi.org/project/pytz/) module. But recently I just found that Python at least since [v3.5](https://docs.python.org/3.5/library/datetime.html#datetime.datetime.utcnow) has already provide it with built-in module: `datetime.now(timezone.utc)`, and this is also the preferred method over [`datatime.utcnow()`](https://docs.python.org/3/library/datetime.html#datetime.datetime.utcnow)
 
 PS: `datetime.fromisoformat()` is release with python v3.7
 
