@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2022-07-20 15:47:50
+last_modified_at: 2022-09-05 11:02:48
 title: "Python Lint And Format"
 excerpt: "Some commands to lint and format Python files"
 tags:
@@ -153,6 +153,23 @@ mypy . --exclude venv[//] # exclude venv folder under the root
 | bandit           | (2 spaces)# nosec                                                                      |
 | mypy             | (2 spaces)# type: ignore                                                               |
 | multiple linters | (2 spaces)# type: ignore # noqa: {errorIdentifier} # pylint: disable={errorIdentifier} |
+
+To ignore Pylint within a code block
+
+```python
+# https://stackoverflow.com/a/48836605/5095636
+import sys
+sys.path.append("xx/xx")
+
+# pylint: disable=wrong-import-position
+from x import (  # noqa: E402
+    a,
+    b,
+)
+from y import c  # noqa: E402
+
+# pylint: enable=wrong-import-position
+```
 
 ## Format
 
