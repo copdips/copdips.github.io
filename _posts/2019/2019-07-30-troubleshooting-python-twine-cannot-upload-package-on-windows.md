@@ -3,7 +3,7 @@ title: "Troubleshooting Python Twine Cannot Upload Package On Windows"
 excerpt: "Python twine uses ~/.pypirc as its default config file, but for some reasons it doesn't work on Windows."
 tags:
   - python
-  - package-management
+  - packaging
 published: true
 # header:
 #   teaserlogo:

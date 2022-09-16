@@ -5,7 +5,7 @@ tags:
   - nuget
   - powershell
   - powershell-gallery
-  - package-management
+  - packaging
   - proxy
 published: true
 # header:
