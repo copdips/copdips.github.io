@@ -1,6 +1,6 @@
 ---
 last_modified_at:
-title: "Adding data files to python projects setup.py"
+title: "Adding data files to Python package with setup.py"
 excerpt: ""
 tags:
   - python
@@ -19,7 +19,7 @@ gallery:
 
 ## setup.py vs pyproject.toml
 
-`pyproject.toml` is the new Python project metadata specification standard since [PEP 621](https://peps.python.org/pep-0621/). As per [PEP 517](https://www.python.org/dev/peps/pep-0517/), and as per one of the comments of this [StackOverflow thread](https://stackoverflow.com/a/62983901/5095636), in some rare cases, we might have a chicken and egg problem when using `setup.py` if it needs to import something from the package it's building. The only thing that `pyproject.toml` cannot achieve for the moment is the installation in [editable mode](https://packaging.python.org/en/latest/guides/distributing-packages-using-setuptools/#working-in-development-mode), where we must use `setup.py`. Another advantage of `setup.py` is that we can compute some variables dynamically during the build as it's a Python file.
+`pyproject.toml` is the new Python project metadata specification standard since [PEP 621](https://peps.python.org/pep-0621/). As per [PEP 517](https://www.python.org/dev/peps/pep-0517/), and as per one of the comments of this [StackOverflow thread](https://stackoverflow.com/a/62983901/5095636), in some rare cases, we might have a chicken and egg problem when using `setup.py` if it needs to import something from the package it's building. The only thing that `pyproject.toml` cannot achieve for the moment is the installation in [editable mode](https://packaging.python.org/en/latest/guides/distributing-packages-using-setuptools/#working-in-development-mode), where we must use `setup.py`. Another advantage of `setup.py` is that we can compute some variables dynamically during the build time as it's a Python file.
 
 Nevertheless, `setup.py` is still a widely used solid tool to build Python package. This post will discuss how to add data files (non Python files) to a Python wheel package built by `setup.py`, the source distribution files (sdist .tar.gz files, .zip for Windows) are not covered by this post.
 
@@ -88,7 +88,7 @@ If you're using old-fashion egg file, to reference data files inside of package,
 
 A very good sum-up can be found in this [StackOverflow thread](https://stackoverflow.com/a/58941536/5095636).
 
-## Loading data files packaged by package_data
+### Loading data files packaged by package_data
 
 * With [importlib.resources](https://docs.python.org/3/library/importlib.html#module-importlib.resources), [importlib.metadata](https://docs.python.org/3/library/importlib.metadata.html) or their backports [importlib_resources](https://pypi.org/project/importlib_resources) [importlib_metadata](https://pypi.org/project/importlib_metadata).
 
@@ -101,10 +101,12 @@ A very good sum-up can be found in this [StackOverflow thread](https://stackover
   # see below example how to use `importlib.resources.files`
   json.load(importlib.resources.open_text("module_a.folder_b", "file.json"))
   ```
-> migrate from [pkg_resources](https://importlib-resources.readthedocs.io/en/latest/migration.html#migration-guide).
+
+  Check this [doc](https://importlib-resources.readthedocs.io/en/latest/migration.html#migration-guide) for migration from `pkg_resources`.
+
 * With deprecated [pkg_resources](https://setuptools.pypa.io/en/latest/pkg_resources.html#) from setuptools of pypa.io, and some examples from [here](https://godatadriven.com/blog/a-practical-guide-to-setuptools-and-pyproject-toml/) or [here](https://dbx.readthedocs.io/en/latest/guides/python/packaging_files/#using-the-referenced-files).
 
-  [pkg_resources](https://setuptools.pypa.io/en/latest/pkg_resources.html) is deprecated due to some performance issue, and also need to install setuptools for the run which should only be used during the build.
+  [pkg_resources](https://setuptools.pypa.io/en/latest/pkg_resources.html) is deprecated due to some performance issue, and also need to install third-party setuptools for the run which should only be used during the build.
   {: .notice--warning}
 
   ```python
@@ -115,37 +117,43 @@ A very good sum-up can be found in this [StackOverflow thread](https://stackover
   json.load(pkg_resources.resource_stream("module_a", "folder_b/file.json"))
   ```
 
-## Loading data files packaged by data_files
+### Loading data files packaged by data_files
 
 As data files packaged by `data_files` parameter could be in any folder, not necessary inside of a Python module with `__init__` file, in such case the new `importlib.resources.open_text`can not be used anymore, and indeed marked as [deprecated in Python 3.11](https://docs.python.org/3.11/library/importlib.resources.html?highlight=read_text#deprecated-functions).
 
-* Use stdlib `importlib.resources.files` to read file from module_a/folder_b/file.json
+* Use stdlib `importlib.resources.files` to read file from `module_a/folder_b/file.json`
+
+  This method can also be used to [load data files packaged by package_data](#loading-data-files-packaged-by-data_files)
+  {: .notice--info}
 
   ```python
   try:
       # new stdlib in Python3.9
       from importlib.resources import files
   except ImportError:
-      # third party package, backport for Pthon3.9-, need to add importlib_resources to requirements
+      # third-party package, backport for Python3.9-,
+      # need to add importlib_resources to requirements
       from importlib_resources import files
   import json
 
-  # with `data_files` in `setup.py`, we can specify where to put the files in the wheel package,
+  # with `data_files` in `setup.py`,
+  # we can specify where to put the files in the wheel package,
   # so inside the module_a for example
   with open(files(module_a).joinpath("folder_b/file.json")) as f:
       print(json.load(f))
   ```
 
-* Use deprecated third party `pkg_resources` to read file from module_a/folder_b/file.json
+* Use deprecated third-party `pkg_resources` to read file from `module_a/folder_b/file.json`
 
   ```python
   import json
   import pkg_resources
 
-  # use `data_files` in `setup.py`, we can specify where to put the files, so inside the module_a for example
+  # use `data_files` in `setup.py`, we can specify where to put the files,
+  # so inside the module_a for example
   json.load(pkg_resources.resource_stream("module_a", "folder_b/file.json"))
   ```
 
 * Use stdlib `pkgtuil.get_data`
 
-  All the answers and the comments are worth reading: [https://stackoverflow.com/a/58941536/5095636](https://stackoverflow.com/a/58941536/5095636), be aware that `pkgutil.get_date()` could be [deprecated](https://gitlab.com/python-devs/importlib_resources/-/issues/58#note_329352693) too one day.
+  You can find an example in this [StackOverflow thread](https://stackoverflow.com/a/58941536/5095636). All the answers and the comments are worth reading. Be aware that `pkgutil.get_date()` could be [deprecated](https://gitlab.com/python-devs/importlib_resources/-/issues/58#note_329352693) too one day.
