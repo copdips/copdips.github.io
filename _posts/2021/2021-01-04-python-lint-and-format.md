@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2022-09-05 11:02:48
+last_modified_at: 2022-10-03 23:37:40
 title: "Python Lint And Format"
 excerpt: "Some commands to lint and format Python files"
 tags:
@@ -216,6 +216,7 @@ You could also add pytest (or unittest, or nose, etc.) hook in the pre-commit to
 {: .notice--info}
 
 ```yml
+# example of using venv linters
 repos:
   - repo: local
     hooks:
@@ -260,6 +261,63 @@ repos:
         language: system
         entry: black
         types: [python]
+```
+
+```yml
+# example of using online linters
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.1.0
+    hooks:
+      - id: check-json
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: debug-statements
+  - repo: https://github.com/psf/black
+    rev: 22.8.0
+    hooks:
+      - id: black
+        name: "Format with Black"
+  - repo: https://github.com/pycqa/isort
+    rev: 5.10.1
+    hooks:
+      - id: isort
+        args: ["--profile", "black"]
+  - repo: https://github.com/pycqa/flake8
+    rev: 5.0.4
+    hooks:
+      - id: flake8
+        additional_dependencies:
+          - flake8-bugbear
+          - flake8-comprehensions
+          - flake8-simplify
+  - repo: https://github.com/pre-commit/mirrors-pylint
+    rev: "v3.0.0a5"
+    hooks:
+      - id: pylint
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    # it might be better to use local venv installed mypy because it has access to all the modules installed in the venv
+    rev: v0.981
+    hooks:
+      - id: mypy
+        additional_dependencies:
+          # just for example
+          - types-dataclasses >= 0.1.3
+          - click >= 8.1.0
+  - repo: https://github.com/Lucas-C/pre-commit-hooks-bandit
+    rev: v1.0.5
+    hooks:
+      - id: python-bandit-vulnerability-check
+        args:
+          - --recursive
+          - .
+          - -c
+          - ./.bandit
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v2.7.1
+    hooks:
+      - id: prettier
 ```
 
 ### Install the git hook scripts
