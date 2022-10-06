@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2022-10-03 23:37:40
+last_modified_at: 2022-10-06 22:36:08
 title: "Python Lint And Format"
 excerpt: "Some commands to lint and format Python files"
 tags:
@@ -206,6 +206,41 @@ And don't forget to install the official [SonarLint](https://marketplace.visuals
 
 > "Git hook scripts are useful for identifying simple issues before submission to code review. We run our hooks on every commit to automatically point out issues in code such as missing semicolons, trailing whitespace, and debug statements. By pointing these issues out before code review, this allows a code reviewer to focus on the architecture of a change while not wasting time with trivial style nitpicks."
 
+```bash
+pip install pre-commit
+pre-commit install
+
+# install the script along with the hook environments in one command
+# https://pre-commit.com/index.html#pre-commit-install-hooks
+pre-commit install --install-hooks
+
+# Auto-update pre-commit config to the latest repos' versions.
+pre-commit autoupdate
+
+# Clean out cached pre-commit files.
+pre-commit clean
+
+# Clean unused cached repos.
+pre-commit gc
+
+# Run single check
+pre-commit run black
+
+# continuous integration
+# https://pre-commit.com/index.html#usage-in-continuous-integration
+pre-commit run --all-files
+# check only files which have changed
+pre-commit run --from-ref origin/HEAD --to-ref HEAD
+
+# Azure pipeline example with cache
+https://pre-commit.com/index.html#azure-pipelines-example
+
+# automatically enabling pre-commit on repositories
+# https://pre-commit.com/index.html#automatically-enabling-pre-commit-on-repositories
+git config --global init.templateDir ~/.git-template
+pre-commit init-templatedir ~/.git-template
+```
+
 ### Online examples
 
 [pylint github pre-commit-config.yaml](https://github.com/PyCQA/pylint/blob/main/.pre-commit-config.yaml)
@@ -267,13 +302,27 @@ repos:
 # example of using online linters
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.1.0
+    rev: v4.3.0
     hooks:
       - id: check-json
       - id: check-yaml
+      - id: check-toml
       - id: end-of-file-fixer
       - id: trailing-whitespace
       - id: debug-statements
+      - id: requirements-txt-fixer
+      - id: detect-private-key
+      - id: mixed-line-ending
+        args: ['--fix=lf']
+      - id: check-added-large-files
+      - id: no-commit-to-branch
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.3.1
+    hooks:
+      - id: forbid-crlf
+      - id: remove-crlf
+      - id: forbid-tabs
+      - id: remove-tabs
   - repo: https://github.com/psf/black
     rev: 22.8.0
     hooks:
@@ -318,6 +367,14 @@ repos:
     rev: v2.7.1
     hooks:
       - id: prettier
+  - repo: local
+    hooks:
+    - id: bandit
+      name: local bandit
+      entry: bandit
+      language: python
+      language_version: python3
+      types: [python]
 ```
 
 ### Install the git hook scripts
