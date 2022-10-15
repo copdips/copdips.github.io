@@ -25,7 +25,7 @@ gallery:
 From the very beginning of the Databricks Connect [official doc](https://docs.databricks.com/dev-tools/databricks-connect.html), it says already that Databricks Connect has some [limitations](https://docs.databricks.com/dev-tools/databricks-connect.html#limitations) and is more or less deprecated in favor of [dbx](https://docs.databricks.com/dev-tools/dbx.html). But for some usages like local IDE live debug, Databricks Connect is still a very good tool where as dbx cannot do it at all. At the time of writing, dbx is mainly a Databricks jobs' API wrapper to deploy and run Databricks jobs.
 
 Note 2022-10-15, recently a Databricks [blog](https://www.databricks.com/blog/2022/07/07/introducing-spark-connect-the-power-of-apache-spark-everywhere.html) introduced the project [Spark Connect](https://issues.apache.org/jira/browse/SPARK-39375) which aims to do very similar thing as Databricks Connect. This project is still in development, and is a part of Apache Spark, not Databricks specific.
-{: .notice--note}
+{: .notice--info}
 
 A very important point to be taken into account is that if we plan to deploy production ready Databricks workflows, it's recommended to use `dbx`. currently it's not official supported by Databricks (version number starts with 0), but it's good enough to use, I've already used it since several months. And as it's a deployment tool, even if it bugs, it will be much less dangerous for production.
 

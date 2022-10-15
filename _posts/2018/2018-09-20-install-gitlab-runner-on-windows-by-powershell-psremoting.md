@@ -109,7 +109,7 @@ D:\app\gitlab-runner\gitlab-runner.exe status
 ```
 
 Using Powershell Core `pwsh.exe` as a Windows Gitlab runner shell will be supported from the [version 11.8](https://gitlab.com/gitlab-org/gitlab-runner/issues/3291#note_111326306)
-{: .notice--note}
+{: .notice--info}
 
 
 # Check the Gitlab runner config from the runner server
