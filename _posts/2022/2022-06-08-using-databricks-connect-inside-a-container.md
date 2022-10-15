@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2022-10-15 22:19:59
+last_modified_at: 2022-10-15 22:38:07
 title: "Using Databricks Connect inside a container"
 excerpt: "Using Databricks Connect inside a container with VSCode remote containers with spark, jre, python, databricks-connect pre-installed."
 tags:
@@ -33,23 +33,30 @@ Just a quick helper information of `dbx`:
 
 ```bash
 $ dbx --version
-DataBricks eXtensions aka dbx, version ~> 0.6.4
+[dbx][2022-10-15 22:43:24.265] 🧱Databricks eXtensions aka dbx, version ~> 0.7.6
 
 $ dbx --help
-Usage: dbx [OPTIONS] COMMAND [ARGS]...
 
-Options:
-  --version   Show the version and exit.
-  -h, --help  Show this message and exit.
+ Usage: dbx [OPTIONS] COMMAND [ARGS]...
 
-Commands:
-  configure    Configures project environment in the current folder.
-  datafactory  Azure Data Factory integration utilities.
-  deploy       Deploy project to artifact storage.
-  execute      Executes given job on the interactive cluster.
-  init         Generates new project from the template
-  launch       Launch the job by it's name on the given environment.
-  sync         Sync local files to Databricks and watch for changes, with support for syncing to either a path
+ 🧱Databricks eXtensions aka dbx. Please find the main docs page here.
+
+╭─ Options ──────────────────────────────────────────────────────────────────────────╮
+│ --version                                                                          │
+│ --install-completion          Install completion for the current shell.            │
+│ --show-completion             Show completion for the current shell, to copy it or │
+│                               customize the installation.                          │
+│ --help                        Show this message and exit.                          │
+╰────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Commands ─────────────────────────────────────────────────────────────────────────╮
+│ configure  🔧 Configures project environment in the current folder.                │
+│ deploy     📦 Deploy project to artifact storage.                                  │
+│ destroy    🚮 Delete defined workflows and relevant assets.                        │
+│ execute    🔥 Executes chosen workload on the interactive cluster.                 │
+│ init       💎 Generates new project from the template.                             │
+│ launch     🚀 Launch the workflow on a job cluster.                                │
+│ sync       🔄 Sync local files to Databricks and watch for changes.                │
+╰────────────────────────────────────────────────────────────────────────────────────╯
 ```
 
 ## Using Databricks Connect outside a container
