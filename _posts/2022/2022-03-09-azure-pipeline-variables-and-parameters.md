@@ -48,7 +48,7 @@ from the next step, sauce: crushed tomatoes
 
 ### Json Variable
 
-Pamameter can have object type like dict in Python, but not the case for variable. The workaround is to assign a raw json string to variable, and using tools like jq to handle it during runtime. The json string variable must follow some special format, the double quotes must be escaped, and the whole string must be enclosed by the single quote.
+Parameter can have object type like dict in Python, but not the case for variable. The workaround is to assign a raw json string to variable, and using tools like [jq](https://stedolan.github.io/jq/) to handle it during runtime. The json string variable must follow some special format, the double quotes must be escaped, and the whole string must be enclosed by the single quote.
 
 ```yml
 aJsonVar: '{ \"dev\": \"foo\", \"prd\": \"bar\" }'
@@ -65,13 +65,13 @@ parameters:
   default: true
 ```
 
-In the pipeline syntax, we compare the value by YAML's boolean type `true` or `false`, but in script, we should compare it with string format of `True` or `False`
+In the pipeline syntax, we compare the value by YAML's Boolean type `true` or `false`, but in script, we should compare it with string format of `True` or `False`
 
 ### Object parameter
 
-Parameter has a type of [`object`](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/runtime-parameters?view=azure-devops&tabs=script#parameter-data-types) which can take any YAML structure. If it's related to a `array/list` type, we can use `${% raw %}{{ each element in paramters.elements}}{% endraw %}` to loop through it, but if it's releated to a `mapping/dict` type, it will not be easy as Microsoft [hasn't provided any official docs](https://github.com/microsoft/azure-pipelines-yaml/issues/427) (and [this one](https://stackoverflow.com/a/59987335/5095636)) on how to use complex paramter with the pipeline native syntax, and my tests with different approaches failed too. Hopefully, for `mapping/dict` object type of parameter, we can workaround it by doing some transformation in a script task with [convertToJson](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/expressions?view=azure-devops#converttojson) like: `echo '${% raw %}{{ convertToJson(parameters.elements) }}{% endraw %}'`
+Parameter has a type of [`object`](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/runtime-parameters?view=azure-devops&tabs=script#parameter-data-types) which can take any YAML structure. If it's related to a `array/list` type, we can use `${% raw %}{{ each element in paramters.elements}}{% endraw %}` to loop through it, but if it's related to a `mapping/dict` type, it will not be easy as Microsoft [hasn't provided any official docs](https://github.com/microsoft/azure-pipelines-yaml/issues/427) (and [this one](https://stackoverflow.com/a/59987335/5095636)) on how to use complex parameter with the pipeline native syntax, and my tests with different approaches failed too. Hopefully, for `mapping/dict` object type of parameter, we can workaround it by doing some transformation in a script task with [convertToJson](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/expressions?view=azure-devops#converttojson) like: `echo '${% raw %}{{ convertToJson(parameters.elements) }}{% endraw %}'`
 
-Must use `single quotes` around the convetToJson expression. If we use `double quotes`, the output will [remove the double quotes from the json data](https://github.com/MicrosoftDocs/azure-devops-docs/issues/11983#issuecomment-1055651836).
+Must use `single quotes` around the `convetToJson` expression. If we use `double quotes`, the output will [remove the double quotes from the json data](https://github.com/MicrosoftDocs/azure-devops-docs/issues/11983#issuecomment-1055651836).
 {: .notice--warning}
 
 ### Loop through parameters
@@ -106,5 +106,5 @@ steps:
 ```
 <!-- {% endraw %} -->
 
-The above example uses only one script to iterate all the parameters and pipe it to jc, as long as js can handle the parameters, we can handle everything.
+The above example uses only one script to iterate all the parameters and pipe it to [jq](https://stedolan.github.io/jq/), as long as jq can handle the parameters, we can handle everything.
 Here, we use `jq -c` to convert all the parameters into a single line json, which will be better displayed by `##vso[task.logissue type=warning]`, as it takes only one line.

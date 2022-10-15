@@ -19,7 +19,7 @@ gallery:
 
 This post will talk about some Azure pipeline predefined variables' values in a multiple repositories checkout situation. The official doc is [here](https://docs.microsoft.com/en-us/azure/devops/pipelines/repos/multi-repo-checkout?view=azure-devops).
 
-The exmaples given in this post is useing Azure DevOps repositories and Azure pipeline Ubuntu agent.
+The examples given in this post is using Azure DevOps repositories and Azure pipeline Ubuntu agent.
 {: .notice--info}
 
 ## Default Pipeline workspace structure
@@ -48,10 +48,10 @@ drwxr-xr-x 7 vsts root   4096 Apr  3 12:52 ..
 - Folder `//home/vsts/work/1s` for `System.DefaultWorkingDirectory` or sometimes for `Build.SourcesDirectory`, `Build.Repository.LocalPath`.
 - Folder `/home/vsts/work/1/TestResults` for `Common.TestResultsDirectory`
 
-The vaulue of `Build.SourcesDirectory`, `Build.Repository.LocalPath` could change [upon checkout policies](https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&,tabs=yaml#build-variables-devops-services), so pay attention when using these two variables.
+The value of `Build.SourcesDirectory`, `Build.Repository.LocalPath` could change [upon checkout policies](https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&,tabs=yaml#build-variables-devops-services), so pay attention when using these two variables.
 {: .notice--warning}
 
-`System.DefaultWorkingDirectory` is very important too becasue its value will **never change** in whatever situation, and this is the default working directory when running the script task, we can confirm it by checking the result of the above `pwd` command.
+`System.DefaultWorkingDirectory` is very important too because its value will **never change** in whatever situation, and this is the default working directory when running the script task, we can confirm it by checking the result of the above `pwd` command.
 {: .notice--warning}
 
 I will show these variables' value within different steps of 5 different pipelines:
@@ -215,20 +215,20 @@ At this point, the following variables having following values:
 
 | Predefined variable name       | Value                         | When                                             |
 |--------------------------------|-------------------------------|--------------------------------------------------|
-| Pipeline.Workspace             | /home/vsts/work/1             | After checking out anohter_repo to its repo name |
-| Agent.BuildDirectory           | /home/vsts/work/1             | After checking out anohter_repo to its repo name |
-| Build.ArtifactStagingDirectory | /home/vsts/work/1/a           | After checking out anohter_repo to its repo name |
-| Build.StagingDirectory         | /home/vsts/work/1/a           | After checking out anohter_repo to its repo name |
-| Build.BinariesDirectory        | /home/vsts/work/1/b           | After checking out anohter_repo to its repo name |
-| System.DefaultWorkingDirectory | /home/vsts/work/1/s           | After checking out anohter_repo to its repo name |
-| Build.SourcesDirectory         | /home/vsts/work/1/s           | After checking out anohter_repo to its repo name |
-| Build.Repository.LocalPath     | **/home/vsts/work/1/cicd**    | After checking out anohter_repo to its repo name |
-| Common.TestResultsDirectory    | /home/vsts/work/1/TestResults | After checking out anohter_repo to its repo name |
-| PWD                            | /home/vsts/work/1/s           | After checking out anohter_repo to its repo name |
+| Pipeline.Workspace             | /home/vsts/work/1             | After checking out another_repo to its repo name |
+| Agent.BuildDirectory           | /home/vsts/work/1             | After checking out another_repo to its repo name |
+| Build.ArtifactStagingDirectory | /home/vsts/work/1/a           | After checking out another_repo to its repo name |
+| Build.StagingDirectory         | /home/vsts/work/1/a           | After checking out another_repo to its repo name |
+| Build.BinariesDirectory        | /home/vsts/work/1/b           | After checking out another_repo to its repo name |
+| System.DefaultWorkingDirectory | /home/vsts/work/1/s           | After checking out another_repo to its repo name |
+| Build.SourcesDirectory         | /home/vsts/work/1/s           | After checking out another_repo to its repo name |
+| Build.Repository.LocalPath     | **/home/vsts/work/1/cicd**    | After checking out another_repo to its repo name |
+| Common.TestResultsDirectory    | /home/vsts/work/1/TestResults | After checking out another_repo to its repo name |
+| PWD                            | /home/vsts/work/1/s           | After checking out another_repo to its repo name |
 
 ### Move self to System.DefaultWorkingDirectory
 
-Once we have multi-checkout repositories in a pipeline, the source code of the self (primary) repository won't be saved in `/home/vsts/work/1/s`, where is pointed by the `System.DefaultWorkingDirectory` variable, but `System.DefaultWorkingDirectory` is the default working directory of the script task, we can add `workingDirectory:` param to the script task to change the path, but if we have many script tasks, and even they're delcared in some shared templates, it would be difficult to change it. So we need to manually move the source repository content back to `/home/vsts/work/1/s`:
+Once we have multi-checkout repositories in a pipeline, the source code of the self (primary) repository won't be saved in `/home/vsts/work/1/s`, where is pointed by the `System.DefaultWorkingDirectory` variable, but `System.DefaultWorkingDirectory` is the default working directory of the script task, we can add `workingDirectory:` parameter to the script task to change the path, but if we have many script tasks, and even they're declared in some shared templates, it would be difficult to change it. So we need to manually move the source repository content back to `/home/vsts/work/1/s`:
 
 ```bash
 - script: |
