@@ -210,7 +210,7 @@ And don't forget to install the official [SonarLint](https://marketplace.visuals
 
 `pyproject.toml` is the new standard in Python introduced by [PEP 518](https://peps.python.org/pep-0518/) (2016) for build system requirements, [PEP 621](https://peps.python.org/pep-0621/) (2020) for project metadata, and [PEP 660](https://peps.python.org/pep-0660/) (2021) for wheel based editable installs.
 
-It's fun to know [why Python authority chose this name](https://peps.python.org/pep-0518/#other-file-names):)
+It's fun to know [why Python authority chose this name](https://peps.python.org/pep-0518/#other-file-names), and very interesting to understand their POV of [different file formats](https://peps.python.org/pep-0518/#other-file-formats) :smile:.
 
 All the the major tools (setuptools, pip-tools, poetry) support this new standard, and the repo [awesome-pyproject](https://github.com/carlosperate/awesome-pyproject/) maintains a list of Python tools which are compatible to `pyproject.toml`.
 

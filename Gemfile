@@ -3,3 +3,4 @@ gemspec
 
 gem 'jekyll-spaceship'
 gem 'jekyll-mermaid'
+gem 'jemoji'

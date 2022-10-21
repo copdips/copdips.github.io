@@ -241,6 +241,7 @@ plugins:
   - jekyll-include-cache
   - jekyll-spaceship
   - jekyll-mermaid
+  - jemoji  # https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#using-emoji
 
 # mimic GitHub Pages with --safe
 whitelist:
