@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2022-10-20 23:55:40
+last_modified_at: 2022-10-25 00:27:17
 title: "Python Lint And Format"
 excerpt: "Some commands to lint and format Python files"
 tags:
@@ -227,7 +227,9 @@ profile = "black"
 ignore_missing_imports = true
 warn_return_any = true
 warn_unused_configs = true
+show_error_codes = true
 # disallow_untyped_defs = true
+# strict = true
 exclude = [
     "^venv/",
     "^build/",
@@ -236,7 +238,8 @@ exclude = [
 
 [tool.bandit]
 exclude_dirs = ["venv", "_local_test"]
-skips = ["B101"]  # this will skips B101 (assert_used) check for all files, but with original .bandit config file, we can skip it for some specific files.
+[tool.bandit.assert_used]
+skips = ["*/*_test.py", "*/test_*.py"]
 
 [tool.pylint.main]
 # ! type to use pyspark-stubs
@@ -264,13 +267,15 @@ expected-line-ending-format = "LF"
 
 # the default doesn't ignore comment line with words between `#` and `http` like:
 # the url is https://pylint.pycqa.org/en/latest/user_guide/configuration/all-options.html#ignore-long-lines
-ignore-long-lines = "^\s*(#)+.*<?https?:\/\/"
+ignore-long-lines = "^\\s*(#)+.*<?https?://"
 
 [tool.pytest.ini_options]
 addopts="""
     -v -s
     --cov {source_folder}
     --cov-report=html
+    --cov-report=xml
+    --junitxml=junit/test-results.xml
     --cov-report=term-missing:skip-covered
     --cov-fail-under=95
     """
@@ -410,9 +415,6 @@ repos:
         language: system
         entry: mypy
         types: [python]
-        args:
-          # - --strict
-          - --show-error-codes
       - id: pytest
         name: pytest
         types: [python]
