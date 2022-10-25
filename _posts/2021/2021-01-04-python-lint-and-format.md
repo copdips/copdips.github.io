@@ -56,6 +56,10 @@ pylint . -j 0 --disable=C0116,W1203
 
 To show all the inline ignored pylint alerts: `pylint --enable=suppressed-message`
 
+#### Ignore Unused Argument given a Function Name Expression
+
+Use [dummy variable](https://pylint.pycqa.org/en/latest/user_guide/configuration/all-options.html#dummy-variables-rgx) to ignore the Pylint warning on [unused-argument](https://github.com/PyCQA/pylint/issues/1057).
+
 ### flake8
 
 ```bash
@@ -205,6 +209,56 @@ Using black with other tools: [https://black.readthedocs.io/en/stable/guides/usi
 Just my 2 cents, try the [errorlens](https://marketplace.visualstudio.com/items?itemName=usernamehw.errorlens) extension in VSCode, it will lint all the warnings/errors on live when coding, it's really cool.
 
 And don't forget to install the official [SonarLint](https://marketplace.visualstudio.com/items?itemName=SonarSource.sonarlint-vscode) extension, it will give you extra lint. It eats a lot of memory with its java processes nevertheless.
+
+```json
+  "isort.args": [
+    "--profile",
+    "black"
+  ],
+  "python.formatting.provider": "none",
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      // "source.organizeImports": true
+    },
+  },
+  "python.linting.banditEnabled": true,
+  "python.linting.banditArgs": [
+    "-r",
+    "-c",
+    "~/pyproject.toml"
+  ],
+  "python.linting.ignorePatterns": [
+    ".vscode/*.py",
+    "**/site-packages/**/*.py",
+    "venv/"
+  ],
+  "python.linting.mypyEnabled": true,
+  "python.linting.mypyArgs": [
+    "--follow-imports=silent",
+    "--ignore-missing-imports",
+    "--show-column-numbers",
+    "--no-pretty",
+    "--warn-return-any",
+    "--warn-unused-configs",
+    "--show-error-codes"
+  ],
+  "sonarlint.connectedMode.connections.sonarqube": [
+    {
+      "serverUrl": "https://sonar.xxx",
+      "connectionId": "sonar.xxx"
+    }
+  ],
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    // "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+```
 
 ## pyproject.toml
 
