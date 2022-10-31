@@ -285,12 +285,13 @@ show_error_codes = true
 # disallow_untyped_defs = true
 # strict = true
 exclude = [
-    "^venv/",
+    "^venv/", # we don't need to exclude `.venv` in mypy as hidden folders are excluded by default
     "^build/",
     "^_local_test/",
 ]
 
 [tool.bandit]
+# we dont need to exclude `.venv` in bandit as it uses wildcast here
 exclude_dirs = ["venv", "_local_test"]
 [tool.bandit.assert_used]
 skips = ["*/*_test.py", "*/test_*.py"]
