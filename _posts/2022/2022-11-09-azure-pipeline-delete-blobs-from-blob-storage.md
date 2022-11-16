@@ -36,7 +36,6 @@ Suppose we have following use case:
 | blob 2 path in local machine | local_folder/local_sub_folder/blob2 |
 
 The virtual folder `folder/sub_folder/` has only 2 blobs as shown in the above table.
-{: .notice--note}
 
 Hereunder the Azure Pipeline code to delete existing files from `folder/sub_folder/` in the Azure blob storage and than upload all the local files from `local_folder/local_sub_folder/` to `folder/sub_folder/`:
 
@@ -94,7 +93,7 @@ The best way to delete bunch of blobs is `az storage azcopy blob delete -c con -
 Downgrading the azure-cli version inside of [AzureCLI](https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-cli?view=azure-devops) during Azure pipeline might work, but not tested.
 
 `az storage azcopy blob delete --account-key` works from local machine if it's not the buggy version installed.
-{: .notice--note}
+{: .notice--info}
 
 ## Failed with `az storage blob delete-batch`
 

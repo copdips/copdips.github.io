@@ -93,4 +93,4 @@ setup(name='foo', install_requires=
 ```
 
 You will notice that, the `ast.parse` discards all the comments. And if need to format the code, black could be a good choice.
-{: .notice--note}
+{: .notice--info}
