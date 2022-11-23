@@ -1,6 +1,6 @@
 ---
 last_modified_at:
-title: "Using ast to change Python code"
+title: "Using ast and cst to change Python code"
 excerpt: ""
 tags:
   - python
@@ -16,6 +16,12 @@ gallery:
     url: ''
     title: ''
 ---
+
+## Difference between AST and CST
+
+A brief comparison could be found in the [libcst doc](https://libcst.readthedocs.io/en/latest/why_libcst.html). Generally speaking, CST could keep the original source code format including the comments.
+
+## Using AST to change Python code
 
 Since **Python 3.9**, the helper [ast.unparse](https://docs.python.org/3.9/library/ast.html#ast.unparse) has been introduced, so we have both `ast.parse` and `ast.unparse` in our hands, everything is ready, finally we have an official way to change Python code.
 
@@ -94,3 +100,7 @@ setup(name='foo', install_requires=
 
 You will notice that, the `ast.parse` discards all the comments. And if need to format the code, black could be a good choice.
 {: .notice--info}
+
+## Using CST to change Python code
+
+An example can be found the repo [hauntsaninja/no_implicit_optional](https://github.com/hauntsaninja/no_implicit_optional) that uses the [libcst](https://github.com/Instagram/LibCST) from Instagram
