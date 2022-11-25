@@ -304,6 +304,10 @@ jobs = 0
 # [tool.pylint.typecheck]
 # # ! type to use pyspark-stubs
 # generated-members = ["pyspark.sql.functions"]
+[tool.pylint.basic]
+good-names = [
+  "df"  # for dataframe
+]
 [tool.pylint.variables]
 # List of additional names supposed to be defined in builtins. Remember that
 # you should avoid defining new builtins when possible.
