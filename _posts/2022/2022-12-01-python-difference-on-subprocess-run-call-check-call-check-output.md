@@ -1,0 +1,61 @@
+---
+last_modified_at:
+title: "Python difference on subprocess run(), call(), check_call(), check_output()"
+excerpt: ""
+tags:
+  - python
+published: true
+# header:
+#   teaserlogo:
+#   teaser: ''
+#   image: ''
+#   caption:
+gallery:
+  - image_path: ''
+    url: ''
+    title: ''
+---
+
+Since Python 3.5, the [official doc](https://docs.python.org/3.5/library/subprocess.html#older-high-level-api) explains that:
+
+> Prior to Python 3.5, these three functions (`subprocess.call()`, `subprocess.check_call()`, `subprocess.check_output()`) comprised the high level API to subprocess. You can now use `subprocess.run()` in many cases, but lots of existing code calls these functions.
+
+* subprocess.run default behavior accepts arguments in list
+
+```python
+subprocess.run(["ls", "-l"])
+```
+
+* `shell=True` (default `False`) to send arguments in string
+
+```python
+subprocess.run("ls -l", shell=True)
+```
+
+* `capture_output=True` (default `False`) to save output in a var
+
+```python
+res = subprocess.run("ls -l", shell=True, capture_output=True)
+res.stdout
+```
+
+* `encoding="utf-8"` (default `None`) to save var in string instead of bytes.
+
+* `check=True` (default `False`) to raise [`subprocess.CalledProcessError`](https://docs.python.org/3/library/subprocess.html#subprocess.CalledProcessError): if command returned non-zero exit code.
+
+* [Popen()](https://docs.python.org/3/library/subprocess.html#using-the-subprocess-module) is for advanced usage. For example, [replacing the shell pipeline](https://docs.python.org/3/library/subprocess.html#replacing-shell-pipeline).
+
+  shell command:
+
+  ```shell
+  output=$(dmesg | grep hda)
+  ```
+
+  with Popen, becomes:
+
+  ```python
+  p1 = Popen(["dmesg"], stdout=PIPE)
+  p2 = Popen(["grep", "hda"], stdin=p1.stdout, stdout=PIPE)
+  p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
+  output = p2.communicate()[0]
+  ```
