@@ -92,7 +92,7 @@ Since Python 3.5, the [official doc](https://docs.python.org/3.5/library/subproc
       # output.stderr is always an empty string.
       # and output.returncode is always 0 in this case.
   except FileNotFoundError as exc:
-    print(f"{type(exc).__name__}: {exc}")
+      print(f"{type(exc).__name__}: {exc}")
       raise
   except subprocess.CalledProcessError as exc:
       print(exc)  # no error details will given by print(exc)
