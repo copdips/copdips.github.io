@@ -1,5 +1,5 @@
 ---
-last_modified_at:
+last_modified_at: 2023-01-06 21:26:17
 title: "Python aiohttp rate limit"
 excerpt: ""
 tags:
@@ -16,7 +16,6 @@ gallery:
     url: ''
     title: ''
 ---
-
 HTTP rate limit is often the max requests in a limited time period, and sometimes could also be the max concurrent requests.
 
 ## Max requests in a limited time period
@@ -34,12 +33,15 @@ async with rate_limit:
 
 ## Max concurrent requests
 
+Official doc: [Limiting connection pool size](https://docs.aiohttp.org/en/stable/client_advanced.html#limiting-connection-pool-size)
+
 ```python
 import aiohttp
 
 MAX_CONCURRENT = 10
 
 async def main():
+  # The default limit is 100
   connector = aiohttp.TCPConnector(limit=MAX_CONCURRENT)
 
   async with aiohttp.ClientSession(connector=connector) as session:
