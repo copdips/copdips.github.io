@@ -56,6 +56,29 @@ aJsonVar: '{ \"dev\": \"foo\", \"prd\": \"bar\" }'
 
 ## Parameter
 
+### String parameter
+
+For string parameter with an empty string `""` as default value, in bash script task, we can use `if [[ -n $VAR_NAME ]]; then` to handle it.
+
+`-n` in Linux returns true (0) if exists, and not empty.
+
+```yaml
+parameters:
+  - name: paramName
+    type: string
+    default: ""
+
+steps:
+  - scripts: |
+      if [[ -n $PARAM_NAME ]]; then
+        echo PARAM_NAME is set with a value: $PARAM_NAME
+      fi
+    displayName: check paramName
+    failOnStderr: true
+    env:
+      PARAM_NAME: ${{ parameters.paramName }}
+```
+
 ### Boolean parameter
 
 ```yml
@@ -65,7 +88,8 @@ parameters:
   default: true
 ```
 
-In the pipeline syntax, we compare the value by YAML's Boolean type `true` or `false`, but in script, we should compare it with string format of `True` or `False`
+- In pipeline YAML syntax, we compare the value by YAML's Boolean type `true` or `false`
+- In bash script, we should compare it with string format of `True` or `False`
 
 ### Object parameter
 
