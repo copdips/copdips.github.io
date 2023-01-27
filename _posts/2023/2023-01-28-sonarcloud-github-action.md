@@ -27,6 +27,11 @@ gallery:
 
 # irrelevant part is removed
 env:
+  repo_name: repo
+  app_folder_name: app
+  coverage_percent: 90
+  build_number: ${{ github.run_number }}
+  pytest_coverage_commentator_filename: pytest_coverage_commentator.txt
   pytest_coverage_xml_file_name: coverage.xml
 
 - name: Test with pytest
@@ -60,8 +65,8 @@ env:
 
 - name: Override Coverage Source Path for Sonar
   # https://community.sonarsource.com/t/code-coverage-doesnt-work-with-github-action/16747/7
-  # we should convert '<source>/home/runner/work/pr/repo_name/app_folder_name</source>' to '<source>/github/workspace//app_folder_name</source>'
-  # be careful DOUBLE slashes in the later part, and the app_folder_name in the later part is retrieved from sonar.sources from sonar-project.properties
+  # we should convert '<source>/home/runner/work/pr/repo/app</source>' to '<source>/github/workspace//app</source>'
+  # be careful DOUBLE slashes in the later part, and the app in the later part is retrieved from sonar.sources from sonar-project.properties
   run: |
     echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
     echo 'coverage.xml before:'
