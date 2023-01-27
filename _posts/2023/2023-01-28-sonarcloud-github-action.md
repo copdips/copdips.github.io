@@ -3,7 +3,7 @@ last_modified_at:
 title: "Sonarcloud Github Action"
 excerpt: ""
 tags:
-  - github-action
+  - github_action
   - sonar
   - cicd
 published: true
