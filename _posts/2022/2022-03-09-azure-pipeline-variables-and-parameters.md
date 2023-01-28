@@ -62,6 +62,7 @@ For string parameter with an empty string `""` as default value, in bash script 
 
 `-n` in Linux returns true (0) if exists, and not empty.
 
+<!-- {% raw %} -->
 ```yaml
 parameters:
   - name: paramName
@@ -78,6 +79,7 @@ steps:
     env:
       PARAM_NAME: ${{ parameters.paramName }}
 ```
+<!-- {% endraw %} -->
 
 ### Boolean parameter
 

@@ -22,6 +22,7 @@ gallery:
 
 ## file `.github/workflows/ci.yml`
 
+<!-- {% raw %} -->
 ```yaml
 # file: .github/workflows/ci.yml
 
@@ -81,6 +82,7 @@ env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 ```
+<!-- {% endraw %} -->
 
 ## file `sonar-project.properties`
 
