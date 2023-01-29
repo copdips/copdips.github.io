@@ -17,6 +17,9 @@ gallery:
     title: ''
 ---
 
+This is not a Python asyncio tuto. Just some personal quick tips here, and could be updated from time to time.
+{: .notice--info}
+
 ## greenlet vs gevent
 
 - greenlet needs manual event switch.
@@ -96,7 +99,8 @@ async def main():
 # loop = asyncio.get_event_loop()
 # loop.run_until_complete(main())
 
-# above commented 2 lines could be replaced by below asyncio.run()
+# above commented 2 lines are low level API and could be replaced by
+# below asyncio.run() introduced by python 3.7.
 # asyncio.get_event_loop() creates new event loop if doesn't exist.
 # asyncio.run() raises exception if already in a event loop.
 # This function always creates a new event loop and closes it at the end.
