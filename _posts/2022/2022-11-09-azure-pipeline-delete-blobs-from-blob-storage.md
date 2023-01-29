@@ -90,11 +90,11 @@ Should not use `failOnStandardError: true` with `AzureCLI` as the commands `az c
 
 The best way to delete bunch of blobs is `az storage azcopy blob delete -c con --account-name sto -t folder/subfolder --recursive`. But if you use `--account-key` for auth, it's currently not available as `az storage account keys list --account-name sto` with current version (v2.41.0) of azure-cli delivered by Azure Pipeline agent has a bug like this: *AttributeError: module 'azure.mgmt.storage.v2022_05_01.models' has no attribute 'ActiveDirectoryPropertiesAccountType'* or this: *AttributeError: module 'azure.mgmt.storage.v2022_05_01.models' has no attribute 'ListKeyExpand'*. So we should use other auth methods like SAS token or connection string pre-populated in KeyVault.
 
-Downgrading the azure-cli version inside of [AzureCLI](https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-cli?view=azure-devops) during Azure pipeline might work, but not tested.
+Downgrading the azure-cli version inside [AzureCLI](https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-cli?view=azure-devops) during Azure pipeline might work, but not tested.
 
 `az storage azcopy blob delete --account-key` works from local machine if it's not the buggy version installed.
 {: .notice--info}
 
 ## Failed with `az storage blob delete-batch`
 
-`az storage blob delete-batch -s con --account-name sto --delete-snapshots include --dryrun --pattern "folder/subfolder/*` could work only in case there're not many blobs inside of the container `con`, otherwise this command using `--pattern` (with [Python fnmatch](https://docs.python.org/3.7/library/fnmatch.html) behind the scenes) will pending for a long time.
+`az storage blob delete-batch -s con --account-name sto --delete-snapshots include --dryrun --pattern "folder/subfolder/*` could work only in case there're not many blobs inside the container `con`, otherwise this command using `--pattern` (with [Python fnmatch](https://docs.python.org/3.7/library/fnmatch.html) behind the scenes) will pending for a long time.

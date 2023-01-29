@@ -30,7 +30,7 @@ steps:
 # Create a variable
 - bash: |
     echo "##vso[task.setvariable variable=sauce]crushed tomatoes" # remember to use double quotes
-    echo inside of the same step, sauce: $(sauce)
+    echo inside the same step, sauce: $(sauce)
 
 # Use the variable
 # "$(sauce)" is replaced by the contents of the `sauce` variable by Azure Pipelines
@@ -42,7 +42,7 @@ steps:
 The result will be:
 
 ```bash
-inside of the same step, sauce: orange
+inside the same step, sauce: orange
 from the next step, sauce: crushed tomatoes
 ```
 

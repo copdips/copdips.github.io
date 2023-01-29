@@ -24,7 +24,7 @@ The examples given in this post is using Azure DevOps repositories and Azure pip
 
 ## Default Pipeline workspace structure
 
-When a pipeline starts, something is created inside of the folder defined in the predefined variable [`$(Pipeline.Workspace)`](https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#pipeline-variables-devops-services), this variable has the same value as `$(Agent.BuildDirectory)`, For example, when using the default Azure pipeline Ubuntu agent, the value is `/home/vsts/work/1`.
+When a pipeline starts, something is created inside the folder defined in the predefined variable [`$(Pipeline.Workspace)`](https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#pipeline-variables-devops-services), this variable has the same value as `$(Agent.BuildDirectory)`, For example, when using the default Azure pipeline Ubuntu agent, the value is `/home/vsts/work/1`.
 
 At the very beginning of a pipeline run, you should the folder constructed like below:
 
