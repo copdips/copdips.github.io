@@ -139,14 +139,65 @@ import asyncio
 import time
 
 print(f"started at {time.strftime('%X')}")
+
+# create_task() must be inside a running event loop,
+# often created by asyncio.run()
 task1 = asyncio.create_task(asyncio.sleep(2))
 task2 = asyncio.create_task(asyncio.sleep(2))
+
 await task1
 await task2
 # or: await asyncio.wait([task1, task2])
+
 print(f"started at {time.strftime('%X')}")
 
 # output, duration 2s
 started at 23:49:08
 started at 23:49:10
+```
+
+## schedule task without asyncio.create_task()
+
+The popular asyncio tasks usage is :
+
+```python
+import asyncio
+import time
+
+async def main()
+    start = time.time()
+    tasks = [
+        asyncio.create_task(asyncio.sleep(2)),
+        asyncio.create_task(asyncio.sleep(2)),
+    ]
+    await asyncio.wait(tasks)
+    print(time.time() - start)
+
+asyncio.run(main())
+
+# output
+2.0010249614715576
+```
+
+`asyncio.create_task()` must be run inside a event loop, which is created by `asyncio.run()`. We can also not use `asyncio.create_task()` to create tasks too:
+
+```python
+import asyncio
+import time
+
+coroutines = [
+    asyncio.sleep(2),
+    asyncio.sleep(2)
+]
+
+start = time.time()
+
+# asyncio.run() creates an event loop,
+# then asyncio.wait() wraps the coroutines into tasks.
+asyncio.run(asyncio.wait(coroutines))
+
+print(time.time() - start)
+
+# output
+2.0026962757110596
 ```
