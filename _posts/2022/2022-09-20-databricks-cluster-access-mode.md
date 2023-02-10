@@ -45,8 +45,6 @@ All the below examples were tested on a cluster with Databricks runtime v10.4 LT
 
 From two different users, running the same command `python -m site`, I got two different results.
 
-
-
 * in a notebook from `user1`, the mapped user is `spark-6166cfd7-9154-4017-b0ff-89`:
 
 ```python
@@ -141,6 +139,52 @@ CalledProcessError: Command 'b'pip install requests==2.26.0\n'' returned non-zer
 ```
 
 ## `No Isolation Shared` access mode
+
+Update 2023-02-01, I retested the `No Isolation Shared` access mode today, it seems that something has been changed at Databricks level.
+{: .notice--warning}
+
+Hereunder the new behavior:
+
+1. The user is still `root`, but the Python binary is not a system one, instead an isolated venv is used, and pip install occurs in the venv too.
+2. For the same user, each time we re-attach to the cluster, the venv path is changed. And therefore, previous pip install is discarded.
+
+```python
+%%sh
+whoami
+echo ======
+which python
+echo ======
+python -m site
+
+# outputs:
+root
+======
+/local_disk0/.ephemeral_nfs/envs/pythonEnv-76eac499-b8f2-451c-ac6a-88f9a68fcae7/bin/python
+======
+sys.path = [
+    '/databricks/driver',
+    '/databricks/spark/python',
+    '/databricks/spark/python/lib/py4j-0.10.9.5-src.zip',
+    '/databricks/jars/spark--driver--driver-spark_3.3_2.12_deploy.jar',
+    '/WSFS_NOTEBOOK_DIR',
+    '/databricks/jars/spark--maven-trees--ml--11.x--graphframes--org.graphframes--graphframes_2.12--org.graphframes__graphframes_2.12__0.8.2-db1-spark3.2.jar',
+    '/databricks/python_shell',
+    '/usr/lib/python39.zip',
+    '/usr/lib/python3.9',
+    '/usr/lib/python3.9/lib-dynload',
+    '/local_disk0/.ephemeral_nfs/envs/pythonEnv-76eac499-b8f2-451c-ac6a-88f9a68fcae7/lib/python3.9/site-packages',
+    '/local_disk0/.ephemeral_nfs/cluster_libraries/python/lib/python3.9/site-packages',
+    '/databricks/python/lib/python3.9/site-packages',
+    '/usr/local/lib/python3.9/dist-packages',
+    '/usr/lib/python3/dist-packages',
+    '/databricks/.python_edge_libs',
+]
+USER_BASE: '/root/.local' (exists)
+USER_SITE: '/root/.local/lib/python3.9/site-packages' (doesn't exist)
+ENABLE_USER_SITE: False
+```
+
+Below is the test result on 2022-09-20:
 
 In contrast to `Shared` mode, within the `No Isolation Shared` mode, running the same commands, I got the same results from two different users.
 We can find that all the users are logged as `root` account.
