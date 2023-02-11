@@ -201,3 +201,27 @@ print(time.time() - start)
 # output
 2.0026962757110596
 ```
+
+## wait vs gather
+
+- [`wait`](https://docs.python.org/3/library/asyncio-task.html#asyncio.wait) is a low-level api, [`gather`](https://docs.python.org/3/library/asyncio-task.html#asyncio.gather) is a high-level api.
+- `wait` has more options than `gather`:
+  - `async def wait(fs, *, loop=None, timeout=None, return_when=ALL_COMPLETED):`
+  - `def gather(*coros_or_futures, loop=None, return_exceptions=False):`
+- `wait` accepts lists of coroutines/Futures (`asyncio.wait(tasks)`), `gather` accepts each element a coroutine/Futures (`asyncio.gather(*tasks)`).
+- `wait` returns two `futures` in a tuple: `(done, pending)`, it's a coroutine `async def`. To get the `wait` results: `[d.result() for d in done]`, `gather` returns the results directly, it's a standard `def`.
+- `gather` can group tasks, and can also cancel groups of tasks:
+
+  ```python
+  async def main():
+    group1 = asyncio.gather(f1(), f1())
+    group2 = asyncio.gather(f2(), f2())
+    group1.cancel()
+    # if return_exceptions=False, `asyncio.exceptions.CancelledError` will be raised,
+    # if return_exceptions=True, the exception will be returned in the results.
+    # return_exceptions default value is False
+    all_groups = await asyncio.gather(group1, group2, return_exceptions=True)
+    print(all_groups)
+  ```
+
+- If the `wait` task is cancelled, it simply throws an CancelledError and the waited tasks remain intact. Need to call `task.cancel()` to cancel the remaining tasks. If `gather` is cancelled, all submitted awaitables (that have not completed yet) are also cancelled. https://stackoverflow.com/a/64370162
