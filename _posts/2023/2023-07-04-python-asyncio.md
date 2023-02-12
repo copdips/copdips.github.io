@@ -61,6 +61,7 @@ https://copdips.com/2023/01/python-aiohttp-rate-limit.html#example
 
 - `create_task` is high-level introduced in Python 3.7 and accepts only `coroutines`, returns a Task object which is subclass of Future. `create_task` must be called inside a running event loop.
 - `ensure_future` is low-level and accepts both `coroutines` and `Futures`. `Task` is subclass of `Future`. If `ensure_future` gets a `Task`, it will return the input `Task` itself, as Future is ensured. If `ensure_future` gets a `coroutine`, it will call `create_task` to wrap the input `coroutine` to a `Task`, then return it.
+- `create_task` must be called inside an event loop, `ensure_future` can create an event loop if not exists.
 
 create_task [source code](https://github.com/python/cpython/blob/124af17b6e49f0f22fbe646fb57800393235d704/Lib/asyncio/tasks.py#L369-L382), ensure_future [source code](https://github.com/python/cpython/blob/124af17b6e49f0f22fbe646fb57800393235d704/Lib/asyncio/tasks.py#L647-L652).
 
@@ -72,11 +73,13 @@ Deprecated since version 3.10: Deprecation warning is emitted if obj is not a Fu
 
 ```python
 import asyncio
+import os
+
 import aiohttp
 
 
 async def download_img(session, url):
-    file_name = url.rsplit("/")[-1]
+    file_name = os.path.basename(url)
     print(f"Downloading：{file_name}")
     response = await session.get(url, ssl=False)
     content = await response.content.read()
