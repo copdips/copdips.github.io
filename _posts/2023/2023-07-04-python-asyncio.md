@@ -62,6 +62,7 @@ https://copdips.com/2023/01/python-aiohttp-rate-limit.html#example
 - `create_task` is high-level introduced in Python 3.7 and accepts only `coroutines`, returns a Task object which is subclass of Future. `create_task` must be called inside a running event loop.
 - `ensure_future` is low-level and accepts both `coroutines` and `Futures`. `Task` is subclass of `Future`. If `ensure_future` gets a `Task`, it will return the input `Task` itself, as Future is ensured. If `ensure_future` gets a `coroutine`, it will call `create_task` to wrap the input `coroutine` to a `Task`, then return it.
 - `create_task` must be called inside an event loop, `ensure_future` can create an event loop if not exists.
+- `create_task` can name the task.
 
 create_task [source code](https://github.com/python/cpython/blob/124af17b6e49f0f22fbe646fb57800393235d704/Lib/asyncio/tasks.py#L369-L382), ensure_future [source code](https://github.com/python/cpython/blob/124af17b6e49f0f22fbe646fb57800393235d704/Lib/asyncio/tasks.py#L647-L652).
 
@@ -159,7 +160,7 @@ started at 23:49:08
 started at 23:49:10
 ```
 
-## schedule task without asyncio.create_task()
+## schedule task without asyncio.create_task
 
 The popular asyncio tasks usage is :
 
@@ -228,3 +229,114 @@ print(time.time() - start)
   ```
 
 - If the `wait` task is cancelled, it simply throws an CancelledError and the waited tasks remain intact. Need to call `task.cancel()` to cancel the remaining tasks. If `gather` is cancelled, all submitted awaitables (that have not completed yet) are also cancelled. https://stackoverflow.com/a/64370162
+
+## task.add_done_callback
+
+```python
+import asyncio
+from asyncio import Future
+from functools import partial
+
+
+async def f1():
+    await asyncio.sleep(2)
+    return "f1"
+
+
+def callback1(future: Future):
+    print(future.result())
+    print("this is callback1")
+
+
+def callback2(t1, future: Future):
+    print(t1)
+    print(future.result())
+
+
+async def main():
+
+    task1 = asyncio.create_task(f1())
+
+    # bind callback1 to task1
+    task1.add_done_callback(callback1)
+
+    # bind callback2 to task2 with param
+    task1.add_done_callback(partial(callback2, "this is param t1"))
+
+    # await task1
+    tasks = [task1]
+    await asyncio.wait(tasks)
+
+
+asyncio.run(main())
+```
+
+## run_until_complete vs run_forever
+
+`run_until_complete` is `run_forever` with `_run_until_complete_cb` as callback.
+
+```python
+def _run_until_complete_cb(fut):
+    if not fut.cancelled():
+        exc = fut.exception()
+        if isinstance(exc, (SystemExit, KeyboardInterrupt)):
+            # Issue #22429: run_forever() already finished, no need to
+            # stop it.
+            return
+    futures._get_loop(fut).stop()
+```
+
+## run_in_executor to run un-asyncable functions
+
+```python
+import asyncio
+import time
+from concurrent.futures import ThreadPoolExecutor
+
+
+# non asyncable function, will be wrapped into async task by loop.run_in_executor()
+def download_img(url):
+    print(f"Downloading：{url}")
+    time.sleep(1)
+    print(f"Downloaded：{url}")
+
+
+async def main():
+    executor = ThreadPoolExecutor(2)
+
+    loop = asyncio.get_running_loop()
+    tasks = []
+    for i in range(10):
+        # ThreadPoolExecutor is also the default executor, set None to use it.
+        # t = loop.run_in_executor(None, download_img, i)
+        t = loop.run_in_executor(executor, download_img, i)
+        tasks.append(t)
+
+    await asyncio.wait(tasks)
+
+
+asyncio.run(main())
+```
+
+`loop.run_in_executor()` source code (Python 3.10):
+
+```python
+# asyncio.base_events.py
+def run_in_executor(self, executor, func, *args):
+    self._check_closed()
+    if self._debug:
+        self._check_callback(func, 'run_in_executor')
+    if executor is None:
+        executor = self._default_executor
+        # Only check when the default executor is being used
+        self._check_default_executor()
+        if executor is None:
+            executor = concurrent.futures.ThreadPoolExecutor(
+                thread_name_prefix='asyncio'
+            )
+            self._default_executor = executor
+    return futures.wrap_future(
+        executor.submit(func, *args), loop=self)
+```
+
+## run asgi
