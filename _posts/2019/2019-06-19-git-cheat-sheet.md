@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2022-01-26 23:16:18
+last_modified_at: 2023-03-27 14:46:15
 title: "Git Cheat Sheet"
 excerpt: "Some personal often forgotten git commands."
 tags:
@@ -256,3 +256,14 @@ git gui
 ## Pull Requests with Rebase
 
 Azure devops doc: [https://devblogs.microsoft.com/devops/pull-requests-with-rebase/](https://devblogs.microsoft.com/devops/pull-requests-with-rebase/)
+
+## Moving Git repository content to another repository preserving history
+
+```bash
+# https://stackoverflow.com/a/55907198/5095636
+$ git clone --bare https://github.com/exampleuser/old-repository.git
+$ cd old-repository.git
+$ git push --mirror https://github.com/exampleuser/new-repository.git
+$ cd -
+$ rm -rf old-repository.git
+```
