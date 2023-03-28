@@ -261,6 +261,7 @@ Azure devops doc: [https://devblogs.microsoft.com/devops/pull-requests-with-reba
 
 ```bash
 # https://stackoverflow.com/a/55907198/5095636
+# this keeps all commits history and git tags
 $ git clone --bare https://github.com/exampleuser/old-repository.git
 $ cd old-repository.git
 $ git push --mirror https://github.com/exampleuser/new-repository.git
