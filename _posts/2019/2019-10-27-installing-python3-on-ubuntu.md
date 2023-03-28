@@ -85,7 +85,7 @@ echo 'export PIP_REQUIRE_VIRTUALENV=true' >> ~/.bashrc
 
 Just tested installing Python3.7.5 with the same procedure, all works.
 
-## Installing Python3.9.2 with sqlite3 on Ubuntu 20.04 in WSL
+## Installing Python3.10.10 with sqlite3 on Ubuntu 20.04 in WSL
 
 ```bash
 # install build packages
@@ -95,9 +95,9 @@ sudo apt install -y build-essential zlib1g-dev libssl-dev libffi-dev
 # install sqlite3 from source, if you need a specific sqlite3 version in Python, you must install it before compiling Python, because the compilation needs the lib libsqlite3.so
 mkdir ~/src
 cd ~/src/
-wget https://www.sqlite.org/2021/sqlite-autoconf-3350100.tar.gz
-tar xvf sqlite-autoconf-3350100.tar.gz
-cd sqlite-autoconf-3350100/
+wget https://www.sqlite.org/2021/sqlite-autoconf-3400100.tar.gz
+tar xvf sqlite-autoconf-3400100.tar.gz
+cd sqlite-autoconf-3400100/
 ./configure --prefix=/usr/local
 make -j $(nproc)
 sudo make install
@@ -108,19 +108,20 @@ ll /usr/local/lib/*sqlite*
 # let below Python compilation to use the newly installed sqlite3 lib
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
-# install python3.9.2 from source
+# install python3.10.10 from source
 cd ~/src/
-wget https://www.python.org/ftp/python/3.9.2/Python-3.9.2.tgz
-tar xvf Python-3.9.2.tgz
-cd Python-3.9.2/
+wget https://www.python.org/ftp/python/3.10.10/Python-3.10.10.tgz
+tar xvf Python-3.10.10.tgz
+cd Python-3.10.10/
 
 # ubuntu 20.04 has gcc v9, so you can add the flag --enable-optimizations to ./configure
-./configure --prefix=$HOME/opt/python3.9
+# --with-bz2 is for pandas, otherwise modulenotfounderror: no module named '_bz2' pandas
+./configure --prefix=$HOME/opt/python3.10 --with-bz2
 make -j $(nproc)
 sudo make install
 make clean
-sudo ln -s ~/opt/python3.9/bin/python3.9 /usr/bin/python3.9
-ll $(which python3.9)
+sudo ln -s ~/opt/python3.10/bin/python3.10 /usr/bin/python3.10
+ll $(which python3.10)
 echo -e '\nexport PIP_REQUIRE_VIRTUALENV=true' >> ~/.bashrc
-python3.9 -c 'import sqlite3 ; print(sqlite3.sqlite_version)'
+python3.10 -c 'import sqlite3 ; print(sqlite3.sqlite_version)'
 ```
