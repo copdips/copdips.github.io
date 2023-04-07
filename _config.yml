@@ -19,7 +19,7 @@ locale                   : "en-US"
 title                    : "A code to remember"
 title_separator          : "-"
 name                     : "Xiang ZHU"
-description              : "Infra DevOps"
+description              : "Python developer"
 url                      : "https://www.copdips.com" # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : "copdips/copdips.github.io" # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
@@ -97,7 +97,8 @@ social:
 analytics:
   provider               : "google" # false (default), "google", "google-universal", "custom"
   google:
-    tracking_id          : "UA-118578681-1"
+    # tracking_id          : "UA-118578681-1"
+    tracking_id          : "G-L9KPHRQNQN"
     anonymize_ip         : # true, false (default)
 
 
