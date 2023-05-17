@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2023-03-27 14:46:15
+last_modified_at: 2023-05-17 21:23:13
 title: "Git Cheat Sheet"
 excerpt: "Some personal often forgotten git commands."
 tags:
@@ -17,7 +17,8 @@ gallery:
 ---
 
 > This is not a complete Git cheat sheet for everyone, this is just a personal cheat sheet for some often forgotten git commands.
-
+>
+>
 
 ## Alias
 
@@ -26,20 +27,31 @@ User level alias
 Edit `~/.gitconfig`
 
 ```ini
-[alias]
-        st = status
-        br = branch
-        co = checkout
-        cm = checkout master
-        re = restore
-        unstage = reset HEAD
-        ci = commit
-        amend = commit --amend -C HEAD
-        sh = show
-        df = diff
-        last = log -1 HEAD
-        lga = log --graph --decorate --oneline --all
-        ll = log --graph --all --pretty=format:'%C(auto)%h%Creset <%an>: %s %Creset%C(auto)%d%Creset %C(bold black)(%cr)%Creset %C(bold black)(%ci)%Creset'
+git config --global alias.st status
+git config --global alias.lga log --graph --decorate --oneline --all
+git config --global alias.co checkout
+git config --global alias.last log -1 HEAD
+git config --global alias.ci commit
+git config --global alias.unstage reset HEAD
+git config --global alias.ll "log --graph --all --pretty=format:'%C(auto)%h%Creset %an: git config --global %s - %Creset %C(auto)%d%Creset %C(bold black)(%cr)%Creset %C(bold git config --global black)(%ci)%Creset' --no-abbrev-commit"
+git config --global alias.sh show
+git config --global alias.df diff
+git config --global alias.br branch
+git config --global alias.cm checkout main
+git config --global alias.cd checkout dev
+git config --global alias.rum pull --rebase upstream main
+git config --global alias.rud pull --rebase upstream dev
+git config --global alias.rom pull --rebase origin main
+git config --global alias.rod pull --rebase origin dev
+```
+
+## ~/.bashrc
+
+```bash
+alias gitpush='git ci -am $GIT_BRANCH ; git push origin $GIT_BRANCH'
+alias gitamendpush='git add . ; git amend ; git push origin $GIT_BRANCH -f'
+alias gitrebasemain='git cm ; git rom ; git fetch origin --prune ; git br -d $GIT_BRANCH'
+alias gitrebasedev='git cd ; git rod ; git fetch origin --prune ; git br -d $GIT_BRANCH'
 ```
 
 ## Restore
@@ -58,6 +70,18 @@ git branch [branch_name] [commit_hash_that_preceded_the_delete_commit]
 ```
 
 ## Undo
+
+```mermaid!
+flowchart LR
+    A(Working directory) -->|"git add"| B(Staging area)
+    B -->|"git commit"| C(Commit)
+    C -->|"git reset --soft HEAD~"| B
+    C -->|"git reset HEAD~"| A
+    B -->|"git restore --staged<br/>git reset<br/>git reset HEAD"| A
+    C -->|"git reset --hard"| D(/dev/null)
+    A -->|"git checkout"| D
+    D -->|"git reflog<br/>git cherry-pick [commit]"| C
+```
 
 ### Discard changes in working directory
 
@@ -81,7 +105,7 @@ Untracked files cannot be discarded by checkout.
 git reset --hard HEAD~
 ```
 
-We can recover the commit disarded by --hard with the git cherry-pick [commit number] if we displayed or saved it before. Whatever you can also use git reflog to get the commit number too.
+We can recover the commit discarded by `--hard` with the `git cherry-pick [commit number]` if we displayed or saved it before. Whatever you can also use `git reflog` to get the commit number too.
 {: .notice--info}
 
 ### Unstage from staging area
@@ -99,9 +123,8 @@ git reset
 No more need to add `HEAD` like `git reset HEAD <file>` and `git reset HEAD` since git v1.8.2.
 {: .notice--info}
 
-Dont use `git rm --cached <filename>` to unstage, it works only for newly created file to remove them from the staging area. But if you specify a existing file, it will delete it from cache, even if it is not staged.
+Do not use `git rm --cached <filename>` to unstage, it works only for newly created file to remove them from the staging area. But if you specify a existing file, it will delete it from cache, even if it is not staged.
 {: .notice--warning}
-
 
 ### Undo commit to working directory
 
@@ -121,55 +144,27 @@ git reset HEAD~2
 # Undo till a special commit to working directory,
 # the special commit and every commits before are still committed.
 git reset <commit number>
-
-# Unstage a file
-git restore --staged <file>
 ```
 
 `git reset HEAD` will do nothing, as the HEAD is already at the last commit.
 {: .notice--info}
 
+`git reset HEAD~1 <file>` will create a delete file index in staging area. Normally we don't need this command.
+{: .notice--info}
 
 ### Undo commit to staging area
 
 [StackOverflow: How do I undo the most recent local commits in Git?](https://stackoverflow.com/questions/927358/how-do-i-undo-the-most-recent-local-commits-in-git)
 
-> Often used to just change a commit message, because the uncommitted files have already been staged.
+Add `--soft` to `git reset` to undo commit to staging area.
+
+### Undo staging to working directory
 
 ```bash
-# Undo last commit to staging area
-git reset --soft HEAD~
-# same as to
-git reset --soft HEAD~1
-
-# Undo the last 2nd commit to staging area,
-# and all the after (the last commit in this case) to working directory
-git reset --soft HEAD~2
-
-# Undo till a special commit to staging area,
-# the special commit and every commits before are still committed.
-git reset --soft <commit number>
-
-# If we want to remove (unstage) a file from the current staging area to working directory
-git reset HEAD <file>
-or
-git reset <file>
-or
-git rm --cached <file>
-
-# We can merge above 2 steps by
+# used after a git add
+git restore --staged <file>
 git reset
 ```
-
-`git reset HEAD~1 <file>` will create a delete <file> index in staging area. Normally we don't need this command.
-{: .notice--info}
-
-`git reset HEAD` will do nothing, as the HEAD is already at the last commit.
-{: .notice--info}
-
-`git reset --hard HEAD~` will undo the last commit (HEAD~) and also delete the changes from the working directory. This is like doing `git reset HEAD~ ; git checkout .` .
-If you want to rollback the `reset --hard`, and you have the discarded commit number, you can rollback by `git cherry-pick <commit number>`
-{: .notice--warning}git reset HEAD <file>
 
 ## Branch
 
@@ -230,7 +225,7 @@ You may need to use `git config --system` to set the config at system level.
 Usually, in an enterprise environment, we need to use a proxy to connect to the Internet resources.
 And from Powershell, we can ask Powershell to [inherit the IE proxy settings](https://copdips.com/2018/05/setting-up-powershell-gallery-and-nuget-gallery-for-powershell.html#configure-proxy-in-powershell).
 
-With this proxy setting in Powershell, we should be able to use `git clone` to connect to the external www.github.com or to the internally hosted for example [github.your_enterprise_local_domain](github.your_enterprise_local_domain).
+With this proxy setting in Powershell, we should be able to use `git clone` to connect to the external [www.github.com](www.github.com) or to the internally hosted for example [github.your_enterprise_local_domain](github.your_enterprise_local_domain).
 
 But trust me, some enterprises' proxy settings (often for those who use a [.pac](https://en.wikipedia.org/wiki/Proxy_auto-config) file) are so complicated that Powershell cannot use the proxy the same way as IE.
 

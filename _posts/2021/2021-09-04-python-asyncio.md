@@ -28,11 +28,3 @@ graph LR
   threading --->| on top of | \_thread
   click concurrent.futures "https://docs.python.org/3.9/library/concurrent.futures.html" _blank
 ```
-
-{% mermaid %}
-graph LR
-  concurrent.futures --->| on top of | threading
-  concurrent.futures --->| on top of | multiprocessing
-  threading --->| on top of | \_thread
-  click concurrent.futures "https://docs.python.org/3.9/library/concurrent.futures.html" _blank
-{% endmermaid %}
