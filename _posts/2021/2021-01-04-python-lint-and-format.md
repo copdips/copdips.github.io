@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2022-10-25 00:27:17
+last_modified_at: 2023-05-21 00:37:09
 title: "Python Lint And Format"
 excerpt: "Some commands to lint and format Python files"
 tags:
@@ -19,7 +19,13 @@ gallery:
 
 ## Lint
 
+Update 2023-05-21: Replaced flake8, pylint, and isort by [ruff](https://github.com/charliermarsh/ruff). When replacing pylint, should [add check by mypy](https://beta.ruff.rs/docs/faq/#how-does-ruff-compare-to-pylint).
+{: .notice--info}
+
 ### pylint
+
+Could be replaced by [ruff](https://github.com/charliermarsh/ruff).
+{: .notice--info}
 
 As pylint has too many options, it's recommended to use the pylint config file:
 
@@ -61,6 +67,9 @@ To show all the inline ignored pylint alerts: `pylint --enable=suppressed-messag
 Use [dummy variable](https://pylint.pycqa.org/en/latest/user_guide/configuration/all-options.html#dummy-variables-rgx) to ignore the Pylint warning on [unused-argument](https://github.com/PyCQA/pylint/issues/1057).
 
 ### flake8
+
+Could be replaced by [ruff](https://github.com/charliermarsh/ruff).
+{: .notice--info}
 
 ```bash
 # ignore W503 because of black format. BTW, flake8 also has W504 which is in contrary to W503.
@@ -156,9 +165,10 @@ When using mypy, it would be better to use mypy against to [all files in the pro
 
 ### ignore lint error in one line
 
-| linter           | ignore in one line                                                           |
-|------------------|------------------------------------------------------------------------------|
-| pylint           | (2 spaces)# pylint: disable={errorIdentifier}                                           |
+|      linter      |                                   ignore in one line                                   |
+| ---------------- | -------------------------------------------------------------------------------------- |
+| ruff             | (2 spaces)# noqa: {errorIdentifier}                                                    |
+| pylint           | (2 spaces)# pylint: disable={errorIdentifier}                                          |
 | flake8           | (2 spaces)# noqa: {errorIdentifier}                                                    |
 | bandit           | (2 spaces)# nosec                                                                      |
 | mypy             | (2 spaces)# type: ignore                                                               |
@@ -184,6 +194,9 @@ from y import c  # noqa: E402
 ## Format
 
 ### isort
+
+Could be replaced by [ruff](https://github.com/charliermarsh/ruff).
+{: .notice--info}
 
 ```bash
 isort . --profile=black --virtual-env=venv --recursive --check-only
@@ -211,10 +224,6 @@ Just my 2 cents, try the [errorlens](https://marketplace.visualstudio.com/items?
 And don't forget to install the official [SonarLint](https://marketplace.visualstudio.com/items?itemName=SonarSource.sonarlint-vscode) extension, it will give you extra lint. It eats a lot of memory with its java processes nevertheless.
 
 ```json
-  "isort.args": [
-    "--profile",
-    "black"
-  ],
   "python.formatting.provider": "none",
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter",
@@ -274,67 +283,89 @@ We cannot officially [declare flake8 config in pyproject.toml](https://github.co
 Hereunder an example of its content for the lint part.
 
 ```toml
-[tool.isort]
-profile = "black"
+[tool.ruff]
+fix = true
+select = [
+    "ALL",
+    # "E",  # pycodestyle errors
+    # "W",  # pycodestyle warnings
+    # "F",  # pyflakes
+    # "I",  # isort
+    # "C",  # flake8-comprehensions
+    # "B",  # flake8-bugbear
+]
+ignore = [
+    # https://beta.ruff.rs/docs/rules/
+    "D",  # pydocstyle
+    "E501",  # line too long, handled by black
+    "B008",  # do not perform function calls in argument defaults
+    "ANN",  # flake8-annotations
+    # "C901",  # too complex
+]
+
+[tool.ruff.isort]
+# Combine multiple `from foo import bar as baz` statements with the same source
+# (`foo`) into a single statement.
+combine-as-imports = true
+
+# Imports of the form `from foo import bar as baz` show one `import bar as baz`
+# per line. Useful for __init__.py files that just re-export symbols.
+force-wrap-aliases = true
+
+[tool.ruff.per-file-ignores]
+# Don't format docstrings in alembic migrations.
+"**/alembic/versions/*.py" = ["D"]
 
 [tool.mypy]
 ignore_missing_imports = true
 warn_return_any = true
 warn_unused_configs = true
-show_error_codes = true
 # disallow_untyped_defs = true
-# strict = true
 exclude = [
-    "^venv/", # we don't need to exclude `.venv` in mypy as hidden folders are excluded by default
+    "^.venv/",
     "^build/",
     "^_local_test/",
 ]
 
 [tool.bandit]
-# we dont need to exclude `.venv` in bandit as it uses wildcast here
-exclude_dirs = ["venv", "_local_test"]
-[tool.bandit.assert_used]
-skips = ["*/*_test.py", "*/test_*.py"]
+exclude_dirs = [".venv", "_local_test"]
+skips = ["B101"]
+# tests = ["B201", "B301"]
 
-[tool.pylint.main]
-# ! type to use pyspark-stubs
-# extension-pkg-allow-list = ["pyspark"]
-# ignored-modules = ["pyspark"]
-jobs = 0
-# [tool.pylint.typecheck]
+# replaced by ruff with mypy
+# [tool.pylint.main]
 # # ! type to use pyspark-stubs
-# generated-members = ["pyspark.sql.functions"]
-[tool.pylint.basic]
-good-names = [
-  "df"  # for dataframe
-]
-[tool.pylint.variables]
-# List of additional names supposed to be defined in builtins. Remember that
-# you should avoid defining new builtins when possible.
-additional-builtins = ["spark"]
-[tool.pylint."messages control"]
-disable = [
-    "missing-class-docstring",
-    "missing-function-docstring",
-    "logging-fstring-interpolation",
-]
-[tool.pylint.miscellaneous]
-notes = ["FIXME"]
-[tool.pylint.format]
-max-line-length = 88
-expected-line-ending-format = "LF"
-
-# the default doesn't ignore comment line with words between `#` and `http` like:
-# the url is https://pylint.pycqa.org/en/latest/user_guide/configuration/all-options.html#ignore-long-lines
-ignore-long-lines = "^\\s*(#)+.*<?https?://"
+# # extension-pkg-allow-list = ["pyspark"]
+# # ignored-modules = ["pyspark"]
+# jobs = 0
+# # [tool.pylint.typecheck]
+# # # ! type to use pyspark-stubs
+# # generated-members = ["pyspark.sql.functions"]
+# [tool.pylint.variables]
+# # List of additional names supposed to be defined in builtins. Remember that
+# # you should avoid defining new builtins when possible.
+# # additional-builtins = ["spark"]
+# [tool.pylint."messages control"]
+# disable = [
+#     "missing-class-docstring",
+#     "missing-module-docstring",
+#     "missing-function-docstring",
+#     "logging-fstring-interpolation",
+# ]
+# [tool.pylint.miscellaneous]
+# notes = ["FIXME"]
+# [tool.pylint.format]
+# max-line-length = 88
+# expected-line-ending-format = "LF"
+# ignore-long-lines = "^\\s*(# )?<?https?://\\S+>?$"
 
 [tool.pytest.ini_options]
 addopts="""
     -v -s
-    --cov {source_folder}
+    --junitxml=junit/test-results.xml
+    --cov app
     --cov-report=html
     --cov-report=xml
-    --junitxml=junit/test-results.xml
     --cov-report=term-missing:skip-covered
     --cov-fail-under=95
     """
@@ -490,11 +521,15 @@ Be aware that especially in a local environment, we often use venv, in such case
 
 ```yml
 # example of using online linters
+# Installation:
+# pip install pre-commit
+# pre-commit install
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.3.0
+    rev: v4.4.0
     hooks:
       - id: check-json
+        exclude: devcontainer.json
       - id: check-yaml
       - id: check-toml
       - id: end-of-file-fixer
@@ -503,68 +538,65 @@ repos:
       - id: requirements-txt-fixer
       - id: detect-private-key
       - id: mixed-line-ending
-        args: ['--fix=lf']
+        args: ["--fix=lf"]
       - id: check-added-large-files
       - id: no-commit-to-branch
   - repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.3.1
+    rev: v1.5.1
     hooks:
       - id: forbid-crlf
       - id: remove-crlf
       - id: forbid-tabs
       - id: remove-tabs
-  - repo: https://github.com/psf/black
-    rev: 22.8.0
-    hooks:
-      - id: black
-        name: "Format with Black"
-  - repo: https://github.com/pycqa/isort
-    rev: 5.10.1
-    hooks:
-      - id: isort
-        args: ["--profile", "black"]
-  - repo: https://github.com/pycqa/flake8
-    rev: 5.0.4
-    hooks:
-      - id: flake8
-        additional_dependencies:
-          - flake8-bugbear
-          - flake8-comprehensions
-          - flake8-simplify
-  - repo: https://github.com/pre-commit/mirrors-pylint
-    rev: "v3.0.0a5"
-    hooks:
-      - id: pylint
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    # it might be better to use local venv installed mypy because it has access to all the modules installed in the venv
-    rev: v0.981
-    hooks:
-      - id: mypy
-        additional_dependencies:
-          # just for example
-          - types-dataclasses >= 0.1.3
-          - click >= 8.1.0
-  - repo: https://github.com/Lucas-C/pre-commit-hooks-bandit
-    rev: v1.0.5
-    hooks:
-      - id: python-bandit-vulnerability-check
-        args:
-          - --recursive
-          - .
-          - -c
-          - ./.bandit
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v2.7.1
+    rev: v3.0.0-alpha.9-for-vscode
     hooks:
       - id: prettier
+        exclude: ".md"
+  - repo: https://github.com/pre-commit/pygrep-hooks
+    rev: v1.10.0
+    hooks:
+      - id: python-check-blanket-type-ignore
+      - id: python-check-mock-methods
+      - id: python-no-log-warn
+      - id: python-use-type-annotations
   - repo: local
     hooks:
-    - id: bandit
-      name: local bandit
-      entry: bandit
-      language: python
-      language_version: python3
-      types: [python]
+      - id: bandit
+        name: bandit
+        entry: bandit
+        language: system
+        types: [python]
+        args:
+          - -c
+          - pyproject.toml
+      - id: ruff
+        name: ruff
+        entry: ruff
+        language: system
+        types: [python]
+        args:
+          - --fix
+      - id: black
+        name: black
+        entry: black
+        language: system
+        types: [python]
+      - id: mypy
+        name: mypy
+        language: system
+        entry: mypy
+        types: [python]
+        args:
+          # - --strict
+          - --show-error-codes
+      - id: pytest
+        name: pytest
+        types: [python]
+        entry: pytest
+        language: system
+        pass_filenames: false
+        always_run: true
 ```
 
 ### Install the git hook scripts
