@@ -1,5 +1,5 @@
 ---
-last_modified_at:
+last_modified_at: 2023-05-23 15:58:39
 title: "Calling Azure REST API"
 excerpt: ""
 tags:
@@ -79,4 +79,29 @@ $ az cloud show --query endpoints
 }
 ```
 
-So we need to find the resource url for Azure DevOps API. Hopefully, we can find it from this [github issue](https://github.com/Azure/azure-cli/issues/7618#issuecomment-909822540), or from the official [Azure DevOps doc](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-personal-access-tokens-via-api?view=azure-devops#configure-a-quickstart-application), we can use `499b84ac-1321-427f-aa17-267ca6975798` as the value of `--resource` to call `az rest`
+So we need to find the resource url for Azure DevOps API. Hopefully, we can find it from this [github issue](https://github.com/Azure/azure-cli/issues/7618#issuecomment-909822540), or from the official [Azure DevOps doc](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-personal-access-tokens-via-api?view=azure-devops#configure-a-quickstart-application), we can use `499b84ac-1321-427f-aa17-267ca6975798` as the value of `--resource` to call `az rest`:
+
+```bash
+az rest \
+    --resource 499b84ac-1321-427f-aa17-267ca6975798 \
+    --url <url>
+```
+
+When running `az rest` within Azure pipeline, we also need to add the authorization, as the SPN injected by `azureSubscription` [cannot be recognized by Azure DevOps API](https://learn.microsoft.com/en-us/azure/devops/release-notes/roadmap/support-azure-managed-identities), it's not a user account. The SPN support is in Azure DevOps road map, and planned to be released in 2023 Q1. I'll update this post once I've tested it.
+
+```yaml
+- task: AzureCLI@2
+  displayName: Az rest
+  inputs:
+    azureSubscription: $(azureResourceServiceConnection)
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      az rest \
+          --headers "Authorization=Bearer $SYSTEM_ACCESSTOKEN" \
+          --resource 499b84ac-1321-427f-aa17-267ca6975798 \
+          --url <url>
+    failOnStandardError: true
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+```
