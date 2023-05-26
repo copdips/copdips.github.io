@@ -22,6 +22,16 @@ gallery:
 Update 2023-05-21: Replaced flake8, pylint, and isort by [ruff](https://github.com/charliermarsh/ruff). When replacing pylint, should [add check by mypy](https://beta.ruff.rs/docs/faq/#how-does-ruff-compare-to-pylint).
 {: .notice--info}
 
+### ruff
+
+```bash
+ruff .
+ruff check .  # check is the default command so can be ignore
+
+# show ignored ruff alerts
+ruff . --ignore-noqa --exit-zero
+```
+
 ### pylint
 
 Could be replaced by [ruff](https://github.com/charliermarsh/ruff).
@@ -315,6 +325,11 @@ force-wrap-aliases = true
 [tool.ruff.per-file-ignores]
 # Don't format docstrings in alembic migrations.
 "**/alembic/versions/*.py" = ["D"]
+"tests/**/*.py" = [
+    "S101", # asserts allowed in tests...
+    "ARG", # Unused function args -> fixtures nevertheless are functionally relevant...
+    "FBT", # Don't care about booleans as positional arguments in tests, e.g. via @pytest.mark.parametrize()
+]
 
 [tool.mypy]
 ignore_missing_imports = true
@@ -472,16 +487,6 @@ repos:
       - id: pyupgrade
   - repo: local
     hooks:
-      - id: isort
-        name: isort
-        entry: isort
-        language: system
-        types: [python]
-      - id: black
-        name: black
-        entry: black
-        language: system
-        types: [python]
       - id: bandit
         name: bandit
         entry: bandit
@@ -490,14 +495,16 @@ repos:
         args:
           - -c
           - pyproject.toml
-      - id: pylint
-        name: pylint
-        entry: pylint
+      - id: ruff
+        name: ruff
+        entry: ruff
         language: system
         types: [python]
-      - id: flake8
-        name: flake8
-        entry: flake8
+        args:
+          - "."
+      - id: black
+        name: black
+        entry: black
         language: system
         types: [python]
       - id: mypy
