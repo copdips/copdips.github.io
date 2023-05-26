@@ -375,6 +375,7 @@ skips = ["B101"]
 # ignore-long-lines = "^\\s*(# )?<?https?://\\S+>?$"
 
 [tool.pytest.ini_options]
+testpaths="tests"
 addopts="""
     -v -s
     --junitxml=junit/test-results.xml
