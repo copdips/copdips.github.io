@@ -295,6 +295,7 @@ Hereunder an example of its content for the lint part.
 ```toml
 [tool.ruff]
 fix = true
+show-fixes = true
 select = [
     "ALL",
     # "E",  # pycodestyle errors
@@ -311,6 +312,7 @@ ignore = [
     "B008",  # do not perform function calls in argument defaults
     "ANN",  # flake8-annotations
     # "C901",  # too complex
+    # "PTH123", # pathlib-open - this would force pathlib usage anytime open or with open was used.
 ]
 
 [tool.ruff.isort]
@@ -332,6 +334,7 @@ force-wrap-aliases = true
 ]
 
 [tool.mypy]
+incremental = true
 ignore_missing_imports = true
 warn_return_any = true
 warn_unused_configs = true
@@ -375,7 +378,7 @@ skips = ["B101"]
 # ignore-long-lines = "^\\s*(# )?<?https?://\\S+>?$"
 
 [tool.pytest.ini_options]
-testpaths="tests"
+testpaths=["tests/unit"]
 addopts="""
     -v -s
     --junitxml=junit/test-results.xml
