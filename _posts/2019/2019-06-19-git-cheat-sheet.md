@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2023-05-17 21:23:13
+last_modified_at: 2023-06-02 23:00:24
 title: "Git Cheat Sheet"
 excerpt: "Some personal often forgotten git commands."
 tags:
@@ -164,6 +164,15 @@ Add `--soft` to `git reset` to undo commit to staging area.
 # used after a git add
 git restore --staged <file>
 git reset
+```
+
+## Authentication
+
+### With bearer token
+
+```bash
+# https://learn.microsoft.com/en-us/azure/devops/integrate/get-started/authentication/service-principal-managed-identity?view=azure-devops#q-can-i-use-a-service-principal-to-do-git-operations-like-clone-a-repo
+git -c http.extraheader="AUTHORIZATION: bearer $ServicePrincipalAadAccessToken" clone https://dev.azure.com/{yourOrgName}/{yourProjectName}/_git/{yourRepoName}
 ```
 
 ## Branch
