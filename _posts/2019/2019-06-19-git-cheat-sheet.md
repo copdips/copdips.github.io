@@ -75,7 +75,7 @@ git branch [branch_name] [commit_hash_that_preceded_the_delete_commit]
 flowchart LR
     A(Working directory) -->|"git add"| B(Staging area)
     B -->|"git commit"| C(Commit)
-    C -->|"git reset --soft HEAD~"| B
+    C -->|"git reset --soft HEAD~ <br/>(cannot reset single files)"| B
     C -->|"git reset HEAD~"| A
     B -->|"git restore --staged<br/>git reset<br/>git reset HEAD"| A
     C -->|"git reset --hard"| D(/dev/null)
