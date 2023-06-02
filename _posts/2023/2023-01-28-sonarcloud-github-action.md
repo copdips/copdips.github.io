@@ -100,6 +100,10 @@ sonar.projectKey=copdips_reponame
 # in https://sonarcloud.io/documentation/project-administration/narrowing-the-focus/
 sonar.sources=folder_name
 
+# sonar.exclusions must specify till the file extension,
+# whether *.py for python or * for any files. `folder_name/notebooks/` doesn't work.
+sonar.exclusions=folder_name/notebooks/*.py
+
 sonar.projectVersion=${env.build_number}
 # sonar.python.pylint_config=.pylintrc
 sonar.python.version=3.8, 3.9, 3.10
