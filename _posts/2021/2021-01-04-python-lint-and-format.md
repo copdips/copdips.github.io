@@ -17,6 +17,10 @@ gallery:
     title: ''
 ---
 
+## Azure SDK Python Guidelines
+
+[https://azure.github.io/azure-sdk/python_implementation.html](https://azure.github.io/azure-sdk/python_implementation.html)
+
 ## Lint
 
 Update 2023-05-21: Replaced flake8, pylint, and isort by [ruff](https://github.com/charliermarsh/ruff). When replacing pylint, should [add check by mypy](https://beta.ruff.rs/docs/faq/#how-does-ruff-compare-to-pylint).
