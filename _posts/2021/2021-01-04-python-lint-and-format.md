@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2023-05-21 00:37:09
+last_modified_at: 2023-06-04 00:55:54
 title: "Python Lint And Format"
 excerpt: "Some commands to lint and format Python files"
 tags:
