@@ -1,5 +1,5 @@
 ---
-last_modified_at: 2023-06-04 00:55:54
+last_modified_at: 2023-06-10 00:55:20
 title: "Python Lint And Format"
 excerpt: "Some commands to lint and format Python files"
 tags:
@@ -148,6 +148,24 @@ Found 0 vulnerabilities in 214 packages
 
 Github has already provided, free of charge, the [vulnerable dependencies alert](https://docs.github.com/en/code-security/supply-chain-security/managing-vulnerabilities-in-your-projects-dependencies/about-alerts-for-vulnerable-dependencies).
 
+### pyright
+
+faster than mypy.
+
+```bash
+pyproject.toml:
+
+```toml
+[tool.pyright]
+reportUnnecessaryTypeIgnoreComment = true
+```
+
+running pyright:
+
+```bash
+pyright
+```
+
 ### mypy
 
 For projects having sqlalchemy, we often install the `sqlalchemy-stubs` plugin as sqlalchemy uses some dynamic classes.
@@ -185,6 +203,7 @@ When using mypy, it would be better to use mypy against to [all files in the pro
 | pylint           | (2 spaces)# pylint: disable={errorIdentifier}                                          |
 | flake8           | (2 spaces)# noqa: {errorIdentifier}                                                    |
 | bandit           | (2 spaces)# nosec                                                                      |
+| pyright          | (2 spaces)# pyright: ignore [reportOptionalMemberAccess, reportGeneralTypeIssues]      |
 | mypy             | (2 spaces)# type: ignore                                                               |
 | multiple linters | (2 spaces)# type: ignore # noqa: {errorIdentifier} # pylint: disable={errorIdentifier} |
 
@@ -336,18 +355,24 @@ force-wrap-aliases = true
     "ARG", # Unused function args -> fixtures nevertheless are functionally relevant...
     "FBT", # Don't care about booleans as positional arguments in tests, e.g. via @pytest.mark.parametrize()
 ]
+[tool.ruff.pep8-naming]
+classmethod-decorators = ["pydantic.validator"]
 
-[tool.mypy]
-incremental = true
-ignore_missing_imports = true
-warn_return_any = true
-warn_unused_configs = true
-# disallow_untyped_defs = true
-exclude = [
-    "^.venv/",
-    "^build/",
-    "^_local_test/",
-]
+[tool.pyright]
+reportUnnecessaryTypeIgnoreComment = true
+
+# mypy not used in favor of pyright
+# [tool.mypy]
+# incremental = true
+# ignore_missing_imports = true
+# warn_return_any = true
+# warn_unused_configs = true
+# # disallow_untyped_defs = true
+# exclude = [
+#     "^.venv/",
+#     "^build/",
+#     "^_local_test/",
+# ]
 
 [tool.bandit]
 exclude_dirs = [".venv", "_local_test"]
@@ -515,10 +540,10 @@ repos:
         entry: black
         language: system
         types: [python]
-      - id: mypy
-        name: mypy
+      - id: pyright
+        name: pyright
         language: system
-        entry: mypy
+        entry: pyright
         types: [python]
       - id: pytest
         name: pytest
