@@ -70,6 +70,50 @@ create_task [source code](https://github.com/python/cpython/blob/124af17b6e49f0f
 Deprecated since version 3.10: Deprecation warning is emitted if obj is not a Future-like object and loop is not specified and **there is no running event loop**. Coroutine is not a Future-like object.
 {: .notice--warning}
 
+## await vs await asyncio.wait_for() vs asyncio.shield()
+
+Almost the same. but wait_for() can set timeout, and shield() can protect a task from being cancelled.
+
+```py
+await task
+await asyncio.wait_for(task, timeout)  # throw TimeoutError if timeout
+await asyncio.wait_for(asyncio.shield(task), 1)  # still throw TimeoutError if timeout, but task.cancelled() inside of try/catch asyncio.TimeoutError block will be ignored, and task continues to run.
+```
+
+```py
+import asyncio
+
+async def delay(seconds):
+    print(f"start sleep {seconds}")
+    await asyncio.sleep(seconds)
+    print(f"end sleep")
+    return seconds
+
+async def main():
+    delay_task = asyncio.create_task(delay(2))
+    try:
+        result = await asyncio.wait_for(asyncio.shield(delay_task), 1)
+        print("return value:", result)
+    except asyncio.TimeoutError:
+        # shield() does not protect from timeout, so it throws TimeoutError
+        print("timeout")
+        # shield() does protect from being cancelled
+        print("whether the task is cancelled:", delay_task.cancelled())
+        # from where it throws TimeoutError, continue to run, and wait for it to finish
+        result = await delay_task
+        print("return value:", result)
+
+asyncio.run(main())
+
+"""
+start sleep 2
+timeout
+whether the task is cancelled: False
+end sleep
+return value: 2
+"""
+```
+
 ## simple aiohttp download demo
 
 ```python
@@ -338,5 +382,3 @@ def run_in_executor(self, executor, func, *args):
     return futures.wrap_future(
         executor.submit(func, *args), loop=self)
 ```
-
-## run asgi
