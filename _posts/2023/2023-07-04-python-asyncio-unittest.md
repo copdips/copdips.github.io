@@ -1,7 +1,7 @@
 ---
 last_modified_at:
 title: "Python Asyncio Unittest"
-excerpt: ""
+excerpt: "Unittest based on Pytest framework not on embedded unittest."
 tags:
   - python
   - async
@@ -18,6 +18,8 @@ gallery:
     url: ''
     title: ''
 ---
+
+> Unittest based on Pytest framework not embedded unittest.
 
 ## Mocking async http client aiohttp.ClientSession
 
@@ -129,4 +131,36 @@ mock_response.raise_for_status.return_value = None
 
 # by:
 mock_response.raise_for_status = MagicMock()
-``````
+```
+
+## Pytest fixture with session scope
+
+Say I need a session scope fixture to perform a cleanup before all tests and after all tests:
+
+```python
+@pytest.fixture(scope="session", autouse=True)
+async def _clean_up():
+    await pre_tests_function()
+    yield
+    await post_tests_function()
+```
+
+This session scope fixture will be called automatically before all tests and after all tests. But when you run the tests, you will get an error:
+
+> ScopeMismatch: You tried to access the 'function' scoped fixture 'event_loop' with a 'session' scoped request object, involved factories
+
+This is because pytest-asyncio create by default a new [function scope event loop](https://pytest-asyncio.readthedocs.io/en/latest/concepts.html#asyncio-event-loops), but the async fixture `_clean_up` is session scoped and is using the event loop fixture, where the ScopeMismatch in the error message. To fix this, we need to create a new session scope event loop for the fixture `_clean_up`:
+
+```python
+@pytest.fixture(scope="session")
+def event_loop():
+    loop = asyncio.get_event_loop()
+    yield loop
+    loop.close()
+
+@pytest.fixture(scope="session", autouse=True)
+async def _clean_up():
+    await pre_tests_function()
+    yield
+    await post_tests_function()
+```
