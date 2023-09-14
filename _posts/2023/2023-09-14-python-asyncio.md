@@ -17,7 +17,7 @@ gallery:
     title: ''
 ---
 
-This is not a Python asyncio tuto. Just some personal quick tips here, and could be updated from time to time.
+This is not a Python asyncio tutorial. Just some personal quick tips here, and could be updated from time to time.
 {: .notice--info}
 
 ## greenlet vs gevent
