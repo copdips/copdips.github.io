@@ -23,7 +23,7 @@ gallery:
 
 #### Parsing variables with object type
 
-Worklow :
+Workflow :
 
 ```yaml
 - run: |
@@ -50,6 +50,8 @@ github.event toJson: {
 #### Parsing variables with boolean type
 
 Check with `if`:
+
+{% raw %}
 
 ```yaml
 on:
@@ -87,6 +89,8 @@ jobs:
         env:
           PRINT_TAGS: ${{ inputs.print_tags }}
 ```
+
+{% endraw %}
 
 Never use {% raw %}`if: ${{ inputs.print_tags }} == false`{% endraw %} with `==` outside of {% raw %}`{{}}`{% endraw %}, it will always be true.
 {: .notice--warning}
