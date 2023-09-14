@@ -5,7 +5,7 @@ excerpt: ""
 tags:
   - python
   - async
-published: false
+published: true
 # header:
 #   teaserlogo:
 #   teaser: ''
@@ -155,7 +155,6 @@ async def main():
 # It should be used as a main entry point for asyncio programs, and should
 # ideally only be called once.
 asyncio.run(main())
-
 ```
 
 ## aiohttp rate limit example
