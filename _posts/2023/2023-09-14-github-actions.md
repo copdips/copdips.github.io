@@ -19,7 +19,9 @@ gallery:
 
 ## Variables
 
-### Parsing variables with object type
+### Parsing variables
+
+#### Parsing variables with object type
 
 Worklow :
 
@@ -45,58 +47,7 @@ github.event toJson: {
 {% raw %}`echo "github.event toJson: ${{ toJSON(github.event) }}"`{% endraw %} will [raise error](https://github.com/actions/runner/issues/1656#issuecomment-1030077729), must parse the variable to environment variable `$GITHUB_EVENT` at first. So when using `toJson` method to parse object type variable, it is recommended to send the value to an environment variable first.
 {: .notice--warning}
 
-### Passing data between steps inside a job
-
-#### Passing by $GITHUB_ENV between steps
-
-You can make an environment variable available to any subsequent steps in a workflow job by defining or updating the environment variable and writing this to the [GITHUB_ENV](https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable) environment file.
-
-```yaml
-- run: echo "var_1=value1" >> $GITHUB_ENV
-
-- run: echo "var_1: $var1"
-```
-
-#### Passing by $GITHUB_OUTPUT between steps
-
-Sets a step's [output parameter](https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-output-parameter). Note that the step will need an id to be defined to later retrieve the output value
-
-### Passing data between jobs inside a workflow
-
-#### Passing by artifacts between jobs
-
-You can use the [upload-artifact and download-artifact actions](https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts) to share data between jobs in a workflow.
-
-To share variables, you can save the variables in a file with format:
-
-```bash
-VAR_1=value1
-VAR_2=value2
-```
-
-Then download the file from another job and source it to load the variables:
-
-```yaml
-- run: |
-    sed "" {downloaded_file_path} >> $GITHUB_ENV
-  shell: bash
-```
-
-#### Passing by $GITHUB_OUTPUT between jobs
-
-[https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idoutputs](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idoutputs)
-
-#### Passing data between caller workflow and called (reusable) workflow
-
-Use [on.workflow_call.outputs](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#onworkflow_calloutputs), called workflow outputs are available to all downstream jobs in the caller workflow.
-
-### Passing data between irrelevant workflows
-
-- [https://github.com/actions/download-artifact/issues/3#issuecomment-580658517](https://github.com/actions/download-artifact/issues/3#issuecomment-580658517)
-- [https://github.com/actions/download-artifact/issues/3#issuecomment-1017141067](https://github.com/actions/download-artifact/issues/3#issuecomment-1017141067)
-- [https://github.com/dawidd6/action-download-artifact](https://github.com/dawidd6/action-download-artifact)
-
-### Boolean variables casting
+#### Parsing variables with boolean type
 
 Check with `if`:
 
@@ -137,8 +88,60 @@ jobs:
           PRINT_TAGS: ${{ inputs.print_tags }}
 ```
 
-Never use `if: ${{ inputs.print_tags }} == false` with `==` outside of `{{}}`, it will always be true.
+Never use {% raw %}`if: ${{ inputs.print_tags }} == false`{% endraw %} with `==` outside of {% raw %}`{{}}`{% endraw %}, it will always be true.
 {: .notice--warning}
+
+### Passing variables
+#### Passing data between steps inside a job
+
+##### Passing by $GITHUB_ENV between steps
+
+You can make an environment variable available to any subsequent steps in a workflow job by defining or updating the environment variable and writing this to the [GITHUB_ENV](https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable) environment file.
+
+```yaml
+- run: echo "var_1=value1" >> $GITHUB_ENV
+
+- run: echo "var_1: $var1"
+```
+
+##### Passing by $GITHUB_OUTPUT between steps
+
+Sets a step's [output parameter](https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-output-parameter). Note that the step will need an id to be defined to later retrieve the output value
+
+#### Passing data between jobs inside a workflow
+
+##### Passing by artifacts between jobs
+
+You can use the [upload-artifact and download-artifact actions](https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts) to share data between jobs in a workflow.
+
+To share variables, you can save the variables in a file with format:
+
+```bash
+VAR_1=value1
+VAR_2=value2
+```
+
+Then download the file from another job and source it to load the variables:
+
+```yaml
+- run: |
+    sed "" {downloaded_file_path} >> $GITHUB_ENV
+  shell: bash
+```
+
+##### Passing by $GITHUB_OUTPUT between jobs
+
+[https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idoutputs](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idoutputs)
+
+##### Passing data between caller workflow and called (reusable) workflow
+
+Use [on.workflow_call.outputs](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#onworkflow_calloutputs), called workflow outputs are available to all downstream jobs in the caller workflow.
+
+#### Passing data between irrelevant workflows
+
+- [https://github.com/actions/download-artifact/issues/3#issuecomment-580658517](https://github.com/actions/download-artifact/issues/3#issuecomment-580658517)
+- [https://github.com/actions/download-artifact/issues/3#issuecomment-1017141067](https://github.com/actions/download-artifact/issues/3#issuecomment-1017141067)
+- [https://github.com/dawidd6/action-download-artifact](https://github.com/dawidd6/action-download-artifact)
 
 ## Github custom actions
 
