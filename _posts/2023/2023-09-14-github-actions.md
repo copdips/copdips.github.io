@@ -92,6 +92,7 @@ Never use {% raw %}`if: ${{ inputs.print_tags }} == false`{% endraw %} with `==`
 {: .notice--warning}
 
 ### Passing variables
+
 #### Passing data between steps inside a job
 
 ##### Passing by $GITHUB_ENV between steps
@@ -131,7 +132,7 @@ Then download the file from another job and source it to load the variables:
 
 ##### Passing by $GITHUB_OUTPUT between jobs
 
-[https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idoutputs](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idoutputs)
+<https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idoutputs>
 
 ##### Passing data between caller workflow and called (reusable) workflow
 
@@ -139,9 +140,9 @@ Use [on.workflow_call.outputs](https://docs.github.com/en/actions/using-workflow
 
 #### Passing data between irrelevant workflows
 
-- [https://github.com/actions/download-artifact/issues/3#issuecomment-580658517](https://github.com/actions/download-artifact/issues/3#issuecomment-580658517)
-- [https://github.com/actions/download-artifact/issues/3#issuecomment-1017141067](https://github.com/actions/download-artifact/issues/3#issuecomment-1017141067)
-- [https://github.com/dawidd6/action-download-artifact](https://github.com/dawidd6/action-download-artifact)
+- <https://github.com/actions/download-artifact/issues/3#issuecomment-580658517>
+- <https://github.com/actions/download-artifact/issues/3#issuecomment-1017141067>
+- <https://github.com/dawidd6/action-download-artifact>
 
 ## Github custom actions
 

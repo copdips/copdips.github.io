@@ -39,11 +39,11 @@ From Python 3.5, `await` deprecates `yield from`
 
 ## asyncio with queue
 
-https://copdips.com/2023/01/python-aiohttp-rate-limit.html#example
+<https://copdips.com/2023/01/python-aiohttp-rate-limit.html#example>
 
 ## aiohttp with rate limit
 
-https://copdips.com/2023/01/python-aiohttp-rate-limit.html#example
+<https://copdips.com/2023/01/python-aiohttp-rate-limit.html#example>
 
 ## get_running_loop vs get_event_loop
 
@@ -159,7 +159,7 @@ asyncio.run(main())
 
 ## aiohttp rate limit example
 
-[https://copdips.com/2023/01/python-aiohttp-rate-limit.html](https://copdips.com/2023/01/python-aiohttp-rate-limit.html)
+<https://copdips.com/2023/01/python-aiohttp-rate-limit.html>
 
 ## run coroutines concurrently as asyncio Tasks
 
@@ -271,7 +271,7 @@ print(time.time() - start)
     print(all_groups)
   ```
 
-- If the `wait` task is cancelled, it simply throws an CancelledError and the waited tasks remain intact. Need to call `task.cancel()` to cancel the remaining tasks. If `gather` is cancelled, all submitted awaitables (that have not completed yet) are also cancelled. https://stackoverflow.com/a/64370162
+- If the `wait` task is cancelled, it simply throws an CancelledError and the waited tasks remain intact. Need to call `task.cancel()` to cancel the remaining tasks. If `gather` is cancelled, all submitted awaitables (that have not completed yet) are also cancelled. <https://stackoverflow.com/a/64370162>
 
 ## task.add_done_callback
 
