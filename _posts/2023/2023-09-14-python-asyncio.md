@@ -76,8 +76,14 @@ Almost the same. but wait_for() can set timeout, and shield() can protect a task
 
 ```py
 await task
-await asyncio.wait_for(task, timeout)  # throw TimeoutError if timeout
-await asyncio.wait_for(asyncio.shield(task), 1)  # still throw TimeoutError if timeout, but task.cancelled() inside of try/catch asyncio.TimeoutError block will be ignored, and task continues to run.
+
+# throw TimeoutError if timeout
+await asyncio.wait_for(task, timeout)
+
+# still throw TimeoutError if timeout, but task.cancelled()
+# inside of try/catch asyncio.TimeoutError block will be ignored, a
+# nd task continues to run.
+await asyncio.wait_for(asyncio.shield(task), 1)
 ```
 
 ```py
@@ -329,7 +335,9 @@ def _run_until_complete_cb(fut):
     futures._get_loop(fut).stop()
 ```
 
-## run_in_executor to run un-asyncable functions
+## run_in_executor (or to_thread) to run un-asyncable functions
+
+`to_thread()` calls `loop = events.get_running_loop()` and `loop.run_in_executor()` internally, source code [here](https://github.com/python/cpython/blob/d7dc3d9455de93310ccde13ceafe84d426790a5c/Lib/asyncio/threads.py#L25):
 
 ```python
 import asyncio
@@ -361,7 +369,7 @@ async def main():
 asyncio.run(main())
 ```
 
-`loop.run_in_executor()` source code (Python 3.10):
+`run_in_executor()` calls [`ThreadPoolExecutor` by default], and can also use `ProcessPoolExecutor`, source code [here](https://github.com/python/cpython/blob/d7dc3d9455de93310ccde13ceafe84d426790a5c/Lib/asyncio/base_events.py#L835):
 
 ```python
 # asyncio.base_events.py
