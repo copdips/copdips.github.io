@@ -138,9 +138,9 @@ Then download the file from another job and source it to load the variables:
 
 <https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idoutputs>
 
-##### Passing data between caller workflow and called (reusable) workflow
+#### Passing data between caller workflow and called (reusable) workflow
 
-Use [on.workflow_call.outputs](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#onworkflow_calloutputs), called workflow outputs are available to all downstream jobs in the caller workflow.
+Use [on.workflow_call.outputs](https://docs.github.com/en/actions/using-workflows/reusing-workflows#using-outputs-from-a-reusable-workflow), called workflow outputs are available to all downstream jobs in the caller workflow.
 
 #### Passing data between irrelevant workflows
 
@@ -150,58 +150,15 @@ Use [on.workflow_call.outputs](https://docs.github.com/en/actions/using-workflow
 
 ## Github custom actions
 
-> "[Actions](https://docs.github.com/en/actions/creating-actions/about-custom-actions) are individual tasks that you can combine to create jobs and customize your workflow. You can create your own actions, or use and customize actions shared by the GitHub community."
+### Multiple actions in single repository
 
-### Using multiple actions from another single internal repository within the same organization
-
-Normally to use a custom action from another internal repository within the same organization (or enterprise), you can only define one single action per repository and use it as a standard actions without any additional access token as long as the actions repo is inside the same organization (or enterprise). To have multiple actions inside the same repository for whatever reason, you have 2 workarounds, one is to checkout the actions repository with a PAT token and use the actions just like they are defined from the local repository and another workaround is to copy the actions files from _actions folder to the the local repository.
-
-#### Checking out actions repository with PAT token
-
-1. create a Github [fine-grained PAT](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token) (not the classic PAT) with `repo` scope to access the actions repository only.
-2. add the PAT token as a secret (for e.g. `ACTIONS_REPO_READ_PAT`) at the repository level or organization level if you want to share the actions for the whole organization.
-3. use the PAT token to checkout the actions repository in the workflow.
-
-```yaml
-- name: Check out main repo
-  uses: actions/checkout@v4
-
-# suppose in the action repo {actions_repo_orga_name}/{actions_repo_name},
-# you have the action defined in: .github/actions/my_action
-- name: Check out actions repo
-  uses: actions/checkout@v4
-  with:
-    repository: {actions_repo_orga_name}/{actions_repo_name}
-    # the actions repo willed be checkout to the current main repo's root folder,
-    # the path param could have other values to avoid conflict with the current repo,
-    # be careful if you need to test and build the current repo,
-    # this new actions folder should not be taken into account.
-    path: {repo_name}
-    token: ${{ secrets.ACTIONS_REPO_READ_PAT }}
-    # ref: main  # optional, default is main
-
-# from now on, you have the actions files in local folder {repo_name}/.github/actions
-- name: Call my_action
-  uses: ./{repo_name}/.github/actions/my_action
-```
-
-#### Copying actions files from _actions folder without any PAT token
-
-In a Github actions workflow, when you use a real external actions in the form of:
-`uses: {actions_repo_orga_name}/{actions_repo_name}@{actions_repo_git_ref}`
-
-The related actions repo are downloaded automatically with user PAT token from the very beginning of the workflow run to a folder:
-`../../_actions/{actions_repo_orga_name}/{actions_repo_name}/{actions_repo_git_ref}/actions/`.
-
-So you can copy the actions files from the `_actions` folder to the `.github/actions` folder in the local repository, then you can use the actions just like they are defined from the local repository.
-
-The `_actions` folder is only partially documented [here](https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables) on the `GITHUB_ACTIONS_PATH` default environment variable.
+You can save multiple actions inside a single repository, and use them in the form of [`uses: orga/repo/folder_path@git_ref`](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-using-a-public-action-in-a-subdirectory) in a workflow.
 
 ### azure/CLI
 
 Benefits of using azure/CLI over run task:
 
-1. azure/CLI runs `az` commands in a isolated docker container.
+1. azure/CLI runs `az` commands in an isolated docker container.
 2. azure/CLI can choose the CLI version.
 3. For some self-hosted runner, may not have "az cli" pre-installed, the Azure/CLI action eliminates the need for complex installation steps.
 
@@ -210,3 +167,7 @@ Can also set [shared variables inside a job](#sharing-data-between-steps-inside-
 Drawbacks:
 
 1. slowness: `azure/CLI` is much slower (around 20s to bootstrap on a ubuntu-latest-4core runner) than standard `run` step, because it needs to pull the docker image and run the container.
+
+### Checking out inside a container action
+
+Use `actions/checkout@v3`, `actions/checkout@v4` has [bug](https://github.com/actions/checkout/issues/1474).
