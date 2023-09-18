@@ -150,6 +150,45 @@ Use [on.workflow_call.outputs](https://docs.github.com/en/actions/using-workflow
 
 ## Github custom actions
 
+### Actions checkout location in workflow
+
+Actions are automatically checked out by Github Action from the beginning of a workflow run, the checkout path could be found by: [$GITHUB_ACTION_PATH](https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables)
+
+Actions in workflow:
+
+```yaml
+- name: Check out repository code
+  uses: actions/checkout@v4
+
+- name: Use action in the version of the main branch
+  uses:{org_name}/{repo_name}/actions/{action_path}@main
+
+- name: Use action in the version of v1
+  uses:{org_name}/{repo_name}/actions/{action_path}@v1
+```
+
+Actions checkout location:
+
+```bash
+../../_actions/actions/checkout
+├── v4
+│   ├── CHANGELOG.md
+│   ├── CODEOWNERS
+│   ├── ...
+
+../../_actions/{org_name}/{repo_name}
+├── main
+│   ├── README.md
+│   └── actions
+│   └── ...
+├── main.completed
+├── v1
+│   ├── README.md
+│   └── actions
+│   └── ...
+└── v1.completed
+```
+
 ### Multiple actions in single repository
 
 You can save multiple actions inside a single repository, and use them in the form of [`uses: orga/repo/folder_path@git_ref`](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-using-a-public-action-in-a-subdirectory) in a workflow.
