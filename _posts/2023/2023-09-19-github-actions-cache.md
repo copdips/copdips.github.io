@@ -1,0 +1,101 @@
+---
+last_modified_at:
+title: "Github Actions - Cache"
+excerpt: ""
+tags:
+  - cicd
+  - github
+  - cache
+  - azure
+published: true
+# header:
+#   teaserlogo:
+#   teaser: ''
+#   image: ''
+#   caption:
+gallery:
+  - image_path: ''
+    url: ''
+    title: ''
+---
+
+## Standard Cache
+
+Cache key should be as specific as possible, so that the post cache restore installation can be reduced or skipped.
+
+For Python pip install, we could use the following cache key:
+
+{% raw %}
+
+```yaml
+- name: Get pip cache dir
+  run: |
+    os_version=$(cat /etc/os-release | grep -i "version=" | cut -c9- | tr -d '"' | tr ' ' '_')
+    github_workflow_full_path="${GITHUB_WORKFLOW_REF%@*}"
+    python_full_version=$(python -c 'import platform; print(platform.python_version())')
+    echo "os_version=$os_version" >> $GITHUB_ENV
+    echo "github_workflow_full_path=$github_workflow_full_path" >> $GITHUB_ENV
+    echo "python_full_version=$python_full_version" >> $GITHUB_ENV
+    echo "PIP_CACHE_DIR=$(pip cache dir)" >> $GITHUB_ENV
+
+- name: cache pip
+  uses: actions/cache@v3
+  with:
+    # path: ${{ env.PIP_CACHE_DIR }}
+    path: ${{ env.pythonLocation }}
+    key: ${{ env.github_workflow_full_path}}-${{ env.os_version }}-${{ env.python_full_version }}-${{ hashFiles('requirements/*.txt') }}
+```
+
+{% endraw %}
+
+The `path` in `actions/cache@v3` could be:
+
+- {% raw %}`${{ env.PIP_CACHE_DIR }}`{% endraw %} if you only want to cache the pip cache dir, so you can skip the Python package download step, but you still need to install the packages.
+- {% raw %}`${{ env.pythonLocation }}`{% endraw %} if you want to cache the whole python installation dir, this is useful when you want to cache the `site-packages` dir, so that the `pip install` step can be reduced or skipped, this is also why we need to use the {% raw %}`${{ env.os_version }}`, `${{ env.python_full_version }}`{% endraw %} in the cache key. In most of cases, this is the best choice.
+
+In [Azure Pipelines](https://learn.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops), there's similar thing as [hashFiles()](https://docs.github.com/en/actions/learn-github-actions/expressions#hashfiles) function, it should be in the form of glob pattern, like `requirements/*.txt`, but without double quotes, otherwise treated as a static string.
+
+```yaml
+# Azure Pipelines
+- task: Cache@2
+  inputs:
+    key: 'python | "$(pythonFullVersion)" | "$(osVersion)" | "$(System.TeamProject)" | "$(Build.DefinitionName)" | "$(Agent.JobName)" | requirements/*.txt'
+    path: ...
+  displayName: ...
+```
+
+Otherwise, we can also achieve the same result by some pure bash commands:
+
+{% raw %}
+
+```yaml
+# suppose parameters.requirementsFilePathList is a list of file paths
+- script: |
+    echo REQUIREMENTS_FILE_PATH_LIST_STRING: $REQUIREMENTS_FILE_PATH_LIST_STRING
+    all_files_in_one_line=$(echo $REQUIREMENTS_FILE_PATH_LIST_STRING | jq  '. | join(" ")' -r)
+    echo all_files_in_one_line: $all_files_in_one_line
+    all_files_md5sum=$(cat $all_files_in_one_line | md5sum | awk '{print $1}')
+    echo all_files_md5sum: $all_files_md5sum
+    echo "##vso[task.setvariable variable=pythonRequirementsFilesHash;]$all_files_md5sum"
+  displayName: Set pythonRequirementsFilesHash
+  env:
+    REQUIREMENTS_FILE_PATH_LIST_STRING: "${{ convertToJson(parameters.requirementsFilePathList) }}"
+```
+
+{% endraw %}
+
+## Cache with actions/setup-python
+
+The action [actions/setup-python](https://github.com/actions/setup-python#caching-packages-dependencies) has built-in functionality for caching and restoring dependencies with `cache` key. This cache method only cache the pip cache dir to reduce the Python packages download time like {% raw %}`path: ${{ env.PIP_CACHE_DIR }}`{% endraw %} in above [example](#standard-cache), but still need to install the packages, which takes some time too.
+
+The cache key is something like: `setup-python-Linux-22.04-Ubuntu-python-3.10.13-pip-308f89683977de8773e433ddf87c874b6bd931347b779ef0ab18f37ecc4fa914` (copied from workflow run log), don't the how the value `308f89683977de8773e433ddf87c874b6bd931347b779ef0ab18f37ecc4fa91` is computed, should check the source code later.
+
+```yaml
+steps:
+- uses: actions/checkout@v4
+- uses: actions/setup-python@v4
+  with:
+    python-version: '3.10'
+    cache: 'pip' # caching pip dependencies, could be pip, pipenv, or poetry
+- run: pip install -r requirements.txt
+```
