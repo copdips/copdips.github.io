@@ -17,6 +17,71 @@ gallery:
     title: ''
 ---
 
+## Cache
+
+Cache key should be as specific as possible, so that the post cache restore installation can be reduced or skipped.
+
+For Python pip install, we could use the following cache key:
+
+{% raw %}
+
+```yaml
+- name: Get pip cache dir
+  run: |
+    os_version=$(cat /etc/os-release | grep -i "version=" | cut -c9- | tr -d '"' | tr ' ' '_')
+    github_workflow_full_path="${GITHUB_WORKFLOW_REF%@*}"
+    python_full_version=$(python -c 'import platform; print(platform.python_version())')
+    echo "os_version=$os_version" >> $GITHUB_ENV
+    echo "github_workflow_full_path=$github_workflow_full_path" >> $GITHUB_ENV
+    echo "python_full_version=$python_full_version" >> $GITHUB_ENV
+    echo "PIP_CACHE_DIR=$(pip cache dir)" >> $GITHUB_ENV
+
+- name: cache pip
+  uses: actions/cache@v3
+  with:
+    # path: ${{ env.PIP_CACHE_DIR }}
+    path: ${{ env.pythonLocation }}
+    key: ${{ env.github_workflow_full_path}}-${{ env.os_version }}-${{ env.python_full_version }}-${{ hashFiles('requirements/*.txt') }}
+```
+
+{% endraw %}
+
+The `path` in `actions/cache@v3` could be:
+
+- {% raw %}`${{ env.PIP_CACHE_DIR }}`{% endraw %} if you only want to cache the pip cache dir, so you can skip the Python package download step, but you still need to install the packages.
+- {% raw %}`${{ env.pythonLocation }}`{% endraw %} if you want to cache the whole python installation dir, this is useful when you want to cache the `site-packages` dir, so that the `pip install` step can be reduced or skipped, this is also why we need to use the {% raw %}`${{ env.os_version }}`, `${{ env.python_full_version }}`{% endraw %} in the cache key. In most of cases, this is the best choice.
+
+In [Azure Pipelines](https://learn.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops), there's similar thing as [hashFiles](https://docs.github.com/en/actions/learn-github-actions/expressions#hashfiles) function, it should be in the form of glob pattern, like `requirements/*.txt`, but without double quotes, otherwise treated as a static string.
+
+```yaml
+# Azure Pipelines
+- task: Cache@2
+  inputs:
+    key: 'python | "$(pythonFullVersion)" | "$(osVersion)" | "$(System.TeamProject)" | "$(Build.DefinitionName)" | "$(Agent.JobName)" | requirements/*.txt'
+    path: ...
+  displayName: ...
+```
+
+Otherwise, we can also achieve the same result by some pure bash commands:
+
+{% raw %}
+
+```yaml
+# suppose parameters.requirementsFilePathList is a list of file paths
+- script: |
+    echo REQUIREMENTS_FILE_PATH_LIST_STRING: $REQUIREMENTS_FILE_PATH_LIST_STRING
+    all_files_in_one_line=$(echo $REQUIREMENTS_FILE_PATH_LIST_STRING | jq  '. | join(" ")' -r)
+    echo all_files_in_one_line: $all_files_in_one_line
+    all_files_md5sum=$(cat $all_files_in_one_line | md5sum | awk '{print $1}')
+    echo all_files_md5sum: $all_files_md5sum
+    echo "##vso[task.setvariable variable=pythonRequirementsFilesHash;]$all_files_md5sum"
+  displayName: Set pythonRequirementsFilesHash
+  env:
+    REQUIREMENTS_FILE_PATH_LIST_STRING: "${{ convertToJson(parameters.requirementsFilePathList) }}"
+```
+
+{% endraw %}
+
 ## Variables
 
 ### Parsing variables
@@ -117,7 +182,7 @@ Sets a step's [output parameter](https://docs.github.com/en/actions/using-workfl
 
 ##### Passing by artifacts between jobs
 
-You can use the [upload-artifact and download-artifact actions](https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts) to share data between jobs in a workflow.
+You can use the [upload-artifact and download-artifact actions](https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts) to share data (in the forms of a file) between jobs in a workflow.
 
 To share variables, you can save the variables in a file with format:
 
@@ -147,6 +212,46 @@ Use [on.workflow_call.outputs](https://docs.github.com/en/actions/using-workflow
 - <https://github.com/actions/download-artifact/issues/3#issuecomment-580658517>
 - <https://github.com/actions/download-artifact/issues/3#issuecomment-1017141067>
 - <https://github.com/dawidd6/action-download-artifact>
+
+## Environment
+
+[environment](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment#using-an-environment) is set at job level (not at step level), so we should use the `$GITHUB_OUTPUT` context to set the environment name dynamically, see [here](#parsing-variables) to learn how to pass data between jobs.
+
+Standard usage for static value is like this:
+
+```yaml
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: deploy
+        # ...deployment-specific steps
+```
+
+For advanced usage with dynamic value should be like this:
+
+{% raw %}
+
+```yaml
+# call reusable workflow set_target_env.yml to set the target_env
+jobs:
+  set_target_env:
+    uses: ./.github/workflows/set_target_env.yml
+  deployment:
+    runs-on: ubuntu-latest
+    needs: [set_target_env]
+    environment:
+      name: ${{ needs.set_target_env.outputs.workflow_output_target_env }}
+    env:
+      TARGET_ENV: ${{ needs.set_target_env.outputs.workflow_output_target_env }}
+    steps:
+      - run: |
+          echo "TARGET_ENV: $TARGET_ENV"
+      # ...other deployment-specific steps based on $TARGET_ENV
+```
+
+{% endraw %}
 
 ## Github custom actions
 
