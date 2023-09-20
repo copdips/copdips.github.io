@@ -103,7 +103,6 @@ You can make an environment variable available to any subsequent steps in a work
 
 ```yaml
 - run: echo "var_1=value1" >> $GITHUB_ENV
-
 - run: echo "var_1: $var1"
 ```
 
@@ -115,7 +114,7 @@ Sets a step's [output parameter](https://docs.github.com/en/actions/using-workfl
 
 #### Passing by artifacts between jobs
 
-You can use the [upload-artifact and download-artifact actions](https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts) to share data (in the forms of a file) between jobs in a workflow.
+You can use the [upload-artifact and download-artifact actions](https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts#passing-data-between-jobs-in-a-workflow) to share data (in the forms of a file) between jobs in a workflow.
 
 To share variables, you can save the variables in a file with format:
 
