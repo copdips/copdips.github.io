@@ -17,6 +17,8 @@ gallery:
     title: ''
 ---
 
+## Dynamic environment
+
 [environment](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment#using-an-environment) is set at job level (not at step level), so we should use the `$GITHUB_OUTPUT` context to set the environment name dynamically, see [here](https://copdips.com/2023/09/github-actions-variables.html#passing-variables) to learn how to pass data between jobs.
 
 Standard usage for static value is like this:
