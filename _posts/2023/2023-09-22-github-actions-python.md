@@ -4,7 +4,7 @@ title: "Github Actions - Python"
 excerpt: ""
 tags:
   - cicd
-  - github
+  - githubaction
   - python
   - pip
   - auth

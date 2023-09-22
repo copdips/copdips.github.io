@@ -4,7 +4,7 @@ title: "Github Actions - Custom Actions"
 excerpt: ""
 tags:
   - cicd
-  - github
+  - githubaction
   - azure
 published: true
 # header:

@@ -4,7 +4,7 @@ title: "Github Actions - Error handling"
 excerpt: ""
 tags:
   - cicd
-  - github
+  - githubaction
 published: true
 # header:
 #   teaserlogo:

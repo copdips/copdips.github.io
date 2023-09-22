@@ -4,7 +4,7 @@ title: "Github Actions - Workflows"
 excerpt: ""
 tags:
   - cicd
-  - github
+  - githubaction
 published: true
 # header:
 #   teaserlogo:
