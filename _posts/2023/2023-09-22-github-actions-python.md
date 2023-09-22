@@ -46,6 +46,7 @@ In March 2023, there was a great new that Azure Service Principal was been [intr
     ```
 
 4. Create env var `PIP_INDEX_URL` in the workflow, and set it to the Azure DevOps Artifacts feed URL.
+    {% raw %}
 
     ```yaml
     - uses: actions/checkout@v4
@@ -75,3 +76,5 @@ In March 2023, there was a great new that Azure Service Principal was been [intr
         pip install -U pip
         pip install -r requirements/requirements.txt
     ```
+
+    {% endraw %}
