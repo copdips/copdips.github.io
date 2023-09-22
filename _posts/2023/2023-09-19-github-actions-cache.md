@@ -52,6 +52,8 @@ For Python pip install, we could use the following cache key:
 
 {% endraw %}
 
+The `cache` action repository provides also some [Python caching examples](https://github.com/actions/cache/blob/main/examples.md#python---pip).
+
 ### pip cache dir vs pip install dir
 
 The `path` parameter in `actions/cache@v3` could be:
@@ -109,4 +111,4 @@ steps:
 - run: pip install -r requirements.txt
 ```
 
-If `cache-dependency-path` is not specified, and if the cache type is `pip`, it will try to find all the `requirements.txt` files in the repo and hash them to generate the cache key. For cache type with `pipenv` or `poetry`, I didn't test them.
+If `cache-dependency-path` is not specified, and if the cache type is `pip`, it will try to [find all the requirements.txt files](https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python#caching-dependencies) in the repo and hash them to generate the cache key. For cache type with `pipenv` or `poetry`, I didn't test them.
