@@ -37,7 +37,7 @@ For Python pip install, we could use the following cache key:
     os_version=$(cat /etc/os-release | grep -i "version=" | cut -c9- | tr -d '"' | tr ' ' '_')
     github_workflow_full_path="${GITHUB_WORKFLOW_REF%@*}"
     python_full_version=$(python -c 'import platform; print(platform.python_version())')
-    node_full_version=$(node --version)
+    node_major_version=$(node --version | cut -d'.' -f1 | tr -d 'v')
     echo "os_version=$os_version" >> $GITHUB_ENV
     echo "github_workflow_full_path=$github_workflow_full_path" >> $GITHUB_ENV
     echo "python_full_version=$python_full_version" >> $GITHUB_ENV
@@ -48,7 +48,7 @@ For Python pip install, we could use the following cache key:
   with:
     # path: ${{ env.PIP_CACHE_DIR }}
     path: ${{ env.pythonLocation }}
-    key: ${{ env.github_workflow_full_path}}-${{ env.os_version }}-${{ env.python_full_version }}-${{ env.node_full_version}}-${{ hashFiles('requirements/*.txt') }}
+    key: ${{ env.github_workflow_full_path}}-${{ env.os_version }}-${{ env.python_full_version }}-${{ env.node_major_version}}-${{ hashFiles('requirements/*.txt') }}
 ```
 
 {% endraw %}
