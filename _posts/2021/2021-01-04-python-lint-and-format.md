@@ -158,12 +158,18 @@ pyproject.toml:
 ```toml
 [tool.pyright]
 reportUnnecessaryTypeIgnoreComment = true
+include = []
+exclude = []
 ```
 
 running pyright:
 
 ```bash
+# scan pathes specified in pyproject.toml include, exclude
 pyright
+
+# scan current folder and subfolders in spite of pyproject.toml include, exclude
+pyright .
 ```
 
 ### mypy
