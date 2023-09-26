@@ -30,10 +30,10 @@ However, some people might use `PIP_INDEX_URL` point to the public PyPi, and `PI
 
 ### Auth for Azure DevOps Artifacts
 
-In March 2023, there was a great new that Azure Service Principal was been [introduced in Azure DevOps](https://learn.microsoft.com/en-us/azure/devops/release-notes/2023/sprint-219-update#service-principal-and-managed-identity-support-in-azure-devops-public-preview), eliminating the use of service account.
+In March 2023, there was a great news that Azure Service Principal was been [introduced in Azure DevOps](https://learn.microsoft.com/en-us/azure/devops/release-notes/2023/sprint-219-update#service-principal-and-managed-identity-support-in-azure-devops-public-preview), eliminating the use of service account.
 
 1. Create a service principal in Azure Active Directory.
-2. Add the service principal to the Azure DevOps Artifacts feed with `Contributor` role. Package publishing needs `Contributor` role, but package installation only needs `Reader` role.
+2. Add the service principal to the Azure DevOps Artifacts feed with `Contributor` role. Package publishing (twine upload) needs `Contributor` role, but package installation (pip install) only needs `Reader` role.
 3. Add SPN credentials to Github Secrets with name `AZURE_CREDENTIALS`, and value in JSON format:
 
     ```json
@@ -66,15 +66,42 @@ In March 2023, there was a great new that Azure Service Principal was been [intr
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: Setup pip
+    - name: Setup Python package feed
       run: |
         access_token=$(az account get-access-token | jq .accessToken -r)
+
+        # setup pip auth
         echo "PIP_INDEX_URL=https://:$access_token@pkgs.dev.azure.com/{azdo_org_name}/_packaging/{azdo_artifacts_feed_name}/pypi/simple/" >> $GITHUB_ENV
+
+        # setup twine auth
+        cat > ~/.pypirc <<EOF
+        [distutils]
+        index-servers={azdo_artifacts_feed_name}
+        [{azdo_artifacts_feed_name}]
+        repository=https://pkgs.dev.azure.com/{azdo_org_name}/_packaging/{azdo_artifacts_feed_name}/pypi/upload
+        username=build
+        password=$access_token
+        EOF
 
     - name: Install dependencies
       run: |
         pip install -U pip
         pip install -r requirements/requirements.txt
+
+    - name: Build Python package
+      run: |
+        # need to install wheel in advance
+        python setup.py sdist bdist_wheel
+        # modern Python uses `python -m build` instead
+
+    # alternative Python package build and check
+    - name: Build and Check Package
+      uses: hynek/build-and-inspect-python-package@v1.5
+
+    - name: Publish Python package
+      run: |
+        # need to install twine in advance
+        twine upload -r {azdo_artifacts_feed_name} dist/*.whl
     ```
 
     {% endraw %}
