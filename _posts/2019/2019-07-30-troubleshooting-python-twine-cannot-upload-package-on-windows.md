@@ -165,6 +165,6 @@ We have 3 solutions.
 
 1. use [`twine --config-file`](https://twine.readthedocs.io/en/latest/#twine-upload) to manually specify the .pypirc config file.
 
-1. if $env:HOME exists, copy the .pypirc file to $env:HOME, otherwise $env:USERPROFILE.
+1. if `$env:HOME` exists, copy the `.pypirc` file to `$env:HOME`, otherwise to `$env:USERPROFILE`.
 
 1. declare all the upload params as [environment variables](https://twine.readthedocs.io/en/latest/#environment-variables).
