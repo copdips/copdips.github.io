@@ -83,6 +83,9 @@ In March 2023, there was a great news that Azure Service Principal was been [int
         password=$access_token
         EOF
 
+        # setup access token for action pypa/gh-action-pypi-publish
+        echo "ACCESS_TOKEN=$access_token" >> $GITHUB_ENV
+
     - name: Install dependencies
       run: |
         pip install -U pip
@@ -98,10 +101,23 @@ In March 2023, there was a great news that Azure Service Principal was been [int
     - name: Build and Check Package
       uses: hynek/build-and-inspect-python-package@v1.5
 
-    - name: Publish Python package
+    - name: Publish Python package by twine
       run: |
         # need to install twine in advance
         twine upload -r {azdo_artifacts_feed_name} dist/*.whl
+
+    # alternative Python package publish
+    - name: Publish Python package by action
+      # does not need to install twine in advance
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        repository-url: "https://pkgs.dev.azure.com/{azdo_org_name}/_packaging/{azdo_artifacts_feed_name}/pypi/upload"
+        password: ${{ env.ACCESS_TOKEN }}
+
+    - name: Cleanup secret envs
+      run: |
+        echo "PIP_INDEX_URL=" >> $GITHUB_ENV
+        echo "ACCESS_TOKEN=" >> $GITHUB_ENV
     ```
 
     {% endraw %}
