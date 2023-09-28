@@ -8,6 +8,7 @@ tags:
   - python
   - pip
   - auth
+  - azure
 published: true
 # header:
 #   teaserlogo:
@@ -29,6 +30,8 @@ In most cases, when setting up private Python package artifacts (like Azure DevO
 However, some people might use `PIP_INDEX_URL` point to the public PyPi, and `PIP_EXTRA_INDEX_URL` to point to the private artifacts. This approach is not recommended, as it results in the public PyPi searched first, followed by the private artifacts. This poses a security risk where a malicious actor can publish a package with the same name as your private one on the public PyPi.
 
 ### Auth for Azure DevOps Artifacts
+
+#### Auth by Azure SPN crendentials
 
 In March 2023, there was a great news that Azure Service Principal was been [introduced in Azure DevOps](https://learn.microsoft.com/en-us/azure/devops/release-notes/2023/sprint-219-update#service-principal-and-managed-identity-support-in-azure-devops-public-preview), eliminating the use of service account.
 
@@ -121,3 +124,33 @@ In March 2023, there was a great news that Azure Service Principal was been [int
     ```
 
     {% endraw %}
+
+#### Auth by Azure OpenID Connect (OIDC)
+
+We can also [setup OpenID Connect (OIDC) between Github Action and Azure](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-azure). It's practical because we do not need to worry about Azure SPN secret rotation. However, a drawback is that when setting up OIDC, we must add a [filter](https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-cli%2Clinux#add-federated-credentials) (`subject` field in the `credential.json`). This could be a branch name, tag name, pull request, or environment name, we can not use wildcards in the filter, so we have to set up OIDC for each branch, tag, pull request or environment as needed. This is not very practical. For AWS, there's no such limitation.
+
+To use Azure OIDC with Github Action, we need to add the following to the workflow:
+{% raw %}
+
+```yaml
+...
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  a_job:
+    ...
+    steps:
+      - name: Azure login by OIDC
+        uses: azure/login@v1
+        with:
+          # Official doc puts these 3 fields in secrets, but it's not necessary,
+          # as `subject` field in the credential.json prevents other repos from
+          # using the same credential. And these are not sensitive info neither.
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+```
+
+{% endraw %}
