@@ -17,6 +17,19 @@ gallery:
     title: ''
 ---
 
+## Setting environment variables by Python
+
+Same approach applies to other languages:
+
+```yaml
+- name: Create new env vars by Python
+  shell: python
+  run: |
+    import os
+    with open(os.environ["GITHUB_ENV"], "a") as f:
+      f.write("ENV_VAR_1=value_1\nENV_VAR_2=value_2\n")
+```
+
 ## Parsing variables
 
 ### Parsing variables with object type
