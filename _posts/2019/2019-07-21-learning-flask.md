@@ -74,7 +74,7 @@ To prevent from setting this var every time, we can use the combination of:
 In the end, just from your shell, type `python app.py` to start the Flask in debug mode, or open the `app.py` file in VSCode, then press `F4` to start it.
 
 Don't use this setting in a production environment.
-{:notice--warning}
+{: .notice--warning}
 
 ## URL
 

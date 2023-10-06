@@ -25,21 +25,24 @@ To access the variables value in YAML pipeline, we can use 2 methods:
 1. `$(System.PullRequest.SourceBranch)` : the standard way to access pipeline variables.
 2. `$SYSTEM_PULLREQUEST_SOURCEBRANCH` : most of the pipeline variables are mapped to the pipeline machine environment variables in upper snake case.
 
-## Variables varying upon triggering Git event
+## Variables upon Git events
 
 Suppose we create a new branch named `new_branch`, and create a pull request (with id `123`) from the new branch `new_branch` to the `main` branch.
-During the pipeline, we can see following predefined variables values in different GIT actions If the actions are from other GIT sources, for example GitHub, we might have other variables which won't be discussed here.
+During the pipeline, we can see following predefined variables in different GIT events.
 
-| variable name \ git action        | on push                   | on pull request                                    | on merge                                                                                                                                                                                | on manual trigger         |
-| --------------------------------- | ------------------------- | -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
-| Build.SourceBranch                | refs/heads/new_branch     | refs/pull/123/merge                                | refs/heads/main                                                                                                                                                                       | refs/heads/new_branch     |
-| Build.SourceBranchName            | new_branch                | merge                                              | main                                                                                                                                                                                  | new_branch                |
-| Build.SourceVersionMessage        | {the last commit message} | Merge pull request 123 from new_branch into main | Merged PR 123: {pull request title}`<br>`**- It's a way to determin this merge is from which PR**`<br>`**- We can also change the default message when merging the PR** | {the last commit message} |
-| Build.Reason                      | IndividualCI              | PullRequest                                        | IndividualCI                                                                                                                                                                            | Manual                    |
-| System.Pullrequest.SourceBranch   | VAR_NOT_EXISTS            | refs/heads/new_branch                              | VAR_NOT_EXISTS                                                                                                                                                                          | VAR_NOT_EXISTS            |
-| System.Pullrequest.TargetBranch   | VAR_NOT_EXISTS            | refs/heads/main                                  | VAR_NOT_EXISTS                                                                                                                                                                          | VAR_NOT_EXISTS            |
-| System.Pullrequest.PullRequestId  | VAR_NOT_EXISTS            | 123                                                | VAR_NOT_EXISTS                                                                                                                                                                          | VAR_NOT_EXISTS            |
-| System.PullRequest.SourceCommitId | VAR_NOT_EXISTS            | the last commit number in pull request             | VAR_NOT_EXISTS                                                                                                                                                                          | VAR_NOT_EXISTS            |
+Check [here](https://copdips.com/2023/09/github-actions-variables.html#variables-upon-git-events) for variables upon git events in Github Actions.
+{: .notice--info}
+
+|    variable name \ git action     |          on push          |                 on pull request                  |                                                                              on merge                                                                               |     on manual trigger     |
+| --------------------------------- | ------------------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| Build.SourceBranch                | refs/heads/new_branch     | refs/pull/123/merge                              | refs/heads/main                                                                                                                                                     | refs/heads/new_branch     |
+| Build.SourceBranchName            | new_branch                | merge                                            | main                                                                                                                                                                | new_branch                |
+| Build.SourceVersionMessage        | {the last commit message} | Merge pull request 123 from new_branch into main | Merged PR 123: {pull request title}<br>**- It's a way to determin this merge is from which PR**<br>**- We can also change the default message when merging the PR** | {the last commit message} |
+| Build.Reason                      | IndividualCI              | PullRequest                                      | IndividualCI                                                                                                                                                        | Manual                    |
+| System.Pullrequest.SourceBranch   | VAR_NOT_EXISTS            | refs/heads/new_branch                            | VAR_NOT_EXISTS                                                                                                                                                      | VAR_NOT_EXISTS            |
+| System.Pullrequest.TargetBranch   | VAR_NOT_EXISTS            | refs/heads/main                                  | VAR_NOT_EXISTS                                                                                                                                                      | VAR_NOT_EXISTS            |
+| System.Pullrequest.PullRequestId  | VAR_NOT_EXISTS            | 123                                              | VAR_NOT_EXISTS                                                                                                                                                      | VAR_NOT_EXISTS            |
+| System.PullRequest.SourceCommitId | VAR_NOT_EXISTS            | the last commit number in pull request           | VAR_NOT_EXISTS                                                                                                                                                      | VAR_NOT_EXISTS            |
 
 ## Variables not varying upon triggering Git action
 
@@ -59,7 +62,7 @@ During the pipeline, we can see following predefined variables values in differe
 
 [Agent.OS](https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#agent-variables-devops-services): Just to check which OS running the pipeline.
 
-## Varibales to be set by user
+## Variables to be set by user
 
 ### System.Debug
 
