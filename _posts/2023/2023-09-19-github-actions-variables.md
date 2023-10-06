@@ -21,7 +21,7 @@ gallery:
 Suppose we create a new branch named `new_branch`, and create a pull request (with id `123`) from the new branch `new_branch` to the `main` branch.
 During the pipeline, we can see following predefined variables in different GIT events.
 
-Check [here](https://copdips.com/2022/01/azure-pipeline-predefined-variables.html#variables-upon-git-events) for variables upon git event in Azure Pipelines.
+Check [here](https://copdips.com/2022/01/azure-pipeline-predefined-variables.html#variables-upon-git-events) for variables upon git events in Azure Pipelines.
 {: .notice--info}
 
 {% raw %}
@@ -67,7 +67,7 @@ Same approach applies to other languages:
 
 ### Parsing variables with object type
 
-Workflow :
+{% raw %}
 
 ```yaml
 - run: |
@@ -75,18 +75,18 @@ Workflow :
     echo "github.event toJson: $GITHUB_EVENT"
   env:
     GITHUB_EVENT: ${{ toJson(github.event) }}
-```
 
-Output:
-
-```bash
+# output:
 github.event: Object
 github.event toJson: {
   after: 9da8166fcc52c437871a2e903b3e200a35c09a1e,
   base_ref: null,
   before: 1448cfbf10fc149b7d200d0a0e15493f41cc8896,
   ...
+}
 ```
+
+{% endraw %}
 
 {% raw %}`echo "github.event toJson: ${{ toJSON(github.event) }}"`{% endraw %} will [raise error](https://github.com/actions/runner/issues/1656#issuecomment-1030077729), must parse the variable to environment variable `$GITHUB_EVENT` at first. So when using `toJson` method to parse object type variable, it is recommended to send the value to an environment variable first.
 {: .notice--warning}
