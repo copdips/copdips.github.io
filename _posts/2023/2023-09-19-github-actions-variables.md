@@ -16,6 +16,38 @@ gallery:
     url: ''
     title: ''
 ---
+## Variables varying upon triggering Git event
+
+Suppose we create a new branch named `new_branch`, and create a pull request (with id `123`) from the new branch `new_branch` to the `main` branch.
+During the pipeline, we can see following predefined variables values in different GIT actions If the actions are from other GIT sources, for example GitHub, we might have other variables which won't be discussed here.
+
+Check [here](https://copdips.com/2022/01/azure-pipeline-predefined-variables.html#variables-varying-upon-triggering-git-event) for variables upon git event in Azure Pipelines.
+
+{% raw %}
+
+| variable name \ git action                        | on push               | on pull request                                                                                                                            | on merge (after merge, a push event will be triggered))) | on manual trigger     |
+| ------------------------------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------- | --------------------- |
+| $GITHUB_REF                                       | refs/heads/new_branch | refs/pull/123/merge                                                                                                                        | refs/heads/main                                          | refs/heads/new_branch |
+| $GITHUB_REF_NAME                                  | new_branch            | 132/merge                                                                                                                                  | main                                                     | new_branch            |
+| $GITHUB_EVENT_NAME                                | push                  | pull_request                                                                                                                               | pull_request_target                                      | workflow_dispatch     |
+| $GITHUB_REF_TYPE                                  | branch                | branch                                                                                                                                     | branch                                                   | branch                |
+| $GITHUB_SHA                                       | last commit in branch | workflow commit (not merge commit)                                                                                                         | merge commit                                             | last commit in branch |
+| ${{ github.event.head_commit.message }}           | last commit message   | VAR_NOT_EXISTS                                                                                                                             | VAR_NOT_EXISTS                                           | VAR_NOT_EXISTS        |
+| ${{ github.event.pull_request.merge_commit_sha }} | VAR_NOT_EXISTS        | merge commit                                                                                                                               | merge commit                                             | VAR_NOT_EXISTS        |
+| ${{ github.event.pull_request.head.sha }}         | VAR_NOT_EXISTS        | last commit in PR (not merge commit)                                                                                                       | last commit in PR (not merge commit)                     | VAR_NOT_EXISTS        |
+| ${{ github.event.pull_request.number }}           | VAR_NOT_EXISTS        | 123                                                                                                                                        | 123                                                      | VAR_NOT_EXISTS        |
+| ${{ github.event.number }}                        | VAR_NOT_EXISTS        | 123                                                                                                                                        | 123                                                      | VAR_NOT_EXISTS        |
+| ${{ github.event.pull_request.merged }}           | VAR_NOT_EXISTS        | false                                                                                                                                      | true                                                     | VAR_NOT_EXISTS        |
+| ${{ github.event.pull_request.merged_by.login }}  | VAR_NOT_EXISTS        | null                                                                                                                                       | user login                                               | VAR_NOT_EXISTS        |
+| ${{ github.event.pull_request.merged_by.type }}   | VAR_NOT_EXISTS        | null                                                                                                                                       | User, etc                                                | VAR_NOT_EXISTS        |
+| ${{ github.event.pull_request.title }}            | VAR_NOT_EXISTS        | null or pr title                                                                                                                           | null or pr title                                         | VAR_NOT_EXISTS        |
+| ${{ github.event.pull_request.body}}              | VAR_NOT_EXISTS        | null or pr body                                                                                                                            | null or pr bod                                           | VAR_NOT_EXISTS        |
+| ${{ github.event.after }}                         | last SHA in commit    | last commit in PR (not merge commit)                                                                                                       | VAR_NOT_EXISTS                                           | VAR_NOT_EXISTS        |
+| ${{ github.event.action}}                         | VAR_NOT_EXISTS        | opened, synchronize, edited, reopned, [etc](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request).. | closed                                                   | VAR_NOT_EXISTS        |
+| ${{ github.head_ref }}                            | VAR_NOT_EXISTS        | new_branch                                                                                                                                 | new_branch                                               | VAR_NOT_EXISTS        |
+| ${{ github.base_ref }}                            | null                  | main                                                                                                                                       | main                                                     | VAR_NOT_EXISTS        |
+
+{% endraw %}
 
 ## Setting environment variables by Python
 
@@ -146,7 +178,7 @@ Then download the file from another job and source it to load the variables:
 
 #### Passing by $GITHUB_OUTPUT between jobs
 
-<https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idoutputs>
+[https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idoutputs](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idoutputs)
 
 ### Passing data between caller workflow and called (reusable) workflow
 
@@ -154,6 +186,6 @@ Use [on.workflow_call.outputs](https://docs.github.com/en/actions/using-workflow
 
 ### Passing data between irrelevant workflows
 
-- <https://github.com/actions/download-artifact/issues/3#issuecomment-580658517>
-- <https://github.com/actions/download-artifact/issues/3#issuecomment-1017141067>
-- <https://github.com/dawidd6/action-download-artifact>
+- [https://github.com/actions/download-artifact/issues/3#issuecomment-580658517](https://github.com/actions/download-artifact/issues/3#issuecomment-580658517)
+- [https://github.com/actions/download-artifact/issues/3#issuecomment-1017141067](https://github.com/actions/download-artifact/issues/3#issuecomment-1017141067)
+- [https://github.com/dawidd6/action-download-artifact](https://github.com/dawidd6/action-download-artifact)
