@@ -67,7 +67,7 @@ Same approach applies to other languages:
 
 ### JSON variables with GITHUB_OUTPUT
 
-When setting a JSON variable in string as $GITHUB_OUTPUT, and then use it in another step, we should use the Github actions expressions syntax. The ambiguity is that depending from where we use the expressions syntax, we should use different method. Let's see the following example in a Github Ubuntu runner with bash shell:
+When setting a JSON variable in string as `$GITHUB_OUTPUT`, and using it in a subsequent step, we should use the Github actions expressions syntax. However, the method of using this syntax can vary based on its context. Consider the following example on a Github Ubuntu runner with a bash shell:
 
 {% raw %}
 
@@ -171,7 +171,7 @@ From the output we can see that there're two ways to have a valid json string in
 {% endraw %}
 
 {% raw %}
-Obviously, creating some json string in GITHUB_OUTPUT without escaping backslash `json_quotes_escaped="{\"name\":\"foo\"}"` is shorter to code than `"{\\\"name\\\":\\\"foo\\\"}"`, but it's not a valid json string when referenced by Github actions expressions syntax `${{ <expression> }}` inside of a bash shell, this is because the expressions are handled before Bash shell ever executes the script, and literally substituted the expression parts with the corresponding values, in consequence the double quotes are silently discarded. That's why we saw `json_raw: {name:foo}` in the output. To work around this, we can use the `toJson` method to convert the string to a valid json string.
+Creating a JSON string in GITHUB_OUTPUT without escaping backslashes, like `json_quotes_escaped="{\"name\":\"foo\"}"`, is more concise than `"{\\\"name\\\":\\\"foo\\\"}"`. However, when using `${{ <expression> }}` in a bash shell within GitHub Actions, it's not a valid JSON string. This is because the expressions are processed before the bash shell runs the script, replacing the expression with its value and discarding double quotes. This results in an output like `json_raw: {name:foo}`. To address this, the [`toJson`](https://docs.github.com/en/enterprise-cloud@latest/actions/learn-github-actions/expressions#tojson) function can be used to convert the string into valid JSON.
 {% endraw %}
 
 {% raw %}
@@ -204,7 +204,7 @@ Obviously, creating some json string in GITHUB_OUTPUT without escaping backslash
 Check also the [`fromJson`](https://docs.github.com/en/actions/learn-github-actions/expressions#fromjson) function to see how to parse json string to object.
 {: .notice--info}
 
-## Do not create JSON secrets
+### Do not create JSON secrets
 
 When creating a secret, we should not create a JSON secret. For e.g. the Github action `Azure/Login` provides [an example how to pass creds inputs with a JSON secret](https://github.com/Azure/login#sample-workflow-that-uses-azure-login-action-to-run-az-cli):
 
