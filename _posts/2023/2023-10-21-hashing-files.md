@@ -42,7 +42,7 @@ runs:
       env:
         REQ_FILES: ${{ inputs.req-files }}
       run: |
-        files=$(echo "$REQ_FILES" | tr "," " ")
+        files=$(echo "$REQ_FILES" | tr "," " " | while read pattern ; do ls $pattern; done)
         files_sep_by_space=""
         for file in $files; do
             files_sep_by_space="$files_sep_by_space $(ls $file | tr '\n' ' ')"
@@ -70,7 +70,8 @@ parameters:
     type: object
   steps:
     - script: |
-        files=$(echo "$REQ_FILES_JSON" | jq  '. | join(" ")' -r)
+        req_files_pattern_string=$(echo "$REQ_FILES_JSON" | jq  '. | join(",")' -r)
+        files=$(echo $req_files_pattern_string | tr "," " " | while read pattern ; do ls $pattern; done)
         files_sep_by_space=""
         for file in $files; do
             files_sep_by_space="$files_sep_by_space $(ls $file | tr '\n' ' ')"
