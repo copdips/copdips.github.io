@@ -24,6 +24,8 @@ gallery:
 ## Lint
 
 Update 2023-05-21: Replaced flake8, pylint, and isort by [ruff](https://github.com/charliermarsh/ruff). When replacing pylint, should [add check by mypy](https://beta.ruff.rs/docs/faq/#how-does-ruff-compare-to-pylint).
+Update 2023-11-07: Bandit could be replaced by ruff too with the support of flake-bandit.
+The nearly only thing that ruff can not do for the moment is the [type checking](https://docs.astral.sh/ruff/faq/#how-does-ruff-compare-to-mypy-or-pyright-or-pyre).
 {: .notice--info}
 
 ### ruff
@@ -107,6 +109,9 @@ There's a very nice flake8 plugin called [**flake8-cognitive-complexity**](https
 To fix `imported but not used` error in `__init__.py` file, could by [__all__ attribute](https://stackoverflow.com/a/31079085/5095636) (the most elegant) or by [--per-file-ignores](https://flake8.pycqa.org/en/latest/user/options.html#cmdoption-flake8-per-file-ignores).
 
 ### bandit
+
+Update 2023-11-07: [ruff](https://docs.astral.sh/ruff/rules/#flake8-bandit-s) supports flake-bandit, so we can use ruff instead of bandit now, vscode also supports to [switch to flakes-bandit](https://github.com/microsoft/vscode-python/wiki/Migration-to-Python-Tools-Extensions#alternatives-for-deprecated-settings--).
+{: .notice--info}
 
 The bandit config file format is not well documented, I passed a lot of time to test the config.
 
