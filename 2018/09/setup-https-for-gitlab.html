@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+--><html lang="en" class="no-js">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Setup HTTPS for Gitlab - A code to remember</title>
+<meta name="description" content="Setup a SAN SSL certificate to use the HTTPS on Gitlab-CE in docker on Ubuntu server.">
+
+
+  <meta name="author" content="Xiang ZHU">
+  
+  <meta property="article:author" content="Xiang ZHU">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="A code to remember">
+<meta property="og:title" content="Setup HTTPS for Gitlab">
+<meta property="og:url" content="https://www.copdips.com/2018/09/setup-https-for-gitlab.html">
+
+
+  <meta property="og:description" content="Setup a SAN SSL certificate to use the HTTPS on Gitlab-CE in docker on Ubuntu server.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2018-09-16T00:00:00+00:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="https://www.copdips.com/2018/09/setup-https-for-gitlab.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Xiang ZHU",
+      "url": "https://www.copdips.com/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="A code to remember Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          A code to remember
+          
+        </a>
+        <ul class="visible-links">
+<li class="masthead__menu-item">
+              <a href="/">Home</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/tags/">Tags</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/year-archive/">Year Archive</a>
+            </li>
+</ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<!-- back to top button -->
+<!-- https://github.com/mmistakes/minimal-mistakes/issues/1731#issuecomment-628997645 -->
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>addBackToTop({
+  diameter: 56,
+  backgroundColor: '#F16334',
+  textColor: '#fff'
+})</script>
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.copdips.com/">
+        <img src="/image/avatar/zhuxiang-smile.jpg" alt="Xiang ZHU" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.copdips.com/" itemprop="url">Xiang ZHU</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Python DevOps</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Paris</span>
+        </li>
+      
+
+      
+        
+          
+            <li><a href="https://www.copdips.com" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fas fa-fw fa-link" aria-hidden="true"></i><span class="label">Website</span></a></li>
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">LinkedIn</span></a></li>
+          
+        
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:xiang.zhu@outlook.com" rel="me" class="u-email">
+            <meta itemprop="email" content="xiang.zhu@outlook.com">
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+      <!-- 
+<script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+<div id="qrcode"></div>
+<script type="text/javascript">
+  var qrcode = new QRCode('qrcode', {width: 10, height: 10, text: location.href});
+</script>
+ -->
+    </ul>
+  </div>
+</div>
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Setup HTTPS for Gitlab">
+    <meta itemprop="description" content="Setup a SAN SSL certificate to use the HTTPS on Gitlab-CE in docker on Ubuntu server.">
+    <meta itemprop="datePublished" content="2018-09-16T00:00:00+00:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.copdips.com/2018/09/setup-https-for-gitlab.html" class="u-url" itemprop="url">Setup HTTPS for Gitlab
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2018-09-16T00:00:00+00:00">September 16, 2018</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          6 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title">
+<i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu">
+<li><a href="#some-docs-on-the-internet">Some docs on the Internet</a></li>
+<li>
+<a href="#generate-self-signed-ssl-certificate-without-san">Generate self-signed SSL certificate without SAN</a><ul>
+<li><a href="#online-docs-for-ssl-certificate-without-san">Online docs for SSL certificate without SAN</a></li>
+<li><a href="#generate-ssl-certificate-private-key">Generate SSL certificate private key</a></li>
+<li><a href="#generate-ssl-certificate-request">Generate SSL certificate request</a></li>
+<li><a href="#generate-ssl-certificate">Generate SSL certificate</a></li>
+<li><a href="#review-the-ssl-certificate-content">Review the SSL certificate content</a></li>
+</ul>
+</li>
+<li>
+<a href="#generate-self-signed-san-ssl-certificate">Generate self-signed SAN SSL certificate</a><ul>
+<li><a href="#online-docs-for-ssl-certificate-with-san">Online docs for SSL certificate with SAN</a></li>
+<li><a href="#prepare-the-openssl-config-file">Prepare the OpenSSL config file</a></li>
+<li><a href="#generate-the-san-ssl-certificate-content">Generate the SAN SSL certificate content</a></li>
+<li><a href="#review-the-san-ssl-certificate">Review the SAN SSL certificate</a></li>
+</ul>
+</li>
+<li><a href="#save-the-ssl-certificate">Save the SSL certificate</a></li>
+<li><a href="#configure-https-on-gitlab">Configure HTTPS on Gitlab</a></li>
+<li><a href="#update-gitlab-config">Update Gitlab config</a></li>
+<li>
+<a href="#check-the-website-ssl-certificate-from-the-command-line">Check the website SSL certificate from the command line</a><ul>
+<li><a href="#by-openssl-for-both-linux-and-windows">By openssl for both Linux and Windows</a></li>
+<li><a href="#by-certuil-for-windows-only">By certuil for Windows only</a></li>
+</ul>
+</li>
+<li><a href="#update-the-certificate-in-case-of-renewal">Update the certificate in case of renewal</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <blockquote>
+  <p>Gitlab-CE default installation goes with HTTPS disable. We need to generate a SSL certificate, and bind it to the HTTPS of Gitlab-CE.</p>
+</blockquote>
+
+<h1 id="some-docs-on-the-internet">Some docs on the Internet</h1>
+
+<ol>
+  <li><a href="https://docs.gitlab.com/omnibus/settings/ssl.html">Gitlab omnibus SSL settings</a></li>
+  <li><a href="https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https">Gitlab omnibus enable HTTPS</a></li>
+  <li><a href="https://stackoverflow.com/questions/10175812/how-to-create-a-self-signed-certificate-with-openssl">Generate a self-signed certificate with openssl</a></li>
+  <li><a href="https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-gitlab-on-ubuntu-16-04">How to install and configure Gitlab on Ubuntu 16.04</a></li>
+  <li><a href="https://www.digitalocean.com/community/tutorials/how-to-secure-gitlab-with-let-s-encrypt-on-ubuntu-16-04">[Deprecated] How To Secure GitLab with Let’s Encrypt on Ubuntu 16.04</a></li>
+</ol>
+
+<h1 id="generate-self-signed-ssl-certificate-without-san">Generate self-signed SSL certificate without SAN</h1>
+
+<h2 id="online-docs-for-ssl-certificate-without-san">Online docs for SSL certificate without SAN</h2>
+
+<ol>
+  <li><a href="https://devcenter.heroku.com/articles/ssl-certificate-self">Creating a Self-Signed SSL Certificate</a></li>
+  <li><a href="https://futurestud.io/tutorials/how-to-run-gitlab-with-self-signed-ssl-certificate">How To Run Gitlab With Self Signed Ssl Certificate</a></li>
+</ol>
+
+<h2 id="generate-ssl-certificate-private-key">Generate SSL certificate private key</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>xiang@ubuntu1804:~/ssl<span class="nv">$ </span><span class="nb">sudo </span>openssl genrsa <span class="nt">-out</span> <span class="s2">"./gitlab.copdips.local.key"</span> 2048
+Generating RSA private key, 2048 bit long modulus
+............+++
+..+++
+e is 65537 <span class="o">(</span>0x010001<span class="o">)</span>
+</code></pre></div></div>
+
+<h2 id="generate-ssl-certificate-request">Generate SSL certificate request</h2>
+
+<p>Without the switch <code class="language-plaintext highlighter-rouge">-config</code>, the generation of csr request will ask you some information about company, email, and passphrasem etc. If you dont want OpenSSL to ask you that, you need to prepare a config file and specify it by <code class="language-plaintext highlighter-rouge">-config [YourConfigPath]</code>, and config example can be found in the paragraph <a href="#prepare-the-openssl-config-file">Prepare the OpenSSL config file</a>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>xiang@ubuntu1804:~/ssl<span class="nv">$ </span><span class="nb">sudo </span>openssl req <span class="nt">-new</span> <span class="nt">-key</span> <span class="s2">"gitlab.copdips.local.key"</span> <span class="nt">-out</span> <span class="s2">"gitlab.copdips.local.csr"</span>
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter <span class="s1">'.'</span>, the field will be left blank.
+<span class="nt">-----</span>
+Country Name <span class="o">(</span>2 letter code<span class="o">)</span> <span class="o">[</span>AU]:
+State or Province Name <span class="o">(</span>full name<span class="o">)</span> <span class="o">[</span>Some-State]:
+Locality Name <span class="o">(</span>eg, city<span class="o">)</span> <span class="o">[]</span>:
+Organization Name <span class="o">(</span>eg, company<span class="o">)</span> <span class="o">[</span>Internet Widgits Pty Ltd]:copdips
+Organizational Unit Name <span class="o">(</span>eg, section<span class="o">)</span> <span class="o">[]</span>:
+Common Name <span class="o">(</span>e.g. server FQDN or YOUR name<span class="o">)</span> <span class="o">[]</span>:gitlab.copdips.local
+Email Address <span class="o">[]</span>:
+
+Please enter the following <span class="s1">'extra'</span> attributes
+to be sent with your certificate request
+A challenge password <span class="o">[]</span>:
+An optional company name <span class="o">[]</span>:
+</code></pre></div></div>
+
+<h2 id="generate-ssl-certificate">Generate SSL certificate</h2>
+
+<p>OpenSSL has the option to generate the certificate in one line, this post splits it into 3 steps (the private key, the request file, and the certificate) in order to get a clear understanding of the certificate generation procedure.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>xiang@ubuntu1804:~/ssl<span class="nv">$ </span><span class="nb">sudo </span>openssl x509 <span class="nt">-req</span> <span class="nt">-days</span> 1000 <span class="nt">-in</span> gitlab.copdips.local.csr <span class="nt">-signkey</span> gitlab.copdips.local.key <span class="nt">-out</span> gitlab.copdips.local.crt <span class="nt">-extfile</span> gitlab.copdips.local.cnf <span class="nt">-extension</span> v3_req
+Signature ok
+<span class="nv">subject</span><span class="o">=</span>C <span class="o">=</span> AU, ST <span class="o">=</span> Some-State, O <span class="o">=</span> copdips, CN <span class="o">=</span> gitlab.copdips.local
+Getting Private key
+</code></pre></div></div>
+
+<h2 id="review-the-ssl-certificate-content">Review the SSL certificate content</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>xiang@ubuntu1804:~/ssl<span class="nv">$ </span>openssl x509 <span class="nt">-in</span> gitlab.copdips.local.crt <span class="nt">-text</span> <span class="nt">-noout</span>
+Certificate:
+    Data:
+        Version: 1 <span class="o">(</span>0x0<span class="o">)</span>
+        Serial Number:
+            b4:96:ba:89:62:7b:32:83
+    Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C <span class="o">=</span> AU, ST <span class="o">=</span> Some-State, O <span class="o">=</span> copdips, CN <span class="o">=</span> gitlab.copdips.local
+        Validity
+            Not Before: Sep 13 22:05:40 2018 GMT
+            Not After : Jun  9 22:05:40 2021 GMT
+        Subject: C <span class="o">=</span> AU, ST <span class="o">=</span> Some-State, O <span class="o">=</span> copdips, CN <span class="o">=</span> gitlab.copdips.local
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: <span class="o">(</span>2048 bit<span class="o">)</span>
+</code></pre></div></div>
+
+<p class="notice--warning"><strong>DO NOT</strong> use password protected certificate key (in case the lack of the switch -nodes for <em>no DES</em>), to <a href="https://docs.gitlab.com/omnibus/settings/nginx.html#manually-configuring-https">remove the password from the key</a>:
+<code class="language-plaintext highlighter-rouge">openssl rsa -in certificate_before.key -out certificate_after.key</code></p>
+
+<h1 id="generate-self-signed-san-ssl-certificate">Generate self-signed SAN SSL certificate</h1>
+
+<h2 id="online-docs-for-ssl-certificate-with-san">Online docs for SSL certificate with SAN</h2>
+
+<p>I tested many methods found on the Internet, most of them don’t work. Finally, I followed the <a href="https://support.citrix.com/article/CTX135602">doc maintained by Citrix</a>. This should be a trusted one as Netscaler is a key product in Citrix, the doc is always updated with the latest version of OpenSSL.
+With time going by, the procedure might change, if below procedure doesn’t work, please go to check the Citrix online doc directly.</p>
+
+<h2 id="prepare-the-openssl-config-file">Prepare the OpenSSL config file</h2>
+
+<p>Prepare an OpenSSL config file. On Ubuntu 1804, an OpenSSL config example can be found at: <code class="language-plaintext highlighter-rouge">/usr/lib/ssl/openssl.cnf</code>.
+Or You can find the path from the command: <code class="language-plaintext highlighter-rouge">openssl version -a | grep OPENSSLDIR</code>. You might need to change the config according to your actual environment.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>xiang@ubuntu1804:~/ssl<span class="nv">$ </span><span class="nb">cat </span>gitlab.copdips.local.cnf
+<span class="o">[</span>req]
+prompt             <span class="o">=</span> no
+default_bits       <span class="o">=</span> 2048
+x509_extensions    <span class="o">=</span> v3_req
+distinguished_name <span class="o">=</span> req_distinguished_name
+
+<span class="o">[</span>req_distinguished_name]
+organizationName        <span class="o">=</span> copdips
+commonName              <span class="o">=</span> gitlab.copdips.local
+
+<span class="o">[</span>v3_req]
+subjectAltName <span class="o">=</span> @alt_names
+
+<span class="o">[</span>alt_names]
+DNS.1 <span class="o">=</span> <span class="k">*</span>.copdips.local
+DNS.2 <span class="o">=</span> ubuntu1804
+DNS.3 <span class="o">=</span> ubuntu1804.copdips.local
+</code></pre></div></div>
+
+<p class="notice--warning">Be careful with the usage of the <code class="language-plaintext highlighter-rouge">wildcard</code> in [alt_names], the above OpenSSL config is just an example to show what are the DNS names can be added to SAN.</p>
+
+<h2 id="generate-the-san-ssl-certificate-content">Generate the SAN SSL certificate content</h2>
+
+<p>Pay attention to <code class="language-plaintext highlighter-rouge">-extensions v3_req</code> in the end of the command, it’s the extension tag name in the <code class="language-plaintext highlighter-rouge">gitlab.copdips.local.cnf</code> file. If you dont specify it, the output certificate won’t have the extension part, so no SAN neither.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>xiang@ubuntu1804:~/ssl<span class="nv">$ </span><span class="nb">sudo </span>openssl req <span class="nt">-x509</span> <span class="nt">-days</span> 1000 <span class="nt">-nodes</span> <span class="nt">-out</span> gitlab.copdips.local.crt <span class="nt">-keyout</span> gitlab.copdips.local.key <span class="nt">-config</span> gitlab.copdips.local.cnf <span class="nt">-extensions</span> v3_req
+Generating a 2048 bit RSA private key
+...................................................+++
+...............................+++
+writing new private key to <span class="s1">'gitlab.copdips.local.key'</span>
+</code></pre></div></div>
+
+<p class="notice--warning"><strong>DO NOT</strong> use password protected certificate key (in case the lack of the switch -nodes for <em>no DES</em>), to <a href="https://docs.gitlab.com/omnibus/settings/nginx.html#manually-configuring-https">remove the password from the key</a>:
+<code class="language-plaintext highlighter-rouge">openssl rsa -in certificate_before.key -out certificate_after.key</code></p>
+
+<h2 id="review-the-san-ssl-certificate">Review the SAN SSL certificate</h2>
+
+<p>The <code class="language-plaintext highlighter-rouge">default Signature Algorithm</code> has been already <code class="language-plaintext highlighter-rouge">SHA256</code>. Some online docs tell to add the switch -sha256 when using openssl req, but it’s deprecated with the new version of OpenSSL. BTW, the <code class="language-plaintext highlighter-rouge">RSA private key default bits</code> is <code class="language-plaintext highlighter-rouge">2048</code>. My OpenSSL version on Ubuntu 1804 is <code class="language-plaintext highlighter-rouge">OpenSSL 1.1.0g  2 Nov 2017</code></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>xiang@ubuntu1804:~/ssl<span class="nv">$ </span>openssl x509 <span class="nt">-in</span> gitlab.copdips.local.crt <span class="nt">-noout</span> <span class="nt">-text</span>
+Certificate:
+    Data:
+        Version: 3 <span class="o">(</span>0x2<span class="o">)</span>
+        Serial Number:
+            d3:2c:bb:1d:6c:7e:7b:98
+    Signature Algorithm: sha256WithRSAEncryption
+        Issuer: O <span class="o">=</span> copdips, CN <span class="o">=</span> gitlab.copdips.local
+        Validity
+            Not Before: Sep 15 22:00:55 2018 GMT
+            Not After : Jun 11 22:00:55 2021 GMT
+        Subject: O <span class="o">=</span> copdips, CN <span class="o">=</span> gitlab.copdips.local
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: <span class="o">(</span>2048 bit<span class="o">)</span>
+                Modulus:
+                    <span class="o">[</span>...]
+                Exponent: 65537 <span class="o">(</span>0x10001<span class="o">)</span>
+        X509v3 extensions:
+            X509v3 Subject Alternative Name:
+                DNS:<span class="k">*</span>.copdips.local, DNS:ubuntu1804, DNS:ubuntu1804.copdips.local
+    Signature Algorithm: sha256WithRSAEncryption
+         <span class="o">[</span>...]
+</code></pre></div></div>
+
+<h1 id="save-the-ssl-certificate">Save the SSL certificate</h1>
+
+<p>Create the folder <code class="language-plaintext highlighter-rouge">/etc/gitlab/ssl</code> with following two commands, and copy the SSL certificate and key here with the name of <code class="language-plaintext highlighter-rouge">[fqdn].crt</code> and <code class="language-plaintext highlighter-rouge">[fqnd].key</code>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@gitlab:/# <span class="nb">mkdir</span> <span class="nt">-p</span> /etc/gitlab/ssl
+root@gitlab:/# <span class="nb">chmod </span>700 /etc/gitlab/ssl
+xiang@ubuntu1804:~/ssl<span class="nv">$ </span><span class="nb">sudo cp</span> ~/ssl/gitlab.copdips.local.key ~/ssl/gitlab.copdips.local.crt /srv/gitlab1083/config/ssl/
+</code></pre></div></div>
+
+<p class="notice--info"><code class="language-plaintext highlighter-rouge">/srv/gitlab1083/ssl/</code> is the physical gitlab location  on my Ubuntu server which is pointed to <code class="language-plaintext highlighter-rouge">/etc/gitlab/ssl</code> its docker container.</p>
+
+<h1 id="configure-https-on-gitlab">Configure HTTPS on Gitlab</h1>
+
+<p>Hereunder the content of uncommented lines in the Gitlab configuration file:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@gitlab:/# <span class="nb">grep</span> <span class="s2">"^[^#;]"</span> /etc/gitlab/gitlab.rb
+ external_url <span class="s1">'https://gitlab.copdips.local'</span>
+ nginx[<span class="s1">'redirect_http_to_https'</span><span class="o">]</span> <span class="o">=</span> <span class="nb">true
+ </span>nginx[<span class="s1">'ssl_certificate'</span><span class="o">]</span> <span class="o">=</span> <span class="s2">"/etc/gitlab/ssl/gitlab.copdips.local.crt"</span>
+ nginx[<span class="s1">'ssl_certificate_key'</span><span class="o">]</span> <span class="o">=</span> <span class="s2">"/etc/gitlab/ssl/gitlab.copdips.local.key"</span>
+</code></pre></div></div>
+
+<h1 id="update-gitlab-config">Update Gitlab config</h1>
+
+<p>When you changed the configuration file, to take effect:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@gitlab:/# gitlab-ctl reconfigure
+</code></pre></div></div>
+
+<h1 id="check-the-website-ssl-certificate-from-the-command-line">Check the website SSL certificate from the command line</h1>
+
+<h2 id="by-openssl-for-both-linux-and-windows">By openssl for both Linux and Windows</h2>
+
+<p>For Linux :</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>openssl s_client <span class="nt">-connect</span> gitlab.copdips.local:443 &lt; /dev/null 2&gt;/dev/null | openssl x509 <span class="nt">-text</span> <span class="nt">-in</span> /dev/stdin <span class="nt">-noout</span>
+</code></pre></div></div>
+
+<p>For Windows with OpenSSL installed:</p>
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="bp">$null</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">openssl</span><span class="w"> </span><span class="nx">s_client</span><span class="w"> </span><span class="nt">-connect</span><span class="w"> </span><span class="nx">gitlab.copdips.local:443</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">openssl</span><span class="w"> </span><span class="nx">x509</span><span class="w"> </span><span class="nt">-text</span><span class="w"> </span><span class="nt">-noout</span><span class="w">
+</span></code></pre></div></div>
+
+<p class="notice--info">My OpenSSL is installed with GIT on Windows. <a href="https://gitforwindows.org/">GitForWindows</a> installs also many other powerful Linux commands (grep, ssh, tail, and also vim, etc.) ported to Windows.</p>
+
+<h2 id="by-certuil-for-windows-only">By certuil for Windows only</h2>
+
+<p>You should explicitly download the certificate at first, and then view the content locally, so this method is not cool.
+Hope Powershell team can get this done by one single cmdlet in the future Powershell releases.</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"https://gitlab.copdips.local"</span><span class="w">
+</span><span class="nv">$localCertPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"</span><span class="nv">$</span><span class="nn">env</span><span class="p">:</span><span class="nv">temp</span><span class="s2">\</span><span class="si">$(</span><span class="nv">$url</span><span class="o">.</span><span class="nf">Split</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)</span><span class="s2">[2]).crt"</span><span class="w">
+</span><span class="nv">$webRequest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">Net.WebRequest</span><span class="p">]::</span><span class="n">Create</span><span class="p">(</span><span class="nv">$url</span><span class="p">)</span><span class="w">
+</span><span class="kr">try</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nv">$webRequest</span><span class="o">.</span><span class="nf">GetResponse</span><span class="p">()</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">catch</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="c"># try catch is useful if ssl cert is not valid. ServicePoint is always kept even for invalid ssl cert.</span><span class="w">
+</span><span class="nv">$cert</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$webRequest</span><span class="o">.</span><span class="nf">ServicePoint</span><span class="o">.</span><span class="nf">Certificate</span><span class="w">
+</span><span class="nv">$bytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$cert</span><span class="o">.</span><span class="nf">Export</span><span class="p">(</span><span class="s2">"Cert"</span><span class="p">)</span><span class="w">
+</span><span class="n">Set-content</span><span class="w"> </span><span class="nt">-value</span><span class="w"> </span><span class="nv">$bytes</span><span class="w"> </span><span class="nt">-encoding</span><span class="w"> </span><span class="nx">byte</span><span class="w"> </span><span class="nt">-path</span><span class="w"> </span><span class="nv">$localCertPath</span><span class="w">
+</span><span class="n">certutil.exe</span><span class="w"> </span><span class="nt">-dump</span><span class="w"> </span><span class="nv">$localCertPath</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Or a nice cmdlet <a href="https://www.sysadmins.lv/blog-en/test-remote-web-server-ssl-certificate.aspx"><code class="language-plaintext highlighter-rouge">Test-WebServerSSL</code></a> written by the MVP Vadims Podāns.</p>
+
+<h1 id="update-the-certificate-in-case-of-renewal">Update the certificate in case of renewal</h1>
+
+<p>Here is the <a href="https://docs.gitlab.com/omnibus/settings/nginx.html#update-the-ssl-certificates">official doc</a>.</p>
+
+<p>When you changed the SSL certificate, <code class="language-plaintext highlighter-rouge">gitlab-ctl reconfigure</code> won’t take it into effect as there’s nothing changed in the gitlab.rb configuration file. Use following command to update the certificate:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gitlab-ctl hup nginx
+</code></pre></div></div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#certificate" class="page__taxonomy-item p-category" rel="tag">certificate</a><span class="sep">, </span>
+    
+      <a href="/tags/#cicd" class="page__taxonomy-item p-category" rel="tag">cicd</a><span class="sep">, </span>
+    
+      <a href="/tags/#gitlab" class="page__taxonomy-item p-category" rel="tag">gitlab</a><span class="sep">, </span>
+    
+      <a href="/tags/#openssl" class="page__taxonomy-item p-category" rel="tag">openssl</a><span class="sep">, </span>
+    
+      <a href="/tags/#ubuntu" class="page__taxonomy-item p-category" rel="tag">ubuntu</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2018-09-16T00:00:00+00:00">September 16, 2018</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Setup+HTTPS+for+Gitlab%20https%3A%2F%2Fwww.copdips.com%2F2018%2F09%2Fsetup-https-for-gitlab.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.copdips.com%2F2018%2F09%2Fsetup-https-for-gitlab.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.copdips.com%2F2018%2F09%2Fsetup-https-for-gitlab.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+
+  <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.copdips.com%2F2018%2F09%2Fsetup-https-for-gitlab.html&title=Setup%20HTTPS%20for%20Gitlab" class="btn btn--reddit" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Reddit"><i class="fab fa-fw fa-reddit" aria-hidden="true"></i><span> Reddit</span></a>
+</section>
+
+
+      <script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+      <div id="qrcode"></div>
+      <script type="text/javascript">
+        var qrcode = new QRCode('qrcode', {width: 100, height: 100, text: location.href});
+      </script>
+
+      
+  <nav class="pagination">
+    
+      <a href="/2018/09/install-gitlab-ce-in-docker-on-ubuntu.html" class="pagination--pager" title="Install Gitlab-CE in Docker on Ubuntu
+">Previous</a>
+    
+    
+      <a href="/2018/09/install-gitlab-runner-on-windows-by-powershell-psremoting.html" class="pagination--pager" title="Install Gitlab Runner on Windows by Powershell PsRemoting
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+      <h4 class="page__comments-title">Leave a comment</h4>
+      <section id="disqus_thread"></section>
+    
+</div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-deploy-static-files-to-azure-web-app.html" rel="permalink">Github actions - deploy static files to azure web app
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/Some-nice-CICD-bash-common-scripts.html" rel="permalink">Some nice cicd bash common scripts
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          less than 1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-bash-shell-pipefail.html" rel="permalink">Github Actions - Bash shell -e -o pipefail
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-08T00:00:00+00:00">November 8, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/10/hashing-files.html" rel="permalink">Hashing files
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-10-21T00:00:00+00:00">October 21, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap">
+<form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term...">
+  </form>
+  <div id="results" class="results"></div>
+</div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="mailto:xiang.zhu@outlook.com" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email</a></li>
+        
+      
+        
+          <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+          <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://uptimerobot.com/dashboard#785564645" rel="nofollow noopener noreferrer"><i class="fas fa-clock" aria-hidden="true"></i> Uptime</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2023 Xiang ZHU. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp;
+<a href="https://mmistakes.github.io/minimal-mistakes/about/" rel="nofollow">Minimal Mistakes</a>
+.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'G-L9KPHRQNQN']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "https://www.copdips.com/2018/09/setup-https-for-gitlab.html";  /* Replace PAGE_URL with your page's canonical URL variable */
+      this.page.identifier = "/2018/09/setup-https-for-gitlab"; /* Replace PAGE_IDENTIFIER with your page's unique identifier variable */
+    };
+    (function() { /* DON'T EDIT BELOW THIS LINE */
+      var d = document, s = d.createElement('script');
+      s.src = 'https://copdips.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+
+  
+
+
+
+
+
+  </body>
+</html>

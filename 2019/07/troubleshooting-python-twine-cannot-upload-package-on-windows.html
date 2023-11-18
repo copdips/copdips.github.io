@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+--><html lang="en" class="no-js">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Troubleshooting Python Twine Cannot Upload Package On Windows - A code to remember</title>
+<meta name="description" content="Python twine uses ~/.pypirc as its default config file, but for some reasons it doesn’t work on Windows.">
+
+
+  <meta name="author" content="Xiang ZHU">
+  
+  <meta property="article:author" content="Xiang ZHU">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="A code to remember">
+<meta property="og:title" content="Troubleshooting Python Twine Cannot Upload Package On Windows">
+<meta property="og:url" content="https://www.copdips.com/2019/07/troubleshooting-python-twine-cannot-upload-package-on-windows.html">
+
+
+  <meta property="og:description" content="Python twine uses ~/.pypirc as its default config file, but for some reasons it doesn’t work on Windows.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2019-07-30T00:00:00+00:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="https://www.copdips.com/2019/07/troubleshooting-python-twine-cannot-upload-package-on-windows.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Xiang ZHU",
+      "url": "https://www.copdips.com/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="A code to remember Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  <script>MathJax={"tex":{"inlineMath":[["$","$"],["\\(","\\)"]],"displayMath":[["$$","$$"],["\\[","\\]"]]},"svg":{"fontCache":"global"}}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          A code to remember
+          
+        </a>
+        <ul class="visible-links">
+<li class="masthead__menu-item">
+              <a href="/">Home</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/tags/">Tags</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/year-archive/">Year Archive</a>
+            </li>
+</ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<!-- back to top button -->
+<!-- https://github.com/mmistakes/minimal-mistakes/issues/1731#issuecomment-628997645 -->
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>addBackToTop({
+  diameter: 56,
+  backgroundColor: '#F16334',
+  textColor: '#fff'
+})</script>
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.copdips.com/">
+        <img src="/image/avatar/zhuxiang-smile.jpg" alt="Xiang ZHU" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.copdips.com/" itemprop="url">Xiang ZHU</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Python DevOps</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Paris</span>
+        </li>
+      
+
+      
+        
+          
+            <li><a href="https://www.copdips.com" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fas fa-fw fa-link" aria-hidden="true"></i><span class="label">Website</span></a></li>
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">LinkedIn</span></a></li>
+          
+        
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:xiang.zhu@outlook.com" rel="me" class="u-email">
+            <meta itemprop="email" content="xiang.zhu@outlook.com">
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+      <!-- 
+<script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+<div id="qrcode"></div>
+<script type="text/javascript">
+  var qrcode = new QRCode('qrcode', {width: 10, height: 10, text: location.href});
+</script>
+ -->
+    </ul>
+  </div>
+</div>
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Troubleshooting Python Twine Cannot Upload Package On Windows">
+    <meta itemprop="description" content="Python twine uses ~/.pypirc as its default config file, but for some reasons it doesn’t work on Windows.">
+    <meta itemprop="datePublished" content="2019-07-30T00:00:00+00:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.copdips.com/2019/07/troubleshooting-python-twine-cannot-upload-package-on-windows.html" class="u-url" itemprop="url">Troubleshooting Python Twine Cannot Upload Package On Windows
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2019-07-30T00:00:00+00:00">July 30, 2019</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title">
+<i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu">
+<li><a href="#building-the-package">Building the package</a></li>
+<li>
+<a href="#upload-built-package-to-pypi-or-private-artifactory">Upload built package to PyPi or private Artifactory.</a><ul>
+<li><a href="#pypirc-path-error">.pypirc path error</a></li>
+<li><a href="#pypirc-path-error-reason">.pypirc path error reason</a></li>
+<li><a href="#why-ospathexpanduser-doesnt-resolve-the-same--as-powershell">Why os.path.expanduser() doesn’t resolve the same ~/ as Powershell</a></li>
+<li><a href="#solutions">Solutions</a></li>
+</ul>
+</li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p>Python has several tools to upload packages to PyPi or some private Artifactory locations. The mostly used one should be <a href="https://twine.readthedocs.io/en/latest/">twine</a>. Although twine is not a Python originate tool, but it’s officially <a href="https://packaging.python.org/tutorials/packaging-projects/#uploading-the-distribution-archives">recommended by Python.org</a>.</p>
+
+<h2 id="building-the-package">Building the package</h2>
+
+<p>Just a quick callback on how to build the pacakge. We need to create a file named <a href="https://docs.python.org/3.7/distutils/setupscript.html">setup.py</a> at the root of the app. Use another file named <a href="https://docs.python.org/3/distutils/sourcedist.html#specifying-the-files-to-distribute">MANIFEST.IN</a> to include the non-code files to the package. Don’t forget to set <a href="https://python-packaging.readthedocs.io/en/latest/non-code-files.html"><code class="language-plaintext highlighter-rouge">include_package_data=True</code></a> in <code class="language-plaintext highlighter-rouge">setup.py</code></p>
+
+<blockquote>
+  <p><strong>Wheel</strong></p>
+
+  <p>A <a href="https://packaging.python.org/glossary/#term-built-distribution">Built Distribution</a> format introduced by <a href="https://www.python.org/dev/peps/pep-0427">PEP 427</a>, which is intended to replace the <a href="https://packaging.python.org/glossary/#term-egg">Egg</a> format. Wheel is currently supported by <a href="https://packaging.python.org/key_projects/#pip">pip</a>.</p>
+</blockquote>
+
+<p>Before the build, ensure that <a href="https://packaging.python.org/guides/distributing-packages-using-setuptools/#choosing-a-versioning-scheme"><code class="language-plaintext highlighter-rouge">version</code></a> key in <code class="language-plaintext highlighter-rouge">setup.py</code> is well defined.</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># to build a python wheel package</span><span class="w">
+</span><span class="c"># sdist will generate a .tar.gz file in dist/</span><span class="w">
+</span><span class="c"># bdist_wheel will generate a .whl file in dist/</span><span class="w">
+</span><span class="n">python</span><span class="w"> </span><span class="nx">setup.py</span><span class="w"> </span><span class="nx">sdist</span><span class="w"> </span><span class="nx">bdist_wheel</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="upload-built-package-to-pypi-or-private-artifactory">Upload built package to PyPi or private Artifactory.</h2>
+
+<p>We use twine to upload the Python packages. Before using it, we need to create a file name <a href="https://github.com/pypa/twine/blob/master/twine/utils.py#L57"><code class="language-plaintext highlighter-rouge">.pypirc</code> in <code class="language-plaintext highlighter-rouge">~/</code></a>.</p>
+
+<p>There’s <a href="https://www.jfrog.com/confluence/display/RTF/PyPI+Repositories#PyPIRepositories-PublishingtoArtifactory">an example from jfrog for .pypirc</a>.</p>
+
+<p>Then, we can upload the package by:</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># -r dev, dev is a repo defined in the ~/.pypirc file.</span><span class="w">
+</span><span class="mf">6.2</span><span class="o">.</span><span class="nf">0</span><span class="err">&gt;</span><span class="w"> </span><span class="n">twine</span><span class="w"> </span><span class="nx">upload</span><span class="w"> </span><span class="nx">dist/</span><span class="o">*</span><span class="w"> </span><span class="nt">-r</span><span class="w"> </span><span class="nx">dev</span><span class="w"> </span><span class="nt">--cert</span><span class="w"> </span><span class="p">[</span><span class="n">path_of_artifactory_site_cert_bundle_full_chain_in_pem_format_it_seems_that_no_param_to_ignore_ssl_error_with_twine</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="pypirc-path-error">.pypirc path error</h3>
+
+<p>Unfortunately, on Windows OS, you might get following error message:</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mf">6.2</span><span class="o">.</span><span class="nf">0</span><span class="err">&gt;</span><span class="w"> </span><span class="n">twine</span><span class="w"> </span><span class="nx">upload</span><span class="w"> </span><span class="nx">dist/</span><span class="o">*</span><span class="w"> </span><span class="nt">--cert</span><span class="w"> </span><span class="p">[</span><span class="n">artifactory_site_cert_full_chain_in_pem_format</span><span class="p">]</span><span class="w"> </span><span class="nt">-r</span><span class="w"> </span><span class="nx">dev</span><span class="w">
+
+</span><span class="n">InvalidConfiguration:</span><span class="w"> </span><span class="nx">Missing</span><span class="w"> </span><span class="s1">'dev'</span><span class="w"> </span><span class="nx">section</span><span class="w"> </span><span class="nx">from</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">configuration</span><span class="w"> </span><span class="nx">file</span><span class="w"> </span><span class="nx">or</span><span class="w"> </span><span class="nx">not</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="nx">complete</span><span class="w"> </span><span class="nx">URL</span><span class="w"> </span><span class="nx">in</span><span class="w"> </span><span class="nt">--repository-url</span><span class="o">.</span><span class="w">
+</span><span class="n">Maybe</span><span class="w"> </span><span class="nx">you</span><span class="w"> </span><span class="nx">have</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="nx">out-dated</span><span class="w"> </span><span class="s1">'~/.pypirc'</span><span class="w"> </span><span class="nx">format</span><span class="nf">?</span><span class="w">
+</span><span class="nx">more</span><span class="w"> </span><span class="nx">info:</span><span class="w"> </span><span class="nx">https://docs.python.org/distutils/packageindex.html</span><span class="c">#pypirc</span><span class="w">
+</span></code></pre></div></div>
+
+<p>This error is too generic, one of the reasons is because twine cannot find the file <code class="language-plaintext highlighter-rouge">~/.pypirc</code>, but if you check by <code class="language-plaintext highlighter-rouge">get-content ~/.pypirc</code>, it exits.</p>
+
+<p>The reason for this error is that if you’re on Windows, and <code class="language-plaintext highlighter-rouge">$env:HOME</code> exists and doesn’t point to the same location as <code class="language-plaintext highlighter-rouge">$env:USERPROFILE</code>.</p>
+
+<p>twine uses <code class="language-plaintext highlighter-rouge">$env:HOME</code> as <code class="language-plaintext highlighter-rouge">~/</code> as per <a href="https://github.com/pypa/twine/blob/579f3fe60f2333972ba0260f44033ee1889ca3ca/twine/utils.py#L70">os.path.expanduser()</a>, but Windows powershell uses <code class="language-plaintext highlighter-rouge">$env:USERPROFILE</code> as <code class="language-plaintext highlighter-rouge">~/</code>. <code class="language-plaintext highlighter-rouge">$env:HOME</code> is not set by Windows by default. And Windows administrators often use <code class="language-plaintext highlighter-rouge">$env:HOME</code> to redirect the user roaming profile.</p>
+
+<h3 id="pypirc-path-error-reason">.pypirc path error reason</h3>
+
+<ol>
+  <li>
+    <p>Firstly, I set $env:HOME to a temp file, so it is differnet than $env:USERPROFILE</p>
+
+    <div class="language-powershell highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code><span class="w"> </span><span class="c"># Initially $env:HOME doesn't exist</span><span class="w">
+ </span><span class="mf">6.2</span><span class="o">.</span><span class="nf">0</span><span class="err">&gt;</span><span class="w"> </span><span class="n">Get-ChildItem</span><span class="w"> </span><span class="nx">env:</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">Out-String</span><span class="w"> </span><span class="nt">-st</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">Select-String</span><span class="w"> </span><span class="s1">'userpro|home'</span><span class="w">
+
+ </span><span class="n">ANDROID_SDK_HOME</span><span class="w">               </span><span class="nx">C:\Android</span><span class="w">
+ </span><span class="n">HOMEDRIVE</span><span class="w">                      </span><span class="nx">C:</span><span class="w">
+ </span><span class="n">HOMEPATH</span><span class="w">                       </span><span class="nx">\Users\xiang</span><span class="w">
+ </span><span class="n">USERPROFILE</span><span class="w">                    </span><span class="nx">C:\Users\xiang</span><span class="w">
+
+ </span><span class="mf">6.2</span><span class="o">.</span><span class="nf">0</span><span class="err">&gt;</span><span class="w"> </span><span class="nv">$</span><span class="nn">env</span><span class="p">:</span><span class="nv">HOME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'c:/temp'</span><span class="w">
+
+ </span><span class="c"># now, we have $env:HOME which is different than $env:USERPROFILE</span><span class="w">
+ </span><span class="mf">6.2</span><span class="o">.</span><span class="nf">0</span><span class="err">&gt;</span><span class="w"> </span><span class="n">Get-ChildItem</span><span class="w"> </span><span class="nx">env:</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">Out-String</span><span class="w"> </span><span class="nt">-st</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">Select-String</span><span class="w"> </span><span class="s1">'userpro|home'</span><span class="w">
+
+ </span><span class="n">ANDROID_SDK_HOME</span><span class="w">               </span><span class="nx">C:\Android</span><span class="w">
+ </span><span class="n">HOME</span><span class="w">                           </span><span class="nx">c:/temp</span><span class="w">
+ </span><span class="n">HOMEDRIVE</span><span class="w">                      </span><span class="nx">C:</span><span class="w">
+ </span><span class="n">HOMEPATH</span><span class="w">                       </span><span class="nx">\Users\xiang</span><span class="w">
+ </span><span class="n">USERPROFILE</span><span class="w">                    </span><span class="nx">C:\Users\xiang</span><span class="w">
+</span></code></pre></div>    </div>
+  </li>
+  <li>Check ~/ in Python
+    <div class="language-python highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code> <span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="kn">import</span> <span class="n">os</span>
+
+ <span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="nf">expanduser</span><span class="p">(</span><span class="sh">'</span><span class="s">~/</span><span class="sh">'</span><span class="p">)</span>
+ <span class="n">Out</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="sh">'</span><span class="s">c:/temp/</span><span class="sh">'</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Check ~/ in Powershell
+    <div class="language-powershell highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code><span class="w"> </span><span class="mf">6.2</span><span class="o">.</span><span class="nf">0</span><span class="err">&gt;</span><span class="w"> </span><span class="n">Resolve-Path</span><span class="w"> </span><span class="nx">~/</span><span class="w">
+
+ </span><span class="n">Path</span><span class="w">
+ </span><span class="o">----</span><span class="w">
+ </span><span class="n">C:\Users\xiang</span><span class="w">
+</span></code></pre></div>    </div>
+  </li>
+</ol>
+
+<p>So if we created the .pypirc file in <code class="language-plaintext highlighter-rouge">~/</code> in Powershell, twine won’t find it.</p>
+
+<h3 id="why-ospathexpanduser-doesnt-resolve-the-same--as-powershell">Why os.path.expanduser() doesn’t resolve the same ~/ as Powershell</h3>
+
+<p>As shown previsouly, Windows Powershell resolves <code class="language-plaintext highlighter-rouge">~/</code> as <code class="language-plaintext highlighter-rouge">$env:USERPROFILE</code>. How about os.path.expanduser()? Let’s check its source code by the <code class="language-plaintext highlighter-rouge">inspect</code> module.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="kn">import</span> <span class="n">os</span> <span class="p">;</span> <span class="nf">print</span><span class="p">(</span><span class="n">inspect</span><span class="p">.</span><span class="nf">getsource</span><span class="p">(</span><span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">expanduser</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">expanduser</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sh">"""</span><span class="s">Expand ~ and ~user constructs.
+
+    If user or $HOME is unknown, do nothing.</span><span class="sh">"""</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="nf">fspath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nf">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+        <span class="n">tilde</span> <span class="o">=</span> <span class="sa">b</span><span class="sh">'</span><span class="s">~</span><span class="sh">'</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">tilde</span> <span class="o">=</span> <span class="sh">'</span><span class="s">~</span><span class="sh">'</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="p">.</span><span class="nf">startswith</span><span class="p">(</span><span class="n">tilde</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">path</span>
+    <span class="n">i</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="nf">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="ow">and</span> <span class="n">path</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nf">_get_bothseps</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="sh">'</span><span class="s">HOME</span><span class="sh">'</span> <span class="ow">in</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">:</span>
+        <span class="n">userhome</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">[</span><span class="sh">'</span><span class="s">HOME</span><span class="sh">'</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="sh">'</span><span class="s">USERPROFILE</span><span class="sh">'</span> <span class="ow">in</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">:</span>
+        <span class="n">userhome</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">[</span><span class="sh">'</span><span class="s">USERPROFILE</span><span class="sh">'</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="sh">'</span><span class="s">HOMEPATH</span><span class="sh">'</span> <span class="ow">in</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">path</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">drive</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">[</span><span class="sh">'</span><span class="s">HOMEDRIVE</span><span class="sh">'</span><span class="p">]</span>
+        <span class="k">except</span> <span class="nb">KeyError</span><span class="p">:</span>
+            <span class="n">drive</span> <span class="o">=</span> <span class="sh">''</span>
+        <span class="n">userhome</span> <span class="o">=</span> <span class="nf">join</span><span class="p">(</span><span class="n">drive</span><span class="p">,</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">[</span><span class="sh">'</span><span class="s">HOMEPATH</span><span class="sh">'</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="nf">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+        <span class="n">userhome</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="nf">fsencode</span><span class="p">(</span><span class="n">userhome</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span> <span class="c1">#~user
+</span>        <span class="n">userhome</span> <span class="o">=</span> <span class="nf">join</span><span class="p">(</span><span class="nf">dirname</span><span class="p">(</span><span class="n">userhome</span><span class="p">),</span> <span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">userhome</span> <span class="o">+</span> <span class="n">path</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span>
+</code></pre></div></div>
+
+<p>From the source code, obviously, if <code class="language-plaintext highlighter-rouge">$env:HOME</code> exists, expanduser() will return its value. If <code class="language-plaintext highlighter-rouge">$env:HOME</code> doesn’t exists, it falls back to <code class="language-plaintext highlighter-rouge">$env:USERPROFILE</code>, if not again, it falls back to <code class="language-plaintext highlighter-rouge">$env:HOMEDRIVE/$env:HOMEPATH</code>.</p>
+
+<h3 id="solutions">Solutions</h3>
+
+<p>We have 3 solutions.</p>
+
+<ol>
+  <li>
+    <p>use <a href="https://twine.readthedocs.io/en/latest/#twine-upload"><code class="language-plaintext highlighter-rouge">twine --config-file</code></a> to manually specify the .pypirc config file.</p>
+  </li>
+  <li>
+    <p>if <code class="language-plaintext highlighter-rouge">$env:HOME</code> exists, copy the <code class="language-plaintext highlighter-rouge">.pypirc</code> file to <code class="language-plaintext highlighter-rouge">$env:HOME</code>, otherwise to <code class="language-plaintext highlighter-rouge">$env:USERPROFILE</code>.</p>
+  </li>
+  <li>
+    <p>declare all the upload params as <a href="https://twine.readthedocs.io/en/latest/#environment-variables">environment variables</a>.</p>
+  </li>
+</ol>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#packaging" class="page__taxonomy-item p-category" rel="tag">packaging</a><span class="sep">, </span>
+    
+      <a href="/tags/#python" class="page__taxonomy-item p-category" rel="tag">python</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2019-07-30T00:00:00+00:00">July 30, 2019</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Troubleshooting+Python+Twine+Cannot+Upload+Package+On+Windows%20https%3A%2F%2Fwww.copdips.com%2F2019%2F07%2Ftroubleshooting-python-twine-cannot-upload-package-on-windows.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.copdips.com%2F2019%2F07%2Ftroubleshooting-python-twine-cannot-upload-package-on-windows.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.copdips.com%2F2019%2F07%2Ftroubleshooting-python-twine-cannot-upload-package-on-windows.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+
+  <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.copdips.com%2F2019%2F07%2Ftroubleshooting-python-twine-cannot-upload-package-on-windows.html&title=Troubleshooting%20Python%20Twine%20Cannot%20Upload%20Package%20On%20Windows" class="btn btn--reddit" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Reddit"><i class="fab fa-fw fa-reddit" aria-hidden="true"></i><span> Reddit</span></a>
+</section>
+
+
+      <script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+      <div id="qrcode"></div>
+      <script type="text/javascript">
+        var qrcode = new QRCode('qrcode', {width: 100, height: 100, text: location.href});
+      </script>
+
+      
+  <nav class="pagination">
+    
+      <a href="/2019/07/filtering-pandas-dataframe.html" class="pagination--pager" title="Filtering In Pandas Dataframe
+">Previous</a>
+    
+    
+      <a href="/2019/09/fast-tcp-port-check-in-powershell.html" class="pagination--pager" title="A fast way to check TCP port in Powershell
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+      <h4 class="page__comments-title">Leave a comment</h4>
+      <section id="disqus_thread"></section>
+    
+</div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-deploy-static-files-to-azure-web-app.html" rel="permalink">Github actions - deploy static files to azure web app
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/Some-nice-CICD-bash-common-scripts.html" rel="permalink">Some nice cicd bash common scripts
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          less than 1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-bash-shell-pipefail.html" rel="permalink">Github Actions - Bash shell -e -o pipefail
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-08T00:00:00+00:00">November 8, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/10/hashing-files.html" rel="permalink">Hashing files
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-10-21T00:00:00+00:00">October 21, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap">
+<form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term...">
+  </form>
+  <div id="results" class="results"></div>
+</div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="mailto:xiang.zhu@outlook.com" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email</a></li>
+        
+      
+        
+          <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+          <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://uptimerobot.com/dashboard#785564645" rel="nofollow noopener noreferrer"><i class="fas fa-clock" aria-hidden="true"></i> Uptime</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2023 Xiang ZHU. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp;
+<a href="https://mmistakes.github.io/minimal-mistakes/about/" rel="nofollow">Minimal Mistakes</a>
+.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'G-L9KPHRQNQN']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "https://www.copdips.com/2019/07/troubleshooting-python-twine-cannot-upload-package-on-windows.html";  /* Replace PAGE_URL with your page's canonical URL variable */
+      this.page.identifier = "/2019/07/troubleshooting-python-twine-cannot-upload-package-on-windows"; /* Replace PAGE_IDENTIFIER with your page's unique identifier variable */
+    };
+    (function() { /* DON'T EDIT BELOW THIS LINE */
+      var d = document, s = d.createElement('script');
+      s.src = 'https://copdips.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+
+  
+
+
+
+
+
+  </body>
+</html>

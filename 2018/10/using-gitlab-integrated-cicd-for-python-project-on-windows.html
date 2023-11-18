@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+--><html lang="en" class="no-js">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Using Gitlab integrated CICD for Python project on Windows - A code to remember</title>
+<meta name="description" content="Gitlab ships with its own free CICD which works pretty well. This post will give a .gitlab-ci.yml demo for a Python project running on Gitlab Windows runner.">
+
+
+  <meta name="author" content="Xiang ZHU">
+  
+  <meta property="article:author" content="Xiang ZHU">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="A code to remember">
+<meta property="og:title" content="Using Gitlab integrated CICD for Python project on Windows">
+<meta property="og:url" content="https://www.copdips.com/2018/10/using-gitlab-integrated-cicd-for-python-project-on-windows.html">
+
+
+  <meta property="og:description" content="Gitlab ships with its own free CICD which works pretty well. This post will give a .gitlab-ci.yml demo for a Python project running on Gitlab Windows runner.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2018-10-18T00:00:00+00:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="https://www.copdips.com/2018/10/using-gitlab-integrated-cicd-for-python-project-on-windows.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Xiang ZHU",
+      "url": "https://www.copdips.com/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="A code to remember Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          A code to remember
+          
+        </a>
+        <ul class="visible-links">
+<li class="masthead__menu-item">
+              <a href="/">Home</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/tags/">Tags</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/year-archive/">Year Archive</a>
+            </li>
+</ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<!-- back to top button -->
+<!-- https://github.com/mmistakes/minimal-mistakes/issues/1731#issuecomment-628997645 -->
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>addBackToTop({
+  diameter: 56,
+  backgroundColor: '#F16334',
+  textColor: '#fff'
+})</script>
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.copdips.com/">
+        <img src="/image/avatar/zhuxiang-smile.jpg" alt="Xiang ZHU" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.copdips.com/" itemprop="url">Xiang ZHU</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Python DevOps</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Paris</span>
+        </li>
+      
+
+      
+        
+          
+            <li><a href="https://www.copdips.com" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fas fa-fw fa-link" aria-hidden="true"></i><span class="label">Website</span></a></li>
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">LinkedIn</span></a></li>
+          
+        
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:xiang.zhu@outlook.com" rel="me" class="u-email">
+            <meta itemprop="email" content="xiang.zhu@outlook.com">
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+      <!-- 
+<script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+<div id="qrcode"></div>
+<script type="text/javascript">
+  var qrcode = new QRCode('qrcode', {width: 10, height: 10, text: location.href});
+</script>
+ -->
+    </ul>
+  </div>
+</div>
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Using Gitlab integrated CICD for Python project on Windows">
+    <meta itemprop="description" content="Gitlab ships with its own free CICD which works pretty well. This post will give a .gitlab-ci.yml demo for a Python project running on Gitlab Windows runner.">
+    <meta itemprop="datePublished" content="2018-10-18T00:00:00+00:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.copdips.com/2018/10/using-gitlab-integrated-cicd-for-python-project-on-windows.html" class="u-url" itemprop="url">Using Gitlab integrated CICD for Python project on Windows
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2018-10-18T00:00:00+00:00">October 18, 2018</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          4 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title">
+<i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu">
+<li><a href="#some-docs-on-the-internet">Some docs on the Internet</a></li>
+<li><a href="#code-coverage">Code Coverage</a></li>
+<li>
+<a href="#gitlab-ciyml-example-for-python-project-on-a-windows-runner">.gitlab-ci.yml example for Python project on a Windows runner</a><ul>
+<li><a href="#gitlab-ciyml-file-content">.gitlab-ci.yml file content</a></li>
+<li><a href="#gitlab-ciyml-results-from-pipeline-view">.gitlab-ci.yml results from pipeline view</a></li>
+<li><a href="#gitlab-ciyml-results-from-job-view">.gitlab-ci.yml results from job view</a></li>
+<li><a href="#gitlab-ciyml-results-from-merge_request-view">.gitlab-ci.yml results from merge_request view</a></li>
+</ul>
+</li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <blockquote>
+  <p>Gitlab ships with its own free CICD which works pretty well. This post will give you an example of the CICD file <code class="language-plaintext highlighter-rouge">.gitlab-ci.yml</code> for a Python project running on <a href="https://copdips.com/2018/09/install-gitlab-runner-on-windows-by-powershell-psremoting.html">Gitlab Windows runner</a>.</p>
+</blockquote>
+
+<h1 id="some-docs-on-the-internet">Some docs on the Internet</h1>
+
+<ol>
+  <li><a href="https://docs.gitlab.com/ee/ci/README.html">Official GitLab Continuous Integration (GitLab CI/CD)</a></li>
+  <li><a href="https://docs.gitlab.com/ee/ci/yaml/README.html">Official Configuration of your jobs with .gitlab-ci.yml</a></li>
+  <li><a href="https://docs.gitlab.com/ee/user/project/pipelines/settings.html">Official Gitlab Pipelines settings</a></li>
+  <li><a href="https://about.gitlab.com/2016/11/03/publish-code-coverage-report-with-gitlab-pages/">Official Publish code coverage report with GitLab Pages</a></li>
+  <li><a href="https://blog.eleven-labs.com/fr/introduction-gitlab-ci/">introduction-gitlab-ci</a></li>
+  <li><a href="http://rubular.com/">Rubular: a Ruby regular expression editor and tester</a></li>
+</ol>
+
+<h1 id="code-coverage">Code Coverage</h1>
+
+<p>The official doc on how to use coverage is not very clear.</p>
+
+<p>My coverage tool’s output (from <code class="language-plaintext highlighter-rouge">pytest --cov=</code>) is something like :</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">-----------</span> coverage: platform win32, python 3.7.0-final-0 <span class="nt">-----------</span>
+Name                                      Stmts   Miss  Cover
+<span class="nt">-------------------------------------------------------------</span>
+python_project<span class="se">\_</span>_init__.py                    6      0   100%
+python_project<span class="se">\c</span>tx_fetcher.py                15      0   100%
+python_project<span class="se">\e</span>xtras<span class="se">\_</span>_init__.py             0      0   100%
+python_project<span class="se">\e</span>xtras<span class="se">\c</span>elery.py              18     18     0%
+python_project<span class="se">\f</span>ilters.py                     6      2    67%
+python_project<span class="se">\p</span>arser.py                     26      0   100%
+python_project<span class="se">\r</span>equest_id.py                 42      1    98%
+<span class="nt">-------------------------------------------------------------</span>
+TOTAL                                       113     21    81%
+</code></pre></div></div>
+
+<p>In my example <a href="https://copdips.com/2018/10/using-gitlab-integrated-cicd-for-python-project-on-windows.html#gitlab-ci-yml-file-content">.gitlab-ci.yml</a>, the coverage is configured as:</p>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">coverage</span><span class="pi">:</span> <span class="s1">'</span><span class="s">/^TOTAL.*\s+(\d+\%)$/'</span>
+</code></pre></div></div>
+
+<p>This regex will find the coverage which is at <code class="language-plaintext highlighter-rouge">81%</code>.</p>
+
+<p><strong>Be aware that</strong>:</p>
+
+<ol>
+  <li>The coverage only use regular expression to find the coverage percentage from coverage tool’s output.</li>
+  <li>The regular expression must be surrounded by single quote <code class="language-plaintext highlighter-rouge">'</code>, double quote is not allowed.</li>
+  <li>Inside the single quotes, must be surrounded by <code class="language-plaintext highlighter-rouge">/</code>.</li>
+  <li>You can use <a href="http://rubular.com">http://rubular.com</a> to test your regex.</li>
+  <li>The overage regex returns the last catch group value from the output. Even if it is not in the last line, or if the regex catches more than one values among all the lines.</li>
+</ol>
+
+<h1 id="gitlab-ciyml-example-for-python-project-on-a-windows-runner">.gitlab-ci.yml example for Python project on a Windows runner</h1>
+
+<h2 id="gitlab-ciyml-file-content">.gitlab-ci.yml file content</h2>
+
+<p>I cloned the project <a href="https://github.com/Workable/flask-log-request-id">flask_log_request_id</a> and try to run CICD over it.</p>
+
+<p class="notice--info">I’m still working on this CICD <code class="language-plaintext highlighter-rouge">.gitlab-ci.yml</code> file, the example given here will be updated as long as I add new things inside.</p>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">stages</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">venv</span>
+    <span class="pi">-</span> <span class="s">test</span>
+    <span class="pi">-</span> <span class="s">build</span>
+    <span class="pi">-</span> <span class="s">deploy</span>
+
+<span class="na">before_script</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">$gitApiUrl = 'https://gitlab.copdips.local/api/v4'</span>
+  <span class="c1"># will save git api token more securely later.</span>
+  <span class="pi">-</span> <span class="s">$gitApiToken = $env:GitApiToken</span>
+  <span class="pi">-</span> <span class="s">$gitApiHeader = @{"PRIVATE-TOKEN" = $gitApiToken}</span>
+  <span class="pi">-</span> <span class="s">$cicdReportsFolderPath = Join-Path (Get-Location) "cicd_reports"</span>
+  <span class="pi">-</span> <span class="s">$venvPath = "$env:temp/venv/$($env:CI_PROJECT_NAME)"</span>
+  <span class="pi">-</span> <span class="pi">&gt;</span>
+    <span class="s">function Set-SecurityProtocolType {</span>
+        <span class="s"># [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12</span>
+        <span class="s"># $AllProtocols = [System.Net.SecurityProtocolType]'Ssl3,Tls,Tls11,Tls12'</span>
+        <span class="s">$AllProtocols = [System.Net.SecurityProtocolType]'Tls12'</span>
+        <span class="s">[System.Net.ServicePointManager]::SecurityProtocol = $AllProtocols</span>
+    <span class="s">}</span>
+  <span class="pi">-</span> <span class="pi">&gt;</span>
+    <span class="s">function Write-PythonPath {</span>
+        <span class="s">$pythonPath = $(Get-Command python | % source)</span>
+        <span class="s">Write-Output "The python path is at: '$pythonPath'"</span>
+    <span class="s">}</span>
+  <span class="pi">-</span> <span class="pi">&gt;</span>
+    <span class="s">function Get-UpstreamProject {</span>
+        <span class="s">$apiParam = @{</span>
+          <span class="s">Headers = $gitApiHeader</span>
+          <span class="s">Uri = "$gitApiUrl/projects?search=$($env:CI_PROJECT_NAME)"</span>
+        <span class="s">}</span>
+        <span class="s">if ($PSVersionTable.PSVersion.Major -gt 5) {</span>
+          <span class="s">$apiParam.SkipCertificateCheck = $true</span>
+        <span class="s">}</span>
+        <span class="s">$projectList = Invoke-RestMethod @apiParam</span>
+        <span class="s">$upstreamProject = $projectList | ? forked_from_project -eq $null</span>
+        <span class="s">return $upstreamProject</span>
+    <span class="s">}</span>
+  <span class="pi">-</span> <span class="pi">&gt;</span>
+    <span class="s">function Get-UpstreamProjectId {</span>
+        <span class="s">$upstreamProject = Get-UpstreamProject</span>
+        <span class="s">return $upstreamProject.id</span>
+    <span class="s">}</span>
+
+  <span class="pi">-</span> <span class="pi">&gt;</span>
+    <span class="s">function Test-CreateVenv {</span>
+        <span class="s">param($VenvPath, $GitCommitSHA)</span>
+        <span class="s">$gitShowCommand = "git show $GitCommitSHA --name-only"</span>
+        <span class="s">$gitShowResult = Invoke-Expression $gitShowCommand</span>
+        <span class="s">Write-Host "$gitShowCommand`n"</span>
+        <span class="s">$gitShowResult | ForEach-Object {Write-Host $_}</span>
+        <span class="s">$changedFiles = Invoke-Expression "git diff-tree --no-commit-id --name-only -r $GitCommitSHA"</span>
+        <span class="s">$requirementsFiles = @()</span>
+        <span class="s">$requirementsFiles += "requirements.txt"</span>
+        <span class="s">foreach ($requirements in $requirementsFiles) {</span>
+            <span class="s">if ($requirements -in $changedFiles) {</span>
+                <span class="s">Write-Host "`nFound $requirements in the changed files, need to create venv."</span>
+                <span class="s">return $True</span>
+            <span class="s">}</span>
+        <span class="s">}</span>
+        <span class="s">if (-not (Test-Path $VenvPath)) {</span>
+            <span class="s">Write-Host "`nCannot found venv at $VenvPath, need to create venv."</span>
+            <span class="s">return $True</span>
+        <span class="s">}</span>
+
+        <span class="s">Write-Host "`nNo need to create venv."</span>
+        <span class="s">return $False</span>
+    <span class="s">}</span>
+  <span class="pi">-</span> <span class="pi">&gt;</span>
+    <span class="s">function Enable-Venv {</span>
+        <span class="s">param($VenvPath)</span>
+
+        <span class="s">Invoke-Expression (Join-Path $VenvPath "Scripts/activate.ps1")</span>
+        <span class="s">Write-Host "venv enabled at: $VenvPath"</span>
+        <span class="s">Write-PythonPath</span>
+    <span class="s">}</span>
+  <span class="pi">-</span> <span class="pi">&gt;</span>
+    <span class="s">function Create-Venv {</span>
+        <span class="s">param($VenvPath)</span>
+
+        <span class="s">Write-Output "Creating venv at $venvPath ."</span>
+        <span class="s">python -m venv $VenvPath</span>
+        <span class="s">Write-Output "venv created at $venvPath ."</span>
+    <span class="s">}</span>
+  <span class="pi">-</span> <span class="pi">&gt;</span>
+    <span class="s">function Install-PythonRequirements {</span>
+        <span class="s">param($VenvPath)</span>
+
+        <span class="s">Enable-Venv $VenvPath</span>
+        <span class="s">python -m pip install -U pip setuptools wheel</span>
+        <span class="s">pip install -r requirements.txt</span>
+    <span class="s">}</span>
+  <span class="pi">-</span> <span class="pi">&gt;</span>
+    <span class="s">function Remove-Venv {</span>
+        <span class="s">param($VenvPath)</span>
+
+        <span class="s">if (Test-Path $VenvPath) {</span>
+            <span class="s">Remove-Item $VenvPath -Recurse -Force</span>
+            <span class="s">Write-Host "venv removed from: $VenvPath"</span>
+        <span class="s">} else {</span>
+            <span class="s">Write-Host "venv not found at: $VenvPath"</span>
+        <span class="s">}</span>
+    <span class="s">}</span>
+  <span class="pi">-</span> <span class="s">Get-Location</span>
+  <span class="pi">-</span> <span class="s">git --version</span>
+  <span class="pi">-</span> <span class="s">python --version</span>
+  <span class="pi">-</span> <span class="s">Write-PythonPath</span>
+  <span class="pi">-</span> <span class="s">$PSVersionTable | ft -a</span>
+  <span class="pi">-</span> <span class="s">Get-ChildItem env:\ | Select-Object Name, Value | ft -a</span>
+
+<span class="na">venv</span><span class="pi">:</span>
+  <span class="na">stage</span><span class="pi">:</span> <span class="s">venv</span>
+  <span class="na">script</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="pi">&gt;</span>
+      <span class="s">if (Test-CreateVenv $venvPath $env:CI_COMMIT_SHA) {</span>
+          <span class="s">Remove-Venv $venvPath</span>
+          <span class="s">Create-Venv $venvPath</span>
+      <span class="s">}</span>
+      <span class="s">Install-PythonRequirements $venvPath</span>
+
+<span class="na">pytest</span><span class="pi">:</span>
+  <span class="na">stage</span><span class="pi">:</span> <span class="s">test</span>
+  <span class="na">script</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">$reportFolder = Join-Path $cicdReportsFolderPath "pytest"</span>
+    <span class="pi">-</span> <span class="s">New-Item -Path $reportFolder -Type Directory -Force</span>
+    <span class="pi">-</span> <span class="s">$upstreamProjectId = Get-UpstreamProjectId</span>
+    <span class="pi">-</span> <span class="s">Write-Output "upstreamProjectId = $upstreamProjectId"</span>
+    <span class="c1"># TODO: add check master last commit coverage</span>
+    <span class="pi">-</span> <span class="s">Enable-Venv $venvPath</span>
+    <span class="pi">-</span> <span class="s">pytest --cov=flask_log_request_id --cov-report=html:$reportFolder</span>
+    <span class="pi">-</span> <span class="s">$coverageLine = (Get-Content (Join-Path $reportFolder index.html) | Select-String "pc_cov").line</span>
+    <span class="pi">-</span> <span class="s">$coverageString = ($coverageLine -replace "&lt;[^&gt;]*&gt;", "").trim()</span>
+    <span class="pi">-</span> <span class="s">Write-Output "Total Coverage = $coverageString"</span>
+  <span class="na">coverage</span><span class="pi">:</span> <span class="s1">'</span><span class="s">/^(?i)(TOTAL).*\s+(\d+\%)$/'</span>
+
+
+<span class="na">nosetests</span><span class="pi">:</span>
+  <span class="na">stage</span><span class="pi">:</span> <span class="s">test</span>
+  <span class="na">script</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">Enable-Venv $venvPath</span>
+    <span class="pi">-</span> <span class="s">nosetests.exe</span>
+  <span class="na">coverage</span><span class="pi">:</span> <span class="s1">'</span><span class="s">/^TOTAL.*\s+(\d+\%)$/'</span>
+
+<span class="na">flake8</span><span class="pi">:</span>
+  <span class="na">stage</span><span class="pi">:</span> <span class="s">test</span>
+  <span class="na">script</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">Enable-Venv $venvPath</span>
+    <span class="pi">-</span> <span class="s">flake8.exe .\flask_log_request_id</span>
+
+<span class="na">mypy</span><span class="pi">:</span>
+  <span class="na">stage</span><span class="pi">:</span> <span class="s">test</span>
+  <span class="na">script</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">Enable-Venv $venvPath</span>
+    <span class="pi">-</span> <span class="s">$reportFolder = Join-Path $cicdReportsFolderPath "mypy"</span>
+    <span class="pi">-</span> <span class="s">New-Item -Path $reportFolder -Type Directory -Force</span>
+    <span class="pi">-</span> <span class="s">$mypyResult = mypy ./flask_log_request_id --ignore-missing-imports --html-report $reportFolder --xml-report $reportFolder</span>
+    <span class="pi">-</span> <span class="s">Write-Output "MyPy result = `""</span>
+    <span class="pi">-</span> <span class="s">$mypyResult | % { Write-Output $_}</span>
+    <span class="pi">-</span> <span class="s">Write-Output "`"`nEnd of MyPy result."</span>
+    <span class="pi">-</span> <span class="s">if ($mypyResult.count -gt 2) {</span>
+          <span class="s">return $False</span>
+      <span class="s">}</span>
+</code></pre></div></div>
+
+<h2 id="gitlab-ciyml-results-from-pipeline-view">.gitlab-ci.yml results from pipeline view</h2>
+
+<p><img src="https://github.com/copdips/copdips.github.io/raw/master/_image/blog/2018-10-18-using-gitlab-integrated-cicd-for-python-project-on-windows/gitlab-ci.yml_result_from_pipeline_view.PNG" alt=".gitlab-ci.yml results from pipeline view"></p>
+
+<h2 id="gitlab-ciyml-results-from-job-view">.gitlab-ci.yml results from job view</h2>
+
+<p><img src="https://github.com/copdips/copdips.github.io/raw/master/_image/blog/2018-10-18-using-gitlab-integrated-cicd-for-python-project-on-windows/gitlab-ci.yml_result_from_job_view.PNG" alt=".gitlab-ci.yml results from job view"></p>
+
+<h2 id="gitlab-ciyml-results-from-merge_request-view">.gitlab-ci.yml results from merge_request view</h2>
+
+<p><img src="https://github.com/copdips/copdips.github.io/raw/master/_image/blog/2018-10-18-using-gitlab-integrated-cicd-for-python-project-on-windows/gitlab-ci.yml_result_from_merge_request_view.PNG" alt=".gitlab-ci.yml results from merge_request view"></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#cicd" class="page__taxonomy-item p-category" rel="tag">cicd</a><span class="sep">, </span>
+    
+      <a href="/tags/#gitlab" class="page__taxonomy-item p-category" rel="tag">gitlab</a><span class="sep">, </span>
+    
+      <a href="/tags/#powershell" class="page__taxonomy-item p-category" rel="tag">powershell</a><span class="sep">, </span>
+    
+      <a href="/tags/#python" class="page__taxonomy-item p-category" rel="tag">python</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2018-10-18T00:00:00+00:00">October 18, 2018</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Using+Gitlab+integrated+CICD+for+Python+project+on+Windows%20https%3A%2F%2Fwww.copdips.com%2F2018%2F10%2Fusing-gitlab-integrated-cicd-for-python-project-on-windows.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.copdips.com%2F2018%2F10%2Fusing-gitlab-integrated-cicd-for-python-project-on-windows.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.copdips.com%2F2018%2F10%2Fusing-gitlab-integrated-cicd-for-python-project-on-windows.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+
+  <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.copdips.com%2F2018%2F10%2Fusing-gitlab-integrated-cicd-for-python-project-on-windows.html&title=Using%20Gitlab%20integrated%20CICD%20for%20Python%20project%20on%20Windows" class="btn btn--reddit" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Reddit"><i class="fab fa-fw fa-reddit" aria-hidden="true"></i><span> Reddit</span></a>
+</section>
+
+
+      <script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+      <div id="qrcode"></div>
+      <script type="text/javascript">
+        var qrcode = new QRCode('qrcode', {width: 100, height: 100, text: location.href});
+      </script>
+
+      
+  <nav class="pagination">
+    
+      <a href="/2018/10/migrate-gitlab-in-docker.html" class="pagination--pager" title="Migrate Gitlab in docker
+">Previous</a>
+    
+    
+      <a href="/2018/11/setting-pwsh-invoke-webrequest-proxy.html" class="pagination--pager" title="Setting Pwsh Invoke-WebRequest Proxy
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+      <h4 class="page__comments-title">Leave a comment</h4>
+      <section id="disqus_thread"></section>
+    
+</div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-deploy-static-files-to-azure-web-app.html" rel="permalink">Github actions - deploy static files to azure web app
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/Some-nice-CICD-bash-common-scripts.html" rel="permalink">Some nice cicd bash common scripts
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          less than 1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-bash-shell-pipefail.html" rel="permalink">Github Actions - Bash shell -e -o pipefail
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-08T00:00:00+00:00">November 8, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/10/hashing-files.html" rel="permalink">Hashing files
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-10-21T00:00:00+00:00">October 21, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap">
+<form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term...">
+  </form>
+  <div id="results" class="results"></div>
+</div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="mailto:xiang.zhu@outlook.com" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email</a></li>
+        
+      
+        
+          <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+          <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://uptimerobot.com/dashboard#785564645" rel="nofollow noopener noreferrer"><i class="fas fa-clock" aria-hidden="true"></i> Uptime</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2023 Xiang ZHU. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp;
+<a href="https://mmistakes.github.io/minimal-mistakes/about/" rel="nofollow">Minimal Mistakes</a>
+.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'G-L9KPHRQNQN']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "https://www.copdips.com/2018/10/using-gitlab-integrated-cicd-for-python-project-on-windows.html";  /* Replace PAGE_URL with your page's canonical URL variable */
+      this.page.identifier = "/2018/10/using-gitlab-integrated-cicd-for-python-project-on-windows"; /* Replace PAGE_IDENTIFIER with your page's unique identifier variable */
+    };
+    (function() { /* DON'T EDIT BELOW THIS LINE */
+      var d = document, s = d.createElement('script');
+      s.src = 'https://copdips.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+
+  
+
+
+
+
+
+  </body>
+</html>

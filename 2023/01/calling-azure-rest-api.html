@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+--><html lang="en" class="no-js">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Calling Azure REST API - A code to remember</title>
+<meta name="description" content="Python developer">
+
+
+  <meta name="author" content="Xiang ZHU">
+  
+  <meta property="article:author" content="Xiang ZHU">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="A code to remember">
+<meta property="og:title" content="Calling Azure REST API">
+<meta property="og:url" content="https://www.copdips.com/2023/01/calling-azure-rest-api.html">
+
+
+  <meta property="og:description" content="Python developer">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2023-01-05T00:00:00+00:00">
+
+
+
+  <meta property="article:modified_time" content="2023-05-23T15:58:39+00:00">
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="https://www.copdips.com/2023/01/calling-azure-rest-api.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Xiang ZHU",
+      "url": "https://www.copdips.com/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="A code to remember Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          A code to remember
+          
+        </a>
+        <ul class="visible-links">
+<li class="masthead__menu-item">
+              <a href="/">Home</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/tags/">Tags</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/year-archive/">Year Archive</a>
+            </li>
+</ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<!-- back to top button -->
+<!-- https://github.com/mmistakes/minimal-mistakes/issues/1731#issuecomment-628997645 -->
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>addBackToTop({
+  diameter: 56,
+  backgroundColor: '#F16334',
+  textColor: '#fff'
+})</script>
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.copdips.com/">
+        <img src="/image/avatar/zhuxiang-smile.jpg" alt="Xiang ZHU" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.copdips.com/" itemprop="url">Xiang ZHU</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Python DevOps</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Paris</span>
+        </li>
+      
+
+      
+        
+          
+            <li><a href="https://www.copdips.com" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fas fa-fw fa-link" aria-hidden="true"></i><span class="label">Website</span></a></li>
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">LinkedIn</span></a></li>
+          
+        
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:xiang.zhu@outlook.com" rel="me" class="u-email">
+            <meta itemprop="email" content="xiang.zhu@outlook.com">
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+      <!-- 
+<script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+<div id="qrcode"></div>
+<script type="text/javascript">
+  var qrcode = new QRCode('qrcode', {width: 10, height: 10, text: location.href});
+</script>
+ -->
+    </ul>
+  </div>
+</div>
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Calling Azure REST API">
+    <meta itemprop="description" content="">
+    <meta itemprop="datePublished" content="2023-01-05T00:00:00+00:00">
+    <meta itemprop="dateModified" content="2023-05-23T15:58:39+00:00">
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.copdips.com/2023/01/calling-azure-rest-api.html" class="u-url" itemprop="url">Calling Azure REST API
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-01-05T00:00:00+00:00">January 5, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title">
+<i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu">
+<li><a href="#auth-token-in-curl">Auth token in curl</a></li>
+<li><a href="#azure-devops-api-resource-id-for-oauth">Azure DevOps API resource id for OAuth</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p>This blog <a href="https://mauridb.medium.com/calling-azure-rest-api-via-curl-eb10a06127">Calling Azure REST API via curl</a> is pretty good. Just two more things.</p>
+
+<h2 id="auth-token-in-curl">Auth token in curl</h2>
+
+<p>We can use <code class="language-plaintext highlighter-rouge">curl -X GET -u :$token</code> instead of <code class="language-plaintext highlighter-rouge">curl -X GET -H "Authorization: Bearer $token"</code></p>
+
+<h2 id="azure-devops-api-resource-id-for-oauth">Azure DevOps API resource id for OAuth</h2>
+
+<p>when using <code class="language-plaintext highlighter-rouge">az rest</code> to call <a href="https://learn.microsoft.com/en-us/rest/api/azure/devops/">Azure DevOps API</a>, you will get a similar error as follows:</p>
+
+<blockquote>
+  <p>Can’t derive appropriate Azure AD resource from –url to acquire an access token. If access token is required, use –resource to specify the resource.</p>
+</blockquote>
+
+<p>This is because Azure DevOps API base url: <a href="https://dev.azure.com/">https://dev.azure.com/</a> or <a href="https://vssps.dev.azure.com/">https://vssps.dev.azure.com/</a>, etc. are not an Azure cloud endpoint.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>az rest <span class="nt">--help</span>
+Command
+    az rest : Invoke a custom request.
+        This <span class="nb">command </span>automatically authenticates using the logged-in credential: If Authorization
+        header is not <span class="nb">set</span>, it attaches header <span class="sb">`</span>Authorization: Bearer &lt;token&gt;<span class="sb">`</span>, where <span class="sb">`</span>&lt;token&gt;<span class="sb">`</span> is
+        retrieved from AAD. The target resource of the token is derived from <span class="nt">--url</span> <span class="k">if</span> <span class="nt">--url</span> starts
+        with an endpoint from <span class="sb">`</span>az cloud show <span class="nt">--query</span> endpoints<span class="sb">`</span><span class="nb">.</span> You may also use <span class="nt">--resource</span> <span class="k">for </span>a
+        custom resource.
+        If Content-Type header is not <span class="nb">set </span>and <span class="nt">--body</span> is a valid JSON string, Content-Type header
+        will default to application/json.
+    Arguments
+        <span class="o">[</span>...redacted]
+        <span class="nt">--resource</span> : Resource url <span class="k">for </span>which CLI should acquire a token from AAD
+                     <span class="k">in </span>order to access the service. The token will be placed <span class="k">in
+                     </span>the Authorization header. By default, CLI can figure this
+                     out based on <span class="nt">--url</span> argument, unless you use ones not <span class="k">in </span>the
+                     list of <span class="s2">"az cloud show --query endpoints"</span><span class="nb">.</span>
+        <span class="o">[</span>...redacted]
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>az cloud show <span class="nt">--query</span> endpoints
+<span class="o">{</span>
+  <span class="s2">"activeDirectory"</span>: <span class="s2">"https://login.microsoftonline.com"</span>,
+  <span class="s2">"activeDirectoryDataLakeResourceId"</span>: <span class="s2">"https://datalake.azure.net/"</span>,
+  <span class="s2">"activeDirectoryGraphResourceId"</span>: <span class="s2">"https://graph.windows.net/"</span>,
+  <span class="s2">"activeDirectoryResourceId"</span>: <span class="s2">"https://management.core.windows.net/"</span>,
+  <span class="s2">"appInsightsResourceId"</span>: <span class="s2">"https://api.applicationinsights.io"</span>,
+  <span class="s2">"appInsightsTelemetryChannelResourceId"</span>: <span class="s2">"https://dc.applicationinsights.azure.com/v2/track"</span>,
+  <span class="s2">"attestationResourceId"</span>: <span class="s2">"https://attest.azure.net"</span>,
+  <span class="s2">"azmirrorStorageAccountResourceId"</span>: null,
+  <span class="s2">"batchResourceId"</span>: <span class="s2">"https://batch.core.windows.net/"</span>,
+  <span class="s2">"gallery"</span>: <span class="s2">"https://gallery.azure.com/"</span>,
+  <span class="s2">"logAnalyticsResourceId"</span>: <span class="s2">"https://api.loganalytics.io"</span>,
+  <span class="s2">"management"</span>: <span class="s2">"https://management.core.windows.net/"</span>,
+  <span class="s2">"mediaResourceId"</span>: <span class="s2">"https://rest.media.azure.net"</span>,
+  <span class="s2">"microsoftGraphResourceId"</span>: <span class="s2">"https://graph.microsoft.com/"</span>,
+  <span class="s2">"ossrdbmsResourceId"</span>: <span class="s2">"https://ossrdbms-aad.database.windows.net"</span>,
+  <span class="s2">"portal"</span>: <span class="s2">"https://portal.azure.com"</span>,
+  <span class="s2">"resourceManager"</span>: <span class="s2">"https://management.azure.com/"</span>,
+  <span class="s2">"sqlManagement"</span>: <span class="s2">"https://management.core.windows.net:8443/"</span>,
+  <span class="s2">"synapseAnalyticsResourceId"</span>: <span class="s2">"https://dev.azuresynapse.net"</span>,
+  <span class="s2">"vmImageAliasDoc"</span>: <span class="s2">"https://raw.githubusercontent.com/Azure/azure-rest-api-specs/master/arm-compute/quickstart-templates/aliases.json"</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>So we need to find the resource url for Azure DevOps API. Hopefully, we can find it from this <a href="https://github.com/Azure/azure-cli/issues/7618#issuecomment-909822540">github issue</a>, or from the official <a href="https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-personal-access-tokens-via-api?view=azure-devops#configure-a-quickstart-application">Azure DevOps doc</a>, we can use <code class="language-plaintext highlighter-rouge">499b84ac-1321-427f-aa17-267ca6975798</code> as the value of <code class="language-plaintext highlighter-rouge">--resource</code> to call <code class="language-plaintext highlighter-rouge">az rest</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>az rest <span class="se">\</span>
+    <span class="nt">--resource</span> 499b84ac-1321-427f-aa17-267ca6975798 <span class="se">\</span>
+    <span class="nt">--url</span> &lt;url&gt;
+</code></pre></div></div>
+
+<p>When running <code class="language-plaintext highlighter-rouge">az rest</code> within Azure pipeline, we also need to add the authorization, as the SPN injected by <code class="language-plaintext highlighter-rouge">azureSubscription</code> <a href="https://learn.microsoft.com/en-us/azure/devops/release-notes/roadmap/support-azure-managed-identities">cannot be recognized by Azure DevOps API</a>, it’s not a user account. The SPN support is in Azure DevOps road map, and planned to be released in 2023 Q1. I’ll update this post once I’ve tested it.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="pi">-</span> <span class="na">task</span><span class="pi">:</span> <span class="s">AzureCLI@2</span>
+  <span class="na">displayName</span><span class="pi">:</span> <span class="s">Az rest</span>
+  <span class="na">inputs</span><span class="pi">:</span>
+    <span class="na">azureSubscription</span><span class="pi">:</span> <span class="s">$(azureResourceServiceConnection)</span>
+    <span class="na">scriptType</span><span class="pi">:</span> <span class="s">bash</span>
+    <span class="na">scriptLocation</span><span class="pi">:</span> <span class="s">inlineScript</span>
+    <span class="na">inlineScript</span><span class="pi">:</span> <span class="pi">|</span>
+      <span class="s">az rest \</span>
+          <span class="s">--headers "Authorization=Bearer $SYSTEM_ACCESSTOKEN" \</span>
+          <span class="s">--resource 499b84ac-1321-427f-aa17-267ca6975798 \</span>
+          <span class="s">--url &lt;url&gt;</span>
+    <span class="na">failOnStandardError</span><span class="pi">:</span> <span class="kc">true</span>
+  <span class="na">env</span><span class="pi">:</span>
+    <span class="na">SYSTEM_ACCESSTOKEN</span><span class="pi">:</span> <span class="s">$(System.AccessToken)</span>
+</code></pre></div></div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#api" class="page__taxonomy-item p-category" rel="tag">api</a><span class="sep">, </span>
+    
+      <a href="/tags/#azure" class="page__taxonomy-item p-category" rel="tag">azure</a><span class="sep">, </span>
+    
+      <a href="/tags/#rest" class="page__taxonomy-item p-category" rel="tag">rest</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2023-05-23">May 23, 2023</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Calling+Azure+REST+API%20https%3A%2F%2Fwww.copdips.com%2F2023%2F01%2Fcalling-azure-rest-api.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.copdips.com%2F2023%2F01%2Fcalling-azure-rest-api.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.copdips.com%2F2023%2F01%2Fcalling-azure-rest-api.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+
+  <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.copdips.com%2F2023%2F01%2Fcalling-azure-rest-api.html&title=Calling%20Azure%20REST%20API" class="btn btn--reddit" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Reddit"><i class="fab fa-fw fa-reddit" aria-hidden="true"></i><span> Reddit</span></a>
+</section>
+
+
+      <script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+      <div id="qrcode"></div>
+      <script type="text/javascript">
+        var qrcode = new QRCode('qrcode', {width: 100, height: 100, text: location.href});
+      </script>
+
+      
+  <nav class="pagination">
+    
+      <a href="/2023/01/python-aiohttp-rate-limit.html" class="pagination--pager" title="Python aiohttp rate limit
+">Previous</a>
+    
+    
+      <a href="/2023/01/sonarcloud-github-action.html" class="pagination--pager" title="Sonarcloud Github Action
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+      <h4 class="page__comments-title">Leave a comment</h4>
+      <section id="disqus_thread"></section>
+    
+</div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-deploy-static-files-to-azure-web-app.html" rel="permalink">Github actions - deploy static files to azure web app
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/Some-nice-CICD-bash-common-scripts.html" rel="permalink">Some nice cicd bash common scripts
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          less than 1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-bash-shell-pipefail.html" rel="permalink">Github Actions - Bash shell -e -o pipefail
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-08T00:00:00+00:00">November 8, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/10/hashing-files.html" rel="permalink">Hashing files
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-10-21T00:00:00+00:00">October 21, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap">
+<form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term...">
+  </form>
+  <div id="results" class="results"></div>
+</div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="mailto:xiang.zhu@outlook.com" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email</a></li>
+        
+      
+        
+          <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+          <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://uptimerobot.com/dashboard#785564645" rel="nofollow noopener noreferrer"><i class="fas fa-clock" aria-hidden="true"></i> Uptime</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2023 Xiang ZHU. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp;
+<a href="https://mmistakes.github.io/minimal-mistakes/about/" rel="nofollow">Minimal Mistakes</a>
+.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'G-L9KPHRQNQN']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "https://www.copdips.com/2023/01/calling-azure-rest-api.html";  /* Replace PAGE_URL with your page's canonical URL variable */
+      this.page.identifier = "/2023/01/calling-azure-rest-api"; /* Replace PAGE_IDENTIFIER with your page's unique identifier variable */
+    };
+    (function() { /* DON'T EDIT BELOW THIS LINE */
+      var d = document, s = d.createElement('script');
+      s.src = 'https://copdips.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+
+  
+
+
+
+
+
+  </body>
+</html>

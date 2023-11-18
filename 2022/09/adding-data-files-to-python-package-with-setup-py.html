@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+--><html lang="en" class="no-js">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Adding data files to Python package with setup.py - A code to remember</title>
+<meta name="description" content="Python developer">
+
+
+  <meta name="author" content="Xiang ZHU">
+  
+  <meta property="article:author" content="Xiang ZHU">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="A code to remember">
+<meta property="og:title" content="Adding data files to Python package with setup.py">
+<meta property="og:url" content="https://www.copdips.com/2022/09/adding-data-files-to-python-package-with-setup-py.html">
+
+
+  <meta property="og:description" content="Python developer">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2022-09-15T00:00:00+00:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="https://www.copdips.com/2022/09/adding-data-files-to-python-package-with-setup-py.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Xiang ZHU",
+      "url": "https://www.copdips.com/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="A code to remember Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          A code to remember
+          
+        </a>
+        <ul class="visible-links">
+<li class="masthead__menu-item">
+              <a href="/">Home</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/tags/">Tags</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/year-archive/">Year Archive</a>
+            </li>
+</ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<!-- back to top button -->
+<!-- https://github.com/mmistakes/minimal-mistakes/issues/1731#issuecomment-628997645 -->
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>addBackToTop({
+  diameter: 56,
+  backgroundColor: '#F16334',
+  textColor: '#fff'
+})</script>
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.copdips.com/">
+        <img src="/image/avatar/zhuxiang-smile.jpg" alt="Xiang ZHU" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.copdips.com/" itemprop="url">Xiang ZHU</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Python DevOps</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Paris</span>
+        </li>
+      
+
+      
+        
+          
+            <li><a href="https://www.copdips.com" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fas fa-fw fa-link" aria-hidden="true"></i><span class="label">Website</span></a></li>
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">LinkedIn</span></a></li>
+          
+        
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:xiang.zhu@outlook.com" rel="me" class="u-email">
+            <meta itemprop="email" content="xiang.zhu@outlook.com">
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+      <!-- 
+<script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+<div id="qrcode"></div>
+<script type="text/javascript">
+  var qrcode = new QRCode('qrcode', {width: 10, height: 10, text: location.href});
+</script>
+ -->
+    </ul>
+  </div>
+</div>
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Adding data files to Python package with setup.py">
+    <meta itemprop="description" content="">
+    <meta itemprop="datePublished" content="2022-09-15T00:00:00+00:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.copdips.com/2022/09/adding-data-files-to-python-package-with-setup-py.html" class="u-url" itemprop="url">Adding data files to Python package with setup.py
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-09-15T00:00:00+00:00">September 15, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title">
+<i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu">
+<li><a href="#setuppy-vs-pyprojecttoml">setup.py vs pyproject.toml</a></li>
+<li>
+<a href="#adding-data-files">Adding data files</a><ul>
+<li><a href="#with-parameter-package_data-for-files-inside-a-package">With parameter package_data for files inside a package</a></li>
+<li><a href="#with-parameter-data_files-for-any-files">With parameter data_files for any files</a></li>
+<li><a href="#with-file-manifestin">With file MANIFEST.in</a></li>
+<li><a href="#parameter-zip_safe">Parameter zip_safe</a></li>
+</ul>
+</li>
+<li>
+<a href="#loading-data-files">Loading data files</a><ul>
+<li><a href="#loading-data-files-packaged-by-package_data">Loading data files packaged by package_data</a></li>
+<li><a href="#loading-data-files-packaged-by-data_files">Loading data files packaged by data_files</a></li>
+</ul>
+</li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <h2 id="setuppy-vs-pyprojecttoml">setup.py vs pyproject.toml</h2>
+
+<p><code class="language-plaintext highlighter-rouge">pyproject.toml</code> is the new Python project metadata specification standard since <a href="https://peps.python.org/pep-0621/">PEP 621</a>. As per <a href="https://www.python.org/dev/peps/pep-0517/">PEP 517</a>, and as per one of the comments of this <a href="https://stackoverflow.com/a/62983901/5095636">StackOverflow thread</a>, in some rare cases, we might have a chicken and egg problem when using <code class="language-plaintext highlighter-rouge">setup.py</code> if it needs to import something from the package it’s building. The only thing that <code class="language-plaintext highlighter-rouge">pyproject.toml</code> cannot achieve for the moment is the installation in <a href="https://packaging.python.org/en/latest/guides/distributing-packages-using-setuptools/#working-in-development-mode">editable mode</a>, where we must use <code class="language-plaintext highlighter-rouge">setup.py</code>. Another advantage of <code class="language-plaintext highlighter-rouge">setup.py</code> is that we can compute some variables dynamically during the build time as it’s a Python file.</p>
+
+<p>Nevertheless, <code class="language-plaintext highlighter-rouge">setup.py</code> is still a widely used solid tool to build Python package. This post will discuss how to add data files (non Python files) to a Python wheel package built by <code class="language-plaintext highlighter-rouge">setup.py</code>, the source distribution files (sdist .tar.gz files, .zip for Windows) are not covered by this post.</p>
+
+<h2 id="adding-data-files">Adding data files</h2>
+
+<h3 id="with-parameter-package_data-for-files-inside-a-package">With parameter package_data for files inside a package</h3>
+
+<p>Official doc: <a href="https://docs.python.org/3/distutils/setupscript.html#installing-package-data">https://docs.python.org/3/distutils/setupscript.html#installing-package-data</a></p>
+
+<p><code class="language-plaintext highlighter-rouge">package_data</code> accepts wildcard, but from the given example, the data files <strong>must exist inside a Python module folder</strong> (coexist with file <code class="language-plaintext highlighter-rouge">__init__.py</code>), you cannot use <code class="language-plaintext highlighter-rouge">package_data</code> to include files from non module folders, for e.g. the folder <code class="language-plaintext highlighter-rouge">conf</code> where there’s no <code class="language-plaintext highlighter-rouge">__init__.py</code> file inside.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>setup.py
+conf/
+    conf.json
+src/
+    mypkg/
+        __init__.py
+        module.py
+        data/
+            tables.dat
+            spoons.dat
+            forks.dat
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">setup</span><span class="p">(...,</span>
+      <span class="n">packages</span><span class="o">=</span><span class="p">[</span><span class="sh">'</span><span class="s">mypkg</span><span class="sh">'</span><span class="p">],</span>
+      <span class="n">package_dir</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">mypkg</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">src/mypkg</span><span class="sh">'</span><span class="p">},</span>
+      <span class="n">package_data</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">mypkg</span><span class="sh">'</span><span class="p">:</span> <span class="p">[</span><span class="sh">'</span><span class="s">data/*.dat</span><span class="sh">'</span><span class="p">]},</span>
+      <span class="p">)</span>
+</code></pre></div></div>
+
+<h3 id="with-parameter-data_files-for-any-files">With parameter data_files for any files</h3>
+
+<p>official doc: <a href="https://docs.python.org/3/distutils/setupscript.html#installing-additional-files">https://docs.python.org/3/distutils/setupscript.html#installing-additional-files</a></p>
+
+<p class="notice--warning"><code class="language-plaintext highlighter-rouge">distutils</code> is deprecated, and will be <a href="https://docs.python.org/3/distutils/index.html#distributing-python-modules-legacy-version">remove in Python 3.12</a> as per <a href="https://peps.python.org/pep-0632/">PEP 632</a>, the migration path is to simply use <a href="https://setuptools.pypa.io/en/latest/deprecated/distutils-legacy.html">setuptools</a>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">setup</span><span class="p">(...,</span>
+    <span class="n">data_files</span><span class="o">=</span><span class="p">[</span>
+        <span class="p">(</span><span class="sh">'</span><span class="s">bitmaps</span><span class="sh">'</span><span class="p">,</span> <span class="p">[</span><span class="sh">'</span><span class="s">bm/b1.gif</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">bm/b2.gif</span><span class="sh">'</span><span class="p">]),</span>
+        <span class="p">(</span><span class="sh">'</span><span class="s">config</span><span class="sh">'</span><span class="p">,</span> <span class="p">[</span><span class="sh">'</span><span class="s">cfg/data.cfg</span><span class="sh">'</span><span class="p">]),</span>
+        <span class="p">({</span><span class="n">dest_folder_path_in_wheel</span><span class="p">},</span> <span class="p">[{</span><span class="n">source_file_path_relative_to_setup</span><span class="p">.</span><span class="n">py_script</span><span class="p">}]),</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<p>From the above example, we can see that:</p>
+
+<ol>
+  <li>
+<code class="language-plaintext highlighter-rouge">data_files</code> accepts any files from any folder, in contrast to <code class="language-plaintext highlighter-rouge">package_data</code> which accepts files inside a package folder.</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">data_files</code> takes files one by one, we can not use the wildcard like * to specify a set of source files.</li>
+  <li>after build, there’s a <code class="language-plaintext highlighter-rouge">.whl</code> wheel file generated, the <code class="language-plaintext highlighter-rouge">source_file_path_relative_to_setup</code> will be added to the path <code class="language-plaintext highlighter-rouge">{package_name}-{package_version}.data/data/{dest_folder_path_in_wheel}/{source_file_name}</code>, and the Python files are added to <code class="language-plaintext highlighter-rouge">{module_name}/{python_package_original_path}</code>. If you want to put the data files at the original path, you need to replace <code class="language-plaintext highlighter-rouge">{dest_folder_path_in_wheel}</code> with <code class="language-plaintext highlighter-rouge">../../{data_files_original_path}</code>, the first two <code class="language-plaintext highlighter-rouge">..</code> is just to escape two folder levels from <code class="language-plaintext highlighter-rouge">{package_name}-{package_version}.data/data/</code>.</li>
+</ol>
+
+<h3 id="with-file-manifestin">With file MANIFEST.in</h3>
+
+<p>From my understanding and tests, <code class="language-plaintext highlighter-rouge">MANIFEST.in</code> file is only for sdist, so out of the scope of this post which talks about bdist wheel package only.</p>
+
+<h3 id="parameter-zip_safe">Parameter zip_safe</h3>
+
+<p>If you’re using old-fashion egg file, to reference data files inside package, should put <code class="language-plaintext highlighter-rouge">zie_safe=False</code> during built. Otherwise, for modern Python packaging, this parameter is <a href="https://setuptools.pypa.io/en/latest/deprecated/zip_safe.html#understanding-the-zip-safe-flag">obsolete</a>.</p>
+
+<h2 id="loading-data-files">Loading data files</h2>
+
+<p>A very good sum-up can be found in this <a href="https://stackoverflow.com/a/58941536/5095636">StackOverflow thread</a>.</p>
+
+<h3 id="loading-data-files-packaged-by-package_data">Loading data files packaged by package_data</h3>
+
+<ul>
+  <li>
+    <p>With <a href="https://docs.python.org/3/library/importlib.html#module-importlib.resources">importlib.resources</a>, <a href="https://docs.python.org/3/library/importlib.metadata.html">importlib.metadata</a> or their backports <a href="https://pypi.org/project/importlib_resources">importlib_resources</a> <a href="https://pypi.org/project/importlib_metadata">importlib_metadata</a>.</p>
+
+    <div class="language-python highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code><span class="c1"># to read file from module_a/folder_b/file.json
+</span><span class="kn">import</span> <span class="n">importlib.resources</span>
+<span class="kn">import</span> <span class="n">json</span>
+
+<span class="c1"># open_text is deprecated in Python3.11 as only support files in Python modules
+# see below example how to use `importlib.resources.files`
+</span><span class="n">json</span><span class="p">.</span><span class="nf">load</span><span class="p">(</span><span class="n">importlib</span><span class="p">.</span><span class="n">resources</span><span class="p">.</span><span class="nf">open_text</span><span class="p">(</span><span class="sh">"</span><span class="s">module_a.folder_b</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">file.json</span><span class="sh">"</span><span class="p">))</span>
+</code></pre></div>    </div>
+
+    <p>Check this <a href="https://importlib-resources.readthedocs.io/en/latest/migration.html#migration-guide">doc</a> for migration from <code class="language-plaintext highlighter-rouge">pkg_resources</code>.</p>
+  </li>
+  <li>
+    <p>With deprecated <a href="https://setuptools.pypa.io/en/latest/pkg_resources.html#">pkg_resources</a> from setuptools of pypa.io, and some examples from <a href="https://godatadriven.com/blog/a-practical-guide-to-setuptools-and-pyproject-toml/">here</a> or <a href="https://dbx.readthedocs.io/en/latest/guides/python/packaging_files/#using-the-referenced-files">here</a>.</p>
+
+    <p class="notice--warning"><a href="https://setuptools.pypa.io/en/latest/pkg_resources.html">pkg_resources</a> is deprecated due to some performance issue, and also need to install third-party setuptools for the run which should only be used during the build.</p>
+
+    <div class="language-python highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code><span class="c1"># to read file from module_a/folder_b/file.json
+</span><span class="kn">import</span> <span class="n">json</span>
+<span class="kn">import</span> <span class="n">pkg_resources</span>
+
+<span class="n">json</span><span class="p">.</span><span class="nf">load</span><span class="p">(</span><span class="n">pkg_resources</span><span class="p">.</span><span class="nf">resource_stream</span><span class="p">(</span><span class="sh">"</span><span class="s">module_a</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">folder_b/file.json</span><span class="sh">"</span><span class="p">))</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h3 id="loading-data-files-packaged-by-data_files">Loading data files packaged by data_files</h3>
+
+<p>As data files packaged by <code class="language-plaintext highlighter-rouge">data_files</code> parameter could be in any folder, not necessarily inside a Python module with <code class="language-plaintext highlighter-rouge">__init__</code> file, in such case the new <code class="language-plaintext highlighter-rouge">importlib.resources.open_text</code>can not be used anymore, and indeed marked as <a href="https://docs.python.org/3.11/library/importlib.resources.html?highlight=read_text#deprecated-functions">deprecated in Python 3.11</a>.</p>
+
+<ul>
+  <li>
+    <p>Use stdlib <code class="language-plaintext highlighter-rouge">importlib.resources.files</code> to read file from <code class="language-plaintext highlighter-rouge">module_a/folder_b/file.json</code></p>
+
+    <p class="notice--info">This method can also be used to <a href="#loading-data-files-packaged-by-data_files">load data files packaged by package_data</a></p>
+
+    <div class="language-python highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code><span class="k">try</span><span class="p">:</span>
+    <span class="c1"># new stdlib in Python3.9
+</span>    <span class="kn">from</span> <span class="n">importlib.resources</span> <span class="kn">import</span> <span class="n">files</span>
+<span class="k">except</span> <span class="nb">ImportError</span><span class="p">:</span>
+    <span class="c1"># third-party package, backport for Python3.9-,
+</span>    <span class="c1"># need to add importlib_resources to requirements
+</span>    <span class="kn">from</span> <span class="n">importlib_resources</span> <span class="kn">import</span> <span class="n">files</span>
+<span class="kn">import</span> <span class="n">json</span>
+
+<span class="c1"># with `data_files` in `setup.py`,
+# we can specify where to put the files in the wheel package,
+# so inside the module_a for example
+</span><span class="k">with</span> <span class="nf">open</span><span class="p">(</span><span class="nf">files</span><span class="p">(</span><span class="n">module_a</span><span class="p">).</span><span class="nf">joinpath</span><span class="p">(</span><span class="sh">"</span><span class="s">folder_b/file.json</span><span class="sh">"</span><span class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">json</span><span class="p">.</span><span class="nf">load</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Use deprecated third-party <code class="language-plaintext highlighter-rouge">pkg_resources</code> to read file from <code class="language-plaintext highlighter-rouge">module_a/folder_b/file.json</code></p>
+
+    <div class="language-python highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">json</span>
+<span class="kn">import</span> <span class="n">pkg_resources</span>
+
+<span class="c1"># use `data_files` in `setup.py`, we can specify where to put the files,
+# so inside the module_a for example
+</span><span class="n">json</span><span class="p">.</span><span class="nf">load</span><span class="p">(</span><span class="n">pkg_resources</span><span class="p">.</span><span class="nf">resource_stream</span><span class="p">(</span><span class="sh">"</span><span class="s">module_a</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">folder_b/file.json</span><span class="sh">"</span><span class="p">))</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Use stdlib <code class="language-plaintext highlighter-rouge">pkgtuil.get_data</code></p>
+
+    <p>You can find an example in this <a href="https://stackoverflow.com/a/58941536/5095636">StackOverflow thread</a>. All the answers and the comments are worth reading. Be aware that <code class="language-plaintext highlighter-rouge">pkgutil.get_date()</code> could be <a href="https://gitlab.com/python-devs/importlib_resources/-/issues/58#note_329352693">deprecated</a> too one day.</p>
+  </li>
+</ul>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#packaging" class="page__taxonomy-item p-category" rel="tag">packaging</a><span class="sep">, </span>
+    
+      <a href="/tags/#python" class="page__taxonomy-item p-category" rel="tag">python</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2022-09-15T00:00:00+00:00">September 15, 2022</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Adding+data+files+to+Python+package+with+setup.py%20https%3A%2F%2Fwww.copdips.com%2F2022%2F09%2Fadding-data-files-to-python-package-with-setup-py.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.copdips.com%2F2022%2F09%2Fadding-data-files-to-python-package-with-setup-py.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.copdips.com%2F2022%2F09%2Fadding-data-files-to-python-package-with-setup-py.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+
+  <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.copdips.com%2F2022%2F09%2Fadding-data-files-to-python-package-with-setup-py.html&title=Adding%20data%20files%20to%20Python%20package%20with%20setup.py" class="btn btn--reddit" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Reddit"><i class="fab fa-fw fa-reddit" aria-hidden="true"></i><span> Reddit</span></a>
+</section>
+
+
+      <script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+      <div id="qrcode"></div>
+      <script type="text/javascript">
+        var qrcode = new QRCode('qrcode', {width: 100, height: 100, text: location.href});
+      </script>
+
+      
+  <nav class="pagination">
+    
+      <a href="/2022/09/azure-pipeline-system-access-token-in-shared-pipeline.html" class="pagination--pager" title="Azure pipeline System.AccessToken in shared pipeline
+">Previous</a>
+    
+    
+      <a href="/2022/09/databricks-cluster-access-mode.html" class="pagination--pager" title="Databricks cluster access mode
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+      <h4 class="page__comments-title">Leave a comment</h4>
+      <section id="disqus_thread"></section>
+    
+</div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-deploy-static-files-to-azure-web-app.html" rel="permalink">Github actions - deploy static files to azure web app
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/Some-nice-CICD-bash-common-scripts.html" rel="permalink">Some nice cicd bash common scripts
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          less than 1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-bash-shell-pipefail.html" rel="permalink">Github Actions - Bash shell -e -o pipefail
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-08T00:00:00+00:00">November 8, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/10/hashing-files.html" rel="permalink">Hashing files
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-10-21T00:00:00+00:00">October 21, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap">
+<form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term...">
+  </form>
+  <div id="results" class="results"></div>
+</div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="mailto:xiang.zhu@outlook.com" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email</a></li>
+        
+      
+        
+          <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+          <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://uptimerobot.com/dashboard#785564645" rel="nofollow noopener noreferrer"><i class="fas fa-clock" aria-hidden="true"></i> Uptime</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2023 Xiang ZHU. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp;
+<a href="https://mmistakes.github.io/minimal-mistakes/about/" rel="nofollow">Minimal Mistakes</a>
+.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'G-L9KPHRQNQN']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "https://www.copdips.com/2022/09/adding-data-files-to-python-package-with-setup-py.html";  /* Replace PAGE_URL with your page's canonical URL variable */
+      this.page.identifier = "/2022/09/adding-data-files-to-python-package-with-setup-py"; /* Replace PAGE_IDENTIFIER with your page's unique identifier variable */
+    };
+    (function() { /* DON'T EDIT BELOW THIS LINE */
+      var d = document, s = d.createElement('script');
+      s.src = 'https://copdips.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+
+  
+
+
+
+
+
+  </body>
+</html>

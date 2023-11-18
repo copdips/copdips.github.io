@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+--><html lang="en" class="no-js">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Azure pipeline predefined variables - A code to remember</title>
+<meta name="description" content="Python developer">
+
+
+  <meta name="author" content="Xiang ZHU">
+  
+  <meta property="article:author" content="Xiang ZHU">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="A code to remember">
+<meta property="og:title" content="Azure pipeline predefined variables">
+<meta property="og:url" content="https://www.copdips.com/2022/01/azure-pipeline-predefined-variables.html">
+
+
+  <meta property="og:description" content="Python developer">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2022-01-22T00:00:00+00:00">
+
+
+
+  <meta property="article:modified_time" content="2022-01-24T10:17:34+00:00">
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="https://www.copdips.com/2022/01/azure-pipeline-predefined-variables.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Xiang ZHU",
+      "url": "https://www.copdips.com/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="A code to remember Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          A code to remember
+          
+        </a>
+        <ul class="visible-links">
+<li class="masthead__menu-item">
+              <a href="/">Home</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/tags/">Tags</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/year-archive/">Year Archive</a>
+            </li>
+</ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<!-- back to top button -->
+<!-- https://github.com/mmistakes/minimal-mistakes/issues/1731#issuecomment-628997645 -->
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>addBackToTop({
+  diameter: 56,
+  backgroundColor: '#F16334',
+  textColor: '#fff'
+})</script>
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.copdips.com/">
+        <img src="/image/avatar/zhuxiang-smile.jpg" alt="Xiang ZHU" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.copdips.com/" itemprop="url">Xiang ZHU</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Python DevOps</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Paris</span>
+        </li>
+      
+
+      
+        
+          
+            <li><a href="https://www.copdips.com" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fas fa-fw fa-link" aria-hidden="true"></i><span class="label">Website</span></a></li>
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">LinkedIn</span></a></li>
+          
+        
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:xiang.zhu@outlook.com" rel="me" class="u-email">
+            <meta itemprop="email" content="xiang.zhu@outlook.com">
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+      <!-- 
+<script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+<div id="qrcode"></div>
+<script type="text/javascript">
+  var qrcode = new QRCode('qrcode', {width: 10, height: 10, text: location.href});
+</script>
+ -->
+    </ul>
+  </div>
+</div>
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Azure pipeline predefined variables">
+    <meta itemprop="description" content="">
+    <meta itemprop="datePublished" content="2022-01-22T00:00:00+00:00">
+    <meta itemprop="dateModified" content="2022-01-24T10:17:34+00:00">
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.copdips.com/2022/01/azure-pipeline-predefined-variables.html" class="u-url" itemprop="url">Azure pipeline predefined variables
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-01-22T00:00:00+00:00">January 22, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title">
+<i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu">
+<li><a href="#access-the-predefined-variables">Access the predefined variables</a></li>
+<li><a href="#variables-upon-git-events">Variables upon Git events</a></li>
+<li>
+<a href="#variables-not-varying-upon-triggering-git-action">Variables not varying upon triggering Git action</a><ul>
+<li><a href="#systemaccesstoken">System.AccessToken</a></li>
+<li><a href="#agentos">Agent.OS</a></li>
+</ul>
+</li>
+<li>
+<a href="#variables-to-be-set-by-user">Variables to be set by user</a><ul><li><a href="#systemdebug">System.Debug</a></li></ul>
+</li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p>The <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables">official doc</a> gives an explanation of all the predefined variables, but it lacks of some concret examples. Hereunder some examples for my preferred variables.</p>
+
+<h2 id="access-the-predefined-variables">Access the predefined variables</h2>
+
+<p>To access the variables value in YAML pipeline, we can use 2 methods:</p>
+
+<ol>
+  <li>
+<code class="language-plaintext highlighter-rouge">$(System.PullRequest.SourceBranch)</code> : the standard way to access pipeline variables.</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">$SYSTEM_PULLREQUEST_SOURCEBRANCH</code> : most of the pipeline variables are mapped to the pipeline machine environment variables in upper snake case.</li>
+</ol>
+
+<h2 id="variables-upon-git-events">Variables upon Git events</h2>
+
+<p>Suppose we create a new branch named <code class="language-plaintext highlighter-rouge">new_branch</code>, and create a pull request (with id <code class="language-plaintext highlighter-rouge">123</code>) from the new branch <code class="language-plaintext highlighter-rouge">new_branch</code> to the <code class="language-plaintext highlighter-rouge">main</code> branch.
+During the pipeline, we can see following predefined variables in different GIT events.</p>
+
+<p class="notice--info">Check <a href="https://copdips.com/2023/09/github-actions-variables.html#variables-upon-git-events">here</a> for variables upon git events in Github Actions.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>variable name \ git action</th>
+      <th>on push</th>
+      <th>on pull request</th>
+      <th>on merge</th>
+      <th>on manual trigger</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Build.SourceBranch</td>
+      <td>refs/heads/new_branch</td>
+      <td>refs/pull/123/merge</td>
+      <td>refs/heads/main</td>
+      <td>refs/heads/new_branch</td>
+    </tr>
+    <tr>
+      <td>Build.SourceBranchName</td>
+      <td>new_branch</td>
+      <td>merge</td>
+      <td>main</td>
+      <td>new_branch</td>
+    </tr>
+    <tr>
+      <td>Build.SourceVersionMessage</td>
+      <td>{the last commit message}</td>
+      <td>Merge pull request 123 from new_branch into main</td>
+      <td>Merged PR 123: {pull request title}<br><strong>- It’s a way to determin this merge is from which PR</strong><br><strong>- We can also change the default message when merging the PR</strong>
+</td>
+      <td>{the last commit message}</td>
+    </tr>
+    <tr>
+      <td>Build.Reason</td>
+      <td>IndividualCI</td>
+      <td>PullRequest</td>
+      <td>IndividualCI</td>
+      <td>Manual</td>
+    </tr>
+    <tr>
+      <td>System.Pullrequest.SourceBranch</td>
+      <td>VAR_NOT_EXISTS</td>
+      <td>refs/heads/new_branch</td>
+      <td>VAR_NOT_EXISTS</td>
+      <td>VAR_NOT_EXISTS</td>
+    </tr>
+    <tr>
+      <td>System.Pullrequest.TargetBranch</td>
+      <td>VAR_NOT_EXISTS</td>
+      <td>refs/heads/main</td>
+      <td>VAR_NOT_EXISTS</td>
+      <td>VAR_NOT_EXISTS</td>
+    </tr>
+    <tr>
+      <td>System.Pullrequest.PullRequestId</td>
+      <td>VAR_NOT_EXISTS</td>
+      <td>123</td>
+      <td>VAR_NOT_EXISTS</td>
+      <td>VAR_NOT_EXISTS</td>
+    </tr>
+    <tr>
+      <td>System.PullRequest.SourceCommitId</td>
+      <td>VAR_NOT_EXISTS</td>
+      <td>the last commit number in pull request</td>
+      <td>VAR_NOT_EXISTS</td>
+      <td>VAR_NOT_EXISTS</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="variables-not-varying-upon-triggering-git-action">Variables not varying upon triggering Git action</h2>
+
+<h3 id="systemaccesstoken">System.AccessToken</h3>
+
+<p><a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#systemaccesstoken">System.AccessToken</a> is a <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#secret-variables">SecretVariable</a>, which is in fact a PAT token with limited 1 hour of lifetime by default, and is about to be expired <a href="https://github.com/Azure/azure-sdk-for-net/blob/4162f6fa2445b2127468b9cfd080f01c9da88eba/sdk/mgmtcommon/AppAuthentication/Azure.Services.AppAuthentication/AppAuthenticationResult.cs#L41-L45">5 minutes before the end of the lifetime</a>.</p>
+
+<ul>
+  <li>
+<strong>User name</strong>
+The access token is bound to a build service account, which name should be in this format: <code class="language-plaintext highlighter-rouge">{projectName} Build Service ({organizationName})</code>. So it’s required to set necessary permissions on this account. For example, to be able to publish a Python wheel package to Azure Artifacts, it needs the <code class="language-plaintext highlighter-rouge">AddPackage</code> permission, we can set the build service account as a contributor to the corresponding Artifacts feed’s permission tab to get this permission.</li>
+  <li>
+<strong>Basic auth</strong>
+If we need to use this PAT to create the base64 string, the user name for this PAT should be kept empty, which is in the format of <code class="language-plaintext highlighter-rouge">:$(System.AccessToken)</code>, to <a href="https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=preview-page#use-a-pat">convert it to base64</a>, use: <code class="language-plaintext highlighter-rouge">printf "%s"":$(System.AccessToken)" | base64</code>, or <code class="language-plaintext highlighter-rouge">echo -n ":$(System.AccessToken)" | base64</code> with <code class="language-plaintext highlighter-rouge">-n</code>. When using with curl, it should be something like <code class="language-plaintext highlighter-rouge">curl -u :$(System.AccessToken)</code>, the user name part is empty. or user an basic auth header like <code class="language-plaintext highlighter-rouge">{"Authorization": "Basic {:$(System.AccessToken) in base64 format}"}</code>.</li>
+  <li>
+<strong>OAtuh</strong>
+Besides the above basic auth (it’s secure as the password is a PAT with limited lifetime, not a real clear password), we can also use  OAuth, with header <code class="language-plaintext highlighter-rouge">{"Authorization": "Bearer $(System.AccessToken)"}</code>, it’s not enabled by defaut, we should enable the OAuth by checking the box <code class="language-plaintext highlighter-rouge">Allow scripts to access OAuth token</code> from <code class="language-plaintext highlighter-rouge">Realeses / Tasks / Agent job (Run on Agent)</code> or from <code class="language-plaintext highlighter-rouge">Pipelines / Tasks / Agent job (Run on Agent)</code>. And we need to create a task in advance in order to see the <code class="language-plaintext highlighter-rouge">Tasks</code> menu. If we don’t enbale the option, and use Bearer header directly, we will get an API resposne code <code class="language-plaintext highlighter-rouge">203</code>, with the reason <code class="language-plaintext highlighter-rouge">Non-Authoritative Information</code>.</li>
+  <li>See also <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/process/access-tokens?view=azure-devops&tabs=yaml"><strong>job access token</strong></a>.</li>
+</ul>
+
+<h3 id="agentos">Agent.OS</h3>
+
+<p><a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#agent-variables-devops-services">Agent.OS</a>: Just to check which OS running the pipeline.</p>
+
+<h2 id="variables-to-be-set-by-user">Variables to be set by user</h2>
+
+<h3 id="systemdebug">System.Debug</h3>
+
+<p>Add a new variable with the name <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#systemdebug">System.Debug</a> and value <code class="language-plaintext highlighter-rouge">true</code> for debugging.</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#azure" class="page__taxonomy-item p-category" rel="tag">azure</a><span class="sep">, </span>
+    
+      <a href="/tags/#cicd" class="page__taxonomy-item p-category" rel="tag">cicd</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2022-01-24">January 24, 2022</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Azure+pipeline+predefined+variables%20https%3A%2F%2Fwww.copdips.com%2F2022%2F01%2Fazure-pipeline-predefined-variables.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.copdips.com%2F2022%2F01%2Fazure-pipeline-predefined-variables.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.copdips.com%2F2022%2F01%2Fazure-pipeline-predefined-variables.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+
+  <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.copdips.com%2F2022%2F01%2Fazure-pipeline-predefined-variables.html&title=Azure%20pipeline%20predefined%20variables" class="btn btn--reddit" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Reddit"><i class="fab fa-fw fa-reddit" aria-hidden="true"></i><span> Reddit</span></a>
+</section>
+
+
+      <script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+      <div id="qrcode"></div>
+      <script type="text/javascript">
+        var qrcode = new QRCode('qrcode', {width: 100, height: 100, text: location.href});
+      </script>
+
+      
+  <nav class="pagination">
+    
+      <a href="/2021/09/python-asyncio.html" class="pagination--pager" title="Python Asyncio Study notes
+">Previous</a>
+    
+    
+      <a href="/2022/02/azure-pipeline-reuse-variables-in-template-from-another-repository.html" class="pagination--pager" title="Azure pipeline reuse variables in template from another repository
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+      <h4 class="page__comments-title">Leave a comment</h4>
+      <section id="disqus_thread"></section>
+    
+</div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-deploy-static-files-to-azure-web-app.html" rel="permalink">Github actions - deploy static files to azure web app
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/Some-nice-CICD-bash-common-scripts.html" rel="permalink">Some nice cicd bash common scripts
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          less than 1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-bash-shell-pipefail.html" rel="permalink">Github Actions - Bash shell -e -o pipefail
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-08T00:00:00+00:00">November 8, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/10/hashing-files.html" rel="permalink">Hashing files
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-10-21T00:00:00+00:00">October 21, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap">
+<form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term...">
+  </form>
+  <div id="results" class="results"></div>
+</div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="mailto:xiang.zhu@outlook.com" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email</a></li>
+        
+      
+        
+          <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+          <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://uptimerobot.com/dashboard#785564645" rel="nofollow noopener noreferrer"><i class="fas fa-clock" aria-hidden="true"></i> Uptime</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2023 Xiang ZHU. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp;
+<a href="https://mmistakes.github.io/minimal-mistakes/about/" rel="nofollow">Minimal Mistakes</a>
+.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'G-L9KPHRQNQN']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "https://www.copdips.com/2022/01/azure-pipeline-predefined-variables.html";  /* Replace PAGE_URL with your page's canonical URL variable */
+      this.page.identifier = "/2022/01/azure-pipeline-predefined-variables"; /* Replace PAGE_IDENTIFIER with your page's unique identifier variable */
+    };
+    (function() { /* DON'T EDIT BELOW THIS LINE */
+      var d = document, s = d.createElement('script');
+      s.src = 'https://copdips.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+
+  
+
+
+
+
+
+  </body>
+</html>

@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+--><html lang="en" class="no-js">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Trying Python pipreqs and pip-tools - A code to remember</title>
+<meta name="description" content="Some simple demos to test pipreqs and pip-tools">
+
+
+  <meta name="author" content="Xiang ZHU">
+  
+  <meta property="article:author" content="Xiang ZHU">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="A code to remember">
+<meta property="og:title" content="Trying Python pipreqs and pip-tools">
+<meta property="og:url" content="https://www.copdips.com/2021/03/trying-python-pipreqs-and-pip-tools.html">
+
+
+  <meta property="og:description" content="Some simple demos to test pipreqs and pip-tools">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2021-03-06T00:00:00+00:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="https://www.copdips.com/2021/03/trying-python-pipreqs-and-pip-tools.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Xiang ZHU",
+      "url": "https://www.copdips.com/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="A code to remember Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          A code to remember
+          
+        </a>
+        <ul class="visible-links">
+<li class="masthead__menu-item">
+              <a href="/">Home</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/tags/">Tags</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/year-archive/">Year Archive</a>
+            </li>
+</ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<!-- back to top button -->
+<!-- https://github.com/mmistakes/minimal-mistakes/issues/1731#issuecomment-628997645 -->
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>addBackToTop({
+  diameter: 56,
+  backgroundColor: '#F16334',
+  textColor: '#fff'
+})</script>
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.copdips.com/">
+        <img src="/image/avatar/zhuxiang-smile.jpg" alt="Xiang ZHU" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.copdips.com/" itemprop="url">Xiang ZHU</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Python DevOps</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Paris</span>
+        </li>
+      
+
+      
+        
+          
+            <li><a href="https://www.copdips.com" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fas fa-fw fa-link" aria-hidden="true"></i><span class="label">Website</span></a></li>
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">LinkedIn</span></a></li>
+          
+        
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:xiang.zhu@outlook.com" rel="me" class="u-email">
+            <meta itemprop="email" content="xiang.zhu@outlook.com">
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+      <!-- 
+<script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+<div id="qrcode"></div>
+<script type="text/javascript">
+  var qrcode = new QRCode('qrcode', {width: 10, height: 10, text: location.href});
+</script>
+ -->
+    </ul>
+  </div>
+</div>
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Trying Python pipreqs and pip-tools">
+    <meta itemprop="description" content="Some simple demos to test pipreqs and pip-tools">
+    <meta itemprop="datePublished" content="2021-03-06T00:00:00+00:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.copdips.com/2021/03/trying-python-pipreqs-and-pip-tools.html" class="u-url" itemprop="url">Trying Python pipreqs and pip-tools
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2021-03-06T00:00:00+00:00">March 6, 2021</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title">
+<i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu">
+<li><a href="#pipreqs">pipreqs</a></li>
+<li>
+<a href="#pip-tools">pip-tools</a><ul>
+<li><a href="#pip-compile">pip-compile</a></li>
+<li><a href="#pip-sync">pip-sync</a></li>
+<li><a href="#pipdeptree-for-dependency-tree">pipdeptree for dependency tree</a></li>
+</ul>
+</li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <blockquote>
+  <p>Relative to <a href="https://github.com/pypa/pipenv">pipenv</a>, and <a href="https://github.com/python-poetry/poetry">poetry</a>, if you’re searching for some lightweight python package managers for a small project, I will introduce 2 handy tools for you: <a href="https://github.com/bndr/pipreqs">pipreqs</a> and <a href="https://github.com/jazzband/pip-tools">pip-tools</a>.</p>
+</blockquote>
+
+<h2 id="pipreqs">pipreqs</h2>
+
+<p><a href="https://github.com/bndr/pipreqs">pipreqs github</a></p>
+
+<p>Suppose you are onboarded to an existing project where only pip is used. The requirements.txt file is generated by <code class="language-plaintext highlighter-rouge">pip freeze</code>. and it contains more than 30 lines of requirements, in addition the team cannot remember the original basic requirements anymore. One of the simple ways to rebuild the basic requirements (the project dependency but not all the underlying dependencies) is to use <code class="language-plaintext highlighter-rouge">pipreqs</code>.</p>
+
+<p>How to use:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># First of all, just backup your current requirements.txt</span>
+<span class="nv">$ </span><span class="nb">mv </span>requirements.txt<span class="o">{</span>,.bck<span class="o">}</span>
+
+<span class="c"># at this moment, there's no more requirements.txt, then run pipreqs</span>
+<span class="nv">$ </span>pipreqs /home/project/location
+Successfully saved requirements file <span class="k">in</span> /home/project/location/requirements.txt
+</code></pre></div></div>
+
+<p>Let’s use the <code class="language-plaintext highlighter-rouge">--debug</code> option to see what it does in background</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># I'm running pipreqs from the root path of a Flask project</span>
+<span class="nv">$ </span>pipreqs <span class="nb">.</span> <span class="nt">--debug</span>
+DEBUG: Found packages: <span class="o">{</span><span class="s1">'json'</span>, <span class="s1">'flask_webtest'</span>, <span class="s1">'time'</span>, <span class="s1">'requests'</span>, <span class="s1">'webtest'</span>, <span class="s1">'sys'</span>, <span class="s1">'flask'</span>, <span class="s1">'os'</span>, <span class="s1">'pathlib'</span>, <span class="s1">'setuptools'</span>, <span class="s1">'unittest'</span>, <span class="s1">'werkzeug'</span><span class="o">}</span>
+DEBUG: Found imports: Flask, flask_webtest, Requests, WebTest, Werkzeug
+DEBUG: Getting packages information from Local/PyPI
+DEBUG: Starting new HTTPS connection <span class="o">(</span>1<span class="o">)</span>: pypi.python.org:443
+DEBUG: https://pypi.python.org:443 <span class="s2">"GET /pypi/flask_webtest/json HTTP/1.1"</span> 301 122
+DEBUG: Starting new HTTPS connection <span class="o">(</span>1<span class="o">)</span>: pypi.org:443
+DEBUG: https://pypi.org:443 <span class="s2">"GET /pypi/flask_webtest/json HTTP/1.1"</span> 301 221
+DEBUG: https://pypi.org:443 <span class="s2">"GET /pypi/Flask-WebTest/json HTTP/1.1"</span> 200 2155DEBUG: Starting new HTTPS connection <span class="o">(</span>1<span class="o">)</span>: pypi.python.org:443
+DEBUG: https://pypi.python.org:443 <span class="s2">"GET /pypi/WebTest/json HTTP/1.1"</span> 301 122DEBUG: Starting new HTTPS connection <span class="o">(</span>1<span class="o">)</span>: pypi.org:443
+DEBUG: https://pypi.org:443 <span class="s2">"GET /pypi/WebTest/json HTTP/1.1"</span> 200 12870
+
+<span class="nv">$ </span><span class="nb">cat</span> ./requirements.txt
+<span class="nv">Werkzeug</span><span class="o">==</span>1.0.1
+<span class="nv">Flask</span><span class="o">==</span>1.1.2
+<span class="nv">requests</span><span class="o">==</span>2.25.1
+<span class="nv">flask_webtest</span><span class="o">==</span>0.0.9
+<span class="nv">WebTest</span><span class="o">==</span>2.0.35
+</code></pre></div></div>
+
+<p>pipreqs has also some other useful <a href="https://github.com/bndr/pipreqs#usage">options</a>(–no-pin, –force).</p>
+
+<h2 id="pip-tools">pip-tools</h2>
+
+<p><a href="https://github.com/jazzband/pip-tools">pip-tools github</a></p>
+
+<p>Another missing feature of the native pip is that <code class="language-plaintext highlighter-rouge">pip freeze</code> doesn’t provide the packages dependencies. All the packages installed in the venv are listed in a single requirements.txt file, in the same top level with only the version info. Pipenv and Poetry resolve this issue, and introduce some lock system. But they’re not the native requirements.txt way. By using pip-tools, we can resolve this issue too and at the same time keep using requirements.txt. I found this tool occasionally by checking <a href="https://github.com/pallets/flask/blob/master/requirements/dev.txt">Flask project requirements</a>.</p>
+
+<p>The idea of pip-tools is to maintain a project basic dependency in a file called <code class="language-plaintext highlighter-rouge">requirements.in</code>, then use pip-tools to generate the <code class="language-plaintext highlighter-rouge">requirements.txt</code> file with all the dependencies including the underlying dependencies info inside but in the comments part.</p>
+
+<p>Please be aware that: <strong>pip-tools = pip-compile + pip-sync</strong></p>
+
+<h3 id="pip-compile">pip-compile</h3>
+
+<p>I’m running a small Flask project, the only package I need is just a single Flask. Let’s see an example of pip-compile by using <code class="language-plaintext highlighter-rouge">requirements.in</code> file without <code class="language-plaintext highlighter-rouge">setup.py</code>,</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">(</span>venv<span class="o">)</span><span class="nv">$ </span><span class="nb">cat </span>requirements.in
+Flask
+
+<span class="o">(</span>venv<span class="o">)</span><span class="nv">$ </span>pip-compile requirements.in
+
+<span class="o">(</span>venv<span class="o">)</span><span class="nv">$ </span><span class="nb">cat </span>requirements.txt
+<span class="c">#</span>
+<span class="c"># This file is autogenerated by pip-compile</span>
+<span class="c"># To update, run:</span>
+<span class="c">#</span>
+<span class="c">#    pip-compile requirements.in</span>
+<span class="c">#</span>
+<span class="nv">click</span><span class="o">==</span>7.1.2
+    <span class="c"># via flask</span>
+<span class="nv">flask</span><span class="o">==</span>1.1.2
+    <span class="c"># via -r r.in</span>
+<span class="nv">itsdangerous</span><span class="o">==</span>1.1.0
+    <span class="c"># via flask</span>
+<span class="nv">jinja2</span><span class="o">==</span>2.11.3
+    <span class="c"># via flask</span>
+<span class="nv">markupsafe</span><span class="o">==</span>1.1.1
+    <span class="c"># via jinja2</span>
+<span class="nv">werkzeug</span><span class="o">==</span>1.0.1
+    <span class="c"># via flask</span>
+</code></pre></div></div>
+
+<p>The Solution for with <code class="language-plaintext highlighter-rouge">setup.py</code> is <a href="https://github.com/jazzband/pip-tools#requirements-from-setuppy">here</a>.</p>
+
+<h3 id="pip-sync">pip-sync</h3>
+
+<p>Let’s see an example of pip-sync:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Upgrade Werkzeug to a rc version that is newer that the once listed by requirements.txt</span>
+<span class="o">(</span>venv<span class="o">)</span><span class="nv">$ </span>pip <span class="nb">install </span><span class="nv">Werkzeug</span><span class="o">==</span>2.0.0rc2
+Collecting <span class="nv">Werkzeug</span><span class="o">==</span>2.0.0rc2
+  Downloading Werkzeug-2.0.0rc2-py3-none-any.whl <span class="o">(</span>284 kB<span class="o">)</span>
+     |████████████████████████████████| 284 kB 3.3 MB/s
+Installing collected packages: werkzeug
+  Attempting uninstall: werkzeug
+    Found existing installation: Werkzeug 1.0.1
+    Uninstalling Werkzeug-1.0.1:
+      Successfully uninstalled Werkzeug-1.0.1
+Successfully installed werkzeug-2.0.0rc2
+
+<span class="c"># Use pip-sync to downgrade Werkzeug in order to make the venv to have exactly the same version of dependencies listed in requirements.txt</span>
+<span class="o">(</span>venv<span class="o">)</span><span class="nv">$ </span>pip-sync
+Collecting <span class="nv">Werkzeug</span><span class="o">==</span>1.0.1
+  Using cached Werkzeug-1.0.1-py2.py3-none-any.whl <span class="o">(</span>298 kB<span class="o">)</span>
+Installing collected packages: Werkzeug
+  Attempting uninstall: Werkzeug
+    Found existing installation: Werkzeug 2.0.0rc2
+    Uninstalling Werkzeug-2.0.0rc2:
+      Successfully uninstalled Werkzeug-2.0.0rc2
+Successfully installed Werkzeug-1.0.1
+</code></pre></div></div>
+
+<h3 id="pipdeptree-for-dependency-tree">pipdeptree for dependency tree</h3>
+
+<p>The pip-tools’ github page introduces also a dependency tree generation tool: <a href="https://github.com/jazzband/pip-tools#other-useful-tools">pipdeptree</a> which is also very nice:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">(</span>venv<span class="o">)</span><span class="nv">$ </span>pipdeptree
+<span class="nv">Flask</span><span class="o">==</span>1.0
+  - click <span class="o">[</span>required: <span class="o">&gt;=</span>5.1, installed: 7.1.2]
+  - itsdangerous <span class="o">[</span>required: <span class="o">&gt;=</span>0.24, installed: 1.1.0]
+  - Jinja2 <span class="o">[</span>required: <span class="o">&gt;=</span>2.10, installed: 2.11.3]
+    - MarkupSafe <span class="o">[</span>required: <span class="o">&gt;=</span>0.23, installed: 1.1.1]
+  - Werkzeug <span class="o">[</span>required: <span class="o">&gt;=</span>0.14, installed: 1.0.1]
+pip-tools<span class="o">==</span>5.5.0
+  - click <span class="o">[</span>required: <span class="o">&gt;=</span>7, installed: 7.1.2]
+  - pip <span class="o">[</span>required: <span class="o">&gt;=</span>20.1, installed: 20.2.3]
+<span class="nv">pipdeptree</span><span class="o">==</span>2.0.0
+  - pip <span class="o">[</span>required: <span class="o">&gt;=</span>6.0.0, installed: 20.2.3]
+<span class="nv">setuptools</span><span class="o">==</span>49.2.1
+</code></pre></div></div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#pip" class="page__taxonomy-item p-category" rel="tag">pip</a><span class="sep">, </span>
+    
+      <a href="/tags/#python" class="page__taxonomy-item p-category" rel="tag">python</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2021-03-06T00:00:00+00:00">March 6, 2021</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Trying+Python+pipreqs+and+pip-tools%20https%3A%2F%2Fwww.copdips.com%2F2021%2F03%2Ftrying-python-pipreqs-and-pip-tools.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.copdips.com%2F2021%2F03%2Ftrying-python-pipreqs-and-pip-tools.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.copdips.com%2F2021%2F03%2Ftrying-python-pipreqs-and-pip-tools.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+
+  <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.copdips.com%2F2021%2F03%2Ftrying-python-pipreqs-and-pip-tools.html&title=Trying%20Python%20pipreqs%20and%20pip-tools" class="btn btn--reddit" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Reddit"><i class="fab fa-fw fa-reddit" aria-hidden="true"></i><span> Reddit</span></a>
+</section>
+
+
+      <script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+      <div id="qrcode"></div>
+      <script type="text/javascript">
+        var qrcode = new QRCode('qrcode', {width: 100, height: 100, text: location.href});
+      </script>
+
+      
+  <nav class="pagination">
+    
+      <a href="/2021/01/python-requests-with-retry.html" class="pagination--pager" title="Python Requests With Retry
+">Previous</a>
+    
+    
+      <a href="/2021/06/python-unittest-cheet-sheet.html" class="pagination--pager" title="Python Unittest Cheet Sheet
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+      <h4 class="page__comments-title">Leave a comment</h4>
+      <section id="disqus_thread"></section>
+    
+</div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-deploy-static-files-to-azure-web-app.html" rel="permalink">Github actions - deploy static files to azure web app
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/Some-nice-CICD-bash-common-scripts.html" rel="permalink">Some nice cicd bash common scripts
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          less than 1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-bash-shell-pipefail.html" rel="permalink">Github Actions - Bash shell -e -o pipefail
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-08T00:00:00+00:00">November 8, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/10/hashing-files.html" rel="permalink">Hashing files
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-10-21T00:00:00+00:00">October 21, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap">
+<form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term...">
+  </form>
+  <div id="results" class="results"></div>
+</div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="mailto:xiang.zhu@outlook.com" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email</a></li>
+        
+      
+        
+          <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+          <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://uptimerobot.com/dashboard#785564645" rel="nofollow noopener noreferrer"><i class="fas fa-clock" aria-hidden="true"></i> Uptime</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2023 Xiang ZHU. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp;
+<a href="https://mmistakes.github.io/minimal-mistakes/about/" rel="nofollow">Minimal Mistakes</a>
+.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'G-L9KPHRQNQN']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "https://www.copdips.com/2021/03/trying-python-pipreqs-and-pip-tools.html";  /* Replace PAGE_URL with your page's canonical URL variable */
+      this.page.identifier = "/2021/03/trying-python-pipreqs-and-pip-tools"; /* Replace PAGE_IDENTIFIER with your page's unique identifier variable */
+    };
+    (function() { /* DON'T EDIT BELOW THIS LINE */
+      var d = document, s = d.createElement('script');
+      s.src = 'https://copdips.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+
+  
+
+
+
+
+
+  </body>
+</html>

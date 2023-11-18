@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+--><html lang="en" class="no-js">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Install Python on Windows with Powershell without administrator privileges - A code to remember</title>
+<meta name="description" content="To fast deploy Python on Windows OS and without administrator privileges, we can use Powershell Install-Package to archive it.">
+
+
+  <meta name="author" content="Xiang ZHU">
+  
+  <meta property="article:author" content="Xiang ZHU">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="A code to remember">
+<meta property="og:title" content="Install Python on Windows with Powershell without administrator privileges">
+<meta property="og:url" content="https://www.copdips.com/2018/06/install-python-on-windows-with-powershell-without-administrator-privileges.html">
+
+
+  <meta property="og:description" content="To fast deploy Python on Windows OS and without administrator privileges, we can use Powershell Install-Package to archive it.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2018-06-26T00:00:00+00:00">
+
+
+
+  <meta property="article:modified_time" content="2019-12-30T17:31:08+00:00">
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="https://www.copdips.com/2018/06/install-python-on-windows-with-powershell-without-administrator-privileges.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Xiang ZHU",
+      "url": "https://www.copdips.com/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="A code to remember Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          A code to remember
+          
+        </a>
+        <ul class="visible-links">
+<li class="masthead__menu-item">
+              <a href="/">Home</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/tags/">Tags</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/year-archive/">Year Archive</a>
+            </li>
+</ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<!-- back to top button -->
+<!-- https://github.com/mmistakes/minimal-mistakes/issues/1731#issuecomment-628997645 -->
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>addBackToTop({
+  diameter: 56,
+  backgroundColor: '#F16334',
+  textColor: '#fff'
+})</script>
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.copdips.com/">
+        <img src="/image/avatar/zhuxiang-smile.jpg" alt="Xiang ZHU" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.copdips.com/" itemprop="url">Xiang ZHU</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Python DevOps</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Paris</span>
+        </li>
+      
+
+      
+        
+          
+            <li><a href="https://www.copdips.com" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fas fa-fw fa-link" aria-hidden="true"></i><span class="label">Website</span></a></li>
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">LinkedIn</span></a></li>
+          
+        
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:xiang.zhu@outlook.com" rel="me" class="u-email">
+            <meta itemprop="email" content="xiang.zhu@outlook.com">
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+      <!-- 
+<script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+<div id="qrcode"></div>
+<script type="text/javascript">
+  var qrcode = new QRCode('qrcode', {width: 10, height: 10, text: location.href});
+</script>
+ -->
+    </ul>
+  </div>
+</div>
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Install Python on Windows with Powershell without administrator privileges">
+    <meta itemprop="description" content="To fast deploy Python on Windows OS and without administrator privileges, we can use Powershell Install-Package to archive it.">
+    <meta itemprop="datePublished" content="2018-06-26T00:00:00+00:00">
+    <meta itemprop="dateModified" content="2019-12-30T17:31:08+00:00">
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.copdips.com/2018/06/install-python-on-windows-with-powershell-without-administrator-privileges.html" class="u-url" itemprop="url">Install Python on Windows with Powershell without administrator privileges
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2018-06-26T00:00:00+00:00">June 26, 2018</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          4 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title">
+<i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu">
+<li><a href="#update-2019-12-30-installing-python-by-scoop">Update 2019-12-30 Installing Python by Scoop</a></li>
+<li><a href="#finding-python-packages">Finding Python packages</a></li>
+<li><a href="#installing-python">Installing Python</a></li>
+<li><a href="#adding-python-to-user-path">Adding Python to user path</a></li>
+<li><a href="#reinstalling-pip">Reinstalling pip</a></li>
+<li><a href="#configuring-pip-for-pypi">Configuring pip for PyPI</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <blockquote>
+  <p>As a Windows DevOps, I often use Powershell and Python, Powershell is installed by Windows out of box, but this is not for Python. And for my working environment, I don’t have the administrator privileges on some servers. I will show you in this post how to rapidly deploy Python on Windows as a standard user by using Powershell with Nuget.</p>
+</blockquote>
+
+<h2 id="update-2019-12-30-installing-python-by-scoop">Update 2019-12-30 Installing Python by Scoop</h2>
+
+<p>Installing Python on Windows by <a href="https://github.com/lukesampson/scoop">Scoop</a> is the simplest way so far if you have Internet access.</p>
+
+<p>To switch between different Python versions, please check this <a href="https://github.com/lukesampson/scoop/wiki/Switching-Ruby-and-Python-Versions">doc</a>.</p>
+
+<h2 id="finding-python-packages">Finding Python packages</h2>
+
+<p>If you cannot use Find-Package to search pacakges in Nuget repository, please check my post on <a href="https://copdips.com/2018/05/setting-up-powershell-gallery-and-nuget-gallery-for-powershell.html#set-up-nuget-for-powershell">Setting Up Nuget for Powershell</a>.</p>
+
+<p>We will install <code class="language-plaintext highlighter-rouge">python</code> with version 3.6.5 and <code class="language-plaintext highlighter-rouge">python2</code> with version 2.7.15.</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">&gt;</span><span class="w"> </span><span class="n">Find-Package</span><span class="w"> </span><span class="nx">python</span><span class="o">*</span><span class="w">
+</span><span class="n">Name</span><span class="w">                           </span><span class="nx">Version</span><span class="w">          </span><span class="nx">Source</span><span class="w">           </span><span class="nx">Summary</span><span class="w">
+</span><span class="o">----</span><span class="w">                           </span><span class="o">-------</span><span class="w">          </span><span class="o">------</span><span class="w">           </span><span class="o">-------</span><span class="w">
+</span><span class="n">python</span><span class="w">                         </span><span class="nx">3.6.5</span><span class="w">            </span><span class="nx">Nuget</span><span class="w">            </span><span class="nx">Installs</span><span class="w"> </span><span class="nx">64-bit</span><span class="w"> </span><span class="nx">Python</span><span class="w"> </span><span class="nx">for</span><span class="w"> </span><span class="nx">use</span><span class="w"> </span><span class="nx">in</span><span class="w"> </span><span class="nx">build</span><span class="w"> </span><span class="nx">scenarios.</span><span class="w">
+</span><span class="n">python-embed</span><span class="w">                   </span><span class="nx">3.6.1.1</span><span class="w">          </span><span class="nx">Nuget</span><span class="w">            </span><span class="nx">Installs</span><span class="w"> </span><span class="nx">64-bit</span><span class="w"> </span><span class="nx">Python</span><span class="w"> </span><span class="nx">for</span><span class="w"> </span><span class="nx">use</span><span class="w"> </span><span class="nx">in</span><span class="w"> </span><span class="nx">build</span><span class="w"> </span><span class="nx">scenarios</span><span class="w"> </span><span class="nx">a...</span><span class="w">
+</span><span class="n">python2x86</span><span class="w">                     </span><span class="nx">2.7.15</span><span class="w">           </span><span class="nx">Nuget</span><span class="w">            </span><span class="nx">Installs</span><span class="w"> </span><span class="nx">32-bit</span><span class="w"> </span><span class="nx">Python</span><span class="w"> </span><span class="nx">2.7</span><span class="w"> </span><span class="nx">for</span><span class="w"> </span><span class="nx">use</span><span class="w"> </span><span class="nx">in</span><span class="w"> </span><span class="nx">build</span><span class="w"> </span><span class="nx">scenarios.</span><span class="w">
+</span><span class="n">python2</span><span class="w">                        </span><span class="nx">2.7.15</span><span class="w">           </span><span class="nx">Nuget</span><span class="w">            </span><span class="nx">Installs</span><span class="w"> </span><span class="nx">64-bit</span><span class="w"> </span><span class="nx">Python</span><span class="w"> </span><span class="nx">2.7</span><span class="w"> </span><span class="nx">for</span><span class="w"> </span><span class="nx">use</span><span class="w"> </span><span class="nx">in</span><span class="w"> </span><span class="nx">build</span><span class="w"> </span><span class="nx">scenarios.</span><span class="w">
+</span><span class="n">Python35</span><span class="w">                       </span><span class="nx">3.5.1.1</span><span class="w">          </span><span class="nx">Nuget</span><span class="w">            </span><span class="nx">Python</span><span class="w"> </span><span class="nx">3.5</span><span class="w"> </span><span class="nx">API</span><span class="w">
+</span><span class="n">Python36</span><span class="w">                       </span><span class="nx">3.6.0</span><span class="w">            </span><span class="nx">Nuget</span><span class="w">            </span><span class="nx">Python</span><span class="w"> </span><span class="nx">3.6</span><span class="w"> </span><span class="nx">API</span><span class="w">
+</span><span class="n">pythonAndroid-2.7-x86_64-22...</span><span class="w"> </span><span class="nx">1.0.0.7</span><span class="w">          </span><span class="nx">Nuget</span><span class="w">            </span><span class="nx">Python</span><span class="w"> </span><span class="nx">2.7</span><span class="w"> </span><span class="nx">android</span><span class="w"> </span><span class="nx">api</span><span class="w"> </span><span class="nx">version:</span><span class="w"> </span><span class="nx">22.0.0</span><span class="w"> </span><span class="nx">architecture...</span><span class="w"> </span><span class="nx">pythonAndroid-2.7-armeabi-v...</span><span class="w"> </span><span class="nx">1.0.0.7</span><span class="w">          </span><span class="nx">Nuget</span><span class="w">            </span><span class="nx">Python</span><span class="w"> </span><span class="nx">2.7</span><span class="w"> </span><span class="nx">android</span><span class="w"> </span><span class="nx">api</span><span class="w"> </span><span class="nx">version:</span><span class="w"> </span><span class="nx">22.0.0</span><span class="w"> </span><span class="nx">architecture...</span><span class="w"> </span><span class="nx">pythonAndroid-2.7-x86_64-23...</span><span class="w"> </span><span class="nx">1.0.0.7</span><span class="w">          </span><span class="nx">Nuget</span><span class="w">            </span><span class="nx">Python</span><span class="w"> </span><span class="nx">2.7</span><span class="w"> </span><span class="nx">android</span><span class="w"> </span><span class="nx">api</span><span class="w"> </span><span class="nx">version:</span><span class="w"> </span><span class="nx">23.0.0</span><span class="w"> </span><span class="nx">architecture...</span><span class="w">
+</span><span class="n">Python27Dev</span><span class="w">                    </span><span class="nx">2.7.13</span><span class="w">           </span><span class="nx">Nuget</span><span class="w">            </span><span class="nx">Python</span><span class="w"> </span><span class="nx">2.7</span><span class="w"> </span><span class="nx">unofficial</span><span class="w"> </span><span class="nx">dev</span><span class="w"> </span><span class="nx">environment</span><span class="w"> </span><span class="nx">package</span><span class="w">
+</span><span class="n">pythonIOS-2.7-arm64-10.3</span><span class="w">       </span><span class="nx">1.0.0.7</span><span class="w">          </span><span class="nx">Nuget</span><span class="w">            </span><span class="nx">Python</span><span class="w"> </span><span class="nx">2.7</span><span class="w"> </span><span class="nx">iOS</span><span class="w"> </span><span class="nx">api</span><span class="w"> </span><span class="nx">version:</span><span class="w"> </span><span class="nx">10.3</span><span class="w"> </span><span class="nx">architecture:</span><span class="w"> </span><span class="nx">arm64</span><span class="w">
+</span><span class="n">PythonPlotter</span><span class="w">                  </span><span class="nx">0.2.15</span><span class="w">           </span><span class="nx">Nuget</span><span class="w">            </span><span class="nx">Package</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">allow</span><span class="w"> </span><span class="nx">use</span><span class="w"> </span><span class="nx">of</span><span class="w"> </span><span class="nx">matplotlib</span><span class="w"> </span><span class="nx">from</span><span class="w"> </span><span class="o">.</span><span class="nf">NET</span><span class="o">....</span><span class="w">
+</span><span class="n">Python.Runtime</span><span class="w">                 </span><span class="nx">2.7.9</span><span class="w">            </span><span class="nx">Nuget</span><span class="w">            </span><span class="nx">Python</span><span class="w"> </span><span class="nx">2.7.9</span><span class="w"> </span><span class="nx">as</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="nx">single</span><span class="p">,</span><span class="w"> </span><span class="nx">stand-alone</span><span class="w"> </span><span class="nx">executable</span><span class="w"> </span><span class="nx">wi...</span><span class="w">
+</span><span class="n">PythonLibs4CSharp</span><span class="w">              </span><span class="nx">1.0.0</span><span class="w">            </span><span class="nx">Nuget</span><span class="w">            </span><span class="nx">A</span><span class="w"> </span><span class="nx">collection</span><span class="w"> </span><span class="nx">of</span><span class="w"> </span><span class="nx">Iron</span><span class="w"> </span><span class="nx">Python</span><span class="w"> </span><span class="nx">compiled</span><span class="w"> </span><span class="nx">libraries</span><span class="w"> </span><span class="nx">with...</span><span class="w">
+</span><span class="n">pythonx86</span><span class="w">                      </span><span class="nx">3.6.5</span><span class="w">            </span><span class="nx">Nuget</span><span class="w">            </span><span class="nx">Installs</span><span class="w"> </span><span class="nx">32-bit</span><span class="w"> </span><span class="nx">Python</span><span class="w"> </span><span class="nx">for</span><span class="w"> </span><span class="nx">use</span><span class="w"> </span><span class="nx">in</span><span class="w"> </span><span class="nx">build</span><span class="w"> </span><span class="nx">scenarios.</span><span class="w">
+</span><span class="n">pythonnet_py35_dotnet</span><span class="w">          </span><span class="nx">2.3.0</span><span class="w">            </span><span class="nx">Nuget</span><span class="w">            </span><span class="nx">Python</span><span class="w"> </span><span class="nx">3.5</span><span class="w"> </span><span class="nx">and</span><span class="w"> </span><span class="o">.</span><span class="nf">NET</span><span class="w"> </span><span class="nx">Framework</span><span class="w">
+</span><span class="n">pythonnet_py27_dotnet</span><span class="w">          </span><span class="nx">2.3.0</span><span class="w">            </span><span class="nx">Nuget</span><span class="w">            </span><span class="nx">Python</span><span class="w"> </span><span class="nx">2.7</span><span class="w"> </span><span class="nx">and</span><span class="w"> </span><span class="o">.</span><span class="nf">NET</span><span class="w"> </span><span class="nx">Framework</span><span class="w">
+</span><span class="n">Python27</span><span class="w">                       </span><span class="nx">2.7.6</span><span class="w">            </span><span class="nx">Nuget</span><span class="w">            </span><span class="nx">Python</span><span class="w"> </span><span class="nx">2.7</span><span class="w"> </span><span class="nx">API</span><span class="w">
+</span><span class="n">PythonConsoleControl</span><span class="w">           </span><span class="nx">1.0.1</span><span class="w">            </span><span class="nx">Nuget</span><span class="w">            </span><span class="nx">PythonConsole</span><span class="w">
+</span><span class="n">Python3</span><span class="w">                        </span><span class="nx">3.6.3.2</span><span class="w">          </span><span class="nx">PSGallery</span><span class="w">        </span><span class="nx">Python3</span><span class="w"> </span><span class="nx">interpreter</span><span class="w">
+</span><span class="n">PythonSelect</span><span class="w">                   </span><span class="nx">1.0.0</span><span class="w">            </span><span class="nx">PSGallery</span><span class="w">        </span><span class="nx">Select</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="nx">Python</span><span class="w"> </span><span class="nx">distribution</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">use</span><span class="w"> </span><span class="nx">within</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="nx">PowerS...</span><span class="w">
+</span><span class="n">PythonConverter.dll</span><span class="w">            </span><span class="nx">1.0.0</span><span class="w">            </span><span class="nx">Nuget</span><span class="w">            </span><span class="nx">Package</span><span class="w"> </span><span class="nx">description</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="installing-python">Installing Python</h2>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># To install Python 3</span><span class="w">
+</span><span class="err">&gt;</span><span class="w"> </span><span class="n">Install-Package</span><span class="w"> </span><span class="nx">python</span><span class="w"> </span><span class="nt">-Scope</span><span class="w"> </span><span class="nx">CurrentUser</span><span class="w">
+
+</span><span class="c"># To install Python 2</span><span class="w">
+</span><span class="err">&gt;</span><span class="w"> </span><span class="n">Install-Package</span><span class="w"> </span><span class="nx">python2</span><span class="w"> </span><span class="nt">-Scope</span><span class="w"> </span><span class="nx">CurrentUser</span><span class="w">
+</span></code></pre></div></div>
+
+<p class="notice--warning"><strong>Note 2018-08-29:</strong>
+Current <code class="language-plaintext highlighter-rouge">Find-Package python* -AllVersion</code> gives the lastest python version is <code class="language-plaintext highlighter-rouge">v3.7.0</code>, but this version doesn’t work, the last worked Nuget python version is <code class="language-plaintext highlighter-rouge">v3.6.6</code></p>
+
+<h2 id="adding-python-to-user-path">Adding Python to user path</h2>
+
+<p>I will show you the way to add Python3 into the user PATH, it will be the same way for Python2.
+I use the user PATH because I’m not admin on the Windows server, I cannot modify the system PATH.</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Get python3 package info path</span><span class="w">
+</span><span class="err">&gt;</span><span class="w"> </span><span class="n">Get-Package</span><span class="w"> </span><span class="nx">python</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">source</span><span class="w">
+</span><span class="nx">C:\Users\xiang\AppData\Local\</span><span class="w">
+
+</span><span class="c"># For Nuget packages, the executable is always under the tools folder, and the tools folder is at the same level as .nupkg file.</span><span class="w">
+</span><span class="err">&gt;</span><span class="w"> </span><span class="n">ls</span><span class="w"> </span><span class="nx">C:\Users\xiang\AppData\Local\PackageManagement\NuGet\Packages\python.3.6.5\tools\</span><span class="w">
+
+    </span><span class="n">Directory:</span><span class="w"> </span><span class="nx">C:\Users\xiang\AppData\Local\PackageManagement\NuGet\Packages\python.3.6.5\tools</span><span class="w">
+
+</span><span class="n">Mode</span><span class="w">                </span><span class="nx">LastWriteTime</span><span class="w">         </span><span class="nx">Length</span><span class="w"> </span><span class="nx">Name</span><span class="w">
+</span><span class="o">----</span><span class="w">                </span><span class="o">-------------</span><span class="w">         </span><span class="o">------</span><span class="w"> </span><span class="o">----</span><span class="w">
+</span><span class="n">d-----</span><span class="w">       </span><span class="nx">2018-06-26</span><span class="w">     </span><span class="nx">00:15</span><span class="w">                </span><span class="nx">DLLs</span><span class="w">
+</span><span class="n">d-----</span><span class="w">       </span><span class="nx">2018-06-26</span><span class="w">     </span><span class="nx">00:15</span><span class="w">                </span><span class="nx">include</span><span class="w">
+</span><span class="n">d-----</span><span class="w">       </span><span class="nx">2018-06-26</span><span class="w">     </span><span class="nx">00:16</span><span class="w">                </span><span class="nx">Lib</span><span class="w">
+</span><span class="n">d-----</span><span class="w">       </span><span class="nx">2018-06-26</span><span class="w">     </span><span class="nx">00:15</span><span class="w">                </span><span class="nx">libs</span><span class="w">
+</span><span class="n">d-----</span><span class="w">       </span><span class="nx">2018-06-26</span><span class="w">     </span><span class="nx">00:49</span><span class="w">                </span><span class="nx">Scripts</span><span class="w">
+</span><span class="n">d-----</span><span class="w">       </span><span class="nx">2018-06-26</span><span class="w">     </span><span class="nx">00:15</span><span class="w">                </span><span class="nx">Tools</span><span class="w">
+</span><span class="nt">-a</span><span class="o">----</span><span class="w">       </span><span class="mi">2018</span><span class="nt">-03-28</span><span class="w">     </span><span class="mi">17</span><span class="p">:</span><span class="mi">10</span><span class="w">         </span><span class="mi">100504</span><span class="w"> </span><span class="n">python.exe</span><span class="w">
+</span><span class="nt">-a</span><span class="o">----</span><span class="w">       </span><span class="nx">2018-03-28</span><span class="w">     </span><span class="nx">17:10</span><span class="w">          </span><span class="nx">58520</span><span class="w"> </span><span class="nx">python3.dll</span><span class="w">
+</span><span class="nt">-a</span><span class="o">----</span><span class="w">       </span><span class="mi">2018</span><span class="nt">-03-28</span><span class="w">     </span><span class="mi">17</span><span class="p">:</span><span class="mi">10</span><span class="w">        </span><span class="mi">3610776</span><span class="w"> </span><span class="n">python36.dll</span><span class="w">
+</span><span class="nt">-a</span><span class="o">----</span><span class="w">       </span><span class="nx">2018-03-28</span><span class="w">     </span><span class="nx">17:10</span><span class="w">          </span><span class="nx">98968</span><span class="w"> </span><span class="nx">pythonw.exe</span><span class="w">
+</span><span class="nt">-a</span><span class="o">----</span><span class="w">       </span><span class="mi">2018</span><span class="nt">-03-28</span><span class="w">     </span><span class="mi">17</span><span class="p">:</span><span class="mi">10</span><span class="w">          </span><span class="mi">88752</span><span class="w"> </span><span class="n">vcruntime140.dll</span><span class="w">
+
+</span><span class="c"># python needs to add 2 paths to the user PATH, one is the root folder containing python.exe, another is the Sripts folder.</span><span class="w">
+</span><span class="err">&gt;</span><span class="w"> </span><span class="nv">$pythonRootFolder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Join-Path</span><span class="w"> </span><span class="p">(</span><span class="n">Split-Path</span><span class="w"> </span><span class="p">(</span><span class="n">Get-Package</span><span class="w"> </span><span class="nx">python</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">source</span><span class="p">))</span><span class="w"> </span><span class="s2">"tools"</span><span class="w">
+</span><span class="err">&gt;</span><span class="w"> </span><span class="nv">$pythonScriptsFolder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Join-Path</span><span class="w"> </span><span class="nv">$pythonRootFolder</span><span class="w"> </span><span class="s2">"Scripts"</span><span class="w">
+</span><span class="err">&gt;</span><span class="w"> </span><span class="nv">$path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">System.Environment</span><span class="p">]::</span><span class="n">GetEnvironmentVariable</span><span class="p">(</span><span class="s1">'path'</span><span class="p">,</span><span class="w"> </span><span class="s1">'user'</span><span class="p">)</span><span class="w">
+</span><span class="err">&gt;</span><span class="w"> </span><span class="nv">$path</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="s2">";</span><span class="nv">$pythonRootFolder</span><span class="s2">"</span><span class="w">
+</span><span class="err">&gt;</span><span class="w"> </span><span class="nv">$path</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="s2">";</span><span class="nv">$pythonScriptsFolder</span><span class="s2">;"</span><span class="w">
+</span><span class="err">&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">System.Environment</span><span class="p">]::</span><span class="n">SetEnvironmentVariable</span><span class="p">(</span><span class="s1">'path'</span><span class="p">,</span><span class="w"> </span><span class="nv">$path</span><span class="p">,</span><span class="w"> </span><span class="s1">'user'</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="reinstalling-pip">Reinstalling pip</h2>
+
+<p>The default pip3.exe and pip2.exe have some strange behavior that just don’t work :</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">&gt;</span><span class="w"> </span><span class="n">pip3</span><span class="w">
+</span><span class="nx">Fatal</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="nx">in</span><span class="w"> </span><span class="nx">launcher:</span><span class="w"> </span><span class="nx">Unable</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">create</span><span class="w"> </span><span class="nx">process</span><span class="w"> </span><span class="nx">using</span><span class="w"> </span><span class="s1">'"'</span><span class="w">
+
+</span><span class="err">&gt;</span><span class="w"> </span><span class="n">pip2</span><span class="w">
+</span><span class="nx">Fatal</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="nx">in</span><span class="w"> </span><span class="nx">launcher:</span><span class="w"> </span><span class="nx">Unable</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">create</span><span class="w"> </span><span class="nx">process</span><span class="w"> </span><span class="nx">using</span><span class="w"> </span><span class="s1">'"'</span><span class="w">
+</span></code></pre></div></div>
+
+<p>You can bypass the issue by using <code class="language-plaintext highlighter-rouge">python -m pip</code>, but I like to use pip directly without <code class="language-plaintext highlighter-rouge">python -m</code>, the trick is just reinstalling the pip:</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">&gt;</span><span class="w"> </span><span class="n">python</span><span class="w"> </span><span class="nt">-m</span><span class="w"> </span><span class="nx">pip</span><span class="w"> </span><span class="nx">uninstall</span><span class="w"> </span><span class="nx">pip</span><span class="w"> </span><span class="nt">-y</span><span class="w">
+</span><span class="err">&gt;</span><span class="w"> </span><span class="n">python</span><span class="w"> </span><span class="nt">-m</span><span class="w"> </span><span class="nx">ensurepip</span><span class="w">
+</span></code></pre></div></div>
+<p>Normally <code class="language-plaintext highlighter-rouge">python -m ensurepip</code> will install pip v9, if you want to install pip v10, just upgrade the v9:</p>
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">&gt;</span><span class="w"> </span><span class="n">pip3</span><span class="w">  </span><span class="nt">--version</span><span class="w">
+</span><span class="n">pip</span><span class="w"> </span><span class="nx">9.0.3</span><span class="w"> </span><span class="nx">from</span><span class="w"> </span><span class="nx">c:\users\xiang\appdata\local\packagemanagement\nuget\packages\python.3.6.5\tools\lib\site-packages</span><span class="w"> </span><span class="p">(</span><span class="n">python</span><span class="w"> </span><span class="nx">3.6</span><span class="p">)</span><span class="w">
+
+</span><span class="err">&gt;</span><span class="w"> </span><span class="n">python</span><span class="w"> </span><span class="nt">-m</span><span class="w"> </span><span class="nx">pip</span><span class="w"> </span><span class="nx">install</span><span class="w"> </span><span class="nt">-U</span><span class="w"> </span><span class="nx">pip</span><span class="w">
+</span><span class="n">Collecting</span><span class="w"> </span><span class="nx">pip</span><span class="w">
+  </span><span class="kr">Using</span><span class="w"> </span><span class="n">cached</span><span class="w"> </span><span class="nx">https://files.pythonhosted.org/packages/0f/74/ecd13431bcc456ed390b44c8a6e917c1820365cbebcb6a8974d1cd045ab4/pip-10.0.1-py2.py3-none-any.whl</span><span class="w">
+</span><span class="n">Installing</span><span class="w"> </span><span class="nx">collected</span><span class="w"> </span><span class="nx">packages:</span><span class="w"> </span><span class="nx">pip</span><span class="w">
+  </span><span class="n">Found</span><span class="w"> </span><span class="nx">existing</span><span class="w"> </span><span class="nx">installation:</span><span class="w"> </span><span class="nx">pip</span><span class="w"> </span><span class="nx">9.0.3</span><span class="w">
+    </span><span class="n">Uninstalling</span><span class="w"> </span><span class="nx">pip-9.0.3:</span><span class="w">
+      </span><span class="n">Successfully</span><span class="w"> </span><span class="nx">uninstalled</span><span class="w"> </span><span class="nx">pip-9.0.3</span><span class="w">
+</span><span class="n">Successfully</span><span class="w"> </span><span class="nx">installed</span><span class="w"> </span><span class="nx">pip-10.0.1</span><span class="w">
+
+</span><span class="err">&gt;</span><span class="w"> </span><span class="n">pip3</span><span class="w"> </span><span class="nt">--version</span><span class="w">
+</span><span class="n">pip</span><span class="w"> </span><span class="nx">10.0.1</span><span class="w"> </span><span class="nx">from</span><span class="w"> </span><span class="nx">c:\users\xiang\appdata\local\packagemanagement\nuget\packages\python.3.6.5\tools\lib\site-packages\pip</span><span class="w"> </span><span class="p">(</span><span class="n">python</span><span class="w"> </span><span class="nx">3.6</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>And we can find that when installing pip v10, the pip.exe is installed too, while in pip v9, we only have pip3.exe.</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">&gt;</span><span class="w"> </span><span class="n">ls</span><span class="w"> </span><span class="nx">C:\Users\xiang\AppData\Local\PackageManagement\NuGet\Packages\python.3.6.5\tools\Scripts\</span><span class="w">
+
+    </span><span class="n">Directory:</span><span class="w"> </span><span class="nx">C:\Users\xiang\AppData\Local\PackageManagement\NuGet\Packages\python.3.6.5\tools\Scripts</span><span class="w">
+
+</span><span class="n">Mode</span><span class="w">                </span><span class="nx">LastWriteTime</span><span class="w">         </span><span class="nx">Length</span><span class="w"> </span><span class="nx">Name</span><span class="w">
+</span><span class="o">----</span><span class="w">                </span><span class="o">-------------</span><span class="w">         </span><span class="o">------</span><span class="w"> </span><span class="o">----</span><span class="w">
+</span><span class="nt">-a</span><span class="o">----</span><span class="w">       </span><span class="mi">2018</span><span class="nt">-03-28</span><span class="w">     </span><span class="mi">17</span><span class="p">:</span><span class="mi">10</span><span class="w">          </span><span class="mi">98187</span><span class="w"> </span><span class="n">easy_install-3.6.exe</span><span class="w">
+</span><span class="nt">-a</span><span class="o">----</span><span class="w">       </span><span class="nx">2018-06-26</span><span class="w">     </span><span class="nx">00:49</span><span class="w">         </span><span class="nx">102812</span><span class="w"> </span><span class="nx">pip.exe</span><span class="w">
+</span><span class="nt">-a</span><span class="o">----</span><span class="w">       </span><span class="mi">2018</span><span class="nt">-06-26</span><span class="w">     </span><span class="mi">00</span><span class="p">:</span><span class="mi">49</span><span class="w">         </span><span class="mi">102812</span><span class="w"> </span><span class="n">pip3.6.exe</span><span class="w">
+</span><span class="nt">-a</span><span class="o">----</span><span class="w">       </span><span class="nx">2018-06-26</span><span class="w">     </span><span class="nx">00:49</span><span class="w">         </span><span class="nx">102812</span><span class="w"> </span><span class="nx">pip3.exe</span><span class="w">
+</span><span class="nt">-a</span><span class="o">----</span><span class="w">       </span><span class="mi">2018</span><span class="nt">-06-26</span><span class="w">     </span><span class="mi">00</span><span class="p">:</span><span class="mi">29</span><span class="w">          </span><span class="mi">98224</span><span class="w"> </span><span class="n">ptipython.exe</span><span class="w">
+</span><span class="nt">-a</span><span class="o">----</span><span class="w">       </span><span class="nx">2018-06-26</span><span class="w">     </span><span class="nx">00:29</span><span class="w">          </span><span class="nx">98224</span><span class="w"> </span><span class="nx">ptipython3.exe</span><span class="w">
+</span><span class="nt">-a</span><span class="o">----</span><span class="w">       </span><span class="mi">2018</span><span class="nt">-06-26</span><span class="w">     </span><span class="mi">00</span><span class="p">:</span><span class="mi">29</span><span class="w">          </span><span class="mi">98223</span><span class="w"> </span><span class="n">ptpython.exe</span><span class="w">
+</span><span class="nt">-a</span><span class="o">----</span><span class="w">       </span><span class="nx">2018-06-26</span><span class="w">     </span><span class="nx">00:29</span><span class="w">          </span><span class="nx">98223</span><span class="w"> </span><span class="nx">ptpython3.exe</span><span class="w">
+</span><span class="nt">-a</span><span class="o">----</span><span class="w">       </span><span class="mi">2018</span><span class="nt">-06-26</span><span class="w">     </span><span class="mi">00</span><span class="p">:</span><span class="mi">29</span><span class="w">          </span><span class="mi">98207</span><span class="w"> </span><span class="n">pygmentize.exe</span><span class="w">
+</span></code></pre></div></div>
+
+<p class="notice--info"><strong>Update on 2018-07-27</strong>:
+The pip version has been jumped from v10 to <a href="https://pip.pypa.io/en/stable/news/#id1"><code class="language-plaintext highlighter-rouge">v18</code></a> directly, because PyPA switches the software versioning to <a href="https://calver.org/"><code class="language-plaintext highlighter-rouge">CalVer</code></a></p>
+
+<h2 id="configuring-pip-for-pypi">Configuring pip for PyPI</h2>
+
+<p>If you’re in enterprise environment, you may probably dont have access to the public Python packages repository https://pypi.org/, and in this case, your enterprise should have a local Artifactory which mirrors the public https://pypi.org/. So you need to add your enterprise Artifactory PyPI URL to you Python pip conf.</p>
+
+<p>You can find all the pip configuration details <a href="https://pip.pypa.io/en/stable/user_guide/#configuration">here</a>.</p>
+
+<p class="notice--info">For <strong>JFrog Artifactory</strong>:
+<a href="https://www.jfrog.com/confluence/display/RTF/PyPI+Repositories">https://www.jfrog.com/confluence/display/RTF/PyPI+Repositories</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#nuget" class="page__taxonomy-item p-category" rel="tag">nuget</a><span class="sep">, </span>
+    
+      <a href="/tags/#package" class="page__taxonomy-item p-category" rel="tag">package</a><span class="sep">, </span>
+    
+      <a href="/tags/#powershell" class="page__taxonomy-item p-category" rel="tag">powershell</a><span class="sep">, </span>
+    
+      <a href="/tags/#python" class="page__taxonomy-item p-category" rel="tag">python</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2019-12-30">December 30, 2019</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Install+Python+on+Windows+with+Powershell+without+administrator+privileges%20https%3A%2F%2Fwww.copdips.com%2F2018%2F06%2Finstall-python-on-windows-with-powershell-without-administrator-privileges.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.copdips.com%2F2018%2F06%2Finstall-python-on-windows-with-powershell-without-administrator-privileges.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.copdips.com%2F2018%2F06%2Finstall-python-on-windows-with-powershell-without-administrator-privileges.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+
+  <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.copdips.com%2F2018%2F06%2Finstall-python-on-windows-with-powershell-without-administrator-privileges.html&title=Install%20Python%20on%20Windows%20with%20Powershell%20without%20administrator%20privileges" class="btn btn--reddit" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Reddit"><i class="fab fa-fw fa-reddit" aria-hidden="true"></i><span> Reddit</span></a>
+</section>
+
+
+      <script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+      <div id="qrcode"></div>
+      <script type="text/javascript">
+        var qrcode = new QRCode('qrcode', {width: 100, height: 100, text: location.href});
+      </script>
+
+      
+  <nav class="pagination">
+    
+      <a href="/2018/06/git-untrack-submodule-from-git-status.html" class="pagination--pager" title="Git untrack submodule from git status
+">Previous</a>
+    
+    
+      <a href="/2018/07/use-pyvmomi-EventHistoryCollector-to-get-all-the-vcenter-events.html" class="pagination--pager" title="Use pyVmomi EventHistoryCollector to get all the vCenter events
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+      <h4 class="page__comments-title">Leave a comment</h4>
+      <section id="disqus_thread"></section>
+    
+</div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-deploy-static-files-to-azure-web-app.html" rel="permalink">Github actions - deploy static files to azure web app
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/Some-nice-CICD-bash-common-scripts.html" rel="permalink">Some nice cicd bash common scripts
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          less than 1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-bash-shell-pipefail.html" rel="permalink">Github Actions - Bash shell -e -o pipefail
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-08T00:00:00+00:00">November 8, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/10/hashing-files.html" rel="permalink">Hashing files
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-10-21T00:00:00+00:00">October 21, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap">
+<form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term...">
+  </form>
+  <div id="results" class="results"></div>
+</div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="mailto:xiang.zhu@outlook.com" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email</a></li>
+        
+      
+        
+          <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+          <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://uptimerobot.com/dashboard#785564645" rel="nofollow noopener noreferrer"><i class="fas fa-clock" aria-hidden="true"></i> Uptime</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2023 Xiang ZHU. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp;
+<a href="https://mmistakes.github.io/minimal-mistakes/about/" rel="nofollow">Minimal Mistakes</a>
+.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'G-L9KPHRQNQN']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "https://www.copdips.com/2018/06/install-python-on-windows-with-powershell-without-administrator-privileges.html";  /* Replace PAGE_URL with your page's canonical URL variable */
+      this.page.identifier = "/2018/06/install-python-on-windows-with-powershell-without-administrator-privileges"; /* Replace PAGE_IDENTIFIER with your page's unique identifier variable */
+    };
+    (function() { /* DON'T EDIT BELOW THIS LINE */
+      var d = document, s = d.createElement('script');
+      s.src = 'https://copdips.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+
+  
+
+
+
+
+
+  </body>
+</html>

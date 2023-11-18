@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+--><html lang="en" class="no-js">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Setting up Jekyll with Minimal Mistakes theme on Windows - A code to remember</title>
+<meta name="description" content="Preview Jekyll blog locally on Windows with the Minimal Mistakes theme.">
+
+
+  <meta name="author" content="Xiang ZHU">
+  
+  <meta property="article:author" content="Xiang ZHU">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="A code to remember">
+<meta property="og:title" content="Setting up Jekyll with Minimal Mistakes theme on Windows">
+<meta property="og:url" content="https://www.copdips.com/2018/05/setting-up-jekyll-with-minimal-mistakes-theme-on-windows.html">
+
+
+  <meta property="og:description" content="Preview Jekyll blog locally on Windows with the Minimal Mistakes theme.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2018-05-19T00:00:00+00:00">
+
+
+
+  <meta property="article:modified_time" content="2022-08-14T18:04:18+00:00">
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="https://www.copdips.com/2018/05/setting-up-jekyll-with-minimal-mistakes-theme-on-windows.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Xiang ZHU",
+      "url": "https://www.copdips.com/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="A code to remember Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          A code to remember
+          
+        </a>
+        <ul class="visible-links">
+<li class="masthead__menu-item">
+              <a href="/">Home</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/tags/">Tags</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/year-archive/">Year Archive</a>
+            </li>
+</ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<!-- back to top button -->
+<!-- https://github.com/mmistakes/minimal-mistakes/issues/1731#issuecomment-628997645 -->
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>addBackToTop({
+  diameter: 56,
+  backgroundColor: '#F16334',
+  textColor: '#fff'
+})</script>
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.copdips.com/">
+        <img src="/image/avatar/zhuxiang-smile.jpg" alt="Xiang ZHU" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.copdips.com/" itemprop="url">Xiang ZHU</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Python DevOps</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Paris</span>
+        </li>
+      
+
+      
+        
+          
+            <li><a href="https://www.copdips.com" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fas fa-fw fa-link" aria-hidden="true"></i><span class="label">Website</span></a></li>
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">LinkedIn</span></a></li>
+          
+        
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:xiang.zhu@outlook.com" rel="me" class="u-email">
+            <meta itemprop="email" content="xiang.zhu@outlook.com">
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+      <!-- 
+<script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+<div id="qrcode"></div>
+<script type="text/javascript">
+  var qrcode = new QRCode('qrcode', {width: 10, height: 10, text: location.href});
+</script>
+ -->
+    </ul>
+  </div>
+</div>
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Setting up Jekyll with Minimal Mistakes theme on Windows">
+    <meta itemprop="description" content="Preview Jekyll blog locally on Windows with the Minimal Mistakes theme.">
+    <meta itemprop="datePublished" content="2018-05-19T00:00:00+00:00">
+    <meta itemprop="dateModified" content="2022-08-14T18:04:18+00:00">
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.copdips.com/2018/05/setting-up-jekyll-with-minimal-mistakes-theme-on-windows.html" class="u-url" itemprop="url">Setting up Jekyll with Minimal Mistakes theme on Windows
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2018-05-19T00:00:00+00:00">May 19, 2018</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          7 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title">
+<i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu">
+<li><a href="#some-online-tutorials">Some online tutorials</a></li>
+<li><a href="#install-ruby-and-devkit-on-windows">Install Ruby and Devkit on Windows</a></li>
+<li><a href="#install-jekyll-ruby-package-and-its-dependencies">Install Jekyll Ruby package and its dependencies</a></li>
+<li><a href="#choose-a-theme">Choose a theme</a></li>
+<li>
+<a href="#customize-the-theme">Customize the theme</a><ul>
+<li><a href="#the-_configyml-file">The _config.yml file</a></li>
+<li><a href="#add-disqus-comment-system">Add Disqus comment system</a></li>
+</ul>
+</li>
+<li>
+<a href="#default-page-layout">Default page layout</a><ul>
+<li><a href="#add-update-date-in-each-post-under-the-post-title">Add update date in each post under the post title</a></li>
+<li><a href="#per-page-layout">Per page layout</a></li>
+<li><a href="#homepage">Homepage</a></li>
+<li><a href="#navigation">Navigation</a></li>
+<li><a href="#add-notice-primary-info-success-warning-danger">Add notice (Primary, Info, Success, Warning, Danger)</a></li>
+<li><a href="#larger-width">Larger width</a></li>
+</ul>
+</li>
+<li><a href="#write-a-post">Write a post</a></li>
+<li><a href="#write-a-draft">Write a draft</a></li>
+<li><a href="#define-the-post-url">Define the post url</a></li>
+<li><a href="#change-the-post-skin-look">Change the post skin look</a></li>
+<li><a href="#preview-the-blog-locally-on-windows">Preview the blog locally on Windows</a></li>
+<li><a href="#add-non-whitelisted-plugins-gems">Add non-whitelisted plugins (gems)</a></li>
+<li><a href="#using-mermaid-in-github-pages">Using mermaid in github pages</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <blockquote>
+  <p>Do you want to preview Jekyll blog locally on Windows before publishing it to Internet? Many online tutorials about setting up Jekyll on Windows are out of date, I will show you in this post the 2018 version and with the Minimal Mistakes theme.</p>
+</blockquote>
+
+<h2 id="some-online-tutorials">Some online tutorials</h2>
+
+<ul>
+  <li><a href="https://jekyllrb.com/docs/home/">https://jekyllrb.com/docs/home/</a></li>
+  <li><a href="https://help.github.com/articles/using-jekyll-as-a-static-site-generator-with-github-pages/">https://help.github.com/articles/using-jekyll-as-a-static-site-generator-with-github-pages/</a></li>
+  <li><a href="https://mmistakes.github.io/minimal-mistakes/docs/quick-start-guide/">https://mmistakes.github.io/minimal-mistakes/docs/quick-start-guide/</a></li>
+</ul>
+
+<h2 id="install-ruby-and-devkit-on-windows">Install Ruby and Devkit on Windows</h2>
+
+<p>Jekyll is writted in Ruby, to preview Jekyll blog content, we need to install Ruby and Ruby DevKit.</p>
+
+<blockquote>
+  <p>Which Development Kit?</p>
+
+  <p>rubyinstaller.org: Starting with Ruby 2.4.0 we use the MSYS2 toolchain as our development kit. When using the Ruby+Devkit installer version, it is a selectable component, so that no additional downloads/installs are required.</p>
+
+  <p>When using the Ruby without Devkit version, the MSYS2 Devkit can be installed separately by running ridk install. MSYS2 is required to build native C/C++ extensions for Ruby and is necessary for Ruby on Rails. Moreover it allows the download and usage of hundreds of Open Source libraries which Ruby gems can depend on.</p>
+</blockquote>
+
+<p>Download and install the <strong>Ruby+DevKit</strong> from the <strong>with Devkit</strong> part of the following downloads page:
+<a href="https://rubyinstaller.org/downloads/">https://rubyinstaller.org/downloads/</a></p>
+
+<h2 id="install-jekyll-ruby-package-and-its-dependencies">Install Jekyll Ruby package and its dependencies</h2>
+
+<p>Ruby uses <a href="https://rubygems.org/">gem</a> to install the Ruby packages.</p>
+
+<p>Change gem source if default <a href="https://rubygems.org/">https://rubygems.org/</a> banned in China:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gem</span> <span class="n">sources</span> <span class="o">--</span><span class="n">add</span> <span class="n">https</span><span class="ss">:/</span><span class="o">/</span><span class="n">ruby</span><span class="p">.</span><span class="nf">taobao</span><span class="p">.</span><span class="nf">org</span><span class="o">/</span> <span class="o">--</span><span class="n">remove</span> <span class="n">https</span><span class="ss">:/</span><span class="o">/</span><span class="n">rubygems</span><span class="p">.</span><span class="nf">org</span><span class="o">/</span>
+</code></pre></div></div>
+
+<p>To install the basic Jekyll environment, open a Powershell console:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="n">gem</span> <span class="n">install</span> <span class="n">bundler</span>
+<span class="o">&gt;</span> <span class="n">gem</span> <span class="n">install</span> <span class="n">jekyll</span>
+<span class="o">...</span>
+<span class="no">Done</span> <span class="n">installing</span> <span class="n">documentation</span> <span class="k">for</span> <span class="n">public_suffix</span><span class="p">,</span> <span class="n">addressable</span><span class="p">,</span> <span class="n">colorator</span><span class="p">,</span> <span class="n">http_parser</span><span class="p">.</span><span class="nf">rb</span><span class="p">,</span> <span class="n">eventmachine</span><span class="p">,</span> <span class="n">em</span><span class="o">-</span><span class="n">websocket</span><span class="p">,</span> <span class="n">concurrent</span><span class="o">-</span><span class="n">ruby</span><span class="p">,</span> <span class="n">i18n</span><span class="p">,</span> <span class="n">rb</span><span class="o">-</span><span class="n">fsevent</span><span class="p">,</span> <span class="n">ffi</span><span class="p">,</span> <span class="n">rb</span><span class="o">-</span><span class="n">inotify</span><span class="p">,</span> <span class="n">sass</span><span class="o">-</span><span class="n">listen</span><span class="p">,</span> <span class="n">sass</span><span class="p">,</span> <span class="n">jekyll</span><span class="o">-</span><span class="n">sass</span><span class="o">-</span><span class="n">converter</span><span class="p">,</span> <span class="n">ruby_dep</span><span class="p">,</span> <span class="n">listen</span><span class="p">,</span> <span class="n">jekyll</span><span class="o">-</span><span class="n">watch</span><span class="p">,</span> <span class="n">kramdown</span><span class="p">,</span> <span class="n">liquid</span><span class="p">,</span> <span class="n">mercenary</span><span class="p">,</span> <span class="n">forwardable</span><span class="o">-</span><span class="n">extended</span><span class="p">,</span> <span class="n">pathutil</span><span class="p">,</span> <span class="n">rouge</span><span class="p">,</span> <span class="n">safe_yaml</span><span class="p">,</span> <span class="n">jekyll</span> <span class="n">after</span> <span class="mi">55</span> <span class="n">seconds</span>
+<span class="mi">25</span> <span class="n">gems</span> <span class="n">installed</span>
+</code></pre></div></div>
+
+<h2 id="choose-a-theme">Choose a theme</h2>
+
+<p>Googling will give you many Jekyll theme, this blog is using the <a href="https://mmistakes.github.io/minimal-mistakes/about/"><strong>minimal-mistakes theme</strong></a>,</p>
+
+<p>By using the procedure provided by the <a href="https://mmistakes.github.io/minimal-mistakes/docs/quick-start-guide/">quick start guide</a> of the minimal mistakes theme, we can install all the Jekyll dependencies</p>
+
+<h2 id="customize-the-theme">Customize the theme</h2>
+
+<h3 id="the-_configyml-file">The _config.yml file</h3>
+
+<p>All the global configurations are set here, this is your starting point</p>
+
+<h3 id="add-disqus-comment-system">Add Disqus comment system</h3>
+
+<ol>
+  <li>Create an account on <a href="https://disqus.com/">https://disqus.com/</a>
+</li>
+  <li>Create a shortname on : <a href="https://disqus.com/admin/create/">https://disqus.com/admin/create/</a>
+</li>
+  <li>Edit file <code class="language-plaintext highlighter-rouge">_config.yml</code>
+</li>
+</ol>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">comments</span><span class="pi">:</span>
+  <span class="na">provider               </span><span class="pi">:</span> <span class="s2">"</span><span class="s">disqus"</span> <span class="c1"># false (default), "disqus", "discourse", "facebook", "google-plus", "staticman", "staticman_v2" "custom"</span>
+  <span class="na">disqus</span><span class="pi">:</span>
+    <span class="na">shortname            </span><span class="pi">:</span> <span class="s2">"</span><span class="s">the</span><span class="nv"> </span><span class="s">shortname</span><span class="nv"> </span><span class="s">created</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">step</span><span class="nv"> </span><span class="s">2"</span>
+</code></pre></div></div>
+
+<p>If you want to enable comment system by default on all the blog posts, set <code class="language-plaintext highlighter-rouge">comments</code> in defaults part of _config.yml to <code class="language-plaintext highlighter-rouge">true</code> :</p>
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Defaults</span>
+<span class="na">defaults</span><span class="pi">:</span>
+  <span class="c1"># _posts</span>
+  <span class="pi">-</span> <span class="na">scope</span><span class="pi">:</span>
+      <span class="na">path</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
+      <span class="na">type</span><span class="pi">:</span> <span class="s">posts</span>
+    <span class="na">values</span><span class="pi">:</span>
+      <span class="na">layout</span><span class="pi">:</span> <span class="s">single</span>
+      <span class="na">author_profile</span><span class="pi">:</span> <span class="kc">true</span>
+      <span class="na">read_time</span><span class="pi">:</span> <span class="kc">true</span>
+      <span class="na">comments</span><span class="pi">:</span> <span class="kc">true</span>
+      <span class="na">share</span><span class="pi">:</span> <span class="kc">true</span>
+      <span class="na">related</span><span class="pi">:</span> <span class="kc">true</span>
+</code></pre></div></div>
+
+<h2 id="default-page-layout">Default page layout</h2>
+
+<p>In _config.yml, I chose <code class="language-plaintext highlighter-rouge">single</code> as my post default layout style.</p>
+
+<p>The layout can be found at : <code class="language-plaintext highlighter-rouge">_layouts\single.html</code></p>
+
+<h3 id="add-update-date-in-each-post-under-the-post-title">Add update date in each post under the post title</h3>
+
+<p>Add <code class="language-plaintext highlighter-rouge">last_modified_at:</code> in the post headers.</p>
+
+<h3 id="per-page-layout">Per page layout</h3>
+
+<p>On the top of the post, you can add your <a href="https://jekyllrb.com/docs/frontmatter/">YAML Front Matter</a>:</p>
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
+<span class="na">layout</span><span class="pi">:</span> <span class="s">single</span>
+<span class="na">title</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Setting</span><span class="nv"> </span><span class="s">Up</span><span class="nv"> </span><span class="s">Powershell</span><span class="nv"> </span><span class="s">Gallery</span><span class="nv"> </span><span class="s">And</span><span class="nv"> </span><span class="s">Nuget</span><span class="nv"> </span><span class="s">Gallery"</span> <span class="c1"># title shown in home page</span>
+<span class="na">excerpt</span><span class="pi">:</span> <span class="s2">"</span><span class="s">As</span><span class="nv"> </span><span class="s">like</span><span class="nv"> </span><span class="s">[pypi](https://pypi.org/)</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">Python,</span><span class="nv"> </span><span class="s">[npm](https://www.npmjs.com/)</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">Node.js,</span><span class="nv"> </span><span class="s">we</span><span class="nv"> </span><span class="s">also</span><span class="nv"> </span><span class="s">have</span><span class="nv"> </span><span class="s">[Powershell</span><span class="nv"> </span><span class="s">Gallery](https://www.powershellgallery.com/)</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">Powershell</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">add</span><span class="nv"> </span><span class="s">some</span><span class="nv"> </span><span class="s">extra</span><span class="nv"> </span><span class="s">Powershell</span><span class="nv"> </span><span class="s">modules,</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">[Nuget</span><span class="nv"> </span><span class="s">Gallery](https://www.nuget.org/)</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">Powershell</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">add</span><span class="nv"> </span><span class="s">some</span><span class="nv"> </span><span class="s">extra</span><span class="nv"> </span><span class="s">executables."</span> <span class="c1"># excerpt shown in home page under title</span>
+<span class="na">permalink</span><span class="pi">:</span> <span class="c1"># global permalink is set in_config.yml</span>
+<span class="na">tags</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">nuget</span>
+  <span class="pi">-</span> <span class="s">powershell</span>
+  <span class="pi">-</span> <span class="s">powershell gallery</span>
+  <span class="pi">-</span> <span class="s">proxy</span>
+<span class="na">published</span><span class="pi">:</span> <span class="kc">true</span>
+<span class="na">comments</span><span class="pi">:</span> <span class="kc">true</span>
+<span class="na">author_profile</span><span class="pi">:</span> <span class="kc">true</span>
+<span class="c1"># header:</span>
+<span class="c1">#   teaserlogo:</span>
+<span class="c1">#   teaser: ''</span>
+<span class="c1">#   image: ''</span>
+<span class="c1">#   caption:</span>
+<span class="na">gallery</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">image_path</span><span class="pi">:</span> <span class="s1">'</span><span class="s">'</span>
+    <span class="na">url</span><span class="pi">:</span> <span class="s1">'</span><span class="s">'</span>
+    <span class="na">title</span><span class="pi">:</span> <span class="s1">'</span><span class="s">'</span>
+<span class="nn">---</span>
+</code></pre></div></div>
+
+<h3 id="homepage">Homepage</h3>
+
+<p>The homepage is defined by :  <code class="language-plaintext highlighter-rouge">_layouts\home.html</code>, and it uses <code class="language-plaintext highlighter-rouge">_includes\archive-single.html</code> as its default content</p>
+
+<h3 id="navigation">Navigation</h3>
+
+<p>To customize the navigation bar on top of the blog: <code class="language-plaintext highlighter-rouge">_data\navigation.yml</code>, for example, I added the <code class="language-plaintext highlighter-rouge">Home</code> menu :</p>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># main links</span>
+<span class="na">main</span><span class="pi">:</span>
+  <span class="c1"># - title: "Quick-Start Guide"</span>
+  <span class="c1">#   url: https://mmistakes.github.io/minimal-mistakes/docs/quick-start-guide/</span>
+  <span class="c1"># - title: "About"</span>
+  <span class="c1">#   url: https://mmistakes.github.io/minimal-mistakes/about/</span>
+  <span class="c1"># - title: "Sample Posts"</span>
+  <span class="c1">#   url: /year-archive/</span>
+  <span class="c1"># - title: "Sample Collections"</span>
+  <span class="c1">#   url: /collection-archive/</span>
+  <span class="c1"># - title: "Sitemap"</span>
+  <span class="c1">#   url: /sitemap/</span>
+  <span class="pi">-</span> <span class="na">title</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Home"</span>
+    <span class="na">url</span><span class="pi">:</span> <span class="s">/</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">Search</code> menu in the navigation bar is set by the <code class="language-plaintext highlighter-rouge">search</code> option in the global <code class="language-plaintext highlighter-rouge">_config.yml</code> file, the default value is false which disables the Search menu :</p>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">search                   </span><span class="pi">:</span> <span class="kc">true</span> <span class="c1"># true, false (default)</span>
+</code></pre></div></div>
+
+<h3 id="add-notice-primary-info-success-warning-danger">Add notice (Primary, Info, Success, Warning, Danger)</h3>
+
+<p>Append a new line under the text bloc, and insert the notice tag there :</p>
+<ul>
+  <li><a href="https://mmistakes.github.io/minimal-mistakes/docs/utility-classes/#notices">https://mmistakes.github.io/minimal-mistakes/docs/utility-classes/#notices</a></li>
+</ul>
+
+<p>Other external notice methods :</p>
+<ul>
+  <li><a href="https://idratherbewriting.com/documentation-theme-jekyll/mydoc_alerts.html">https://idratherbewriting.com/documentation-theme-jekyll/mydoc_alerts.html</a></li>
+  <li><a href="https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/#colorful-sections">https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/#colorful-sections</a></li>
+</ul>
+
+<h3 id="larger-width">Larger width</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">$x-large</code> size defined in the file <code class="language-plaintext highlighter-rouge">_Variables.scss</code> is set at <code class="language-plaintext highlighter-rouge">1280px</code>, which is good as per the maintainer’s idea of in favor of the <a href="https://github.com/mmistakes/minimal-mistakes/issues/2214#issuecomment-1087605993">readability</a>, but is still too narrow for me, I have large 34” screen, and I like the width https://docs.microsoft.com/, so just set <code class="language-plaintext highlighter-rouge">$x-large: 1520px !default;</code> to have similar size as Microsoft docs.</p>
+
+<h2 id="write-a-post">Write a post</h2>
+
+<p>All Jekyll posts should be written in <a href="https://en.wikipedia.org/wiki/Markdown">markdown .md</a> or HTML formats, and Jekyll uses Ruby’s <a href="https://kramdown.gettalong.org/">Kramdown</a> as its default markdown converter.</p>
+
+<blockquote>
+  <p>You can also use other formats for post files, but you should provide the corresponding convertor. If you want to host your Jekyll blog on the Github Pages, it is suggested to use Kramdown because Github Pages has its own white list of the Jekyll plugins, your convertor plugin might not be available on Github Pages, so your post won’t be displayed correctly as expected.</p>
+</blockquote>
+
+<p>All post files should be put into the <code class="language-plaintext highlighter-rouge">_posts</code> folder, Jekyll requires blog post files to be named according to the following format:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>YEAR-MONTH-DAY-title.MARKUP
+
+<span class="c"># examples:</span>
+2011-12-31-new-years-eve-is-awesome.md
+2012-09-12-how-to-write-a-blog.md
+</code></pre></div></div>
+
+<p>You don’t need to put all the files under the root of _posts folder, you can also use year and month as the sub folder name :</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">&gt;</span><span class="w"> </span><span class="n">tree</span><span class="w"> </span><span class="o">.</span><span class="nx">/_posts</span><span class="w"> </span><span class="nx">/f</span><span class="w">
+
+</span><span class="n">D:\XIANG\GIT\COPDIPS.GITHUB.IO\_POSTS</span><span class="w">
+</span><span class="err">└─</span><span class="nx">2018</span><span class="w">
+        </span><span class="mi">2018</span><span class="nt">-05-03-setting-up-github-pages-with-custom-domain-over-https</span><span class="o">.</span><span class="nf">md</span><span class="w">
+        </span><span class="mi">2018</span><span class="nt">-05-07-setting-up-powershell-gallery</span><span class="o">-and</span><span class="nt">-nuget-gallery-for-powershell</span><span class="o">.</span><span class="nf">md</span><span class="w">
+        </span><span class="mi">2018</span><span class="nt">-05-16-powershell-stop-parsing</span><span class="o">.</span><span class="nf">md</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="write-a-draft">Write a draft</h2>
+
+<p>Jekyll draft files should be saved into <code class="language-plaintext highlighter-rouge">_drafts</code> folder. The files in this folder won’t be displayed.</p>
+
+<h2 id="define-the-post-url">Define the post url</h2>
+
+<p>The default post URL is <code class="language-plaintext highlighter-rouge">https://yourdomain/post-name</code></p>
+
+<p>If you want to custom it, edit <code class="language-plaintext highlighter-rouge">permalink</code> in the <code class="language-plaintext highlighter-rouge">_config.xml</code> file, I’m using the following format :</p>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">permalink</span><span class="pi">:</span> <span class="s">/:year/:month/:title.html</span>
+</code></pre></div></div>
+
+<h2 id="change-the-post-skin-look">Change the post skin look</h2>
+
+<p>The Jekyll post is using the Minimal Mistake theme, so the post skin is defined by the <code class="language-plaintext highlighter-rouge">minimal_mistakes_skin</code> option in <code class="language-plaintext highlighter-rouge">_config.yml</code> file.</p>
+
+<p>All skin look related files can be found in <code class="language-plaintext highlighter-rouge">_sass</code> folder, for example :</p>
+
+<ul>
+  <li>_air.scss (This blog is using air skin)</li>
+  <li>_base.scss</li>
+  <li>_footer.scss</li>
+  <li>_sidebar.scss</li>
+  <li>etc.</li>
+</ul>
+
+<h2 id="preview-the-blog-locally-on-windows">Preview the blog locally on Windows</h2>
+
+<p>From Powershell console :</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">&gt;</span><span class="w"> </span><span class="n">bundle</span><span class="w"> </span><span class="nx">exec</span><span class="w"> </span><span class="nx">jekyll</span><span class="w"> </span><span class="nx">serve</span><span class="w"> </span><span class="nt">-w</span><span class="w">
+
+</span><span class="kr">Configuration</span><span class="w"> </span><span class="n">file:</span><span class="w"> </span><span class="nx">D:/xiang/git/copdips.github.io/_config.yml</span><span class="w">
+            </span><span class="n">Source:</span><span class="w"> </span><span class="nx">D:/xiang/git/copdips.github.io</span><span class="w">
+       </span><span class="n">Destination:</span><span class="w"> </span><span class="nx">D:/xiang/git/copdips.github.io/_site</span><span class="w">
+ </span><span class="n">Incremental</span><span class="w"> </span><span class="nx">build:</span><span class="w"> </span><span class="nx">disabled.</span><span class="w"> </span><span class="nx">Enable</span><span class="w"> </span><span class="nx">with</span><span class="w"> </span><span class="nt">--incremental</span><span class="w">
+      </span><span class="n">Generating...</span><span class="w">
+                    </span><span class="nx">done</span><span class="w"> </span><span class="nx">in</span><span class="w"> </span><span class="nx">6.534</span><span class="w"> </span><span class="nx">seconds.</span><span class="w">
+  </span><span class="n">Please</span><span class="w"> </span><span class="nx">add</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">following</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">your</span><span class="w"> </span><span class="nx">Gemfile</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">avoid</span><span class="w"> </span><span class="nx">polling</span><span class="w"> </span><span class="nx">for</span><span class="w"> </span><span class="nx">changes:</span><span class="w">
+    </span><span class="n">gem</span><span class="w"> </span><span class="s1">'wdm'</span><span class="p">,</span><span class="w"> </span><span class="s1">'&gt;= 0.1.0'</span><span class="w"> </span><span class="nx">if</span><span class="w"> </span><span class="nx">Gem.win_platform</span><span class="nf">?</span><span class="w">
+ </span><span class="nx">Auto-regeneration:</span><span class="w"> </span><span class="nx">enabled</span><span class="w"> </span><span class="nx">for</span><span class="w"> </span><span class="s1">'D:/xiang/git/copdips.github.io'</span><span class="w">
+    </span><span class="n">Server</span><span class="w"> </span><span class="nx">address:</span><span class="w"> </span><span class="nx">http://127.0.0.1:4000</span><span class="w">
+  </span><span class="n">Server</span><span class="w"> </span><span class="nx">running...</span><span class="w"> </span><span class="nx">press</span><span class="w"> </span><span class="nx">ctrl-c</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">stop.</span><span class="w">
+</span></code></pre></div></div>
+
+<p>The outputs tell that you can visit your site from : <a href="http://127.0.0.1:4000">http://127.0.0.1:4000</a></p>
+
+<p>Except you modify the <code class="language-plaintext highlighter-rouge">_config.yml</code> file, all the other modifications can trigger automatically the regeneration of the blog pages, and just refresh your blog page from the navigator, you can read the new version right away. But any modification in _config.yml needs the relaunch of <code class="language-plaintext highlighter-rouge">bundle exec jekyll serve -w</code> command to see the result.</p>
+
+<h2 id="add-non-whitelisted-plugins-gems">Add non-whitelisted plugins (gems)</h2>
+
+<p>GitHub Pages runs in <code class="language-plaintext highlighter-rouge">safe</code> mode and only allows <a href="https://pages.github.com/versions/">a set of whitelisted plugins</a>. To use the gem in GitHub Pages, one of the workarounds is to use CI (e.g. travis, github workflow) and deploy to your <code class="language-plaintext highlighter-rouge">gh-pages</code> branch like: <a href="https://github.com/jeffreytse/jekyll-deploy-action">jekyll-deploy-action</a>, and I use this plugin: <a href="https://github.com/jeffreytse/jekyll-spaceship">jekyll-spaceship</a> in my github pages.</p>
+
+<h2 id="using-mermaid-in-github-pages">Using mermaid in github pages</h2>
+
+<p>Above <code class="language-plaintext highlighter-rouge">jekyll-spaceship</code> plugin can render the mermaid code but not very well as described <a href="https://github.com/jeffreytse/jekyll-spaceship/issues/60">here</a>.</p>
+
+<p>Currently, there’re two better solutions by using the <a href="https://mermaid-js.github.io/mermaid/#/n00b-gettingStarted?id=_3-calling-the-javascript-api">mermaid javascript API</a>.</p>
+
+<p>The <strong>first solution</strong> is to use the mermaid API directly, it’s inspired by this <a href="https://jojozhuang.github.io/tutorial/jekyll-diagram-with-mermaid/">post</a>. You can refer to this <a href="https://github.com/copdips/copdips.github.io/commit/6e9fde29abff7691ccfd7b7b0ad7158651931ed5">commit</a> to see how to use it. The steps are as follows:</p>
+
+<ol>
+  <li>create a file <code class="language-plaintext highlighter-rouge">mermaid.html</code> inside the folder <code class="language-plaintext highlighter-rouge">_includes</code>. The file content could be found on the <a href="https://mermaid-js.github.io/mermaid/#/n00b-gettingStarted?id=_3-calling-the-javascript-api">mermaid js official website</a>.</li>
+  <li>update the file <code class="language-plaintext highlighter-rouge">_includes/head.html</code> to include the new file <code class="language-plaintext highlighter-rouge">mermaid.html</code> with or without the condition on the var <code class="language-plaintext highlighter-rouge">page.mermaid</code>
+</li>
+  <li>in post where we need to render the mermaid diagrams, just put the code in side a html div block by set the class to <code class="language-plaintext highlighter-rouge">mermaid</code> like: <code class="language-plaintext highlighter-rouge">&lt;div class="mermaid"&gt;&lt;/div&gt;</code>. If the step 2 has set a condition on the var <code class="language-plaintext highlighter-rouge">page.mermaid</code>, you need to aslo add a variable named <code class="language-plaintext highlighter-rouge">mermaid</code> and set its value to <code class="language-plaintext highlighter-rouge">true</code> in the post header.</li>
+</ol>
+
+<p>The <strong>seconde solution</strong> is to install the gem plugin <a href="https://github.com/jasonbellamy/jekyll-mermaid">jekyll-mermaid</a> where the underlying implementation uses the mermaid API too, This is what I’m using as per this <a href="https://github.com/copdips/copdips.github.io/commit/61af59a1ed4b18c392b1eeed1dbcb9293c8be650">commit</a>, it’s a little bitter easier than the first solution.</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#jekyll" class="page__taxonomy-item p-category" rel="tag">jekyll</a><span class="sep">, </span>
+    
+      <a href="/tags/#ruby" class="page__taxonomy-item p-category" rel="tag">ruby</a><span class="sep">, </span>
+    
+      <a href="/tags/#web" class="page__taxonomy-item p-category" rel="tag">web</a><span class="sep">, </span>
+    
+      <a href="/tags/#windows" class="page__taxonomy-item p-category" rel="tag">windows</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2022-08-14">August 14, 2022</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Setting+up+Jekyll+with+Minimal+Mistakes+theme+on+Windows%20https%3A%2F%2Fwww.copdips.com%2F2018%2F05%2Fsetting-up-jekyll-with-minimal-mistakes-theme-on-windows.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.copdips.com%2F2018%2F05%2Fsetting-up-jekyll-with-minimal-mistakes-theme-on-windows.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.copdips.com%2F2018%2F05%2Fsetting-up-jekyll-with-minimal-mistakes-theme-on-windows.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+
+  <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.copdips.com%2F2018%2F05%2Fsetting-up-jekyll-with-minimal-mistakes-theme-on-windows.html&title=Setting%20up%20Jekyll%20with%20Minimal%20Mistakes%20theme%20on%20Windows" class="btn btn--reddit" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Reddit"><i class="fab fa-fw fa-reddit" aria-hidden="true"></i><span> Reddit</span></a>
+</section>
+
+
+      <script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+      <div id="qrcode"></div>
+      <script type="text/javascript">
+        var qrcode = new QRCode('qrcode', {width: 100, height: 100, text: location.href});
+      </script>
+
+      
+  <nav class="pagination">
+    
+      <a href="/2018/05/powershell-stop-parsing.html" class="pagination--pager" title="Powershell stop-parsing (--%)
+">Previous</a>
+    
+    
+      <a href="/2018/05/using-readline-in-python-repl-on-windows.html" class="pagination--pager" title="Using Readline In Python REPL On Windows With PyReadline and PtPython
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+      <h4 class="page__comments-title">Leave a comment</h4>
+      <section id="disqus_thread"></section>
+    
+</div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-deploy-static-files-to-azure-web-app.html" rel="permalink">Github actions - deploy static files to azure web app
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/Some-nice-CICD-bash-common-scripts.html" rel="permalink">Some nice cicd bash common scripts
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          less than 1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-bash-shell-pipefail.html" rel="permalink">Github Actions - Bash shell -e -o pipefail
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-08T00:00:00+00:00">November 8, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/10/hashing-files.html" rel="permalink">Hashing files
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-10-21T00:00:00+00:00">October 21, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap">
+<form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term...">
+  </form>
+  <div id="results" class="results"></div>
+</div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="mailto:xiang.zhu@outlook.com" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email</a></li>
+        
+      
+        
+          <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+          <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://uptimerobot.com/dashboard#785564645" rel="nofollow noopener noreferrer"><i class="fas fa-clock" aria-hidden="true"></i> Uptime</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2023 Xiang ZHU. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp;
+<a href="https://mmistakes.github.io/minimal-mistakes/about/" rel="nofollow">Minimal Mistakes</a>
+.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'G-L9KPHRQNQN']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "https://www.copdips.com/2018/05/setting-up-jekyll-with-minimal-mistakes-theme-on-windows.html";  /* Replace PAGE_URL with your page's canonical URL variable */
+      this.page.identifier = "/2018/05/setting-up-jekyll-with-minimal-mistakes-theme-on-windows"; /* Replace PAGE_IDENTIFIER with your page's unique identifier variable */
+    };
+    (function() { /* DON'T EDIT BELOW THIS LINE */
+      var d = document, s = d.createElement('script');
+      s.src = 'https://copdips.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+
+  
+
+
+
+
+
+  </body>
+</html>

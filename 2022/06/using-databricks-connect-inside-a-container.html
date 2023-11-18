@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+--><html lang="en" class="no-js">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Using Databricks Connect inside a container - A code to remember</title>
+<meta name="description" content="Using Databricks Connect inside a container with VSCode remote containers with spark, jre, python, databricks-connect pre-installed.">
+
+
+  <meta name="author" content="Xiang ZHU">
+  
+  <meta property="article:author" content="Xiang ZHU">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="A code to remember">
+<meta property="og:title" content="Using Databricks Connect inside a container">
+<meta property="og:url" content="https://www.copdips.com/2022/06/using-databricks-connect-inside-a-container.html">
+
+
+  <meta property="og:description" content="Using Databricks Connect inside a container with VSCode remote containers with spark, jre, python, databricks-connect pre-installed.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2022-06-08T00:00:00+00:00">
+
+
+
+  <meta property="article:modified_time" content="2022-10-15T22:38:07+00:00">
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="https://www.copdips.com/2022/06/using-databricks-connect-inside-a-container.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Xiang ZHU",
+      "url": "https://www.copdips.com/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="A code to remember Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          A code to remember
+          
+        </a>
+        <ul class="visible-links">
+<li class="masthead__menu-item">
+              <a href="/">Home</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/tags/">Tags</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/year-archive/">Year Archive</a>
+            </li>
+</ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<!-- back to top button -->
+<!-- https://github.com/mmistakes/minimal-mistakes/issues/1731#issuecomment-628997645 -->
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>addBackToTop({
+  diameter: 56,
+  backgroundColor: '#F16334',
+  textColor: '#fff'
+})</script>
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.copdips.com/">
+        <img src="/image/avatar/zhuxiang-smile.jpg" alt="Xiang ZHU" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.copdips.com/" itemprop="url">Xiang ZHU</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Python DevOps</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Paris</span>
+        </li>
+      
+
+      
+        
+          
+            <li><a href="https://www.copdips.com" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fas fa-fw fa-link" aria-hidden="true"></i><span class="label">Website</span></a></li>
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">LinkedIn</span></a></li>
+          
+        
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:xiang.zhu@outlook.com" rel="me" class="u-email">
+            <meta itemprop="email" content="xiang.zhu@outlook.com">
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+      <!-- 
+<script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+<div id="qrcode"></div>
+<script type="text/javascript">
+  var qrcode = new QRCode('qrcode', {width: 10, height: 10, text: location.href});
+</script>
+ -->
+    </ul>
+  </div>
+</div>
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Using Databricks Connect inside a container">
+    <meta itemprop="description" content="Using Databricks Connect inside a container with VSCode remote containers with spark, jre, python, databricks-connect pre-installed.">
+    <meta itemprop="datePublished" content="2022-06-08T00:00:00+00:00">
+    <meta itemprop="dateModified" content="2022-10-15T22:38:07+00:00">
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.copdips.com/2022/06/using-databricks-connect-inside-a-container.html" class="u-url" itemprop="url">Using Databricks Connect inside a container
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-06-08T00:00:00+00:00">June 8, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          5 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title">
+<i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu">
+<li><a href="#why-use-databricks-connect">Why use Databricks Connect</a></li>
+<li><a href="#using-databricks-connect-outside-a-container">Using Databricks Connect outside a container</a></li>
+<li>
+<a href="#using-databricks-connect-inside-a-container">Using Databricks Connect inside a container</a><ul>
+<li><a href="#databricks-connecttemplate">.databricks-connect.template</a></li>
+<li><a href="#dockerfile">Dockerfile</a></li>
+<li><a href="#devcontainerjson">devcontainer.json</a></li>
+<li><a href="#databricks_demo_jobpy">databricks_demo_job.py</a></li>
+<li><a href="#env-var-dev_databricks_token">env var DEV_DATABRICKS_TOKEN</a></li>
+<li><a href="#test">Test</a></li>
+</ul>
+</li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <h2 id="why-use-databricks-connect">Why use Databricks Connect</h2>
+
+<p>From the very beginning of the Databricks Connect <a href="https://docs.databricks.com/dev-tools/databricks-connect.html">official doc</a>, it says already that Databricks Connect has some <a href="https://docs.databricks.com/dev-tools/databricks-connect.html#limitations">limitations</a> and is more or less deprecated in favor of <a href="https://docs.databricks.com/dev-tools/dbx.html">dbx</a>. But for some usages like local IDE live debug, Databricks Connect is still a very good tool where as dbx cannot do it at all. At the time of writing, dbx is mainly a Databricks jobs’ API wrapper to deploy and run Databricks jobs.</p>
+
+<p class="notice--info">Note 2022-10-15, recently a Databricks <a href="https://www.databricks.com/blog/2022/07/07/introducing-spark-connect-the-power-of-apache-spark-everywhere.html">blog</a> introduced the project <a href="https://issues.apache.org/jira/browse/SPARK-39375">Spark Connect</a> which aims to do very similar thing as Databricks Connect. This project is still in development, and is a part of Apache Spark, not Databricks specific.</p>
+
+<p>A very important point to be taken into account is that if we plan to deploy production ready Databricks workflows, it’s recommended to use <code class="language-plaintext highlighter-rouge">dbx</code>. currently it’s not official supported by Databricks (version number starts with 0), but it’s good enough to use, I’ve already used it since several months. And as it’s a deployment tool, even if it bugs, it will be much less dangerous for production.</p>
+
+<p>Just a quick helper information of <code class="language-plaintext highlighter-rouge">dbx</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>dbx <span class="nt">--version</span>
+<span class="o">[</span>dbx][2022-10-15 22:43:24.265] 🧱Databricks eXtensions aka dbx, version ~&gt; 0.7.6
+
+<span class="nv">$ </span>dbx <span class="nt">--help</span>
+
+ Usage: dbx <span class="o">[</span>OPTIONS] COMMAND <span class="o">[</span>ARGS]...
+
+ 🧱Databricks eXtensions aka dbx. Please find the main docs page here.
+
+╭─ Options ──────────────────────────────────────────────────────────────────────────╮
+│ <span class="nt">--version</span>                                                                          │
+│ <span class="nt">--install-completion</span>          Install completion <span class="k">for </span>the current shell.            │
+│ <span class="nt">--show-completion</span>             Show completion <span class="k">for </span>the current shell, to copy it or │
+│                               customize the installation.                          │
+│ <span class="nt">--help</span>                        Show this message and exit.                          │
+╰────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Commands ─────────────────────────────────────────────────────────────────────────╮
+│ configure  🔧 Configures project environment <span class="k">in </span>the current folder.                │
+│ deploy     📦 Deploy project to artifact storage.                                  │
+│ destroy    🚮 Delete defined workflows and relevant assets.                        │
+│ execute    🔥 Executes chosen workload on the interactive cluster.                 │
+│ init       💎 Generates new project from the template.                             │
+│ launch     🚀 Launch the workflow on a job cluster.                                │
+│ <span class="nb">sync</span>       🔄 Sync <span class="nb">local </span>files to Databricks and watch <span class="k">for </span>changes.                │
+╰────────────────────────────────────────────────────────────────────────────────────╯
+</code></pre></div></div>
+
+<h2 id="using-databricks-connect-outside-a-container">Using Databricks Connect outside a container</h2>
+
+<p>Just follow the <a href="https://docs.databricks.com/dev-tools/databricks-connect.html">official guide</a>.</p>
+
+<h2 id="using-databricks-connect-inside-a-container">Using Databricks Connect inside a container</h2>
+
+<p>VSCode has a very nice feature that enable us to <a href="https://code.visualstudio.com/docs/remote/containers">develop inside a container</a>. As Databricks Connect needs some setup, we can leverage this feature to prepare a container that having everything pre-configured. When we need to do a live debug, just connect VSCode to the container, then set some breakpoints and start the debug.</p>
+
+<p>We need following folder and files to use VSCode remote container:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.databricks-connect.template
+.devcontainer/
+├── Dockerfile
+└── devcontainer.json
+databricks_demo_job.py
+</code></pre></div></div>
+
+<p>And the content of each files:</p>
+
+<h3 id="databricks-connecttemplate">.databricks-connect.template</h3>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">//</span><span class="w"> </span><span class="err">to</span><span class="w"> </span><span class="err">find</span><span class="w"> </span><span class="err">the</span><span class="w"> </span><span class="err">config</span><span class="w"> </span><span class="err">values:</span><span class="w"> </span><span class="err">https://docs.databricks.com/dev-tools/databricks-connect.html#step</span><span class="mi">-2</span><span class="err">-configure-connection-properties</span><span class="w">
+
+</span><span class="err">//</span><span class="w"> </span><span class="err">inside</span><span class="w"> </span><span class="err">the</span><span class="w"> </span><span class="err">container,</span><span class="w"> </span><span class="err">we</span><span class="w"> </span><span class="err">can</span><span class="w"> </span><span class="err">use</span><span class="w"> </span><span class="err">`databricks-connect</span><span class="w"> </span><span class="err">configure`</span><span class="w"> </span><span class="err">to</span><span class="w"> </span><span class="err">create</span><span class="w"> </span><span class="err">this</span><span class="w"> </span><span class="err">file,</span><span class="w"> </span><span class="err">but</span><span class="w"> </span><span class="err">it</span><span class="w"> </span><span class="err">takes</span><span class="w"> </span><span class="err">time,</span><span class="w"> </span><span class="err">that's</span><span class="w"> </span><span class="err">why</span><span class="w"> </span><span class="err">we</span><span class="w"> </span><span class="err">pre-created</span><span class="w"> </span><span class="err">this</span><span class="w"> </span><span class="err">file</span><span class="w"> </span><span class="err">before</span><span class="w"> </span><span class="err">container</span><span class="w"> </span><span class="err">build.</span><span class="w">
+
+</span><span class="p">{</span><span class="w">
+  </span><span class="nl">"host"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://aaa.azuredatabricks.net/"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"replacetoken"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"cluster_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"abc"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"org_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"111111"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"port"</span><span class="p">:</span><span class="w"> </span><span class="s2">"15001"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="dockerfile">Dockerfile</h3>
+
+<p>My test is run in a Databricks cluster with the <a href="https://docs.databricks.com/dev-tools/databricks-connect.html#requirements">runtime 10.4</a>, which is bound to <code class="language-plaintext highlighter-rouge">Python 3.8</code>. At the time of writing, Databricks only releases a beta version for the runtime 10.4: <code class="language-plaintext highlighter-rouge">databricks-connect==10.4.0b0</code>. In the future, as per the official doc, it would be better to use the convention <code class="language-plaintext highlighter-rouge">databricks-connect==10.4.*</code>.</p>
+
+<p>The official doc says also that only <code class="language-plaintext highlighter-rouge">OpenJDK 8 JRE</code> is supported by the Databricks Connect client. But <code class="language-plaintext highlighter-rouge">default-jre</code> installed in the Dockerfile is for <code class="language-plaintext highlighter-rouge">python:3.8</code>, which is bound to <code class="language-plaintext highlighter-rouge">3.8-bullseye</code>, which means the JRE version is <a href="https://packages.debian.org/bullseye/default-jre">v11</a>. If we encounter some bugs when using Databricks Connect, we might need to install <code class="language-plaintext highlighter-rouge">OpenJDK 8 JRE</code>.</p>
+
+<p><code class="language-plaintext highlighter-rouge">ENV SPARK_HOME</code> is tested from my Python:3.8 image, once in the container, run the command <code class="language-plaintext highlighter-rouge">databricks-connect get-spark-home</code> to check if it’s the same. If not, update the Dockerfile.</p>
+
+<div class="language-dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># https://github.com/microsoft/vscode-dev-containers/blob/main/containers/python-3/.devcontainer/Dockerfile</span>
+
+<span class="c"># [Choice] Python version (use -bullseye variants on local arm64/Apple Silicon): 3, 3.10, 3.9, 3.8, 3.7, 3.6, 3-bullseye, 3.10-bullseye, 3.9-bullseye, 3.8-bullseye, 3.7-bullseye, 3.6-bullseye, 3-buster, 3.10-buster, 3.9-buster, 3.8-buster, 3.7-buster, 3.6-buster</span>
+
+<span class="k">ARG</span><span class="s"> VARIANT="3.8"</span>
+<span class="k">FROM</span><span class="s"> mcr.microsoft.com/vscode/devcontainers/python:${VARIANT}</span>
+
+<span class="k">ARG</span><span class="s"> DEV_DATABRICKS_TOKEN</span>
+
+<span class="k">COPY</span><span class="s"> .databricks-connect.template /home/vscode/.databricks-connect</span>
+
+<span class="k">RUN </span><span class="o">&amp;&amp;</span> <span class="nb">sudo </span>apt update <span class="se">\
+</span>    <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>apt-get <span class="nb">install</span> <span class="nt">-y</span> default-jre <span class="se">\
+</span>    <span class="o">&amp;&amp;</span> pip <span class="nb">install </span>databricks-connect<span class="o">==</span>10.4.0b0 <span class="se">\
+</span>    <span class="o">&amp;&amp;</span> pip <span class="nb">install</span> <span class="nt">-U</span> pip <span class="se">\
+</span>    <span class="o">&amp;&amp;</span> <span class="nb">sed</span> <span class="nt">-i</span> <span class="s2">"s/replacetoken/</span><span class="k">${</span><span class="nv">DEV_DATABRICKS_TOKEN</span><span class="k">}</span><span class="s2">/g"</span> /home/vscode/.databricks-connect
+
+<span class="k">ENV</span><span class="s"> SPARK_HOME /usr/local/lib/python3.8/site-packages/pyspark</span>
+</code></pre></div></div>
+
+<h3 id="devcontainerjson">devcontainer.json</h3>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">//</span><span class="w"> </span><span class="err">Config</span><span class="w"> </span><span class="err">options:</span><span class="w"> </span><span class="err">https://aka.ms/devcontainer.json</span><span class="w">
+
+</span><span class="err">//</span><span class="w"> </span><span class="err">File</span><span class="w"> </span><span class="err">example:</span><span class="w"> </span><span class="err">https://github.com/microsoft/vscode-dev-containers/blob/main/containers/python</span><span class="mi">-3</span><span class="err">/.devcontainer/devcontainer.json</span><span class="w">
+</span><span class="p">{</span><span class="w">
+
+  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Python 3"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"build"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"dockerfile"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Dockerfile"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"context"</span><span class="p">:</span><span class="w"> </span><span class="s2">".."</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="err">//</span><span class="w"> </span><span class="err">Update</span><span class="w"> </span><span class="err">'VARIANT'</span><span class="w"> </span><span class="err">to</span><span class="w"> </span><span class="err">pick</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">Python</span><span class="w"> </span><span class="err">version:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mf">3.10</span><span class="p">,</span><span class="w"> </span><span class="mf">3.9</span><span class="p">,</span><span class="w"> </span><span class="mf">3.8</span><span class="p">,</span><span class="w"> </span><span class="mf">3.7</span><span class="p">,</span><span class="w"> </span><span class="mf">3.6</span><span class="w">
+      </span><span class="err">//</span><span class="w"> </span><span class="err">Append</span><span class="w"> </span><span class="err">-bullseye</span><span class="w"> </span><span class="err">or</span><span class="w"> </span><span class="err">-buster</span><span class="w"> </span><span class="err">to</span><span class="w"> </span><span class="err">pin</span><span class="w"> </span><span class="err">to</span><span class="w"> </span><span class="err">an</span><span class="w"> </span><span class="err">OS</span><span class="w"> </span><span class="err">version.</span><span class="w">
+      </span><span class="err">//</span><span class="w"> </span><span class="err">Use</span><span class="w"> </span><span class="err">-bullseye</span><span class="w"> </span><span class="err">variants</span><span class="w"> </span><span class="err">on</span><span class="w"> </span><span class="err">local</span><span class="w"> </span><span class="err">on</span><span class="w"> </span><span class="err">arm</span><span class="mi">64</span><span class="err">/Apple</span><span class="w"> </span><span class="err">Silicon.</span><span class="w">
+      </span><span class="nl">"VARIANT"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3.10-bullseye"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"DEV_DATABRICKS_TOKEN"</span><span class="p">:</span><span class="w"> </span><span class="s2">"${localEnv:DEV_DATABRICKS_TOKEN}"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+
+  </span><span class="err">//</span><span class="w"> </span><span class="err">Configure</span><span class="w"> </span><span class="err">tool-specific</span><span class="w"> </span><span class="err">properties.</span><span class="w">
+  </span><span class="nl">"customizations"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="err">//</span><span class="w"> </span><span class="err">Configure</span><span class="w"> </span><span class="err">properties</span><span class="w"> </span><span class="err">specific</span><span class="w"> </span><span class="err">to</span><span class="w"> </span><span class="err">VS</span><span class="w"> </span><span class="err">Code.</span><span class="w">
+    </span><span class="nl">"vscode"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="err">//</span><span class="w"> </span><span class="err">Set</span><span class="w"> </span><span class="err">*default*</span><span class="w"> </span><span class="err">container</span><span class="w"> </span><span class="err">specific</span><span class="w"> </span><span class="err">settings.json</span><span class="w"> </span><span class="err">values</span><span class="w"> </span><span class="err">on</span><span class="w"> </span><span class="err">container</span><span class="w"> </span><span class="err">create.</span><span class="w">
+      </span><span class="nl">"settings"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"python.defaultInterpreterPath"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/usr/local/bin/python"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"python.linting.enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"python.linting.pylintEnabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"python.formatting.autopep8Path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/usr/local/py-utils/bin/autopep8"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"python.formatting.blackPath"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/usr/local/py-utils/bin/black"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"python.formatting.yapfPath"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/usr/local/py-utils/bin/yapf"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"python.linting.banditPath"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/usr/local/py-utils/bin/bandit"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"python.linting.flake8Path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/usr/local/py-utils/bin/flake8"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"python.linting.mypyPath"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/usr/local/py-utils/bin/mypy"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"python.linting.pycodestylePath"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/usr/local/py-utils/bin/pycodestyle"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"python.linting.pydocstylePath"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/usr/local/py-utils/bin/pydocstyle"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"python.linting.pylintPath"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/usr/local/py-utils/bin/pylint"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+
+      </span><span class="err">//</span><span class="w"> </span><span class="err">Add</span><span class="w"> </span><span class="err">the</span><span class="w"> </span><span class="err">IDs</span><span class="w"> </span><span class="err">of</span><span class="w"> </span><span class="err">extensions</span><span class="w"> </span><span class="err">you</span><span class="w"> </span><span class="err">want</span><span class="w"> </span><span class="err">installed</span><span class="w"> </span><span class="err">when</span><span class="w"> </span><span class="err">the</span><span class="w"> </span><span class="err">container</span><span class="w"> </span><span class="err">is</span><span class="w"> </span><span class="err">created.</span><span class="w">
+      </span><span class="nl">"extensions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"ms-python.python"</span><span class="p">,</span><span class="w"> </span><span class="s2">"ms-python.vscode-pylance"</span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+
+  </span><span class="err">//</span><span class="w"> </span><span class="err">Use</span><span class="w"> </span><span class="err">'forwardPorts'</span><span class="w"> </span><span class="err">to</span><span class="w"> </span><span class="err">make</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">list</span><span class="w"> </span><span class="err">of</span><span class="w"> </span><span class="err">ports</span><span class="w"> </span><span class="err">inside</span><span class="w"> </span><span class="err">the</span><span class="w"> </span><span class="err">container</span><span class="w"> </span><span class="err">available</span><span class="w"> </span><span class="err">locally.</span><span class="w">
+  </span><span class="err">//</span><span class="w"> </span><span class="nl">"forwardPorts"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w">
+
+  </span><span class="err">//</span><span class="w"> </span><span class="err">Use</span><span class="w"> </span><span class="err">'postCreateCommand'</span><span class="w"> </span><span class="err">to</span><span class="w"> </span><span class="err">run</span><span class="w"> </span><span class="err">commands</span><span class="w"> </span><span class="err">after</span><span class="w"> </span><span class="err">the</span><span class="w"> </span><span class="err">container</span><span class="w"> </span><span class="err">is</span><span class="w"> </span><span class="err">created.</span><span class="w">
+  </span><span class="err">//</span><span class="w"> </span><span class="nl">"postCreateCommand"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pip3 install --user -r requirements.txt"</span><span class="p">,</span><span class="w">
+
+  </span><span class="err">//</span><span class="w"> </span><span class="err">Comment</span><span class="w"> </span><span class="err">out</span><span class="w"> </span><span class="err">to</span><span class="w"> </span><span class="err">connect</span><span class="w"> </span><span class="err">as</span><span class="w"> </span><span class="err">root</span><span class="w"> </span><span class="err">instead.</span><span class="w"> </span><span class="err">More</span><span class="w"> </span><span class="err">info:</span><span class="w"> </span><span class="err">https://aka.ms/vscode-remote/containers/non-root.</span><span class="w">
+  </span><span class="nl">"remoteUser"</span><span class="p">:</span><span class="w"> </span><span class="s2">"vscode"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="databricks_demo_jobpy">databricks_demo_job.py</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># example taken from: https://docs.databricks.com/dev-tools/databricks-connect.html#access-dbutils
+</span>
+<span class="kn">from</span> <span class="n">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span>
+<span class="kn">from</span> <span class="n">pyspark.dbutils</span> <span class="kn">import</span> <span class="n">DBUtils</span>
+
+<span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="p">.</span><span class="n">builder</span><span class="p">.</span><span class="nf">getOrCreate</span><span class="p">()</span>
+
+<span class="n">dbutils</span> <span class="o">=</span> <span class="nc">DBUtils</span><span class="p">(</span><span class="n">spark</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">dbutils</span><span class="p">.</span><span class="n">fs</span><span class="p">.</span><span class="nf">ls</span><span class="p">(</span><span class="sh">"</span><span class="s">dbfs:/</span><span class="sh">"</span><span class="p">))</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">dbutils</span><span class="p">.</span><span class="n">secrets</span><span class="p">.</span><span class="nf">listScopes</span><span class="p">())</span>
+</code></pre></div></div>
+
+<h3 id="env-var-dev_databricks_token">env var DEV_DATABRICKS_TOKEN</h3>
+
+<p>As you can see, in the file <code class="language-plaintext highlighter-rouge">.databricks-connect.template</code>, there’s a line <code class="language-plaintext highlighter-rouge">"token": "replacetoken",</code>.
+In fact, during the build of the Dockerfile, it will replace the string <code class="language-plaintext highlighter-rouge">replacetoken</code> by the value of the env var <code class="language-plaintext highlighter-rouge">DEV_DATABRICKS_TOKEN</code>. So we need to create this env var in advance.</p>
+
+<h3 id="test">Test</h3>
+
+<ol>
+  <li>From VSCode, type <code class="language-plaintext highlighter-rouge">F1</code>, choose <code class="language-plaintext highlighter-rouge">Remote-Containers: Reopen in Container</code>, VSCode will open a new instance. If you check the lower left corner of VSCode, you’ll see <code class="language-plaintext highlighter-rouge">Dev Container: Python 3</code>.</li>
+  <li>Run <code class="language-plaintext highlighter-rouge">cat ~/.databricks-connect</code>, you should see the correct config.</li>
+  <li>Run <code class="language-plaintext highlighter-rouge">databricks-connect test</code>, it should not raise any error, and might have the phrase <code class="language-plaintext highlighter-rouge">* All tests passed.</code> in the end. If the cluster is not started yet, it could take some time during this step.</li>
+  <li>Set a breakpoint in the file <code class="language-plaintext highlighter-rouge">databricks_demo_job.py</code>, type <code class="language-plaintext highlighter-rouge">F5</code>, have fun.</li>
+</ol>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#container" class="page__taxonomy-item p-category" rel="tag">container</a><span class="sep">, </span>
+    
+      <a href="/tags/#databricks" class="page__taxonomy-item p-category" rel="tag">databricks</a><span class="sep">, </span>
+    
+      <a href="/tags/#docker" class="page__taxonomy-item p-category" rel="tag">docker</a><span class="sep">, </span>
+    
+      <a href="/tags/#spark" class="page__taxonomy-item p-category" rel="tag">spark</a><span class="sep">, </span>
+    
+      <a href="/tags/#vscode" class="page__taxonomy-item p-category" rel="tag">vscode</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2022-10-15">October 15, 2022</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Using+Databricks+Connect+inside+a+container%20https%3A%2F%2Fwww.copdips.com%2F2022%2F06%2Fusing-databricks-connect-inside-a-container.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.copdips.com%2F2022%2F06%2Fusing-databricks-connect-inside-a-container.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.copdips.com%2F2022%2F06%2Fusing-databricks-connect-inside-a-container.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+
+  <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.copdips.com%2F2022%2F06%2Fusing-databricks-connect-inside-a-container.html&title=Using%20Databricks%20Connect%20inside%20a%20container" class="btn btn--reddit" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Reddit"><i class="fab fa-fw fa-reddit" aria-hidden="true"></i><span> Reddit</span></a>
+</section>
+
+
+      <script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+      <div id="qrcode"></div>
+      <script type="text/javascript">
+        var qrcode = new QRCode('qrcode', {width: 100, height: 100, text: location.href});
+      </script>
+
+      
+  <nav class="pagination">
+    
+      <a href="/2022/04/azure-pipeline-checkout-multiple-repositories.html" class="pagination--pager" title="Azure Pipeline Checkout Multiple Repositories
+">Previous</a>
+    
+    
+      <a href="/2022/07/azure-pipeline-conditions.html" class="pagination--pager" title="Azure pipeline conditions
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+      <h4 class="page__comments-title">Leave a comment</h4>
+      <section id="disqus_thread"></section>
+    
+</div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-deploy-static-files-to-azure-web-app.html" rel="permalink">Github actions - deploy static files to azure web app
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/Some-nice-CICD-bash-common-scripts.html" rel="permalink">Some nice cicd bash common scripts
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          less than 1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-bash-shell-pipefail.html" rel="permalink">Github Actions - Bash shell -e -o pipefail
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-08T00:00:00+00:00">November 8, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/10/hashing-files.html" rel="permalink">Hashing files
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-10-21T00:00:00+00:00">October 21, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap">
+<form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term...">
+  </form>
+  <div id="results" class="results"></div>
+</div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="mailto:xiang.zhu@outlook.com" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email</a></li>
+        
+      
+        
+          <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+          <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://uptimerobot.com/dashboard#785564645" rel="nofollow noopener noreferrer"><i class="fas fa-clock" aria-hidden="true"></i> Uptime</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2023 Xiang ZHU. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp;
+<a href="https://mmistakes.github.io/minimal-mistakes/about/" rel="nofollow">Minimal Mistakes</a>
+.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'G-L9KPHRQNQN']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "https://www.copdips.com/2022/06/using-databricks-connect-inside-a-container.html";  /* Replace PAGE_URL with your page's canonical URL variable */
+      this.page.identifier = "/2022/06/using-databricks-connect-inside-a-container"; /* Replace PAGE_IDENTIFIER with your page's unique identifier variable */
+    };
+    (function() { /* DON'T EDIT BELOW THIS LINE */
+      var d = document, s = d.createElement('script');
+      s.src = 'https://copdips.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+
+  
+
+
+
+
+
+  </body>
+</html>

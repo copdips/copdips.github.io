@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+--><html lang="en" class="no-js">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Setting up Github Pages With custom domain over HTTPS - A code to remember</title>
+<meta name="description" content="With Github pages, we can create our blogs in our own domain over HTTPS completely free. Of course you should pay for your domain name at the Registrar.">
+
+
+  <meta name="author" content="Xiang ZHU">
+  
+  <meta property="article:author" content="Xiang ZHU">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="A code to remember">
+<meta property="og:title" content="Setting up Github Pages With custom domain over HTTPS">
+<meta property="og:url" content="https://www.copdips.com/2018/05/setting-up-github-pages-with-custom-domain-over-https.html">
+
+
+  <meta property="og:description" content="With Github pages, we can create our blogs in our own domain over HTTPS completely free. Of course you should pay for your domain name at the Registrar.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2018-05-03T00:00:00+00:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="https://www.copdips.com/2018/05/setting-up-github-pages-with-custom-domain-over-https.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Xiang ZHU",
+      "url": "https://www.copdips.com/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="A code to remember Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          A code to remember
+          
+        </a>
+        <ul class="visible-links">
+<li class="masthead__menu-item">
+              <a href="/">Home</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/tags/">Tags</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/year-archive/">Year Archive</a>
+            </li>
+</ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<!-- back to top button -->
+<!-- https://github.com/mmistakes/minimal-mistakes/issues/1731#issuecomment-628997645 -->
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>addBackToTop({
+  diameter: 56,
+  backgroundColor: '#F16334',
+  textColor: '#fff'
+})</script>
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.copdips.com/">
+        <img src="/image/avatar/zhuxiang-smile.jpg" alt="Xiang ZHU" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.copdips.com/" itemprop="url">Xiang ZHU</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Python DevOps</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Paris</span>
+        </li>
+      
+
+      
+        
+          
+            <li><a href="https://www.copdips.com" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fas fa-fw fa-link" aria-hidden="true"></i><span class="label">Website</span></a></li>
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">LinkedIn</span></a></li>
+          
+        
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:xiang.zhu@outlook.com" rel="me" class="u-email">
+            <meta itemprop="email" content="xiang.zhu@outlook.com">
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+      <!-- 
+<script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+<div id="qrcode"></div>
+<script type="text/javascript">
+  var qrcode = new QRCode('qrcode', {width: 10, height: 10, text: location.href});
+</script>
+ -->
+    </ul>
+  </div>
+</div>
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Setting up Github Pages With custom domain over HTTPS">
+    <meta itemprop="description" content="With Github pages, we can create our blogs in our own domain over HTTPS completely free. Of course you should pay for your domain name at the Registrar.">
+    <meta itemprop="datePublished" content="2018-05-03T00:00:00+00:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.copdips.com/2018/05/setting-up-github-pages-with-custom-domain-over-https.html" class="u-url" itemprop="url">Setting up Github Pages With custom domain over HTTPS
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2018-05-03T00:00:00+00:00">May 3, 2018</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title">
+<i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu">
+<li><a href="#create-github-pages-on-githubcom">Create Github pages on Github.com</a></li>
+<li><a href="#register-a-custom-domain">Register a custom domain</a></li>
+<li><a href="#setup-dns-on-dns-registrar">Setup DNS on DNS registrar</a></li>
+<li><a href="#enable-custom-domain-on-githubcom">Enable custom domain on Github.com</a></li>
+<li><a href="#enable-https-for-custom-domain-with-cloudflare">Enable HTTPS for custom domain with Cloudflare</a></li>
+<li><a href="#enable-https-for-custom-domain-with-github">Enable HTTPS for custom domain With Github</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <blockquote>
+  <p>With Github pages, we can create our blogs in our own domain over HTTPS completely free. Of course you should pay for your domain name at the Registrar.</p>
+</blockquote>
+
+<h1 id="create-github-pages-on-githubcom">Create Github pages on Github.com</h1>
+
+<ol>
+  <li>On Github create a repo with name : githubUserName.github.io</li>
+  <li>Push a file <code class="language-plaintext highlighter-rouge">index.html</code> to branch <code class="language-plaintext highlighter-rouge">master</code> or <code class="language-plaintext highlighter-rouge">gh-pages</code>
+</li>
+  <li>Now you can access your github page by going to githubUserName.github.io</li>
+</ol>
+
+<p>From now on, you’ve created a fully operational blog on http://githubUserName.github.io, you can also enable HTTPS on it by going to the repo’s settings menu, everything is free.</p>
+
+<p>If you dont need to use a custom domain like http://yourname.com, you can stop here, but if you want it, please go ahead.</p>
+
+<h1 id="register-a-custom-domain">Register a custom domain</h1>
+
+<p>Register a custom domain on your preferred domain name registrar</p>
+
+<h1 id="setup-dns-on-dns-registrar">Setup DNS on DNS registrar</h1>
+
+<ol>
+  <li>
+    <p>Add subdomain</p>
+
+    <p><a href="https://help.github.com/articles/setting-up-a-www-subdomain/">https://help.github.com/articles/setting-up-a-www-subdomain/</a></p>
+
+    <ul>
+      <li>Add a <strong>CNAME</strong> DNS record pointing <strong>www</strong> to <strong>copdips.github.io</strong>
+</li>
+      <li>Add a <strong>CNAME</strong> DNS record pointing <strong>blog</strong> to <strong>copdips.github.io</strong>
+</li>
+    </ul>
+  </li>
+  <li>
+    <p>Add APEX domain</p>
+
+    <p>My DNS registrar doesn’t support <a href="https://help.github.com/articles/setting-up-an-apex-domain/#configuring-an-alias-or-aname-record-with-your-dns-provider">ALIAS nor ANAME</a>, I should go with the <a href="https://help.github.com/articles/setting-up-an-apex-domain/#configuring-a-records-with-your-dns-provider">A records</a> :</p>
+
+    <ul>
+      <li>Add a <strong>A</strong> DNS record pointing <strong>@</strong> to <strong>185.199.108.153</strong>
+</li>
+      <li>Add a <strong>A</strong> DNS record pointing <strong>@</strong> to <strong>185.199.109.153</strong>
+</li>
+      <li>Add a <strong>A</strong> DNS record pointing <strong>@</strong> to <strong>185.199.110.153</strong>
+</li>
+      <li>Add a <strong>A</strong> DNS record pointing <strong>@</strong> to <strong>185.199.111.153</strong>
+</li>
+    </ul>
+  </li>
+</ol>
+
+<h1 id="enable-custom-domain-on-githubcom">Enable custom domain on Github.com</h1>
+
+<ol>
+  <li>
+    <p>Go to github repo</p>
+
+    <p><a href="https://github.com/githubUserName/githubUserName.github.io">https://github.com/githubUserName/githubUserName.github.io</a></p>
+  </li>
+  <li>Add your custom domain in : Settings -&gt; Options -&gt; GitHub Pages -&gt; Custom domain
+    <ul>
+      <li>If you’ll just run a blog on your domain, I suggest to use <a href="https://help.github.com/articles/setting-up-an-apex-domain-and-www-subdomain/"><code class="language-plaintext highlighter-rouge">APEX domain</code></a> name here instead of subdomain, for example: yourdomain.com</li>
+      <li>This step creates implicitly a file named <strong>CNAME</strong> under the root of your git repo, the content of the file CNAME is just your custom domain.</li>
+      <li>The commit message is ‘Create CNAME’</li>
+    </ul>
+  </li>
+  <li>On the same page, the option <code class="language-plaintext highlighter-rouge">Enable HTTPS</code> serves to redirect HTTP traffic to HTTPS. The option is grayed out for the moment,  because initially https://yourdomain.github.io is binded with a github’s certificate so as to https://youdomain.com. In order to  secure correctly your new site https://youdomain.com, Github needs to ask <a href="letsencrypt.org">LetsEncrypt</a> to issue a new certificate where the <a href="https://en.wikipedia.org/wiki/Certificate_signing_request">CN</a> is youdomain.com, than when people visit your web site, they will see <a href="https://support.mozilla.org/en-US/kb/how-do-i-tell-if-my-connection-is-secure">a green padlock</a> in the address bar. The generation of LetsEncryt certificate takes usually  1 or 2 days, be patient, once you see a green lock when you open https://youdomain.com, you can come back here and enable the option <code class="language-plaintext highlighter-rouge">Enable HTTPS</code>.</li>
+</ol>
+
+<h1 id="enable-https-for-custom-domain-with-cloudflare">Enable HTTPS for custom domain with Cloudflare</h1>
+
+<blockquote>
+  <p>This solution is <code class="language-plaintext highlighter-rouge">partially deprecated</code> as <a href="#enable-https-for-custom-domain-with-github">Github supports natively HTTPS for custom domains</a> now, but Github pages doesn’t provide the wildcard certificate yet. For a better compatibility, Cloudflare HTTPS solution is still one of the best choices.</p>
+</blockquote>
+
+<p>Some tutorials :
+<a href="https://hackernoon.com/set-up-ssl-on-github-pages-with-custom-domains-for-free-a576bdf51bc">tutorial 1</a>
+,
+<a href="https://www.jonathan-petitcolas.com/2017/01/13/using-https-with-custom-domain-name-on-github-pages.html">tutorial 2</a></p>
+
+<p>Simplified steps :</p>
+
+<ol>
+  <li>Sign up for a free Cloudflare Account</li>
+  <li>Follow the wizard, give your custom domain, Cloudflare should find all your CNAME and A records.</li>
+  <li>Cloudflare should ask you to change your custom domain’s default DNS servers given by your DNS registrar to the Cloudflare ones.
+    <ul>
+      <li>The change may take several hours to take effect</li>
+      <li>Cloudflare DNS example: vida.ns.cloudflare.com, zod.ns.cloudflare.com</li>
+    </ul>
+  </li>
+  <li>Go to <code class="language-plaintext highlighter-rouge">Crypto</code> tab, verify SSL is set to Full</li>
+  <li>Go to <code class="language-plaintext highlighter-rouge">Page Rules</code> tab, add a page rule : http://<em>customdomain.com/</em> with <code class="language-plaintext highlighter-rouge">Always Use HTTPS</code>
+</li>
+</ol>
+
+<p>If everything goes well, you can access your custom domain by HTTPS. And if you verify the HTTPS certificate, it should be signed by COMODO, the certificate’s CN is a cloudflare.com server and one of the SAN is your custom domain.</p>
+
+<h1 id="enable-https-for-custom-domain-with-github">Enable HTTPS for custom domain With Github</h1>
+
+<p>Github announced very recently (on May 01, 2018) <a href="https://blog.github.com/2018-05-01-github-pages-custom-domains-https/">the support of HTTPS for custom domains</a>, this is really a great feature. After the test, I found that the HTTPS certificate is signed by letsencrypt.org where the CN is <a href="#enable-custom-domain-on-githubcom">your github.io’s CNAME</a>, and everything is free. Thx Github and LetsEncrypt !</p>
+
+<p>You can also enable the HTTP to HTTPS automatic redirection from here.</p>
+
+<p>If you use subdomain (for ex: www.copdips.com), hereunder the HTTPS tests :</p>
+
+<ul>
+  <li>typed http://copdips.com, redirected to https://www.copdips.com</li>
+  <li>typed http://www.copdips.com, redirected to https://www.copdips.com</li>
+  <li>
+    <p>typed https://copdips.com, redirected to the same https://copdips.com with a certificate error, as LetsEncrypt only signed to www.copdips.com in the CN.</p>
+
+    <blockquote>
+      <p>With <a href="#enable-https-for-custom-domain-with-cloudflare">Cloudflare’s HTTPS solution</a>, there’s no such error, as Cloudflare signed a wildcard certificate to *.copdips.com in the SAN.</p>
+    </blockquote>
+  </li>
+</ul>
+
+<p>If you use APEX domain (for ex: copdips.com), hereunder the HTTPS tests :</p>
+<ul>
+  <li>typed http://copdips.com, redirected to https://copdips.com</li>
+  <li>typed http://www.copdips.com, redirected to https://copdips.com</li>
+  <li>typed https://copdips.com, redirected https://copdips.com</li>
+  <li>
+    <p>typed https://www.copdips.com, redirected to https://copdips.com</p>
+
+    <blockquote>
+      <p>With APEX domain, everything is good on HTTPS with native Github solution, you dont need Cloudflare</p>
+    </blockquote>
+  </li>
+</ul>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#github" class="page__taxonomy-item p-category" rel="tag">github</a><span class="sep">, </span>
+    
+      <a href="/tags/#github-pages" class="page__taxonomy-item p-category" rel="tag">github-pages</a><span class="sep">, </span>
+    
+      <a href="/tags/#web" class="page__taxonomy-item p-category" rel="tag">web</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2018-05-03T00:00:00+00:00">May 3, 2018</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Setting+up+Github+Pages+With+custom+domain+over+HTTPS%20https%3A%2F%2Fwww.copdips.com%2F2018%2F05%2Fsetting-up-github-pages-with-custom-domain-over-https.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.copdips.com%2F2018%2F05%2Fsetting-up-github-pages-with-custom-domain-over-https.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.copdips.com%2F2018%2F05%2Fsetting-up-github-pages-with-custom-domain-over-https.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+
+  <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.copdips.com%2F2018%2F05%2Fsetting-up-github-pages-with-custom-domain-over-https.html&title=Setting%20up%20Github%20Pages%20With%20custom%20domain%20over%20HTTPS" class="btn btn--reddit" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Reddit"><i class="fab fa-fw fa-reddit" aria-hidden="true"></i><span> Reddit</span></a>
+</section>
+
+
+      <script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+      <div id="qrcode"></div>
+      <script type="text/javascript">
+        var qrcode = new QRCode('qrcode', {width: 100, height: 100, text: location.href});
+      </script>
+
+      
+  <nav class="pagination">
+    
+      <a href="#" class="pagination--pager disabled">Previous</a>
+    
+    
+      <a href="/2018/05/setting-up-powershell-gallery-and-nuget-gallery-for-powershell.html" class="pagination--pager" title="Setting Up Powershell gallery And Nuget gallery
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+      <h4 class="page__comments-title">Leave a comment</h4>
+      <section id="disqus_thread"></section>
+    
+</div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-deploy-static-files-to-azure-web-app.html" rel="permalink">Github actions - deploy static files to azure web app
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/Some-nice-CICD-bash-common-scripts.html" rel="permalink">Some nice cicd bash common scripts
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          less than 1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-bash-shell-pipefail.html" rel="permalink">Github Actions - Bash shell -e -o pipefail
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-08T00:00:00+00:00">November 8, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/10/hashing-files.html" rel="permalink">Hashing files
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-10-21T00:00:00+00:00">October 21, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap">
+<form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term...">
+  </form>
+  <div id="results" class="results"></div>
+</div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="mailto:xiang.zhu@outlook.com" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email</a></li>
+        
+      
+        
+          <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+          <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://uptimerobot.com/dashboard#785564645" rel="nofollow noopener noreferrer"><i class="fas fa-clock" aria-hidden="true"></i> Uptime</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2023 Xiang ZHU. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp;
+<a href="https://mmistakes.github.io/minimal-mistakes/about/" rel="nofollow">Minimal Mistakes</a>
+.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'G-L9KPHRQNQN']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "https://www.copdips.com/2018/05/setting-up-github-pages-with-custom-domain-over-https.html";  /* Replace PAGE_URL with your page's canonical URL variable */
+      this.page.identifier = "/2018/05/setting-up-github-pages-with-custom-domain-over-https"; /* Replace PAGE_IDENTIFIER with your page's unique identifier variable */
+    };
+    (function() { /* DON'T EDIT BELOW THIS LINE */
+      var d = document, s = d.createElement('script');
+      s.src = 'https://copdips.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+
+  
+
+
+
+
+
+  </body>
+</html>

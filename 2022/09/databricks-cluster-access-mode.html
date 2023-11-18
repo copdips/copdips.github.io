@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+--><html lang="en" class="no-js">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Databricks cluster access mode - A code to remember</title>
+<meta name="description" content="Python developer">
+
+
+  <meta name="author" content="Xiang ZHU">
+  
+  <meta property="article:author" content="Xiang ZHU">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="A code to remember">
+<meta property="og:title" content="Databricks cluster access mode">
+<meta property="og:url" content="https://www.copdips.com/2022/09/databricks-cluster-access-mode.html">
+
+
+  <meta property="og:description" content="Python developer">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2022-09-20T00:00:00+00:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="https://www.copdips.com/2022/09/databricks-cluster-access-mode.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Xiang ZHU",
+      "url": "https://www.copdips.com/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="A code to remember Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          A code to remember
+          
+        </a>
+        <ul class="visible-links">
+<li class="masthead__menu-item">
+              <a href="/">Home</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/tags/">Tags</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/year-archive/">Year Archive</a>
+            </li>
+</ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<!-- back to top button -->
+<!-- https://github.com/mmistakes/minimal-mistakes/issues/1731#issuecomment-628997645 -->
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>addBackToTop({
+  diameter: 56,
+  backgroundColor: '#F16334',
+  textColor: '#fff'
+})</script>
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.copdips.com/">
+        <img src="/image/avatar/zhuxiang-smile.jpg" alt="Xiang ZHU" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.copdips.com/" itemprop="url">Xiang ZHU</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Python DevOps</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Paris</span>
+        </li>
+      
+
+      
+        
+          
+            <li><a href="https://www.copdips.com" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fas fa-fw fa-link" aria-hidden="true"></i><span class="label">Website</span></a></li>
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">LinkedIn</span></a></li>
+          
+        
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:xiang.zhu@outlook.com" rel="me" class="u-email">
+            <meta itemprop="email" content="xiang.zhu@outlook.com">
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+      <!-- 
+<script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+<div id="qrcode"></div>
+<script type="text/javascript">
+  var qrcode = new QRCode('qrcode', {width: 10, height: 10, text: location.href});
+</script>
+ -->
+    </ul>
+  </div>
+</div>
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Databricks cluster access mode">
+    <meta itemprop="description" content="">
+    <meta itemprop="datePublished" content="2022-09-20T00:00:00+00:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.copdips.com/2022/09/databricks-cluster-access-mode.html" class="u-url" itemprop="url">Databricks cluster access mode
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-09-20T00:00:00+00:00">September 20, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          4 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title">
+<i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu">
+<li><a href="#what-is-cluster-access-mode">What is cluster access mode</a></li>
+<li><a href="#shared-access-mode">Shared access mode</a></li>
+<li><a href="#no-isolation-shared-access-mode">No Isolation Shared access mode</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <h2 id="what-is-cluster-access-mode">What is cluster access mode</h2>
+
+<p>Just a copy from <a href="https://learn.microsoft.com/en-us/azure/databricks/data-governance/unity-catalog/compute#--what-is-cluster-access-mode">Azure Databricks official doc</a>:</p>
+
+<p class="notice--info"><a href="https://docs.databricks.com/clusters/cluster-ui-preview.html#what-is-cluster-access-mode">Amazon Databricks official doc</a> has less info on access mode.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Access Mode</th>
+      <th>Visible to user</th>
+      <th>UC Support</th>
+      <th>Supported Languages</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Single User</code></td>
+      <td>Always</td>
+      <td>Yes</td>
+      <td>Python, SQL, Scala, R</td>
+      <td>Can be assigned to and used by a single user only. Dynamic views are not supported. Credential passthrough is not supported.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Shared</code></td>
+      <td>Always (Premium plan required)</td>
+      <td>Yes</td>
+      <td>Python, SQL</td>
+      <td>Init scripts, third-party libraries, and JARS are not supported. Credential passthrough is not supported.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">No Isolation Shared</code></td>
+      <td>Hidden (Enforce User Isolation required)</td>
+      <td>No</td>
+      <td>Python, SQL, Scala, R</td>
+      <td>Admin console configuration required to enforce user isolation</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Custom</code></td>
+      <td>Hidden (For all new clusters)</td>
+      <td>No</td>
+      <td>Python, SQL, Scala, R</td>
+      <td>This option is shown only if you have existing clusters without a specified access mode.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code class="language-plaintext highlighter-rouge">Single User</code> mode is easy to understand, the cluster is reserved to a single user, other user cannot use it.</p>
+
+<p><code class="language-plaintext highlighter-rouge">Custom</code> mode is often seen in job cluster, which means cluster created by a job running in a cluster pool for example, because when creating a cluster pool, there’s no option for access mode.</p>
+
+<p>This post will talk about <code class="language-plaintext highlighter-rouge">Shared</code> and <code class="language-plaintext highlighter-rouge">No Isolation Shared</code> access modes.</p>
+
+<p class="notice--info">All the below examples were tested on a cluster with Databricks runtime v10.4 LTS (Scala 2.12 Spark 3.2.1).</p>
+
+<h2 id="shared-access-mode">
+<code class="language-plaintext highlighter-rouge">Shared</code> access mode</h2>
+
+<p>From two different users, running the same command <code class="language-plaintext highlighter-rouge">python -m site</code>, I got two different results.</p>
+
+<ul>
+  <li>in a notebook from <code class="language-plaintext highlighter-rouge">user1</code>, the mapped user is <code class="language-plaintext highlighter-rouge">spark-6166cfd7-9154-4017-b0ff-89</code>:</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">%%</span><span class="n">sh</span>
+<span class="n">whoami</span>
+<span class="n">echo</span> <span class="o">======</span>
+<span class="n">which</span> <span class="n">python</span>
+<span class="n">echo</span> <span class="o">======</span>
+<span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">site</span>
+
+<span class="c1"># outputs:
+</span><span class="n">spark</span><span class="o">-</span><span class="mi">6166</span><span class="n">cfd7</span><span class="o">-</span><span class="mi">9154</span><span class="o">-</span><span class="mi">4017</span><span class="o">-</span><span class="n">b0ff</span><span class="o">-</span><span class="mi">89</span>
+<span class="o">======</span>
+<span class="o">/</span><span class="n">databricks</span><span class="o">/</span><span class="n">python3</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python</span>
+<span class="o">======</span>
+<span class="n">sys</span><span class="p">.</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sh">'</span><span class="s">/home/spark-6166cfd7-9154-4017-b0ff-89</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/databricks/spark/python</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/databricks/spark/python/lib/py4j-0.10.9.1-src.zip</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/databricks/jars/spark--driver--driver-spark_3.2_2.12_deploy.jar</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/WSFS_NOTEBOOK_DIR</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/databricks/python_shell</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/usr/lib/python38.zip</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/usr/lib/python3.8</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/usr/lib/python3.8/lib-dynload</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/databricks/python3/lib/python3.8/site-packages</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/usr/local/lib/python3.8/dist-packages</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/usr/lib/python3/dist-packages</span><span class="sh">'</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">USER_BASE</span><span class="p">:</span> <span class="sh">'</span><span class="s">/home/spark-6166cfd7-9154-4017-b0ff-89/.local</span><span class="sh">'</span> <span class="p">(</span><span class="n">exists</span><span class="p">)</span>
+<span class="n">USER_SITE</span><span class="p">:</span> <span class="sh">'</span><span class="s">/home/spark-6166cfd7-9154-4017-b0ff-89/.local/lib/python3.8/site-packages</span><span class="sh">'</span> <span class="p">(</span><span class="n">doesn</span><span class="sh">'</span><span class="s">t exist)
+ENABLE_USER_SITE: True
+</span></code></pre></div></div>
+
+<ul>
+  <li>in a notebook from <code class="language-plaintext highlighter-rouge">user2</code>, the mapped user is <code class="language-plaintext highlighter-rouge">spark-5a9eefa7-49d3-4176-9805-1e</code>:</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>%%sh
+<span class="nb">whoami
+echo</span> <span class="o">======</span>
+which python
+<span class="nb">echo</span> <span class="o">======</span>
+python <span class="nt">-m</span> site
+
+<span class="c"># outputs:</span>
+spark-5a9eefa7-49d3-4176-9805-1e
+<span class="o">======</span>
+/databricks/python3/bin/python
+<span class="o">======</span>
+sys.path <span class="o">=</span> <span class="o">[</span>
+    <span class="s1">'/home/spark-5a9eefa7-49d3-4176-9805-1e'</span>,
+    <span class="s1">'/databricks/spark/python'</span>,
+    <span class="s1">'/databricks/spark/python/lib/py4j-0.10.9.1-src.zip'</span>,
+    <span class="s1">'/databricks/jars/spark--driver--driver-spark_3.2_2.12_deploy.jar'</span>,
+    <span class="s1">'/WSFS_NOTEBOOK_DIR'</span>,
+    <span class="s1">'/databricks/python_shell'</span>,
+    <span class="s1">'/usr/lib/python38.zip'</span>,
+    <span class="s1">'/usr/lib/python3.8'</span>,
+    <span class="s1">'/usr/lib/python3.8/lib-dynload'</span>,
+    <span class="s1">'/databricks/python3/lib/python3.8/site-packages'</span>,
+    <span class="s1">'/usr/local/lib/python3.8/dist-packages'</span>,
+    <span class="s1">'/usr/lib/python3/dist-packages'</span>,
+<span class="o">]</span>
+USER_BASE: <span class="s1">'/home/spark-5a9eefa7-49d3-4176-9805-1e/.local'</span> <span class="o">(</span>exists<span class="o">)</span>
+USER_SITE: <span class="s1">'/home/spark-5a9eefa7-49d3-4176-9805-1e/.local/lib/python3.8/site-packages'</span> <span class="o">(</span>doesn<span class="s1">'t exist)
+ENABLE_USER_SITE: True
+</span></code></pre></div></div>
+
+<ul>
+  <li>Pip install a third party Python module will fail</li>
+</ul>
+
+<p>Below example demonstrates the phrase “<em>Init scripts, third-party libraries, and JARS are not supported</em>” in the above table.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>%%sh
+pip <span class="nb">install </span><span class="nv">requests</span><span class="o">==</span>2.26.0
+<span class="c"># same error message for: `python -m pip install requests==2.26.0 --user`,</span>
+<span class="c"># except for there's no the first phrase: "Defaulting to user installation because normal site-packages is not writeable"</span>
+
+Defaulting to user installation because normal site-packages is not writeable
+Looking <span class="k">in </span>indexes: https://[REDACTED]:<span class="k">****</span>@[REDACTED]/_packaging/[REDACTED]/pypi/simple/
+Collecting <span class="nv">requests</span><span class="o">==</span>2.26.0
+  Downloading https://[REDACTED]/_packaging/daa86ee5-06b8-417b-bc88-e64e3e2eef29/pypi/download/requests/2.26/requests-2.26.0-py2.py3-none-any.whl <span class="o">(</span>62 kB<span class="o">)</span>
+Requirement already satisfied: certifi&gt;<span class="o">=</span>2017.4.17 <span class="k">in</span> /databricks/python3/lib/python3.8/site-packages <span class="o">(</span>from <span class="nv">requests</span><span class="o">==</span>2.26.0<span class="o">)</span> <span class="o">(</span>2020.12.5<span class="o">)</span>
+Requirement already satisfied: urllib3&lt;1.27,&gt;<span class="o">=</span>1.21.1 <span class="k">in</span> /databricks/python3/lib/python3.8/site-packages <span class="o">(</span>from <span class="nv">requests</span><span class="o">==</span>2.26.0<span class="o">)</span> <span class="o">(</span>1.25.11<span class="o">)</span>
+Requirement already satisfied: idna&lt;4,&gt;<span class="o">=</span>2.5 <span class="k">in</span> /databricks/python3/lib/python3.8/site-packages <span class="o">(</span>from <span class="nv">requests</span><span class="o">==</span>2.26.0<span class="o">)</span> <span class="o">(</span>2.10<span class="o">)</span>
+Collecting charset-normalizer~<span class="o">=</span>2.0.0
+  Downloading https://[REDACTED]/_packaging/daa86ee5-06b8-417b-bc88-e64e3e2eef29/pypi/download/charset-normalizer/2.0.12/charset_normalizer-2.0.12-py3-none-any.whl <span class="o">(</span>39 kB<span class="o">)</span>
+ERROR: Will not <span class="nb">install </span>to the user site because it will lack sys.path precedence to requests <span class="k">in</span> /databricks/python3/lib/python3.8/site-packages
+WARNING: You are using pip version 21.0.1<span class="p">;</span> however, version 22.2.2 is available.
+You should consider upgrading via the <span class="s1">'/databricks/python3/bin/python -m pip install --upgrade pip'</span> command.
+CalledProcessError: Command <span class="s1">'b'</span>pip <span class="nb">install </span><span class="nv">requests</span><span class="o">==</span>2.26.0<span class="se">\n</span><span class="s1">''</span> returned non-zero <span class="nb">exit </span>status 1.
+</code></pre></div></div>
+
+<h2 id="no-isolation-shared-access-mode">
+<code class="language-plaintext highlighter-rouge">No Isolation Shared</code> access mode</h2>
+
+<p class="notice--warning">Update 2023-02-01, I retested the <code class="language-plaintext highlighter-rouge">No Isolation Shared</code> access mode today, it seems that something has been changed at Databricks level.</p>
+
+<p>Hereunder the new behavior:</p>
+
+<ol>
+  <li>The user is still <code class="language-plaintext highlighter-rouge">root</code>, but the Python binary is not a system one, instead an isolated venv is used, and pip install occurs in the venv too.</li>
+  <li>For the same user, each time we re-attach to the cluster, the venv path is changed. And therefore, previous pip install is discarded.</li>
+</ol>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">%%</span><span class="n">sh</span>
+<span class="n">whoami</span>
+<span class="n">echo</span> <span class="o">======</span>
+<span class="n">which</span> <span class="n">python</span>
+<span class="n">echo</span> <span class="o">======</span>
+<span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">site</span>
+
+<span class="c1"># outputs:
+</span><span class="n">root</span>
+<span class="o">======</span>
+<span class="o">/</span><span class="n">local_disk0</span><span class="o">/</span><span class="p">.</span><span class="n">ephemeral_nfs</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">pythonEnv</span><span class="o">-</span><span class="mi">76</span><span class="n">eac499</span><span class="o">-</span><span class="n">b8f2</span><span class="o">-</span><span class="mi">451</span><span class="n">c</span><span class="o">-</span><span class="n">ac6a</span><span class="o">-</span><span class="mi">88</span><span class="n">f9a68fcae7</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python</span>
+<span class="o">======</span>
+<span class="n">sys</span><span class="p">.</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sh">'</span><span class="s">/databricks/driver</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/databricks/spark/python</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/databricks/spark/python/lib/py4j-0.10.9.5-src.zip</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/databricks/jars/spark--driver--driver-spark_3.3_2.12_deploy.jar</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/WSFS_NOTEBOOK_DIR</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/databricks/jars/spark--maven-trees--ml--11.x--graphframes--org.graphframes--graphframes_2.12--org.graphframes__graphframes_2.12__0.8.2-db1-spark3.2.jar</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/databricks/python_shell</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/usr/lib/python39.zip</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/usr/lib/python3.9</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/usr/lib/python3.9/lib-dynload</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/local_disk0/.ephemeral_nfs/envs/pythonEnv-76eac499-b8f2-451c-ac6a-88f9a68fcae7/lib/python3.9/site-packages</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/local_disk0/.ephemeral_nfs/cluster_libraries/python/lib/python3.9/site-packages</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/databricks/python/lib/python3.9/site-packages</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/usr/local/lib/python3.9/dist-packages</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/usr/lib/python3/dist-packages</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/databricks/.python_edge_libs</span><span class="sh">'</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">USER_BASE</span><span class="p">:</span> <span class="sh">'</span><span class="s">/root/.local</span><span class="sh">'</span> <span class="p">(</span><span class="n">exists</span><span class="p">)</span>
+<span class="n">USER_SITE</span><span class="p">:</span> <span class="sh">'</span><span class="s">/root/.local/lib/python3.9/site-packages</span><span class="sh">'</span> <span class="p">(</span><span class="n">doesn</span><span class="sh">'</span><span class="s">t exist)
+ENABLE_USER_SITE: False
+</span></code></pre></div></div>
+
+<p>Below is the test result on 2022-09-20:</p>
+
+<p>In contrast to <code class="language-plaintext highlighter-rouge">Shared</code> mode, within the <code class="language-plaintext highlighter-rouge">No Isolation Shared</code> mode, running the same commands, I got the same results from two different users.
+We can find that all the users are logged as <code class="language-plaintext highlighter-rouge">root</code> account.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">%%</span><span class="n">sh</span>
+<span class="n">whoami</span>
+<span class="n">echo</span> <span class="o">======</span>
+<span class="n">which</span> <span class="n">python</span>
+<span class="n">echo</span> <span class="o">======</span>
+<span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">site</span>
+
+<span class="c1"># outputs:
+</span><span class="n">root</span>
+<span class="o">======</span>
+<span class="o">/</span><span class="n">databricks</span><span class="o">/</span><span class="n">python3</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python</span>
+<span class="o">======</span>
+<span class="n">sys</span><span class="p">.</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sh">'</span><span class="s">/databricks/driver</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/databricks/spark/python</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/databricks/spark/python/lib/py4j-0.10.9-src.zip</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/databricks/jars/spark--driver--driver-spark_3.1_2.12_deploy.jar</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/WSFS_NOTEBOOK_DIR</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/databricks/python_shell</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/usr/lib/python38.zip</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/usr/lib/python3.8</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/usr/lib/python3.8/lib-dynload</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/databricks/python3/lib/python3.8/site-packages</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/usr/local/lib/python3.8/dist-packages</span><span class="sh">'</span><span class="p">,</span>
+    <span class="sh">'</span><span class="s">/usr/lib/python3/dist-packages</span><span class="sh">'</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">USER_BASE</span><span class="p">:</span> <span class="sh">'</span><span class="s">/root/.local</span><span class="sh">'</span> <span class="p">(</span><span class="n">exists</span><span class="p">)</span>
+<span class="n">USER_SITE</span><span class="p">:</span> <span class="sh">'</span><span class="s">/root/.local/lib/python3.8/site-packages</span><span class="sh">'</span> <span class="p">(</span><span class="n">doesn</span><span class="sh">'</span><span class="s">t exist)
+ENABLE_USER_SITE: True
+</span></code></pre></div></div>
+
+<ul>
+  <li>Pip install a third party Python module will succeed</li>
+</ul>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<ul>
+  <li>
+<code class="language-plaintext highlighter-rouge">Shared</code> access mode maps different users to different user space, their environments are isolated, but they cannot install any additional packages or modules.</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">No Isolation Shared</code> access mode maps all the users to the root account, everything is shared, they can install anything, but the changes imply to all users. <strong>After cluster restart, all the additional installations are purged</strong>. So maybe one project per cluster is a choice.</li>
+  <li>Another good choice is to use the <code class="language-plaintext highlighter-rouge">non-interactive job cluster</code> with a cluster pool, where the cluster pool is shared, but any user can install anything (can be limited by cluster policy), and the installation is isolated at job level. Which means even two jobs are created by the same user, the two jobs will use different environments (VMs with Databricks runtime container re-deployed in the cluster pool after each job run).</li>
+</ul>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#azure" class="page__taxonomy-item p-category" rel="tag">azure</a><span class="sep">, </span>
+    
+      <a href="/tags/#databricks" class="page__taxonomy-item p-category" rel="tag">databricks</a><span class="sep">, </span>
+    
+      <a href="/tags/#spark" class="page__taxonomy-item p-category" rel="tag">spark</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2022-09-20T00:00:00+00:00">September 20, 2022</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Databricks+cluster+access+mode%20https%3A%2F%2Fwww.copdips.com%2F2022%2F09%2Fdatabricks-cluster-access-mode.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.copdips.com%2F2022%2F09%2Fdatabricks-cluster-access-mode.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.copdips.com%2F2022%2F09%2Fdatabricks-cluster-access-mode.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+
+  <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.copdips.com%2F2022%2F09%2Fdatabricks-cluster-access-mode.html&title=Databricks%20cluster%20access%20mode" class="btn btn--reddit" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Reddit"><i class="fab fa-fw fa-reddit" aria-hidden="true"></i><span> Reddit</span></a>
+</section>
+
+
+      <script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+      <div id="qrcode"></div>
+      <script type="text/javascript">
+        var qrcode = new QRCode('qrcode', {width: 100, height: 100, text: location.href});
+      </script>
+
+      
+  <nav class="pagination">
+    
+      <a href="/2022/09/adding-data-files-to-python-package-with-setup-py.html" class="pagination--pager" title="Adding data files to Python package with setup.py
+">Previous</a>
+    
+    
+      <a href="/2022/11/azure-pipeline-delete-blobs-from-blob-storage.html" class="pagination--pager" title="Azure pipeline delete blobs from blob storage
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+      <h4 class="page__comments-title">Leave a comment</h4>
+      <section id="disqus_thread"></section>
+    
+</div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-deploy-static-files-to-azure-web-app.html" rel="permalink">Github actions - deploy static files to azure web app
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/Some-nice-CICD-bash-common-scripts.html" rel="permalink">Some nice cicd bash common scripts
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          less than 1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-bash-shell-pipefail.html" rel="permalink">Github Actions - Bash shell -e -o pipefail
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-08T00:00:00+00:00">November 8, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/10/hashing-files.html" rel="permalink">Hashing files
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-10-21T00:00:00+00:00">October 21, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap">
+<form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term...">
+  </form>
+  <div id="results" class="results"></div>
+</div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="mailto:xiang.zhu@outlook.com" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email</a></li>
+        
+      
+        
+          <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+          <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://uptimerobot.com/dashboard#785564645" rel="nofollow noopener noreferrer"><i class="fas fa-clock" aria-hidden="true"></i> Uptime</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2023 Xiang ZHU. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp;
+<a href="https://mmistakes.github.io/minimal-mistakes/about/" rel="nofollow">Minimal Mistakes</a>
+.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'G-L9KPHRQNQN']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "https://www.copdips.com/2022/09/databricks-cluster-access-mode.html";  /* Replace PAGE_URL with your page's canonical URL variable */
+      this.page.identifier = "/2022/09/databricks-cluster-access-mode"; /* Replace PAGE_IDENTIFIER with your page's unique identifier variable */
+    };
+    (function() { /* DON'T EDIT BELOW THIS LINE */
+      var d = document, s = d.createElement('script');
+      s.src = 'https://copdips.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+
+  
+
+
+
+
+
+  </body>
+</html>

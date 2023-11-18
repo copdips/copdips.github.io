@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+--><html lang="en" class="no-js">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Python Lint And Format - A code to remember</title>
+<meta name="description" content="Some commands to lint and format Python files">
+
+
+  <meta name="author" content="Xiang ZHU">
+  
+  <meta property="article:author" content="Xiang ZHU">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="A code to remember">
+<meta property="og:title" content="Python Lint And Format">
+<meta property="og:url" content="https://www.copdips.com/2021/01/python-lint-and-format.html">
+
+
+  <meta property="og:description" content="Some commands to lint and format Python files">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2021-01-04T00:00:00+00:00">
+
+
+
+  <meta property="article:modified_time" content="2023-06-10T00:55:20+00:00">
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="https://www.copdips.com/2021/01/python-lint-and-format.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Xiang ZHU",
+      "url": "https://www.copdips.com/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="A code to remember Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          A code to remember
+          
+        </a>
+        <ul class="visible-links">
+<li class="masthead__menu-item">
+              <a href="/">Home</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/tags/">Tags</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/year-archive/">Year Archive</a>
+            </li>
+</ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<!-- back to top button -->
+<!-- https://github.com/mmistakes/minimal-mistakes/issues/1731#issuecomment-628997645 -->
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>addBackToTop({
+  diameter: 56,
+  backgroundColor: '#F16334',
+  textColor: '#fff'
+})</script>
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.copdips.com/">
+        <img src="/image/avatar/zhuxiang-smile.jpg" alt="Xiang ZHU" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.copdips.com/" itemprop="url">Xiang ZHU</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Python DevOps</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Paris</span>
+        </li>
+      
+
+      
+        
+          
+            <li><a href="https://www.copdips.com" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fas fa-fw fa-link" aria-hidden="true"></i><span class="label">Website</span></a></li>
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">LinkedIn</span></a></li>
+          
+        
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:xiang.zhu@outlook.com" rel="me" class="u-email">
+            <meta itemprop="email" content="xiang.zhu@outlook.com">
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+      <!-- 
+<script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+<div id="qrcode"></div>
+<script type="text/javascript">
+  var qrcode = new QRCode('qrcode', {width: 10, height: 10, text: location.href});
+</script>
+ -->
+    </ul>
+  </div>
+</div>
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Python Lint And Format">
+    <meta itemprop="description" content="Some commands to lint and format Python files">
+    <meta itemprop="datePublished" content="2021-01-04T00:00:00+00:00">
+    <meta itemprop="dateModified" content="2023-06-10T00:55:20+00:00">
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.copdips.com/2021/01/python-lint-and-format.html" class="u-url" itemprop="url">Python Lint And Format
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2021-01-04T00:00:00+00:00">January 4, 2021</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          11 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title">
+<i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu">
+<li><a href="#azure-sdk-python-guidelines">Azure SDK Python Guidelines</a></li>
+<li>
+<a href="#lint">Lint</a><ul>
+<li><a href="#ruff">ruff</a></li>
+<li>
+<a href="#pylint">pylint</a><ul><li><a href="#ignore-unused-argument-given-a-function-name-expression">Ignore Unused Argument given a Function Name Expression</a></li></ul>
+</li>
+<li><a href="#flake8">flake8</a></li>
+<li><a href="#bandit">bandit</a></li>
+<li><a href="#ossaudit">ossaudit</a></li>
+<li><a href="#pyright">pyright</a></li>
+<li><a href="#mypy">mypy</a></li>
+<li><a href="#ignore-lint-error-in-one-line">ignore lint error in one line</a></li>
+</ul>
+</li>
+<li>
+<a href="#format">Format</a><ul>
+<li><a href="#isort">isort</a></li>
+<li><a href="#black">black</a></li>
+</ul>
+</li>
+<li><a href="#vscode">VSCode</a></li>
+<li><a href="#pyprojecttoml">pyproject.toml</a></li>
+<li>
+<a href="#git-pre-commit">Git pre-commit</a><ul>
+<li><a href="#online-examples">Online examples</a></li>
+<li><a href="#create-a-file-named-pre-commit-configyaml-to-the-root-of-your-project">Create a file named .pre-commit-config.yaml to the root of your project</a></li>
+<li><a href="#install-the-git-hook-scripts">Install the git hook scripts</a></li>
+<li><a href="#run-against-all-the-files">Run against all the files</a></li>
+<li><a href="#run-for-changed-files-only-in-ci">Run for changed files only in CI</a></li>
+<li><a href="#git-commit">Git commit</a></li>
+<li><a href="#temporarily-disabling-hooks">Temporarily disabling hooks</a></li>
+<li><a href="#automatically-enabling-pre-commit-on-repositories">Automatically enabling pre-commit on repositories</a></li>
+<li><a href="#usage-in-continuous-integration">Usage in continuous integration</a></li>
+</ul>
+</li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <h2 id="azure-sdk-python-guidelines">Azure SDK Python Guidelines</h2>
+
+<p><a href="https://azure.github.io/azure-sdk/python_implementation.html">https://azure.github.io/azure-sdk/python_implementation.html</a></p>
+
+<h2 id="lint">Lint</h2>
+
+<p class="notice--info">Update 2023-05-21: Replaced flake8, pylint, and isort by <a href="https://github.com/charliermarsh/ruff">ruff</a>. When replacing pylint, should <a href="https://beta.ruff.rs/docs/faq/#how-does-ruff-compare-to-pylint">add check by mypy</a>.
+Update 2023-11-07: Bandit could be replaced by ruff too with the support of flake-bandit.
+The nearly only thing that ruff can not do for the moment is the <a href="https://docs.astral.sh/ruff/faq/#how-does-ruff-compare-to-mypy-or-pyright-or-pyre">type checking</a>.</p>
+
+<h3 id="ruff">ruff</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ruff <span class="nb">.</span>
+ruff check <span class="nb">.</span>  <span class="c"># check is the default command so can be ignore</span>
+
+<span class="c"># show ignored ruff alerts</span>
+ruff <span class="nb">.</span> <span class="nt">--ignore-noqa</span> <span class="nt">--exit-zero</span>
+</code></pre></div></div>
+
+<h3 id="pylint">pylint</h3>
+
+<p class="notice--info">Could be replaced by <a href="https://github.com/charliermarsh/ruff">ruff</a>.</p>
+
+<p>As pylint has too many options, it’s recommended to use the pylint config file:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># file ~/.pylintrc, can be generated by pylint --generate-rcfile</span>
+
+<span class="o">[</span>MASTER]
+
+<span class="o">[</span>MESSAGES CONTROL]
+<span class="nv">disable</span><span class="o">=</span>
+    C0116, <span class="c"># Missing function or method docstring (missing-function-docstring)</span>
+    W1203, <span class="c"># Use lazy % formatting in logging functions (logging-fstring-interpolation)</span>
+
+<span class="o">[</span>format]
+max-line-length <span class="o">=</span> 88
+
+<span class="o">[</span>MISCELLANEOUS]
+<span class="c"># List of note tags to take in consideration, separated by a comma.</span>
+<span class="nv">notes</span><span class="o">=</span>FIXME
+
+<span class="o">[</span>VARIABLES]
+
+<span class="c"># List of additional names supposed to be defined in builtins. Remember that</span>
+<span class="c"># you should avoid defining new builtins when possible.</span>
+additional-builtins<span class="o">=</span>
+    spark
+</code></pre></div></div>
+
+<p>But we can also ignore some warnings directly in the pylint command:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pylint <span class="nb">.</span> <span class="nt">-j</span> 0 <span class="nt">--disable</span><span class="o">=</span>C0116,W1203
+</code></pre></div></div>
+
+<p>To show all the inline ignored pylint alerts: <code class="language-plaintext highlighter-rouge">pylint --enable=suppressed-message</code></p>
+
+<h4 id="ignore-unused-argument-given-a-function-name-expression">Ignore Unused Argument given a Function Name Expression</h4>
+
+<p>Use <a href="https://pylint.pycqa.org/en/latest/user_guide/configuration/all-options.html#dummy-variables-rgx">dummy variable</a> to ignore the Pylint warning on <a href="https://github.com/PyCQA/pylint/issues/1057">unused-argument</a>.</p>
+
+<h3 id="flake8">flake8</h3>
+
+<p class="notice--info">Could be replaced by <a href="https://github.com/charliermarsh/ruff">ruff</a>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># ignore W503 because of black format. BTW, flake8 also has W504 which is in contrary to W503.</span>
+<span class="c"># ignore E501, line too long because we have the same check at Pylint side already.</span>
+flake8 <span class="nb">.</span> <span class="se">\</span>
+  <span class="nt">--exclude</span><span class="o">=</span>venv <span class="se">\</span>
+  <span class="nt">--extend-ignore</span><span class="o">=</span>E203,E501,W503, <span class="se">\</span>
+  <span class="nt">--max-complexity</span><span class="o">=</span>7 <span class="se">\</span>
+  <span class="nt">--show-source</span> <span class="se">\</span>
+  <span class="nt">--statistics</span> <span class="se">\</span>
+  <span class="nt">--count</span> <span class="se">\</span>
+  <span class="nt">--jobs</span><span class="o">=</span>auto
+
+flake8 <span class="o">[</span>a_file_path]
+</code></pre></div></div>
+
+<p>To show all the inline ignored flake8 alerts: <code class="language-plaintext highlighter-rouge">flake8 --disable-noqa || true</code></p>
+
+<p>There’s a very nice flake8 plugin called <a href="https://github.com/Melevir/flake8-cognitive-complexity"><strong>flake8-cognitive-complexity</strong></a> which checks the <a href="https://blog.sonarsource.com/cognitive-complexity-because-testability-understandability">Cognitive Complexity</a> in addition to the Cyclomatic Complexity provided by flake8 out of the box. We dont need to add extra parameter to use the Cognitive Complexity in flake8, it’s set to <code class="language-plaintext highlighter-rouge">--max-cognitive-complexity=7</code> by default once the plugin is installed. By the way, Sonar sets the Cognitive Complexity threshold to 15 by default.</p>
+
+<p>To fix <code class="language-plaintext highlighter-rouge">imported but not used</code> error in <code class="language-plaintext highlighter-rouge">__init__.py</code> file, could by <a href="https://stackoverflow.com/a/31079085/5095636"><strong>all</strong> attribute</a> (the most elegant) or by <a href="https://flake8.pycqa.org/en/latest/user/options.html#cmdoption-flake8-per-file-ignores">–per-file-ignores</a>.</p>
+
+<h3 id="bandit">bandit</h3>
+
+<p class="notice--info">Update 2023-11-07: <a href="https://docs.astral.sh/ruff/rules/#flake8-bandit-s">ruff</a> supports flake-bandit, so we can use ruff instead of bandit now, vscode also supports to <a href="https://github.com/microsoft/vscode-python/wiki/Migration-to-Python-Tools-Extensions#alternatives-for-deprecated-settings--">switch to flakes-bandit</a>.</p>
+
+<p>The bandit config file format is not well documented, I passed a lot of time to test the config.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> .bandit
+<span class="c"># https://github.com/PyCQA/bandit/issues/400</span>
+exclude_dirs:
+  - <span class="s2">"./venv/*"</span>
+
+<span class="c"># https://github.com/PyCQA/bandit/pull/633</span>
+assert_used:
+  skips:
+    - <span class="s2">"*/*_test.py"</span>
+    - <span class="s2">"*/test_*.py"</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># without specifying -c ./bandit, it doesn't work</span>
+<span class="nv">$ </span>bandit <span class="nb">.</span> <span class="nt">-r</span> <span class="nt">-c</span> ./.bandit
+</code></pre></div></div>
+
+<h3 id="ossaudit">ossaudit</h3>
+
+<p><a href="https://github.com/illikainen/ossaudit">ossaudit</a> uses <a href="https://ossindex.sonatype.org/">Sonatype OSS Index</a> to audit Python packages for known vulnerabilities.</p>
+
+<p>It can check installed packages and/or packages specified in dependency files. The following formats are supported with <a href="https://github.com/pyupio/dparse">dparse</a>:</p>
+
+<ul>
+  <li>PIP requirement files</li>
+  <li>Pipfile</li>
+  <li>Pipfile.lock</li>
+  <li>tox.ini</li>
+  <li>conda.yml</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># check installed packages and packages listed in two requirements files</span>
+<span class="nv">$ </span>ossaudit <span class="nt">--installed</span> <span class="nt">--file</span> requirements.txt <span class="nt">--file</span> requirements-dev.txt
+Found 0 vulnerabilities <span class="k">in </span>214 packages
+</code></pre></div></div>
+
+<p>Github has already provided, free of charge, the <a href="https://docs.github.com/en/code-security/supply-chain-security/managing-vulnerabilities-in-your-projects-dependencies/about-alerts-for-vulnerable-dependencies">vulnerable dependencies alert</a>.</p>
+
+<h3 id="pyright">pyright</h3>
+
+<p>faster than mypy.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pyproject.toml:
+
+<span class="sb">```</span>toml
+<span class="o">[</span>tool.pyright]
+reportUnnecessaryTypeIgnoreComment <span class="o">=</span> <span class="nb">true
+</span>include <span class="o">=</span> <span class="o">[]</span>
+exclude <span class="o">=</span> <span class="o">[]</span>
+</code></pre></div></div>
+
+<p>running pyright:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># scan pathes specified in pyproject.toml include, exclude</span>
+pyright
+
+<span class="c"># scan current folder and subfolders in spite of pyproject.toml include, exclude</span>
+pyright <span class="nb">.</span>
+</code></pre></div></div>
+
+<h3 id="mypy">mypy</h3>
+
+<p>For projects having sqlalchemy, we often install the <code class="language-plaintext highlighter-rouge">sqlalchemy-stubs</code> plugin as sqlalchemy uses some dynamic classes.</p>
+
+<p>And also django-stubs, pandas-stubs, types-setuptools, types-requests etc.</p>
+
+<p><a href="https://mypy.readthedocs.io/en/stable/config_file.html">mypy config file</a>:</p>
+
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[mypy]</span>
+<span class="py">ignore_missing_imports</span> <span class="p">=</span> <span class="s">True # We recommend using this approach only as a last resort: it's equivalent to adding a # type: ignore to all unresolved imports in your codebase.</span>
+<span class="py">plugins</span> <span class="p">=</span> <span class="s">sqlmypy # sqlalchemy-stubs</span>
+<span class="py">exclude</span> <span class="p">=</span> <span class="s">(?x)(</span>
+    <span class="err">^venv</span>
+    <span class="err">|</span> <span class="err">^build</span>
+  <span class="err">)</span>
+</code></pre></div></div>
+
+<p>running mypy:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mypy <span class="nb">.</span>
+mypy <span class="nb">.</span> <span class="nt">--exclude</span> <span class="o">[</span>a regular expression that matches file path]
+mypy <span class="nb">.</span> <span class="nt">--exclude</span> venv[//] <span class="c"># exclude venv folder under the root</span>
+</code></pre></div></div>
+
+<p class="notice--warning">When using mypy, it would be better to use mypy against to <a href="https://github.com/python/mypy/issues/13916">all files in the project</a>, but ont some of them,</p>
+
+<h3 id="ignore-lint-error-in-one-line">ignore lint error in one line</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>linter</th>
+      <th>ignore in one line</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ruff</td>
+      <td>(2 spaces)# noqa: {errorIdentifier}</td>
+    </tr>
+    <tr>
+      <td>pylint</td>
+      <td>(2 spaces)# pylint: disable={errorIdentifier}</td>
+    </tr>
+    <tr>
+      <td>flake8</td>
+      <td>(2 spaces)# noqa: {errorIdentifier}</td>
+    </tr>
+    <tr>
+      <td>bandit</td>
+      <td>(2 spaces)# nosec</td>
+    </tr>
+    <tr>
+      <td>pyright</td>
+      <td>(2 spaces)# pyright: ignore [reportOptionalMemberAccess, reportGeneralTypeIssues]</td>
+    </tr>
+    <tr>
+      <td>mypy</td>
+      <td>(2 spaces)# type: ignore</td>
+    </tr>
+    <tr>
+      <td>multiple linters</td>
+      <td>(2 spaces)# type: ignore # noqa: {errorIdentifier} # pylint: disable={errorIdentifier}</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>To ignore Pylint within a code block</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># https://stackoverflow.com/a/48836605/5095636
+</span><span class="kn">import</span> <span class="n">sys</span>
+<span class="n">sys</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="sh">"</span><span class="s">xx/xx</span><span class="sh">"</span><span class="p">)</span>
+
+<span class="c1"># pylint: disable=wrong-import-position
+</span><span class="kn">from</span> <span class="n">x</span> <span class="kn">import</span> <span class="p">(</span>  <span class="c1"># noqa: E402
+</span>    <span class="n">a</span><span class="p">,</span>
+    <span class="n">b</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="n">y</span> <span class="kn">import</span> <span class="n">c</span>  <span class="c1"># noqa: E402
+</span>
+<span class="c1"># pylint: enable=wrong-import-position
+</span></code></pre></div></div>
+
+<h2 id="format">Format</h2>
+
+<h3 id="isort">isort</h3>
+
+<p class="notice--info">Could be replaced by <a href="https://github.com/charliermarsh/ruff">ruff</a>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>isort <span class="nb">.</span> <span class="nt">--profile</span><span class="o">=</span>black <span class="nt">--virtual-env</span><span class="o">=</span>venv <span class="nt">--recursive</span> <span class="nt">--check-only</span>
+isort <span class="nb">.</span> <span class="nt">--profile</span><span class="o">=</span>black <span class="nt">--virtual-env</span><span class="o">=</span>venv <span class="nt">--recursive</span>
+isort <span class="o">[</span>a_file_path]
+</code></pre></div></div>
+
+<p class="notice--warning">Be very careful with isort, it’s not uncompromising, especially for some codes that dynamically import some modules inside a function instead of from the beginning of a file. People use often this to avoid circular import problem. Always run the tests after the isort.</p>
+
+<h3 id="black">black</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>black <span class="nb">.</span> <span class="nt">--check</span>
+black <span class="nb">.</span>
+black <span class="o">[</span>a_file_path]
+</code></pre></div></div>
+
+<p>Using black with other tools: <a href="https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html">https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html</a></p>
+
+<h2 id="vscode">VSCode</h2>
+
+<p>Just my 2 cents, try the <a href="https://marketplace.visualstudio.com/items?itemName=usernamehw.errorlens">errorlens</a> extension in VSCode, it will lint all the warnings/errors on live when coding, it’s really cool.</p>
+
+<p>And don’t forget to install the official <a href="https://marketplace.visualstudio.com/items?itemName=SonarSource.sonarlint-vscode">SonarLint</a> extension, it will give you extra lint. It eats a lot of memory with its java processes nevertheless.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">  </span><span class="nl">"python.formatting.provider"</span><span class="p">:</span><span class="w"> </span><span class="s2">"none"</span><span class="err">,</span><span class="w">
+  </span><span class="nl">"[python]"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"editor.defaultFormatter"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ms-python.black-formatter"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"editor.formatOnSave"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"editor.codeActionsOnSave"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="err">//</span><span class="w"> </span><span class="nl">"source.organizeImports"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+  </span><span class="p">}</span><span class="err">,</span><span class="w">
+  </span><span class="nl">"python.linting.banditEnabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="err">,</span><span class="w">
+  </span><span class="nl">"python.linting.banditArgs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"-r"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"-c"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"~/pyproject.toml"</span><span class="w">
+  </span><span class="p">]</span><span class="err">,</span><span class="w">
+  </span><span class="nl">"python.linting.ignorePatterns"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">".vscode/*.py"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"**/site-packages/**/*.py"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"venv/"</span><span class="w">
+  </span><span class="p">]</span><span class="err">,</span><span class="w">
+  </span><span class="nl">"python.linting.mypyEnabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="err">,</span><span class="w">
+  </span><span class="nl">"python.linting.mypyArgs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"--follow-imports=silent"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"--ignore-missing-imports"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"--show-column-numbers"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"--no-pretty"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"--warn-return-any"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"--warn-unused-configs"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"--show-error-codes"</span><span class="w">
+  </span><span class="p">]</span><span class="err">,</span><span class="w">
+  </span><span class="nl">"sonarlint.connectedMode.connections.sonarqube"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"serverUrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://sonar.xxx"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"connectionId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sonar.xxx"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="err">,</span><span class="w">
+  </span><span class="nl">"[json]"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"editor.defaultFormatter"</span><span class="p">:</span><span class="w"> </span><span class="s2">"esbenp.prettier-vscode"</span><span class="p">,</span><span class="w">
+    </span><span class="err">//</span><span class="w"> </span><span class="nl">"editor.defaultFormatter"</span><span class="p">:</span><span class="w"> </span><span class="s2">"esbenp.prettier-vscode"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"editor.formatOnSave"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+  </span><span class="p">}</span><span class="err">,</span><span class="w">
+  </span><span class="nl">"[jsonc]"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"editor.defaultFormatter"</span><span class="p">:</span><span class="w"> </span><span class="s2">"vscode.json-language-features"</span><span class="w">
+  </span><span class="p">}</span><span class="err">,</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="pyprojecttoml">pyproject.toml</h2>
+
+<p><code class="language-plaintext highlighter-rouge">pyproject.toml</code> is the new standard in Python introduced by <a href="https://peps.python.org/pep-0518/">PEP 518</a> (2016) for build system requirements, <a href="https://peps.python.org/pep-0621/">PEP 621</a> (2020) for project metadata, and <a href="https://peps.python.org/pep-0660/">PEP 660</a> (2021) for wheel based editable installs.</p>
+
+<p>It’s fun to know <a href="https://peps.python.org/pep-0518/#other-file-names">why Python authority chose this name</a>, and very interesting to understand their POV of <a href="https://peps.python.org/pep-0518/#other-file-formats">different file formats</a> <img class="emoji" title=":smile:" alt=":smile:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f604.png" height="20" width="20">.</p>
+
+<p>All the the major tools (setuptools, pip-tools, poetry) support this new standard, and the repo <a href="https://github.com/carlosperate/awesome-pyproject/">awesome-pyproject</a> maintains a list of Python tools which are compatible to <code class="language-plaintext highlighter-rouge">pyproject.toml</code>.</p>
+
+<p class="notice--warning">We cannot officially <a href="https://github.com/PyCQA/flake8/issues/234">declare flake8 config in pyproject.toml</a>.</p>
+
+<p>Hereunder an example of its content for the lint part.</p>
+
+<div class="language-toml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[tool.ruff]</span>
+<span class="py">fix</span> <span class="p">=</span> <span class="kc">true</span>
+<span class="py">show-fixes</span> <span class="p">=</span> <span class="kc">true</span>
+<span class="py">select</span> <span class="p">=</span> <span class="p">[</span>
+    <span class="s">"ALL"</span><span class="p">,</span>
+    <span class="c"># "E",  # pycodestyle errors</span>
+    <span class="c"># "W",  # pycodestyle warnings</span>
+    <span class="c"># "F",  # pyflakes</span>
+    <span class="c"># "I",  # isort</span>
+    <span class="c"># "C",  # flake8-comprehensions</span>
+    <span class="c"># "B",  # flake8-bugbear</span>
+<span class="p">]</span>
+<span class="py">ignore</span> <span class="p">=</span> <span class="p">[</span>
+    <span class="c"># https://beta.ruff.rs/docs/rules/</span>
+    <span class="s">"D"</span><span class="p">,</span>  <span class="c"># pydocstyle</span>
+    <span class="s">"E501"</span><span class="p">,</span>  <span class="c"># line too long, handled by black</span>
+    <span class="s">"B008"</span><span class="p">,</span>  <span class="c"># do not perform function calls in argument defaults</span>
+    <span class="s">"ANN"</span><span class="p">,</span>  <span class="c"># flake8-annotations</span>
+    <span class="c"># "C901",  # too complex</span>
+    <span class="c"># "PTH123", # pathlib-open - this would force pathlib usage anytime open or with open was used.</span>
+<span class="p">]</span>
+
+<span class="nn">[tool.ruff.isort]</span>
+<span class="c"># Combine multiple `from foo import bar as baz` statements with the same source</span>
+<span class="c"># (`foo`) into a single statement.</span>
+<span class="py">combine-as-imports</span> <span class="p">=</span> <span class="kc">true</span>
+
+<span class="c"># Imports of the form `from foo import bar as baz` show one `import bar as baz`</span>
+<span class="c"># per line. Useful for __init__.py files that just re-export symbols.</span>
+<span class="py">force-wrap-aliases</span> <span class="p">=</span> <span class="kc">true</span>
+
+<span class="nn">[tool.ruff.per-file-ignores]</span>
+<span class="c"># Don't format docstrings in alembic migrations.</span>
+<span class="py">"**/alembic/versions/*.py"</span> <span class="p">=</span> <span class="p">[</span><span class="s">"D"</span><span class="p">]</span>
+<span class="py">"tests/**/*.py"</span> <span class="p">=</span> <span class="p">[</span>
+    <span class="s">"S101"</span><span class="p">,</span> <span class="c"># asserts allowed in tests...</span>
+    <span class="s">"ARG"</span><span class="p">,</span> <span class="c"># Unused function args -&gt; fixtures nevertheless are functionally relevant...</span>
+    <span class="s">"FBT"</span><span class="p">,</span> <span class="c"># Don't care about booleans as positional arguments in tests, e.g. via @pytest.mark.parametrize()</span>
+<span class="p">]</span>
+<span class="nn">[tool.ruff.pep8-naming]</span>
+<span class="py">classmethod-decorators</span> <span class="p">=</span> <span class="p">[</span><span class="s">"pydantic.validator"</span><span class="p">]</span>
+
+<span class="nn">[tool.pyright]</span>
+<span class="py">reportUnnecessaryTypeIgnoreComment</span> <span class="p">=</span> <span class="kc">true</span>
+
+<span class="c"># mypy not used in favor of pyright</span>
+<span class="c"># [tool.mypy]</span>
+<span class="c"># incremental = true</span>
+<span class="c"># ignore_missing_imports = true</span>
+<span class="c"># warn_return_any = true</span>
+<span class="c"># warn_unused_configs = true</span>
+<span class="c"># # disallow_untyped_defs = true</span>
+<span class="c"># exclude = [</span>
+<span class="c">#     "^.venv/",</span>
+<span class="c">#     "^build/",</span>
+<span class="c">#     "^_local_test/",</span>
+<span class="c"># ]</span>
+
+<span class="nn">[tool.bandit]</span>
+<span class="py">exclude_dirs</span> <span class="p">=</span> <span class="p">[</span><span class="s">".venv"</span><span class="p">,</span> <span class="s">"_local_test"</span><span class="p">]</span>
+<span class="py">skips</span> <span class="p">=</span> <span class="p">[</span><span class="s">"B101"</span><span class="p">]</span>
+<span class="c"># tests = ["B201", "B301"]</span>
+
+<span class="c"># replaced by ruff with mypy</span>
+<span class="c"># [tool.pylint.main]</span>
+<span class="c"># # ! type to use pyspark-stubs</span>
+<span class="c"># # extension-pkg-allow-list = ["pyspark"]</span>
+<span class="c"># # ignored-modules = ["pyspark"]</span>
+<span class="c"># jobs = 0</span>
+<span class="c"># # [tool.pylint.typecheck]</span>
+<span class="c"># # # ! type to use pyspark-stubs</span>
+<span class="c"># # generated-members = ["pyspark.sql.functions"]</span>
+<span class="c"># [tool.pylint.variables]</span>
+<span class="c"># # List of additional names supposed to be defined in builtins. Remember that</span>
+<span class="c"># # you should avoid defining new builtins when possible.</span>
+<span class="c"># # additional-builtins = ["spark"]</span>
+<span class="c"># [tool.pylint."messages control"]</span>
+<span class="c"># disable = [</span>
+<span class="c">#     "missing-class-docstring",</span>
+<span class="c">#     "missing-module-docstring",</span>
+<span class="c">#     "missing-function-docstring",</span>
+<span class="c">#     "logging-fstring-interpolation",</span>
+<span class="c"># ]</span>
+<span class="c"># [tool.pylint.miscellaneous]</span>
+<span class="c"># notes = ["FIXME"]</span>
+<span class="c"># [tool.pylint.format]</span>
+<span class="c"># max-line-length = 88</span>
+<span class="c"># expected-line-ending-format = "LF"</span>
+<span class="c"># ignore-long-lines = "^\\s*(# )?&lt;?https?://\\S+&gt;?$"</span>
+
+<span class="nn">[tool.pytest.ini_options]</span>
+<span class="py">testpaths</span><span class="p">=[</span><span class="s">"tests/unit"</span><span class="p">]</span>
+<span class="py">addopts</span><span class="p">=</span><span class="s">"""
+    -v -s
+    --junitxml=junit/test-results.xml
+    --cov app
+    --cov-report=html
+    --cov-report=xml
+    --cov-report=term-missing:skip-covered
+    --cov-fail-under=95
+    """</span>
+</code></pre></div></div>
+
+<h2 id="git-pre-commit">Git pre-commit</h2>
+
+<p><a href="https://pre-commit.com/">https://pre-commit.com/</a></p>
+
+<blockquote>
+  <p>“Git hook scripts are useful for identifying simple issues before submission to code review. We run our hooks on every commit to automatically point out issues in code such as missing semicolons, trailing whitespace, and debug statements. By pointing these issues out before code review, this allows a code reviewer to focus on the architecture of a change while not wasting time with trivial style nitpicks.”</p>
+</blockquote>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pip <span class="nb">install </span>pre-commit
+pre-commit <span class="nb">install</span>
+
+<span class="c"># install the script along with the hook environments in one command</span>
+<span class="c"># https://pre-commit.com/index.html#pre-commit-install-hooks</span>
+pre-commit <span class="nb">install</span> <span class="nt">--install-hooks</span>
+
+<span class="c"># Auto-update pre-commit config to the latest repos' versions.</span>
+pre-commit autoupdate
+
+<span class="c"># Clean out cached pre-commit files.</span>
+pre-commit clean
+
+<span class="c"># Clean unused cached repos.</span>
+pre-commit gc
+
+<span class="c"># Run single check</span>
+pre-commit run black
+
+<span class="c"># continuous integration</span>
+<span class="c"># https://pre-commit.com/index.html#usage-in-continuous-integration</span>
+pre-commit run <span class="nt">--all-files</span>
+<span class="c"># check only files which have changed</span>
+pre-commit run <span class="nt">--from-ref</span> origin/HEAD <span class="nt">--to-ref</span> HEAD
+
+<span class="c"># Azure pipeline example with cache</span>
+https://pre-commit.com/index.html#azure-pipelines-example
+
+<span class="c"># automatically enabling pre-commit on repositories</span>
+<span class="c"># https://pre-commit.com/index.html#automatically-enabling-pre-commit-on-repositories</span>
+git config <span class="nt">--global</span> init.templateDir ~/.git-template
+pre-commit init-templatedir ~/.git-template
+</code></pre></div></div>
+
+<h3 id="online-examples">Online examples</h3>
+
+<p><a href="https://github.com/PyCQA/pylint/blob/main/.pre-commit-config.yaml">pylint github pre-commit-config.yaml</a></p>
+
+<h3 id="create-a-file-named-pre-commit-configyaml-to-the-root-of-your-project">Create a file named <code class="language-plaintext highlighter-rouge">.pre-commit-config.yaml</code> to the root of your project</h3>
+
+<p class="notice--info">Although each lint has its own config to exclude some files from checking, pre-commit also has the key <a href="https://pre-commit.com/#hooks-exclude">exclude</a> with list value or <a href="https://pre-commit.com/#regular-expressions">regex</a> to exclude file from sending to linter.</p>
+
+<p class="notice--info"><code class="language-plaintext highlighter-rouge">language: system</code> means using the executables from the same environment of current Python interpreter.</p>
+
+<p class="notice--warning">When using mypy in pre-commit, it would be better run <code class="language-plaintext highlighter-rouge">pre-commit run --all-files</code>, mypy <a href="https://github.com/python/mypy/issues/13916">doesn’t work well with only diff files</a> sent by <code class="language-plaintext highlighter-rouge">pre-commit run --from-ref origin/${pullrequest_target_branch_name} --to-ref HEAD</code>.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Installation:</span>
+<span class="c1"># pip install pre-commit</span>
+<span class="c1"># pre-commit install</span>
+<span class="na">repos</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">repo</span><span class="pi">:</span> <span class="s">https://github.com/pre-commit/pre-commit-hooks</span>
+    <span class="na">rev</span><span class="pi">:</span> <span class="s">v4.3.0</span>
+    <span class="na">hooks</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">check-json</span>
+        <span class="na">exclude</span><span class="pi">:</span> <span class="s">devcontainer.json</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">check-yaml</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">check-toml</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">end-of-file-fixer</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">trailing-whitespace</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">debug-statements</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">requirements-txt-fixer</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">detect-private-key</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">mixed-line-ending</span>
+        <span class="na">args</span><span class="pi">:</span> <span class="pi">[</span><span class="s2">"</span><span class="s">--fix=lf"</span><span class="pi">]</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">check-added-large-files</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">no-commit-to-branch</span>
+  <span class="pi">-</span> <span class="na">repo</span><span class="pi">:</span> <span class="s">https://github.com/Lucas-C/pre-commit-hooks</span>
+    <span class="na">rev</span><span class="pi">:</span> <span class="s">v1.3.1</span>
+    <span class="na">hooks</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">forbid-crlf</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">remove-crlf</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">forbid-tabs</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">remove-tabs</span>
+  <span class="pi">-</span> <span class="na">repo</span><span class="pi">:</span> <span class="s">https://github.com/pre-commit/mirrors-prettier</span>
+    <span class="na">rev</span><span class="pi">:</span> <span class="s">v3.0.0-alpha.1</span>
+    <span class="na">hooks</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">prettier</span>
+  <span class="pi">-</span> <span class="na">repo</span><span class="pi">:</span> <span class="s">https://github.com/pre-commit/pygrep-hooks</span>
+    <span class="na">rev</span><span class="pi">:</span> <span class="s">v1.9.0</span>
+    <span class="na">hooks</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">python-check-blanket-type-ignore</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">python-check-mock-methods</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">python-no-log-warn</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">python-use-type-annotations</span>
+  <span class="pi">-</span> <span class="na">repo</span><span class="pi">:</span> <span class="s">https://github.com/asottile/pyupgrade</span>
+    <span class="na">rev</span><span class="pi">:</span> <span class="s">v3.1.0</span>
+    <span class="na">hooks</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">pyupgrade</span>
+  <span class="pi">-</span> <span class="na">repo</span><span class="pi">:</span> <span class="s">local</span>
+    <span class="na">hooks</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">bandit</span>
+        <span class="na">name</span><span class="pi">:</span> <span class="s">bandit</span>
+        <span class="na">entry</span><span class="pi">:</span> <span class="s">bandit</span>
+        <span class="na">language</span><span class="pi">:</span> <span class="s">system</span>
+        <span class="na">types</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">python</span><span class="pi">]</span>
+        <span class="na">args</span><span class="pi">:</span>
+          <span class="pi">-</span> <span class="s">-c</span>
+          <span class="pi">-</span> <span class="s">pyproject.toml</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">ruff</span>
+        <span class="na">name</span><span class="pi">:</span> <span class="s">ruff</span>
+        <span class="na">entry</span><span class="pi">:</span> <span class="s">ruff</span>
+        <span class="na">language</span><span class="pi">:</span> <span class="s">system</span>
+        <span class="na">types</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">python</span><span class="pi">]</span>
+        <span class="na">args</span><span class="pi">:</span>
+          <span class="pi">-</span> <span class="s2">"</span><span class="s">."</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">black</span>
+        <span class="na">name</span><span class="pi">:</span> <span class="s">black</span>
+        <span class="na">entry</span><span class="pi">:</span> <span class="s">black</span>
+        <span class="na">language</span><span class="pi">:</span> <span class="s">system</span>
+        <span class="na">types</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">python</span><span class="pi">]</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">pyright</span>
+        <span class="na">name</span><span class="pi">:</span> <span class="s">pyright</span>
+        <span class="na">language</span><span class="pi">:</span> <span class="s">system</span>
+        <span class="na">entry</span><span class="pi">:</span> <span class="s">pyright</span>
+        <span class="na">types</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">python</span><span class="pi">]</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">pytest</span>
+        <span class="na">name</span><span class="pi">:</span> <span class="s">pytest</span>
+        <span class="na">types</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">python</span><span class="pi">]</span>
+        <span class="na">entry</span><span class="pi">:</span> <span class="s">pytest</span>
+        <span class="na">language</span><span class="pi">:</span> <span class="s">system</span>
+        <span class="na">pass_filenames</span><span class="pi">:</span> <span class="kc">false</span>
+        <span class="na">always_run</span><span class="pi">:</span> <span class="kc">true</span>
+
+
+</code></pre></div></div>
+
+<p class="notice--warning">Be aware that especially in a local environment, we often use venv, in such case, it would be better to use above system level lint executables instead of below public ones, the checks will be more accurate.</p>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># example of using online linters</span>
+<span class="c1"># Installation:</span>
+<span class="c1"># pip install pre-commit</span>
+<span class="c1"># pre-commit install</span>
+<span class="na">repos</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">repo</span><span class="pi">:</span> <span class="s">https://github.com/pre-commit/pre-commit-hooks</span>
+    <span class="na">rev</span><span class="pi">:</span> <span class="s">v4.4.0</span>
+    <span class="na">hooks</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">check-json</span>
+        <span class="na">exclude</span><span class="pi">:</span> <span class="s">devcontainer.json</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">check-yaml</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">check-toml</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">end-of-file-fixer</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">trailing-whitespace</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">debug-statements</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">requirements-txt-fixer</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">detect-private-key</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">mixed-line-ending</span>
+        <span class="na">args</span><span class="pi">:</span> <span class="pi">[</span><span class="s2">"</span><span class="s">--fix=lf"</span><span class="pi">]</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">check-added-large-files</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">no-commit-to-branch</span>
+  <span class="pi">-</span> <span class="na">repo</span><span class="pi">:</span> <span class="s">https://github.com/Lucas-C/pre-commit-hooks</span>
+    <span class="na">rev</span><span class="pi">:</span> <span class="s">v1.5.1</span>
+    <span class="na">hooks</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">forbid-crlf</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">remove-crlf</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">forbid-tabs</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">remove-tabs</span>
+  <span class="pi">-</span> <span class="na">repo</span><span class="pi">:</span> <span class="s">https://github.com/pre-commit/mirrors-prettier</span>
+    <span class="na">rev</span><span class="pi">:</span> <span class="s">v3.0.0-alpha.9-for-vscode</span>
+    <span class="na">hooks</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">prettier</span>
+        <span class="na">exclude</span><span class="pi">:</span> <span class="s2">"</span><span class="s">.md"</span>
+  <span class="pi">-</span> <span class="na">repo</span><span class="pi">:</span> <span class="s">https://github.com/pre-commit/pygrep-hooks</span>
+    <span class="na">rev</span><span class="pi">:</span> <span class="s">v1.10.0</span>
+    <span class="na">hooks</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">python-check-blanket-type-ignore</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">python-check-mock-methods</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">python-no-log-warn</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">python-use-type-annotations</span>
+  <span class="pi">-</span> <span class="na">repo</span><span class="pi">:</span> <span class="s">local</span>
+    <span class="na">hooks</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">bandit</span>
+        <span class="na">name</span><span class="pi">:</span> <span class="s">bandit</span>
+        <span class="na">entry</span><span class="pi">:</span> <span class="s">bandit</span>
+        <span class="na">language</span><span class="pi">:</span> <span class="s">system</span>
+        <span class="na">types</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">python</span><span class="pi">]</span>
+        <span class="na">args</span><span class="pi">:</span>
+          <span class="pi">-</span> <span class="s">-c</span>
+          <span class="pi">-</span> <span class="s">pyproject.toml</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">ruff</span>
+        <span class="na">name</span><span class="pi">:</span> <span class="s">ruff</span>
+        <span class="na">entry</span><span class="pi">:</span> <span class="s">ruff</span>
+        <span class="na">language</span><span class="pi">:</span> <span class="s">system</span>
+        <span class="na">types</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">python</span><span class="pi">]</span>
+        <span class="na">args</span><span class="pi">:</span>
+          <span class="pi">-</span> <span class="s">--fix</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">black</span>
+        <span class="na">name</span><span class="pi">:</span> <span class="s">black</span>
+        <span class="na">entry</span><span class="pi">:</span> <span class="s">black</span>
+        <span class="na">language</span><span class="pi">:</span> <span class="s">system</span>
+        <span class="na">types</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">python</span><span class="pi">]</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">mypy</span>
+        <span class="na">name</span><span class="pi">:</span> <span class="s">mypy</span>
+        <span class="na">language</span><span class="pi">:</span> <span class="s">system</span>
+        <span class="na">entry</span><span class="pi">:</span> <span class="s">mypy</span>
+        <span class="na">types</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">python</span><span class="pi">]</span>
+        <span class="na">args</span><span class="pi">:</span>
+          <span class="c1"># - --strict</span>
+          <span class="pi">-</span> <span class="s">--show-error-codes</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">pytest</span>
+        <span class="na">name</span><span class="pi">:</span> <span class="s">pytest</span>
+        <span class="na">types</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">python</span><span class="pi">]</span>
+        <span class="na">entry</span><span class="pi">:</span> <span class="s">pytest</span>
+        <span class="na">language</span><span class="pi">:</span> <span class="s">system</span>
+        <span class="na">pass_filenames</span><span class="pi">:</span> <span class="kc">false</span>
+        <span class="na">always_run</span><span class="pi">:</span> <span class="kc">true</span>
+</code></pre></div></div>
+
+<h3 id="install-the-git-hook-scripts">Install the git hook scripts</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pre-commit <span class="nb">install
+</span>pre-commit installed at .git/hooks/pre-commit
+
+<span class="nv">$ </span>pre-commit <span class="nb">install</span> <span class="nt">--hook-type</span> post-merge
+pre-commit installed at .git/hooks/post-merge
+
+<span class="nv">$ </span>pre-commit <span class="nb">install</span> <span class="nt">--hook-type</span> pre-merge-commit
+pre-commit installed at .git/hooks/pre-merge-commit
+</code></pre></div></div>
+
+<p class="notice--info">You could also run <code class="language-plaintext highlighter-rouge">pre-commit install --hook-type pre-push</code> to register pre-push hooks.</p>
+
+<h3 id="run-against-all-the-files">Run against all the files</h3>
+
+<blockquote>
+  <p>“it’s usually a good idea to run the hooks against all of the files when adding new hooks (usually pre-commit will only run on the changed files during git hooks)”</p>
+</blockquote>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pre-commit run <span class="nt">--all-files</span>
+</code></pre></div></div>
+
+<h3 id="run-for-changed-files-only-in-ci">Run for changed files only in CI</h3>
+
+<p>Please check also this <a href="https://pre-commit.com/#usage-in-continuous-integration">official doc</a>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git fetch origin
+pre-commit run <span class="nt">--from-ref</span> origin/<span class="k">${</span><span class="nv">pullrequest_target_branch_name</span><span class="k">}</span> <span class="nt">--to-ref</span> HEAD
+</code></pre></div></div>
+
+<p class="notice--warning">When using mypy, it would be better to use mypy against to <a href="https://github.com/python/mypy/issues/13916">all files in the project</a>, but not the changed one only.</p>
+
+<h3 id="git-commit">Git commit</h3>
+
+<p>Each time we use git commit to stage some files, these files will be sent to pre-commit to be checked against to the hooks defined in <code class="language-plaintext highlighter-rouge">.pre-commit-config.yaml</code>.</p>
+
+<h3 id="temporarily-disabling-hooks">Temporarily disabling hooks</h3>
+
+<p>The <a href="https://pre-commit.com/#temporarily-disabling-hooks">official doc</a> gives the example how to disable explicitly hooks by hooks’ ids: <code class="language-plaintext highlighter-rouge">SKIP=flake8 git commit -m "foo"</code>, but if you want to disable completely all the hooks, an easy way might be found <a href="https://stackoverflow.com/a/7230886">here</a> by using <code class="language-plaintext highlighter-rouge">git commit --no-verify</code> or its shortcut <code class="language-plaintext highlighter-rouge">git commit -n</code>. If you use <a href="https://pre-commit.com/#pre-commit-during-push">pre-commit during push</a>, you can disable pre-commit during push by <code class="language-plaintext highlighter-rouge">git push --no-verify</code> or <code class="language-plaintext highlighter-rouge">git push -n</code>.</p>
+
+<h3 id="automatically-enabling-pre-commit-on-repositories">Automatically enabling pre-commit on repositories</h3>
+
+<p><a href="https://pre-commit.com/#automatically-enabling-pre-commit-on-repositories">https://pre-commit.com/#automatically-enabling-pre-commit-on-repositories</a></p>
+
+<h3 id="usage-in-continuous-integration">Usage in continuous integration</h3>
+
+<p><a href="https://pre-commit.com/#usage-in-continuous-integration">https://pre-commit.com/#usage-in-continuous-integration</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#format" class="page__taxonomy-item p-category" rel="tag">format</a><span class="sep">, </span>
+    
+      <a href="/tags/#python" class="page__taxonomy-item p-category" rel="tag">python</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2023-06-10">June 10, 2023</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Python+Lint+And+Format%20https%3A%2F%2Fwww.copdips.com%2F2021%2F01%2Fpython-lint-and-format.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.copdips.com%2F2021%2F01%2Fpython-lint-and-format.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.copdips.com%2F2021%2F01%2Fpython-lint-and-format.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+
+  <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.copdips.com%2F2021%2F01%2Fpython-lint-and-format.html&title=Python%20Lint%20And%20Format" class="btn btn--reddit" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Reddit"><i class="fab fa-fw fa-reddit" aria-hidden="true"></i><span> Reddit</span></a>
+</section>
+
+
+      <script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+      <div id="qrcode"></div>
+      <script type="text/javascript">
+        var qrcode = new QRCode('qrcode', {width: 100, height: 100, text: location.href});
+      </script>
+
+      
+  <nav class="pagination">
+    
+      <a href="/2020/11/my-powerline.html" class="pagination--pager" title="My Powerline setup and configuration
+">Previous</a>
+    
+    
+      <a href="/2021/01/python-requests-with-retry.html" class="pagination--pager" title="Python Requests With Retry
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+      <h4 class="page__comments-title">Leave a comment</h4>
+      <section id="disqus_thread"></section>
+    
+</div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-deploy-static-files-to-azure-web-app.html" rel="permalink">Github actions - deploy static files to azure web app
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/Some-nice-CICD-bash-common-scripts.html" rel="permalink">Some nice cicd bash common scripts
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          less than 1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-bash-shell-pipefail.html" rel="permalink">Github Actions - Bash shell -e -o pipefail
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-08T00:00:00+00:00">November 8, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/10/hashing-files.html" rel="permalink">Hashing files
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-10-21T00:00:00+00:00">October 21, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap">
+<form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term...">
+  </form>
+  <div id="results" class="results"></div>
+</div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="mailto:xiang.zhu@outlook.com" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email</a></li>
+        
+      
+        
+          <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+          <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://uptimerobot.com/dashboard#785564645" rel="nofollow noopener noreferrer"><i class="fas fa-clock" aria-hidden="true"></i> Uptime</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2023 Xiang ZHU. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp;
+<a href="https://mmistakes.github.io/minimal-mistakes/about/" rel="nofollow">Minimal Mistakes</a>
+.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'G-L9KPHRQNQN']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "https://www.copdips.com/2021/01/python-lint-and-format.html";  /* Replace PAGE_URL with your page's canonical URL variable */
+      this.page.identifier = "/2021/01/python-lint-and-format"; /* Replace PAGE_IDENTIFIER with your page's unique identifier variable */
+    };
+    (function() { /* DON'T EDIT BELOW THIS LINE */
+      var d = document, s = d.createElement('script');
+      s.src = 'https://copdips.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+
+  
+
+
+
+
+
+  </body>
+</html>

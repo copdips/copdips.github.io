@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+--><html lang="en" class="no-js">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Python Unittest Cheet Sheet - A code to remember</title>
+<meta name="description" content="Python developer">
+
+
+  <meta name="author" content="Xiang ZHU">
+  
+  <meta property="article:author" content="Xiang ZHU">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="A code to remember">
+<meta property="og:title" content="Python Unittest Cheet Sheet">
+<meta property="og:url" content="https://www.copdips.com/2021/06/python-unittest-cheet-sheet.html">
+
+
+  <meta property="og:description" content="Python developer">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2021-06-12T00:00:00+00:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="https://www.copdips.com/2021/06/python-unittest-cheet-sheet.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Xiang ZHU",
+      "url": "https://www.copdips.com/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="A code to remember Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          A code to remember
+          
+        </a>
+        <ul class="visible-links">
+<li class="masthead__menu-item">
+              <a href="/">Home</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/tags/">Tags</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/year-archive/">Year Archive</a>
+            </li>
+</ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<!-- back to top button -->
+<!-- https://github.com/mmistakes/minimal-mistakes/issues/1731#issuecomment-628997645 -->
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>addBackToTop({
+  diameter: 56,
+  backgroundColor: '#F16334',
+  textColor: '#fff'
+})</script>
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.copdips.com/">
+        <img src="/image/avatar/zhuxiang-smile.jpg" alt="Xiang ZHU" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.copdips.com/" itemprop="url">Xiang ZHU</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Python DevOps</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Paris</span>
+        </li>
+      
+
+      
+        
+          
+            <li><a href="https://www.copdips.com" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fas fa-fw fa-link" aria-hidden="true"></i><span class="label">Website</span></a></li>
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">LinkedIn</span></a></li>
+          
+        
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:xiang.zhu@outlook.com" rel="me" class="u-email">
+            <meta itemprop="email" content="xiang.zhu@outlook.com">
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+      <!-- 
+<script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+<div id="qrcode"></div>
+<script type="text/javascript">
+  var qrcode = new QRCode('qrcode', {width: 10, height: 10, text: location.href});
+</script>
+ -->
+    </ul>
+  </div>
+</div>
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Python Unittest Cheet Sheet">
+    <meta itemprop="description" content="">
+    <meta itemprop="datePublished" content="2021-06-12T00:00:00+00:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.copdips.com/2021/06/python-unittest-cheet-sheet.html" class="u-url" itemprop="url">Python Unittest Cheet Sheet
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2021-06-12T00:00:00+00:00">June 12, 2021</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          10 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title">
+<i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu">
+<li><a href="#pytest-in-makefile">pytest in Makefile</a></li>
+<li><a href="#pytest---pdb">pytest --pdb</a></li>
+<li><a href="#pytest---pdb---pdbclsipythonterminaldebuggerterminalpdb">pytest --pdb --pdbcls=IPython.terminal.debugger:TerminalPdb</a></li>
+<li><a href="#export-pythonbreakpointipdbset_trace">export PYTHONBREAKPOINT=ipdb.set_trace</a></li>
+<li><a href="#jupyter-notebook--debug-cell-vscode-only">jupyter notebook #%% Debug Cell (VSCode only)</a></li>
+<li><a href="#syslast_value-syslast_type-and-syslast_traceback">sys.last_value, sys.last_type and sys.last_traceback</a></li>
+<li><a href="#pytest---trace">pytest --trace</a></li>
+<li><a href="#pytest---disable-socket">pytest --disable-socket</a></li>
+<li><a href="#pytestmark">@pytest.mark</a></li>
+<li><a href="#pytest--k-expr">pytest -k expr</a></li>
+<li><a href="#pytestmarkxfailstricttrue-reason">@pytest.mark.xfail(strict=True, reason=””)</a></li>
+<li>
+<a href="#pytestmarkparametrize">@pytest.mark.parametrize</a><ul><li><a href="#apply-indirect-on-particular-arguments">Apply indirect on particular arguments</a></li></ul>
+</li>
+<li><a href="#side_effect-functions-and-iterables">side_effect functions and iterables</a></li>
+<li><a href="#mock-any-class-with-mock">mock any class with Mock</a></li>
+<li>
+<a href="#monkeypatch">monkeypatch</a><ul>
+<li><a href="#monkeypatching-functions-or-the-property-of-a-class">Monkeypatching functions or the property of a class</a></li>
+<li><a href="#monkeypatching-environment-variables">Monkeypatching environment variables</a></li>
+<li><a href="#monkeypatch-with-parametrize">monkeypatch with parametrize</a></li>
+<li><a href="#monkeypatching-dictionaries">Monkeypatching dictionaries</a></li>
+<li><a href="#modifying-syspath">Modifying sys.path</a></li>
+<li><a href="#changing-the-context-of-the-current-working-directory-during-a-test">Changing the context of the current working directory during a test</a></li>
+</ul>
+</li>
+<li><a href="#pytest-xdist-to-run-tests-in-parallel">pytest-xdist to run tests in parallel</a></li>
+<li>
+<a href="#speccing">speccing</a><ul>
+<li><a href="#simple-speccing">simple speccing</a></li>
+<li>
+<a href="#auto-speccing">auto-speccing</a><ul>
+<li><a href="#using-patchautospectrue">Using patch(autospec=True)</a></li>
+<li><a href="#using-create_autospec">Using create_autospec()</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#unittestmockany">unittest.mock.ANY</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <blockquote>
+  <p>Python unittest and Pytest is a big deal, this post just gives some small &amp; quick examples on how to use Python unittest framwork, especially with Pytest framework. This post is not finished yet.</p>
+</blockquote>
+
+<h2 id="pytest-in-makefile">pytest in Makefile</h2>
+
+<pre><code class="language-Makefile"># Makefile
+# https://github.com/databrickslabs/dbx/blob/main/Makefile
+
+SHELL=/bin/bash
+VENV_NAME := $(shell [ -d venv ] &amp;&amp; echo venv || echo .venv)
+PYTHON=${VENV_NAME}/bin/python
+FOLDER_FOR_COV=module1_folder module2_folder
+COVERAGE_THRESHOLD=80
+
+test:
+	$(PYTHON) -m pytest tests/unit/ -v -s -n auto --cov ${FOLDER_FOR_COV} \
+		--cov-report=html \
+		--cov-report=term-missing:skip-covered \
+        --cov-fail-under=$(COVERAGE_THERSHOLD)
+</code></pre>
+
+<h2 id="pytest---pdb">pytest --pdb</h2>
+
+<p><a href="https://docs.pytest.org/en/stable/usage.html#dropping-to-pdb-python-debugger-on-failures">https://docs.pytest.org/en/stable/usage.html#dropping-to-pdb-python-debugger-on-failures</a></p>
+
+<p>This will invoke the Python debugger on every failure (or KeyboardInterrupt).</p>
+
+<h2 id="pytest---pdb---pdbclsipythonterminaldebuggerterminalpdb">pytest --pdb --pdbcls=IPython.terminal.debugger:TerminalPdb</h2>
+
+<p><a href="https://docs.pytest.org/en/stable/usage.html#using-the-builtin-breakpoint-function">https://docs.pytest.org/en/stable/usage.html#using-the-builtin-breakpoint-function</a></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pytest <span class="nt">--help</span> | <span class="nb">grep</span> <span class="nt">-i</span> ipython
+                        <span class="nt">--pdbcls</span><span class="o">=</span>IPython.terminal.debugger:TerminalPdb
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">--pdbcls=IPython.terminal.debugger:Pdb</code> also opens a ipython session, <a href="https://ipython.readthedocs.io/en/latest/api/generated/IPython.core.debugger.html#IPython.core.debugger.Pdb">but without tab completion (readline)</a>.</p>
+
+<p>This will use ipdb instead of pdb. Can also be set by default in <code class="language-plaintext highlighter-rouge">pytest.ini</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>pytest]
+addopts <span class="o">=</span> <span class="nt">--pdbcls</span><span class="o">=</span>IPython.terminal.debugger:Pdb
+</code></pre></div></div>
+
+<p>PS: an alternatif: <code class="language-plaintext highlighter-rouge">pdbpp</code> (successor of <code class="language-plaintext highlighter-rouge">pytest-ipdb</code>) at: https://github.com/pdbpp/pdbpp</p>
+
+<h2 id="export-pythonbreakpointipdbset_trace">export PYTHONBREAKPOINT=ipdb.set_trace</h2>
+
+<p>Another way to using ipdb in debugger is to set <code class="language-plaintext highlighter-rouge">export PYTHONBREAKPOINT=ipdb.set_trace</code>, and set a break point with <code class="language-plaintext highlighter-rouge">breakpoint()</code> (introduce in <a href="https://docs.python.org/3/library/functions.html#breakpoint">Python 3.7</a>), then run test with <code class="language-plaintext highlighter-rouge">pytest -s</code>.</p>
+
+<p class="notice--info"><code class="language-plaintext highlighter-rouge">import pdb; pdb.set_trace()</code> won’t drop in to ipdb session with this way.</p>
+
+<h2 id="jupyter-notebook--debug-cell-vscode-only">jupyter notebook #%% Debug Cell (VSCode only)</h2>
+
+<p>Aadd the <code class="language-plaintext highlighter-rouge">#%%</code> marker on a line, you will see a <code class="language-plaintext highlighter-rouge">Debug Cell</code> code lens. Should install the module jupyter at first.</p>
+
+<p class="notice--warning">Although we get the <code class="language-plaintext highlighter-rouge">Debug Cell</code>, it seems that it doesn’t work in test, should do more research later.</p>
+
+<h2 id="syslast_value-syslast_type-and-syslast_traceback">sys.last_value, sys.last_type and sys.last_traceback</h2>
+
+<p><a href="https://docs.pytest.org/en/stable/usage.html#dropping-to-pdb-python-debugger-on-failures">https://docs.pytest.org/en/stable/usage.html#dropping-to-pdb-python-debugger-on-failures</a></p>
+
+<blockquote>
+  <p>Note that on any failure the exception information is stored on sys.last_value, sys.last_type and sys.last_traceback. In interactive use, this allows one to drop into postmortem debugging with any debug tool. One can also manually access the exception information, for example:</p>
+</blockquote>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># when pytest --pdb is stopping at a failure
+</span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="n">sys</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">sys</span><span class="p">.</span><span class="n">last_traceback</span><span class="p">.</span><span class="n">tb_lineno</span>
+<span class="mi">1641</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">sys</span><span class="p">.</span><span class="n">last_traceback</span><span class="p">.</span><span class="n">tb_frame</span>
+<span class="o">&lt;</span><span class="n">frame</span> <span class="n">at</span> <span class="mh">0x7fcca5f89a00</span><span class="p">,</span> <span class="nb">file</span> <span class="sh">'</span><span class="s">/home/xiang/git/myPython/venv/lib/python3.8/site-packages/_pytest/python.py</span><span class="sh">'</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1641</span><span class="p">,</span> <span class="n">code</span> <span class="n">runtest</span><span class="o">&gt;</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">sys</span><span class="p">.</span><span class="n">last_value</span>
+<span class="nc">AssertionError</span><span class="p">(</span><span class="sh">'</span><span class="s">assert result == </span><span class="sh">"</span><span class="s">ok</span><span class="sh">"'</span><span class="p">,)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">sys</span><span class="p">.</span><span class="n">last_type</span>
+<span class="o">&lt;</span><span class="k">class</span> <span class="err">'</span><span class="nc">AssertionError</span><span class="sh">'</span><span class="s">&gt;
+</span></code></pre></div></div>
+
+<h2 id="pytest---trace">pytest --trace</h2>
+
+<p><a href="https://docs.pytest.org/en/stable/usage.html#dropping-to-pdb-python-debugger-at-the-start-of-a-test">https://docs.pytest.org/en/stable/usage.html#dropping-to-pdb-python-debugger-at-the-start-of-a-test</a></p>
+
+<blockquote>
+  <p>allows one to drop into the PDB prompt immediately at the start of each test via a command line option.</p>
+</blockquote>
+
+<h2 id="pytest---disable-socket">pytest --disable-socket</h2>
+
+<p>This is using a third party plugin <a href="https://github.com/miketheman/pytest-socket">pytest-socket</a> to disable all network calls flowing through Python’s socket interface. Unit test should not have any network calls, even any local file operations.</p>
+
+<p>To work with async: <code class="language-plaintext highlighter-rouge">pytest --disable-socket --allow-unix-socket</code></p>
+
+<p class="notice--warning">To allow specific hosts: <code class="language-plaintext highlighter-rouge">pytest --disable-socket --allow-hosts=127.0.0.1,8.8.8.8</code>
+Not easy with IPs other than 127.0.0.1, as you might need to open sockets to more IPs for intermediate connections. So normally just –allow-hosts=127.0.0.1 if you have a local service (database for e.g.) for the unit tests.</p>
+
+<p class="notice--warning">Pay extra attention to this <a href="https://github.com/miketheman/pytest-socket#frequently-asked-questions">cavet</a>. If you create another fixture that creates a socket usage that has a “higher” instantiation order, such as at the module/class/session, then the higher order fixture will be resolved first, and won’t be disabled during the tests.</p>
+
+<h2 id="pytestmark">@pytest.mark</h2>
+
+<p><a href="https://docs.pytest.org/en/stable/example/markers.html">https://docs.pytest.org/en/stable/example/markers.html</a></p>
+
+<p>We can use <code class="language-plaintext highlighter-rouge">@pytest.mark.foo</code> decorator to add a marker (label) on any test, and use <code class="language-plaintext highlighter-rouge">pytest -m foo</code> to run the tests only with mark name is <code class="language-plaintext highlighter-rouge">foo</code>.
+This method is often used by the pytest extensions to for example enable or disable the extension on some specific tests. Like <a href="https://github.com/miketheman/pytest-socket#usage">@pytest.mark.enable_socket for the pytest-socket extension</a></p>
+
+<p>Some people also use markers to categorize the tests, like <code class="language-plaintext highlighter-rouge">@pytest.mark.unit</code> for unit tests, and <code class="language-plaintext highlighter-rouge">@pytest.mark.integration</code> for integration tests, etc.
+Personally, I dont like this because it forces to add the markers on every tests, it will be a very heavy work, and once you forget to add the markers, your tests wont be runned, and you will never discover it. The common usage (maybe I’m wrong) that I saw on github is just to put different categories’ tests in different folders.</p>
+
+<p>We can also <a href="https://docs.pytest.org/en/stable/example/markers.html#marking-whole-classes-or-modules">marking the whole classs or modules</a>.</p>
+
+<h2 id="pytest--k-expr">pytest -k expr</h2>
+
+<p><a href="https://docs.pytest.org/en/stable/example/markers.html#using-k-expr-to-select-tests-based-on-their-name">https://docs.pytest.org/en/stable/example/markers.html#using-k-expr-to-select-tests-based-on-their-name</a></p>
+
+<blockquote>
+  <p>You can use the -k command line option to specify an expression which implements a substring match on the test names <code class="language-plaintext highlighter-rouge">or class names or file names</code> instead of the exact match on markers that -m provides. This makes it easy to select tests based on their names.</p>
+</blockquote>
+
+<p>You can use <code class="language-plaintext highlighter-rouge">and</code>, <code class="language-plaintext highlighter-rouge">or</code>, and <code class="language-plaintext highlighter-rouge">not</code>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pytest <span class="nt">-k</span> <span class="s2">"send_http"</span> <span class="nt">-v</span>
+<span class="nv">$ </span>pytest <span class="nt">-k</span> <span class="s2">"not send_http"</span> <span class="nt">-v</span>
+<span class="nv">$ </span>pytest <span class="nt">-k</span> <span class="s2">"send_http or quick"</span> <span class="nt">-v</span>
+</code></pre></div></div>
+
+<h2 id="pytestmarkxfailstricttrue-reason">@pytest.mark.xfail(strict=True, reason=””)</h2>
+
+<p><a href="https://docs.pytest.org/en/reorganize-docs/new-docs/user/xfail.html#strict-parameter">https://docs.pytest.org/en/reorganize-docs/new-docs/user/xfail.html#strict-parameter</a></p>
+
+<blockquote>
+  <p>Having the xfail marker will still run the test but won’t report a traceback once it fails. Instead terminal reporting will list it in the “expected to fail” (<code class="language-plaintext highlighter-rouge">XFAIL</code>) section. If the test doesn’t fail it will be reported as “unexpectedly passing” (<code class="language-plaintext highlighter-rouge">XPASS</code>). set strict=True to ensure <code class="language-plaintext highlighter-rouge">XPASS</code> (unexpectedly passing) causes the tests to be recorded as a failure.</p>
+</blockquote>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="nd">@pytest.mark.xfail</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="sh">""</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_function</span><span class="p">():</span>
+    <span class="bp">...</span>
+</code></pre></div></div>
+
+<h2 id="pytestmarkparametrize">@pytest.mark.parametrize</h2>
+
+<p><a href="https://docs.pytest.org/en/stable/example/parametrize.html">https://docs.pytest.org/en/stable/example/parametrize.html</a></p>
+
+<p>I put <code class="language-plaintext highlighter-rouge">@pytest.mark.parametrize</code> out of <code class="language-plaintext highlighter-rouge">@pytest.mark</code> because they’re really different. In fact, I discovered pytest from this functionnality.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@pytest.mark.parametrize</span><span class="p">(</span>
+    <span class="sh">"</span><span class="s">a, b, expected</span><span class="sh">"</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+    <span class="k">assert</span> <span class="n">total</span> <span class="o">==</span> <span class="n">expected</span>
+</code></pre></div></div>
+
+<h3 id="apply-indirect-on-particular-arguments">Apply indirect on particular arguments</h3>
+
+<p><a href="https://docs.pytest.org/en/stable/example/parametrize.html#apply-indirect-on-particular-arguments">https://docs.pytest.org/en/stable/example/parametrize.html#apply-indirect-on-particular-arguments</a></p>
+
+<blockquote>
+  <p>Very often parametrization uses more than one argument name. There is opportunity to apply indirect parameter on particular arguments. It can be done by passing list or tuple of arguments’ names to indirect. In the example below there is a function test_indirect which uses two fixtures: x and y. Here we give to indirect the list, which contains the name of the fixture x. The indirect parameter will be applied to this argument only, and the value a will be passed to respective fixture function.</p>
+</blockquote>
+
+<p>if <code class="language-plaintext highlighter-rouge">indirect=True</code>, both <code class="language-plaintext highlighter-rouge">x</code> and <code class="language-plaintext highlighter-rouge">y</code> fixtures will be used, if only <code class="language-plaintext highlighter-rouge">indirect=["x"]</code>, then only the fixture <code class="language-plaintext highlighter-rouge">x</code> will be used, and <code class="language-plaintext highlighter-rouge">y</code> will be considered as a standard var name.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># content of test_indirect_list.py
+</span>
+<span class="kn">import</span> <span class="n">pytest</span>
+
+
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="sh">"</span><span class="s">function</span><span class="sh">"</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">request</span><span class="p">.</span><span class="n">param</span> <span class="o">*</span> <span class="mi">3</span>
+
+
+<span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="sh">"</span><span class="s">function</span><span class="sh">"</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">request</span><span class="p">.</span><span class="n">param</span> <span class="o">*</span> <span class="mi">2</span>
+
+
+<span class="nd">@pytest.mark.parametrize</span><span class="p">(</span><span class="sh">"</span><span class="s">x, y</span><span class="sh">"</span><span class="p">,</span> <span class="p">[(</span><span class="sh">"</span><span class="s">a</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">b</span><span class="sh">"</span><span class="p">)],</span> <span class="n">indirect</span><span class="o">=</span><span class="p">[</span><span class="sh">"</span><span class="s">x</span><span class="sh">"</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">test_indirect</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">x</span> <span class="o">==</span> <span class="sh">"</span><span class="s">aaa</span><span class="sh">"</span>
+    <span class="k">assert</span> <span class="n">y</span> <span class="o">==</span> <span class="sh">"</span><span class="s">b</span><span class="sh">"</span>
+</code></pre></div></div>
+
+<h2 id="side_effect-functions-and-iterables">side_effect functions and iterables</h2>
+
+<p><a href="https://docs.python.org/3/library/unittest.mock-examples.html#side-effect-functions-and-iterables">https://docs.python.org/3/library/unittest.mock-examples.html#side-effect-functions-and-iterables</a></p>
+
+<p>We used to use side_effect to force a mock object to raise an exception. But we can also use side_effect to define different return values. This is useful when we have a same mock function used multiple times in a testing function, and this mock function should return different values.</p>
+
+<p><strong>functions:</strong></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">vals</span> <span class="o">=</span> <span class="p">{(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span> <span class="mi">2</span><span class="p">}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">side_effect</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="p">...</span>    <span class="k">return</span> <span class="n">vals</span><span class="p">[</span><span class="n">args</span><span class="p">]</span>
+<span class="bp">...</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">mock</span> <span class="o">=</span> <span class="nc">MagicMock</span><span class="p">(</span><span class="n">side_effect</span><span class="o">=</span><span class="n">side_effect</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nf">mock</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="mi">1</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nf">mock</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="mi">2</span>
+</code></pre></div></div>
+
+<p><strong>iterables:</strong></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">mock</span> <span class="o">=</span> <span class="nc">MagicMock</span><span class="p">(</span><span class="n">side_effect</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nf">mock</span><span class="p">()</span>
+<span class="mi">4</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nf">mock</span><span class="p">()</span>
+<span class="mi">5</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nf">mock</span><span class="p">()</span>
+<span class="mi">6</span>
+</code></pre></div></div>
+<h2 id="mock-any-class-with-mock">mock any class with Mock</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="n">unittest.mock</span> <span class="kn">import</span> <span class="n">Mock</span>
+
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">A</span><span class="p">:</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">B</span><span class="p">:</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">InventoryItem</span><span class="p">:</span>
+    <span class="n">a</span><span class="p">:</span> <span class="n">A</span>
+    <span class="n">b</span><span class="p">:</span> <span class="n">B</span>
+
+
+<span class="k">def</span> <span class="nf">test_class_inventory_item</span><span class="p">():</span>
+    <span class="n">mock_inventory_item</span> <span class="o">=</span> <span class="nc">InventoryItem</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="nc">Mock</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="mi">2</span><span class="p">)])</span>
+
+    <span class="c1"># or using inspect to get dynamically the class parameters count
+</span>    <span class="kn">from</span> <span class="n">inspect</span> <span class="kn">import</span> <span class="n">signature</span>
+    <span class="n">mock_inventory_item</span> <span class="o">=</span> <span class="nc">InventoryItem</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="nc">Mock</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="nf">signature</span><span class="p">(</span><span class="n">InventoryItem</span><span class="p">).</span><span class="n">parameters</span><span class="p">))])</span>
+</code></pre></div></div>
+
+<h2 id="monkeypatch">monkeypatch</h2>
+
+<p><a href="https://docs.pytest.org/en/stable/monkeypatch.html">monkeypatch</a> is a pytest native fixture, all modifications will be undone after the requesting test function or fixture has finished.</p>
+
+<h3 id="monkeypatching-functions-or-the-property-of-a-class">Monkeypatching functions or the property of a class</h3>
+
+<p>https://docs.pytest.org/en/stable/monkeypatch.html#simple-example-monkeypatching-functions</p>
+
+<p>Very similar to Python standard lib <code class="language-plaintext highlighter-rouge">unittest.mock.patch</code> decorator since Python 3, but <code class="language-plaintext highlighter-rouge">monkeypatch</code> is a fixture. Some people find <code class="language-plaintext highlighter-rouge">monkeypatch</code> is less effort to write than <code class="language-plaintext highlighter-rouge">unittest.mock.patch</code>. Ref. https://github.com/pytest-dev/pytest/issues/4576</p>
+
+<p>To use the native <code class="language-plaintext highlighter-rouge">unittest.mock.patch</code>, use the <a href="https://stackoverflow.com/a/59460964/5095636"><code class="language-plaintext highlighter-rouge">wraps</code> parameter</a>:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># replace function bar of module x by another function fake_bar with unittest.mock.patch
+# we can assert the mocked function with mock_bar
+</span><span class="kn">from</span> <span class="n">unittest.mock</span> <span class="kn">import</span> <span class="n">patch</span>
+
+<span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">):</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="nf">bar</span><span class="p">(</span><span class="n">arg1</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">test_foo</span><span class="p">():</span>
+   <span class="k">with</span> <span class="nf">patch</span><span class="p">(</span><span class="sh">"</span><span class="s">x.bar</span><span class="sh">"</span><span class="p">,</span> <span class="n">wraps</span><span class="o">=</span><span class="n">fake_bar</span><span class="p">)</span> <span class="k">as</span> <span class="n">mock_bar</span><span class="p">:</span>
+      <span class="n">actual</span> <span class="o">=</span> <span class="nf">foo</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">)</span>
+      <span class="k">assert</span> <span class="n">actual</span> <span class="o">==</span> <span class="n">expected</span>
+      <span class="n">mock_bar</span><span class="p">.</span><span class="nf">assert_called_once_with</span><span class="p">(</span><span class="n">arg1</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># replace function bar of module x by another function fake_bar with monkeypatch
+# we cannot assert the mocked function, but we dont need to give the x module in full string format.
+</span>
+<span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">):</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="nf">bar</span><span class="p">(</span><span class="n">arg1</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">test_foo</span><span class="p">(</span><span class="n">monkeypatch</span><span class="p">):</span>
+    <span class="n">monkeypatch</span><span class="p">.</span><span class="nf">setattr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="sh">"</span><span class="s">bar</span><span class="sh">"</span><span class="p">,</span> <span class="n">fake_bar</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># replace function bar of module x by another function fake_bar with pytest-mock
+# we assert the mocked function
+</span>
+<span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">):</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="nf">bar</span><span class="p">(</span><span class="n">arg1</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">test_foo</span><span class="p">(</span><span class="n">monkeypatch</span><span class="p">):</span>
+    <span class="n">mock_bar</span> <span class="o">=</span> <span class="n">mocker</span><span class="p">.</span><span class="nf">patch</span><span class="p">(</span><span class="sh">"</span><span class="s">x.bar</span><span class="sh">"</span><span class="p">,</span> <span class="n">wraps</span><span class="o">=</span><span class="n">fake_bar</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p class="notice--info">There’s also a plugin <code class="language-plaintext highlighter-rouge">pytest-mock</code>, which provides <code class="language-plaintext highlighter-rouge">spy</code> and <code class="language-plaintext highlighter-rouge">stub</code> utilities.</p>
+
+<p class="notice--info">The <code class="language-plaintext highlighter-rouge">wraps</code> parameter in the native <code class="language-plaintext highlighter-rouge">unittest.mock.patch</code> can also be used to <a href="https://stackoverflow.com/a/43065411/5095636">spy function</a>, if you don’t want to use <code class="language-plaintext highlighter-rouge">pytest-mock.spy</code>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">monkeypatch</span><span class="p">.</span><span class="nf">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">raising</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">monkeypatch</span><span class="p">.</span><span class="nf">delattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">raising</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h3 id="monkeypatching-environment-variables">Monkeypatching environment variables</h3>
+
+<p><a href="https://docs.pytest.org/en/stable/monkeypatch.html#monkeypatching-environment-variables">https://docs.pytest.org/en/stable/monkeypatch.html#monkeypatching-environment-variables</a></p>
+
+<p class="notice--info">Can be replaced by python native unittest.mock <a href="https://docs.python.org/3/library/unittest.mock.html#unittest.mock.patch.dict">@patch.dict(‘os.environ’, {‘newkey’: ‘newvalue’})</a></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># contents of our test file e.g. test_code.py
+</span><span class="kn">import</span> <span class="n">pytest</span>
+
+
+<span class="nd">@pytest.fixture</span>
+<span class="k">def</span> <span class="nf">mock_env_user</span><span class="p">(</span><span class="n">monkeypatch</span><span class="p">):</span>
+    <span class="n">monkeypatch</span><span class="p">.</span><span class="nf">setenv</span><span class="p">(</span><span class="sh">"</span><span class="s">USER</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">TestingUser</span><span class="sh">"</span><span class="p">)</span>
+
+
+<span class="nd">@pytest.fixture</span>
+<span class="k">def</span> <span class="nf">mock_env_missing</span><span class="p">(</span><span class="n">monkeypatch</span><span class="p">):</span>
+    <span class="n">monkeypatch</span><span class="p">.</span><span class="nf">delenv</span><span class="p">(</span><span class="sh">"</span><span class="s">USER</span><span class="sh">"</span><span class="p">,</span> <span class="n">raising</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+
+<span class="c1"># notice the tests reference the fixtures for mocks
+</span><span class="k">def</span> <span class="nf">test_upper_to_lower</span><span class="p">(</span><span class="n">mock_env_user</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="nf">get_os_user_lower</span><span class="p">()</span> <span class="o">==</span> <span class="sh">"</span><span class="s">testinguser</span><span class="sh">"</span>
+
+
+<span class="k">def</span> <span class="nf">test_raise_exception</span><span class="p">(</span><span class="n">mock_env_missing</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">pytest</span><span class="p">.</span><span class="nf">raises</span><span class="p">(</span><span class="nb">OSError</span><span class="p">):</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="nf">get_os_user_lower</span><span class="p">()</span>
+</code></pre></div></div>
+<h3 id="monkeypatch-with-parametrize">monkeypatch with parametrize</h3>
+
+<p>As said above monkeypatch is a fixture, so we can use <a href="https://github.com/tvorog/pytest-lazy-fixture">pytest-lazy-fixture</a> to parametrize the fixtures. I cannot remember where is the link, in fact on one page from pytest official doc, it says that pytest cannot do it for the moment, that’s why <code class="language-plaintext highlighter-rouge">pytest-lazy-fixture</code> is introduced here.
+###</p>
+
+<p>It is worth saying that following monkeypatch on env won’t work:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># file a.py
+</span><span class="n">TEST_USER</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="nf">getenv</span><span class="p">(</span><span class="sh">"</span><span class="s">TEST_USER</span><span class="sh">"</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">get_test_user</span><span class="p">():</span>
+    <span class="nf">return</span><span class="p">(</span><span class="n">TEST_USER</span><span class="p">)</span>
+
+
+<span class="c1"># file test_a.py
+</span><span class="kn">import</span> <span class="n">pytest</span>
+
+<span class="kn">from</span> <span class="n">a</span> <span class="kn">import</span> <span class="n">get_test_user</span>
+
+<span class="nd">@pytest.fixture</span>
+<span class="k">def</span> <span class="nf">mock_env_user</span><span class="p">(</span><span class="n">monkeypatch</span><span class="p">):</span>
+    <span class="n">monkeypatch</span><span class="p">.</span><span class="nf">setenv</span><span class="p">(</span><span class="sh">"</span><span class="s">TEST_USER</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">TestingUser</span><span class="sh">"</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">test_get_test_user</span><span class="p">(</span><span class="n">mock_env_user</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="nf">get_test_user</span><span class="p">()</span> <span class="o">==</span> <span class="sh">"</span><span class="s">testinguser</span><span class="sh">"</span>
+</code></pre></div></div>
+
+<p>The test will fail, because the line <code class="language-plaintext highlighter-rouge">TEST_USER = os.getenv("TEST_USER")</code> in the file <code class="language-plaintext highlighter-rouge">a.py</code> is always imported before <code class="language-plaintext highlighter-rouge">mock_env_user</code> by <code class="language-plaintext highlighter-rouge">test_a.py</code>, <code class="language-plaintext highlighter-rouge">from a import get_test_user</code> is at the beginning of the test file. During the import, at this moment, the env var <code class="language-plaintext highlighter-rouge">TEST_USER</code> doesn’t exist yet in os, it will always have the value <code class="language-plaintext highlighter-rouge">None</code>. To fix this problem, we need to put the <code class="language-plaintext highlighter-rouge">os.getenv</code> into <code class="language-plaintext highlighter-rouge">get_test_user</code> like:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># file a.py
+</span>
+<span class="k">def</span> <span class="nf">get_test_user</span><span class="p">():</span>
+    <span class="n">TEST_USER</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="nf">getenv</span><span class="p">(</span><span class="sh">"</span><span class="s">TEST_USER</span><span class="sh">"</span><span class="p">)</span>
+    <span class="nf">return</span><span class="p">(</span><span class="n">TEST_USER</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h3 id="monkeypatching-dictionaries">Monkeypatching dictionaries</h3>
+
+<p class="notice--info">Can be replaced by python native unittest.mock <a href="https://docs.python.org/3/library/unittest.mock.html#unittest.mock.patch.dict">@patch.dict()</a></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># patch one key at each patch
+</span><span class="n">monkeypatch</span><span class="p">.</span><span class="nf">setitem</span><span class="p">(</span><span class="n">app</span><span class="p">.</span><span class="n">DEFAULT_CONFIG</span><span class="p">,</span> <span class="sh">"</span><span class="s">user</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">test_user</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">monkeypatch</span><span class="p">.</span><span class="nf">setitem</span><span class="p">(</span><span class="n">app</span><span class="p">.</span><span class="n">DEFAULT_CONFIG</span><span class="p">,</span> <span class="sh">"</span><span class="s">database</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">test_db</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">monkeypatch</span><span class="p">.</span><span class="nf">delitem</span><span class="p">(</span><span class="n">app</span><span class="p">.</span><span class="n">DEFAULT_CONFIG</span><span class="p">,</span> <span class="sh">"</span><span class="s">name</span><span class="sh">"</span><span class="p">,</span> <span class="n">raising</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</code></pre></div></div>
+<h3 id="modifying-syspath">Modifying sys.path</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">monkeypatch</span><span class="p">.</span><span class="nf">syspath_prepend</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h3 id="changing-the-context-of-the-current-working-directory-during-a-test">Changing the context of the current working directory during a test</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">monkeypatch</span><span class="p">.</span><span class="nf">chdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="pytest-xdist-to-run-tests-in-parallel">pytest-xdist to run tests in parallel</h2>
+
+<p><a href="https://github.com/pytest-dev/pytest-xdist">https://github.com/pytest-dev/pytest-xdist</a></p>
+
+<p>Especially useful when your tests are unit tests for exmaple, which dont have dependencies from one  with each other, and don’t share any changing data, which means your tests should be stateless.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># run on 4 CPUs</span>
+pytest <span class="nt">-n</span> 4
+
+<span class="c"># run on a number of CPUs calculated automatically by the python built-in multiprocessing module</span>
+pytest <span class="nt">-n</span> auto
+
+<span class="c"># run on a number of CPUs calculated automatically by the module psutil, you need such module if you have logical cpus as well as certain imposed limitations (like container runtimes with cpu limits)</span>
+<span class="c"># ref. https://stackoverflow.com/a/14840102/5095636</span>
+<span class="c"># ref. https://docs.python.org/3/library/multiprocessing.html#multiprocessing.cpu_count</span>
+pip <span class="nb">install </span>pytest-xdist[psutil]
+pytest <span class="nt">-n</span> auto
+</code></pre></div></div>
+
+<p class="notice--info">There’s another module <a href="https://github.com/browsertron/pytest-parallel">pytest-parallel</a>, the author says his module can run the tests in concurrency, and very efficient in integration tests, which tests might be stateful or sequential. I haven’t tested yet, so cannot say anything here.</p>
+
+<h2 id="speccing">speccing</h2>
+
+<p><a href="https://docs.python.org/3/library/unittest.mock.html#autospeccing">https://docs.python.org/3/library/unittest.mock.html#autospeccing</a></p>
+
+<p>mock.patch returns a mock object, a mock object can have whatever atrributes and methods.</p>
+
+<p><code class="language-plaintext highlighter-rouge">mock.asssert_called_once_with(4, 5, 6)</code> doesn’t fail as shown as follows:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> mock <span class="o">=</span> Mock<span class="o">(</span><span class="nv">name</span><span class="o">=</span><span class="s1">'Thing'</span>, <span class="nv">return_value</span><span class="o">=</span>None<span class="o">)</span>
+<span class="o">&gt;&gt;&gt;</span> mock<span class="o">(</span>1, 2, 3<span class="o">)</span>
+<span class="o">&gt;&gt;&gt;</span> mock.asssert_called_once_with<span class="o">(</span>4, 5, 6<span class="o">)</span>
+&lt;Mock <span class="nv">name</span><span class="o">=</span><span class="s1">'Thing.asssert_called_once_with()'</span> <span class="nb">id</span><span class="o">=</span><span class="s1">'140160334650144'</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<h3 id="simple-speccing">simple speccing</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> from urllib import request
+<span class="o">&gt;&gt;&gt;</span> mock <span class="o">=</span> Mock<span class="o">()</span>
+<span class="o">&gt;&gt;&gt;</span> mock.asssert_called_with<span class="o">()</span>
+&lt;Mock <span class="nv">name</span><span class="o">=</span><span class="s1">'mock.asssert_called_with()'</span> <span class="nb">id</span><span class="o">=</span><span class="s1">'140160336271776'</span><span class="o">&gt;</span>
+
+<span class="c"># using simple speccing, mock.asssert_called_with() is detected as an error</span>
+<span class="o">&gt;&gt;&gt;</span> mock <span class="o">=</span> Mock<span class="o">(</span><span class="nv">spec</span><span class="o">=</span>request.Request<span class="o">)</span>
+<span class="o">&gt;&gt;&gt;</span> mock.asssert_called_with<span class="o">()</span>
+<span class="nt">---------------------------------------------------------------------------</span>
+AttributeError                            Traceback <span class="o">(</span>most recent call last<span class="o">)</span>
+...
+AttributeError: Mock object has no attribute <span class="s1">'asssert_called_with'</span>
+
+<span class="c"># still using simple speccing, mock.data.asssert_called_with() is detected as an mocked method, no errors.</span>
+<span class="c"># so simple speccing doesnt' work for nested objects</span>
+<span class="o">&gt;&gt;&gt;</span> mock.data.asssert_called_with<span class="o">()</span>
+&lt;Mock <span class="nv">name</span><span class="o">=</span><span class="s1">'mock.data.asssert_called_with()'</span> <span class="nb">id</span><span class="o">=</span><span class="s1">'140160336027120'</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<h3 id="auto-speccing">auto-speccing</h3>
+
+<h4 id="using-patchautospectrue">Using patch(autospec=True)</h4>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> from urllib import request
+<span class="o">&gt;&gt;&gt;</span> patcher <span class="o">=</span> patch<span class="o">(</span><span class="s1">'__main__.request'</span>, <span class="nv">autospec</span><span class="o">=</span>True<span class="o">)</span>
+<span class="o">&gt;&gt;&gt;</span> mock_request <span class="o">=</span> patcher.start<span class="o">()</span>
+
+<span class="o">&gt;&gt;&gt;</span> request is mock_request
+True
+
+<span class="c"># mock_request.Request has the spec='Request' now</span>
+<span class="o">&gt;&gt;&gt;</span> mock_request.Request
+&lt;MagicMock <span class="nv">name</span><span class="o">=</span><span class="s1">'request.Request'</span> <span class="nv">spec</span><span class="o">=</span><span class="s1">'Request'</span> <span class="nb">id</span><span class="o">=</span><span class="s1">'...'</span><span class="o">&gt;</span>
+
+<span class="c"># the real request object doesn't have the static data attribute, so autospecced object doesn't have it neither.</span>
+<span class="o">&gt;&gt;&gt;</span> mock_request.data
+Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
+  File <span class="s2">"&lt;stdin&gt;"</span>, line 1, <span class="k">in</span> &lt;module&gt;
+  File <span class="s2">"/usr/lib/python3.8/unittest/mock.py"</span>, line 637, <span class="k">in </span>__getattr__
+    raise AttributeError<span class="o">(</span><span class="s2">"Mock object has no attribute %r"</span> % name<span class="o">)</span>
+AttributeError: Mock object has no attribute <span class="s1">'data'</span>
+</code></pre></div></div>
+
+<h4 id="using-create_autospec">Using create_autospec()</h4>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> from urllib import request
+<span class="o">&gt;&gt;&gt;</span> mock_request <span class="o">=</span> create_autospec<span class="o">(</span>request<span class="o">)</span>
+<span class="o">&gt;&gt;&gt;</span> mock_request.Request<span class="o">(</span><span class="s1">'foo'</span>, <span class="s1">'bar'</span><span class="o">)</span>
+&lt;NonCallableMagicMock <span class="nv">name</span><span class="o">=</span><span class="s1">'mock.Request()'</span> <span class="nv">spec</span><span class="o">=</span><span class="s1">'Request'</span> <span class="nb">id</span><span class="o">=</span><span class="s1">'...'</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<p class="notice--warning">autospec works well on methods and static attributes, but a serious problem is that it is common for instance attributes to be created in the <strong>init</strong>() method and not to exist on the class at all. autospec can’t know about any dynamically created attributes and restricts the api to visible attributes. This is why autospeccing is not the patch default behaviour. Search the above phrase in the <a href="https://docs.python.org/3/library/unittest.mock.html#autospeccing">python official doc</a> to get more details and solutions.</p>
+
+<h2 id="unittestmockany">unittest.mock.ANY</h2>
+
+<p><a href="https://docs.python.org/3/library/unittest.mock.html#any">https://docs.python.org/3/library/unittest.mock.html#any</a></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> from unittest.mock import Mock
+<span class="o">&gt;&gt;&gt;</span> mock <span class="o">=</span> Mock<span class="o">(</span><span class="nv">return_value</span><span class="o">=</span>None<span class="o">)</span>
+<span class="o">&gt;&gt;&gt;</span> mock<span class="o">(</span><span class="s1">'foo'</span>, <span class="nv">bar</span><span class="o">=</span>object<span class="o">())</span>
+<span class="o">&gt;&gt;&gt;</span> mock.assert_called_once_with<span class="o">(</span><span class="s1">'foo'</span>, <span class="nv">bar</span><span class="o">=</span>ANY<span class="o">)</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> from unittest.mock import Mock, call
+<span class="o">&gt;&gt;&gt;</span> m <span class="o">=</span> Mock<span class="o">(</span><span class="nv">return_value</span><span class="o">=</span>None<span class="o">)</span>
+<span class="o">&gt;&gt;&gt;</span> m<span class="o">(</span>1<span class="o">)</span>
+<span class="o">&gt;&gt;&gt;</span> m<span class="o">(</span>1, 2<span class="o">)</span>
+<span class="o">&gt;&gt;&gt;</span> m<span class="o">(</span>object<span class="o">())</span>
+<span class="o">&gt;&gt;&gt;</span> m.mock_calls <span class="o">==</span> <span class="o">[</span>call<span class="o">(</span>1<span class="o">)</span>, call<span class="o">(</span>1, 2<span class="o">)</span>, ANY]
+</code></pre></div></div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#pytest" class="page__taxonomy-item p-category" rel="tag">pytest</a><span class="sep">, </span>
+    
+      <a href="/tags/#python" class="page__taxonomy-item p-category" rel="tag">python</a><span class="sep">, </span>
+    
+      <a href="/tags/#unittest" class="page__taxonomy-item p-category" rel="tag">unittest</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2021-06-12T00:00:00+00:00">June 12, 2021</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Python+Unittest+Cheet+Sheet%20https%3A%2F%2Fwww.copdips.com%2F2021%2F06%2Fpython-unittest-cheet-sheet.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.copdips.com%2F2021%2F06%2Fpython-unittest-cheet-sheet.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.copdips.com%2F2021%2F06%2Fpython-unittest-cheet-sheet.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+
+  <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.copdips.com%2F2021%2F06%2Fpython-unittest-cheet-sheet.html&title=Python%20Unittest%20Cheet%20Sheet" class="btn btn--reddit" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Reddit"><i class="fab fa-fw fa-reddit" aria-hidden="true"></i><span> Reddit</span></a>
+</section>
+
+
+      <script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+      <div id="qrcode"></div>
+      <script type="text/javascript">
+        var qrcode = new QRCode('qrcode', {width: 100, height: 100, text: location.href});
+      </script>
+
+      
+  <nav class="pagination">
+    
+      <a href="/2021/03/trying-python-pipreqs-and-pip-tools.html" class="pagination--pager" title="Trying Python pipreqs and pip-tools
+">Previous</a>
+    
+    
+      <a href="/2021/06/python-datetime-utc-now.html" class="pagination--pager" title="Python datetime utcnow
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+      <h4 class="page__comments-title">Leave a comment</h4>
+      <section id="disqus_thread"></section>
+    
+</div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-deploy-static-files-to-azure-web-app.html" rel="permalink">Github actions - deploy static files to azure web app
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/Some-nice-CICD-bash-common-scripts.html" rel="permalink">Some nice cicd bash common scripts
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          less than 1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-bash-shell-pipefail.html" rel="permalink">Github Actions - Bash shell -e -o pipefail
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-08T00:00:00+00:00">November 8, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/10/hashing-files.html" rel="permalink">Hashing files
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-10-21T00:00:00+00:00">October 21, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap">
+<form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term...">
+  </form>
+  <div id="results" class="results"></div>
+</div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="mailto:xiang.zhu@outlook.com" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email</a></li>
+        
+      
+        
+          <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+          <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://uptimerobot.com/dashboard#785564645" rel="nofollow noopener noreferrer"><i class="fas fa-clock" aria-hidden="true"></i> Uptime</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2023 Xiang ZHU. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp;
+<a href="https://mmistakes.github.io/minimal-mistakes/about/" rel="nofollow">Minimal Mistakes</a>
+.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'G-L9KPHRQNQN']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "https://www.copdips.com/2021/06/python-unittest-cheet-sheet.html";  /* Replace PAGE_URL with your page's canonical URL variable */
+      this.page.identifier = "/2021/06/python-unittest-cheet-sheet"; /* Replace PAGE_IDENTIFIER with your page's unique identifier variable */
+    };
+    (function() { /* DON'T EDIT BELOW THIS LINE */
+      var d = document, s = d.createElement('script');
+      s.src = 'https://copdips.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+
+  
+
+
+
+
+
+  </body>
+</html>

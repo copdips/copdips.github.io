@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+--><html lang="en" class="no-js">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Setting Up Powershell gallery And Nuget gallery - A code to remember</title>
+<meta name="description" content="As like pypi for Python, npm for Node.js, we also have Powershell Gallery and Nuget Gallery for Powershell.">
+
+
+  <meta name="author" content="Xiang ZHU">
+  
+  <meta property="article:author" content="Xiang ZHU">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="A code to remember">
+<meta property="og:title" content="Setting Up Powershell gallery And Nuget gallery">
+<meta property="og:url" content="https://www.copdips.com/2018/05/setting-up-powershell-gallery-and-nuget-gallery-for-powershell.html">
+
+
+  <meta property="og:description" content="As like pypi for Python, npm for Node.js, we also have Powershell Gallery and Nuget Gallery for Powershell.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2018-05-07T00:00:00+00:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="https://www.copdips.com/2018/05/setting-up-powershell-gallery-and-nuget-gallery-for-powershell.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Xiang ZHU",
+      "url": "https://www.copdips.com/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="A code to remember Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          A code to remember
+          
+        </a>
+        <ul class="visible-links">
+<li class="masthead__menu-item">
+              <a href="/">Home</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/tags/">Tags</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/year-archive/">Year Archive</a>
+            </li>
+</ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<!-- back to top button -->
+<!-- https://github.com/mmistakes/minimal-mistakes/issues/1731#issuecomment-628997645 -->
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>addBackToTop({
+  diameter: 56,
+  backgroundColor: '#F16334',
+  textColor: '#fff'
+})</script>
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.copdips.com/">
+        <img src="/image/avatar/zhuxiang-smile.jpg" alt="Xiang ZHU" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.copdips.com/" itemprop="url">Xiang ZHU</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Python DevOps</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Paris</span>
+        </li>
+      
+
+      
+        
+          
+            <li><a href="https://www.copdips.com" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fas fa-fw fa-link" aria-hidden="true"></i><span class="label">Website</span></a></li>
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">LinkedIn</span></a></li>
+          
+        
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:xiang.zhu@outlook.com" rel="me" class="u-email">
+            <meta itemprop="email" content="xiang.zhu@outlook.com">
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+      <!-- 
+<script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+<div id="qrcode"></div>
+<script type="text/javascript">
+  var qrcode = new QRCode('qrcode', {width: 10, height: 10, text: location.href});
+</script>
+ -->
+    </ul>
+  </div>
+</div>
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Setting Up Powershell gallery And Nuget gallery">
+    <meta itemprop="description" content="As like pypi for Python, npm for Node.js, we also have Powershell Gallery and Nuget Gallery for Powershell.">
+    <meta itemprop="datePublished" content="2018-05-07T00:00:00+00:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.copdips.com/2018/05/setting-up-powershell-gallery-and-nuget-gallery-for-powershell.html" class="u-url" itemprop="url">Setting Up Powershell gallery And Nuget gallery
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2018-05-07T00:00:00+00:00">May 7, 2018</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          3 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title">
+<i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu">
+<li><a href="#powershell-version">Powershell version</a></li>
+<li><a href="#configure-proxy-in-powershell">Configure proxy in Powershell</a></li>
+<li><a href="#set-up-powershell-gallery-for-powershell">Set up Powershell Gallery for Powershell</a></li>
+<li><a href="#use-powershell-gallery">Use Powershell Gallery</a></li>
+<li><a href="#set-up-nuget-for-powershell">Set up Nuget for Powershell</a></li>
+<li><a href="#use-nuget">Use Nuget</a></li>
+<li><a href="#set-up-internal-powershell-gallery-or-nuget-gallery">Set up internal Powershell Gallery or Nuget Gallery</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <blockquote>
+  <p>As like <a href="https://pypi.org/">pypi</a> for Python, <a href="https://www.npmjs.com/">npm</a> for Node.js, we also have <a href="https://www.powershellgallery.com/">Powershell Gallery</a> for Powershell to add some extra Powershell modules, and <a href="https://www.nuget.org/">Nuget Gallery</a> for Powershell to add some extra executables.</p>
+</blockquote>
+
+<h1 id="powershell-version">Powershell version</h1>
+
+<p class="notice--info">All commands provided here are tested on Windows 10 with Windows Powershell v5.1.</p>
+
+<h1 id="configure-proxy-in-powershell">Configure proxy in Powershell</h1>
+
+<p>Both Powershell Gallery et Nuget Gallery can be installed locally that we don’t need external Internet access to retrieve the packages from them, but setting up an internal Powershell Gallery or an internal Nuget Gallery is <a href="#set-up-internal-powershell-gallery-or-nuget-gallery">out of scope of this post</a>.</p>
+
+<p>To use the <a href="https://www.powershellgallery.com/">public Powershell Gallery</a> or the <a href="https://www.nuget.org/">public Nuget Gallery</a>, you must have Internet access. If you’re at the office, your computer is probably behind a company proxy to access Internet. If your Internet Explorer’s proxy setting has already been configured, you can use the below command to tell Powershell to reuse the same proxy setting :</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="n">New-Object</span><span class="w"> </span><span class="nt">-TypeName</span><span class="w"> </span><span class="nx">System.Net.WebClient</span><span class="p">)</span><span class="o">.</span><span class="nf">Proxy</span><span class="o">.</span><span class="nf">Credentials</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">System.Net.CredentialCache</span><span class="p">]::</span><span class="n">DefaultNetworkCredentials</span><span class="w">
+
+</span><span class="c"># Or batch version by using netsh (need admin privileges) :</span><span class="w">
+</span><span class="n">netsh</span><span class="w"> </span><span class="nx">winhttp</span><span class="w"> </span><span class="nx">show</span><span class="w"> </span><span class="nx">proxy</span><span class="w">
+</span><span class="n">netsh</span><span class="w"> </span><span class="nx">winhttp</span><span class="w"> </span><span class="nx">import</span><span class="w"> </span><span class="nx">proxy</span><span class="w"> </span><span class="nx">source</span><span class="o">=</span><span class="n">ie</span><span class="w">
+</span></code></pre></div></div>
+
+<p>I suggest to add the above command in your powershell profile, otherwise you should type it each time you open a new Powershell session.</p>
+
+<p>Your Windows Powershell profile can be found at four locations:</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="bp">$PROFILE</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">gm</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nf">?</span><span class="w"> </span><span class="nx">membertype</span><span class="w"> </span><span class="o">-eq</span><span class="w"> </span><span class="nx">noteproperty</span><span class="w">
+</span></code></pre></div></div>
+
+<p>The output of the above command :</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># For Windows Powershell :</span><span class="w">
+
+   </span><span class="n">TypeName:System.String</span><span class="w">
+
+</span><span class="n">Name</span><span class="w">                   </span><span class="nx">MemberType</span><span class="w">   </span><span class="nx">Definition</span><span class="w">
+</span><span class="o">----</span><span class="w">                   </span><span class="o">----------</span><span class="w">   </span><span class="o">----------</span><span class="w">
+</span><span class="n">AllUsersAllHosts</span><span class="w">       </span><span class="nx">NoteProperty</span><span class="w"> </span><span class="nx">string</span><span class="w"> </span><span class="nx">AllUsersAllHosts</span><span class="o">=</span><span class="n">C:\Windows\System32\WindowsPowerShell\v1.0\profile.ps1</span><span class="w">
+</span><span class="nx">AllUsersCurrentHost</span><span class="w">    </span><span class="nx">NoteProperty</span><span class="w"> </span><span class="nx">string</span><span class="w"> </span><span class="nx">AllUsersCurrentHost</span><span class="o">=</span><span class="n">C:\Windows\System32\WindowsPowerShell\v1.0\Microsoft.PowerShell_profile.ps1</span><span class="w">
+</span><span class="nx">CurrentUserAllHosts</span><span class="w">    </span><span class="nx">NoteProperty</span><span class="w"> </span><span class="nx">string</span><span class="w"> </span><span class="nx">CurrentUserAllHosts</span><span class="o">=</span><span class="n">d:\xiang\Documents\WindowsPowerShell\profile.ps1</span><span class="w">
+</span><span class="nx">CurrentUserCurrentHost</span><span class="w"> </span><span class="nx">NoteProperty</span><span class="w"> </span><span class="nx">string</span><span class="w"> </span><span class="nx">CurrentUserCurrentHost</span><span class="o">=</span><span class="n">d:\xiang\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1</span><span class="w">
+</span></code></pre></div></div>
+
+<p>The two CurrentUser profile locations might differ on different computers, all depends on your <code class="language-plaintext highlighter-rouge">MyDocuments</code> location ( <code class="language-plaintext highlighter-rouge">[Environment]::GetFolderPath("MyDocuments")</code> ), and if you’re using Powershell Core, all the four locations are different than the ones in Windows Powershell.
+I use usually <code class="language-plaintext highlighter-rouge">CurrentUserAllHost</code> because the change will only affect my profile, and even if I’m not the admin of the computer, I can still get it work. The profile location can be found at :</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="bp">$PROFILE</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">CurrentUserAllHosts</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Add proxy setting in the end of your <code class="language-plaintext highlighter-rouge">CurrentUserAllHost</code> powershell profile :</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Add-Content</span><span class="w"> </span><span class="p">(</span><span class="bp">$PROFILE</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">CurrentUserAllHost</span><span class="p">)</span><span class="w"> </span><span class="s2">"</span><span class="se">`n</span><span class="s2">(New-Object -TypeName System.Net.WebClient).Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials</span><span class="se">`n</span><span class="s2">"</span><span class="w">
+</span></code></pre></div></div>
+
+<p>As a best practice, it would be better to add the above line at the top of your profile.</p>
+
+<h1 id="set-up-powershell-gallery-for-powershell">Set up Powershell Gallery for Powershell</h1>
+
+<p>This is pretty easy for Powershell v5+ :</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># I add the switch Trusted because I trust all the modules and scripts from Powershell Gallery</span><span class="w">
+</span><span class="n">Register-PSRepository</span><span class="w"> </span><span class="nt">-Default</span><span class="w"> </span><span class="nt">-InstallationPolicy</span><span class="w"> </span><span class="nx">Trusted</span><span class="w">
+</span></code></pre></div></div>
+
+<p>For Powershell with version less than v5:</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Register-PSRepository</span><span class="w"> </span><span class="nt">-Name</span><span class="w"> </span><span class="nx">PSGallery</span><span class="w"> </span><span class="nt">-SourceLocation</span><span class="w"> </span><span class="nx">https://www.powershellgallery.com/api/v2/</span><span class="w"> </span><span class="nt">-InstallationPolicy</span><span class="w"> </span><span class="nx">Trusted</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Test :</p>
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">&gt;</span><span class="w"> </span><span class="n">Get-PSRepository</span><span class="w">
+
+</span><span class="n">Name</span><span class="w">                      </span><span class="nx">InstallationPolicy</span><span class="w">   </span><span class="nx">SourceLocation</span><span class="w">
+</span><span class="o">----</span><span class="w">                      </span><span class="o">------------------</span><span class="w">   </span><span class="o">--------------</span><span class="w">
+</span><span class="n">PSGallery</span><span class="w">                 </span><span class="nx">Trusted</span><span class="w">              </span><span class="nx">https://www.powershellgallery.com/api/v2/</span><span class="w">
+</span></code></pre></div></div>
+
+<h1 id="use-powershell-gallery">Use Powershell Gallery</h1>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Search a module which name is like poshrs*</span><span class="w">
+</span><span class="err">&gt;</span><span class="w"> </span><span class="n">find-module</span><span class="w"> </span><span class="nx">poshrs</span><span class="o">*</span><span class="w">
+
+</span><span class="n">Name</span><span class="w">                           </span><span class="nx">Version</span><span class="w">          </span><span class="nx">Source</span><span class="w">           </span><span class="nx">Summary</span><span class="w">
+</span><span class="o">----</span><span class="w">                           </span><span class="o">-------</span><span class="w">          </span><span class="o">------</span><span class="w">           </span><span class="o">-------</span><span class="w">
+</span><span class="n">PoshRSJob</span><span class="w">                      </span><span class="nx">1.7.4.4</span><span class="w">          </span><span class="nx">PSGallery</span><span class="w">        </span><span class="nx">Provides</span><span class="w"> </span><span class="nx">an</span><span class="w"> </span><span class="nx">alternative</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">PSjobs</span><span class="w"> </span><span class="nx">with</span><span class="w"> </span><span class="nx">greater</span><span class="w"> </span><span class="nx">performance</span><span class="w"> </span><span class="nx">and</span><span class="w"> </span><span class="nx">less</span><span class="w"> </span><span class="nx">overhead</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">run</span><span class="w"> </span><span class="nx">commands</span><span class="w"> </span><span class="nx">in</span><span class="w"> </span><span class="o">...</span><span class="w">
+
+</span><span class="c"># Install the module without admin privileges</span><span class="w">
+</span><span class="err">&gt;</span><span class="w"> </span><span class="n">find-module</span><span class="w"> </span><span class="nx">poshrs</span><span class="o">*</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">install-module</span><span class="w"> </span><span class="nt">-Scope</span><span class="w"> </span><span class="nx">CurrentUser</span><span class="w">
+</span></code></pre></div></div>
+
+<h1 id="set-up-nuget-for-powershell">Set up Nuget for Powershell</h1>
+
+<p><a href="https://docs.microsoft.com/en-us/nuget/">Nuget</a> is well-known among the Windows developers.</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># I also add the Trusted switch</span><span class="w">
+</span><span class="n">Register-PackageSource</span><span class="w"> </span><span class="nt">-Name</span><span class="w"> </span><span class="nx">Nuget</span><span class="w"> </span><span class="nt">-Location</span><span class="w"> </span><span class="s2">"http://www.nuget.org/api/v2"</span><span class="w"> </span><span class="err">–</span><span class="nx">ProviderName</span><span class="w"> </span><span class="nx">Nuget</span><span class="w"> </span><span class="nt">-Trusted</span><span class="w">
+</span></code></pre></div></div>
+
+<p>My Nuget client is at v2, so I can only target at Nuget v2 API.</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">&gt;</span><span class="w"> </span><span class="n">Get-PackageProvider</span><span class="w">
+
+</span><span class="n">Name</span><span class="w">                     </span><span class="nx">Version</span><span class="w">          </span><span class="nx">DynamicOptions</span><span class="w">
+</span><span class="o">----</span><span class="w">                     </span><span class="o">-------</span><span class="w">          </span><span class="o">--------------</span><span class="w">
+</span><span class="n">msi</span><span class="w">                      </span><span class="nx">3.0.0.0</span><span class="w">          </span><span class="nx">AdditionalArguments</span><span class="w">
+</span><span class="n">msu</span><span class="w">                      </span><span class="nx">3.0.0.0</span><span class="w">
+</span><span class="n">NuGet</span><span class="w">                    </span><span class="nx">2.8.5.208</span><span class="w">        </span><span class="nx">Destination</span><span class="p">,</span><span class="w"> </span><span class="nx">ExcludeVersion</span><span class="p">,</span><span class="w"> </span><span class="nx">Scope</span><span class="p">,</span><span class="w"> </span><span class="nx">SkipDependencies</span><span class="p">,</span><span class="w"> </span><span class="nx">Headers</span><span class="p">,</span><span class="w"> </span><span class="nx">FilterOnTag</span><span class="p">,</span><span class="w"> </span><span class="o">...</span><span class="w">
+</span><span class="n">PowerShellGet</span><span class="w">            </span><span class="nx">1.0.0.1</span><span class="w">          </span><span class="nx">PackageManagementProvider</span><span class="p">,</span><span class="w"> </span><span class="nx">Type</span><span class="p">,</span><span class="w"> </span><span class="nx">Scope</span><span class="p">,</span><span class="w"> </span><span class="nx">AllowClobber</span><span class="p">,</span><span class="w"> </span><span class="nx">SkipPublisherCheck</span><span class="p">,</span><span class="w"> </span><span class="nx">In...</span><span class="w">
+</span><span class="n">Programs</span><span class="w">                 </span><span class="nx">3.0.0.0</span><span class="w">          </span><span class="nx">IncludeWindowsInstaller</span><span class="p">,</span><span class="w"> </span><span class="nx">IncludeSystemComponent</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Test :</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">&gt;</span><span class="w"> </span><span class="n">Get-PackageSource</span><span class="w">
+
+</span><span class="n">Name</span><span class="w">                             </span><span class="nx">ProviderName</span><span class="w">     </span><span class="nx">IsTrusted</span><span class="w">  </span><span class="nx">Location</span><span class="w">
+</span><span class="o">----</span><span class="w">                             </span><span class="o">------------</span><span class="w">     </span><span class="o">---------</span><span class="w">  </span><span class="o">--------</span><span class="w">
+</span><span class="n">Nuget</span><span class="w">                            </span><span class="nx">NuGet</span><span class="w">            </span><span class="nx">True</span><span class="w">       </span><span class="nx">http://www.nuget.org/api/v2</span><span class="w">
+</span><span class="n">PSGallery</span><span class="w">                        </span><span class="nx">PowerShellGet</span><span class="w">    </span><span class="nx">True</span><span class="w">       </span><span class="nx">https://www.powershellgallery.com/api/v2/</span><span class="w">
+</span></code></pre></div></div>
+
+<h1 id="use-nuget">Use Nuget</h1>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># install the latest version of GitForWindows without admin privileges</span><span class="w">
+</span><span class="n">find-package</span><span class="w"> </span><span class="nx">gitforwindows</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">install-package</span><span class="w"> </span><span class="nt">-Scope</span><span class="w"> </span><span class="nx">CurrentUser</span><span class="w">
+
+</span><span class="c"># install the latest version of Python without admin privileges</span><span class="w">
+</span><span class="n">find-package</span><span class="w"> </span><span class="nx">python</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">install-package</span><span class="w"> </span><span class="nt">-Scope</span><span class="w"> </span><span class="nx">CurrentUser</span><span class="w">
+
+</span><span class="c"># find the path of Python installation</span><span class="w">
+</span><span class="n">get-package</span><span class="w"> </span><span class="nx">python</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">source</span><span class="w">
+
+</span><span class="c"># You need to add manually the package executable path to your USER PATH.</span><span class="w">
+</span><span class="c"># To get the current USER Path</span><span class="w">
+</span><span class="p">[</span><span class="n">System.Environment</span><span class="p">]::</span><span class="n">GetEnvironmentVariable</span><span class="p">(</span><span class="s1">'Path'</span><span class="p">,</span><span class="w"> </span><span class="s1">'User'</span><span class="p">)</span><span class="w">
+
+</span><span class="c"># To set the current USER Path</span><span class="w">
+</span><span class="p">[</span><span class="n">System.Environment</span><span class="p">]::</span><span class="n">SetEnvironmentVariable</span><span class="p">(</span><span class="s1">'Path'</span><span class="p">,</span><span class="w"> </span><span class="nv">$newPathInSingleStringSeparatedByColumn</span><span class="p">,</span><span class="w"> </span><span class="s1">'User'</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<blockquote>
+  <p>In fact, you can find out from the output of <code class="language-plaintext highlighter-rouge">Get-PackageSource</code> that <code class="language-plaintext highlighter-rouge">Find-Package</code> can search the packages and modules in both Nuget Gallery and Powershell Gallery.</p>
+</blockquote>
+
+<h1 id="set-up-internal-powershell-gallery-or-nuget-gallery">Set up internal Powershell Gallery or Nuget Gallery</h1>
+
+<p>Some resources on setting up internal Powershell Gallery and Nuget Gallery:</p>
+
+<ol>
+  <li><a href="https://blogs.msdn.microsoft.com/powershell/2014/05/20/setting-up-an-internal-powershellget-repository/">Setting up an Internal PowerShellGet Repository</a></li>
+  <li><a href="https://kevinmarquette.github.io/2017-05-30-Powershell-your-first-PSScript-repository/">Powershell: Your first internal PSScript repository</a></li>
+  <li><a href="https://github.com/PowerShell/PSPrivateGallery">PowerShell/PSPrivateGallery</a></li>
+  <li><a href="https://docs.microsoft.com/en-us/nuget/hosting-packages/overview">Overview of Hosting Your Own NuGet Feeds</a></li>
+  <li><a href="https://github.com/NuGet/NuGetGallery/wiki/Hosting-the-NuGet-Gallery-Locally-in-IIS">NuGet/NuGetGallery</a></li>
+</ol>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#nuget" class="page__taxonomy-item p-category" rel="tag">nuget</a><span class="sep">, </span>
+    
+      <a href="/tags/#packaging" class="page__taxonomy-item p-category" rel="tag">packaging</a><span class="sep">, </span>
+    
+      <a href="/tags/#powershell" class="page__taxonomy-item p-category" rel="tag">powershell</a><span class="sep">, </span>
+    
+      <a href="/tags/#powershell-gallery" class="page__taxonomy-item p-category" rel="tag">powershell-gallery</a><span class="sep">, </span>
+    
+      <a href="/tags/#proxy" class="page__taxonomy-item p-category" rel="tag">proxy</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2018-05-07T00:00:00+00:00">May 7, 2018</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Setting+Up+Powershell+gallery+And+Nuget+gallery%20https%3A%2F%2Fwww.copdips.com%2F2018%2F05%2Fsetting-up-powershell-gallery-and-nuget-gallery-for-powershell.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.copdips.com%2F2018%2F05%2Fsetting-up-powershell-gallery-and-nuget-gallery-for-powershell.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.copdips.com%2F2018%2F05%2Fsetting-up-powershell-gallery-and-nuget-gallery-for-powershell.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+
+  <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.copdips.com%2F2018%2F05%2Fsetting-up-powershell-gallery-and-nuget-gallery-for-powershell.html&title=Setting%20Up%20Powershell%20gallery%20And%20Nuget%20gallery" class="btn btn--reddit" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Reddit"><i class="fab fa-fw fa-reddit" aria-hidden="true"></i><span> Reddit</span></a>
+</section>
+
+
+      <script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+      <div id="qrcode"></div>
+      <script type="text/javascript">
+        var qrcode = new QRCode('qrcode', {width: 100, height: 100, text: location.href});
+      </script>
+
+      
+  <nav class="pagination">
+    
+      <a href="/2018/05/setting-up-github-pages-with-custom-domain-over-https.html" class="pagination--pager" title="Setting up Github Pages With custom domain over HTTPS
+">Previous</a>
+    
+    
+      <a href="/2018/05/powershell-stop-parsing.html" class="pagination--pager" title="Powershell stop-parsing (--%)
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+      <h4 class="page__comments-title">Leave a comment</h4>
+      <section id="disqus_thread"></section>
+    
+</div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-deploy-static-files-to-azure-web-app.html" rel="permalink">Github actions - deploy static files to azure web app
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/Some-nice-CICD-bash-common-scripts.html" rel="permalink">Some nice cicd bash common scripts
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          less than 1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-bash-shell-pipefail.html" rel="permalink">Github Actions - Bash shell -e -o pipefail
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-08T00:00:00+00:00">November 8, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/10/hashing-files.html" rel="permalink">Hashing files
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-10-21T00:00:00+00:00">October 21, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap">
+<form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term...">
+  </form>
+  <div id="results" class="results"></div>
+</div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="mailto:xiang.zhu@outlook.com" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email</a></li>
+        
+      
+        
+          <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+          <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://uptimerobot.com/dashboard#785564645" rel="nofollow noopener noreferrer"><i class="fas fa-clock" aria-hidden="true"></i> Uptime</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2023 Xiang ZHU. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp;
+<a href="https://mmistakes.github.io/minimal-mistakes/about/" rel="nofollow">Minimal Mistakes</a>
+.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'G-L9KPHRQNQN']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "https://www.copdips.com/2018/05/setting-up-powershell-gallery-and-nuget-gallery-for-powershell.html";  /* Replace PAGE_URL with your page's canonical URL variable */
+      this.page.identifier = "/2018/05/setting-up-powershell-gallery-and-nuget-gallery-for-powershell"; /* Replace PAGE_IDENTIFIER with your page's unique identifier variable */
+    };
+    (function() { /* DON'T EDIT BELOW THIS LINE */
+      var d = document, s = d.createElement('script');
+      s.src = 'https://copdips.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+
+  
+
+
+
+
+
+  </body>
+</html>

@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+--><html lang="en" class="no-js">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Select-ColorString : A Unix’s grep-like Powershell Cmdlet Based On Select-String With Color - A code to remember</title>
+<meta name="description" content="Select-String with color, make Select-String of Powershell to highlight the search pattern like grep in Unix.">
+
+
+  <meta name="author" content="Xiang ZHU">
+  
+  <meta property="article:author" content="Xiang ZHU">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="A code to remember">
+<meta property="og:title" content="Select-ColorString : A Unix’s grep-like Powershell Cmdlet Based On Select-String With Color">
+<meta property="og:url" content="https://www.copdips.com/2018/05/grep-like-powershell-colorful-select-string.html">
+
+
+  <meta property="og:description" content="Select-String with color, make Select-String of Powershell to highlight the search pattern like grep in Unix.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2018-05-26T00:00:00+00:00">
+
+
+
+  <meta property="article:modified_time" content="2019-12-31T22:24:25+00:00">
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="https://www.copdips.com/2018/05/grep-like-powershell-colorful-select-string.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Xiang ZHU",
+      "url": "https://www.copdips.com/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="A code to remember Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  <script>MathJax={"tex":{"inlineMath":[["$","$"],["\\(","\\)"]],"displayMath":[["$$","$$"],["\\[","\\]"]]},"svg":{"fontCache":"global"}}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          A code to remember
+          
+        </a>
+        <ul class="visible-links">
+<li class="masthead__menu-item">
+              <a href="/">Home</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/tags/">Tags</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/year-archive/">Year Archive</a>
+            </li>
+</ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<!-- back to top button -->
+<!-- https://github.com/mmistakes/minimal-mistakes/issues/1731#issuecomment-628997645 -->
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>addBackToTop({
+  diameter: 56,
+  backgroundColor: '#F16334',
+  textColor: '#fff'
+})</script>
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.copdips.com/">
+        <img src="/image/avatar/zhuxiang-smile.jpg" alt="Xiang ZHU" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.copdips.com/" itemprop="url">Xiang ZHU</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Python DevOps</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Paris</span>
+        </li>
+      
+
+      
+        
+          
+            <li><a href="https://www.copdips.com" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fas fa-fw fa-link" aria-hidden="true"></i><span class="label">Website</span></a></li>
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">LinkedIn</span></a></li>
+          
+        
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:xiang.zhu@outlook.com" rel="me" class="u-email">
+            <meta itemprop="email" content="xiang.zhu@outlook.com">
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+      <!-- 
+<script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+<div id="qrcode"></div>
+<script type="text/javascript">
+  var qrcode = new QRCode('qrcode', {width: 10, height: 10, text: location.href});
+</script>
+ -->
+    </ul>
+  </div>
+</div>
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Select-ColorString : A Unix’s grep-like Powershell Cmdlet Based On Select-String With Color">
+    <meta itemprop="description" content="Select-String with color, make Select-String of Powershell to highlight the search pattern like grep in Unix.">
+    <meta itemprop="datePublished" content="2018-05-26T00:00:00+00:00">
+    <meta itemprop="dateModified" content="2019-12-31T22:24:25+00:00">
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.copdips.com/2018/05/grep-like-powershell-colorful-select-string.html" class="u-url" itemprop="url">Select-ColorString : A Unix’s grep-like Powershell Cmdlet Based On Select-String With Color
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2018-05-26T00:00:00+00:00">May 26, 2018</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          11 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title">
+<i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu">
+<li><a href="#update-2019-12-28-powershell-7-select-string-default-highlighting">Update 2019-12-28 Powershell 7 Select-String default highlighting</a></li>
+<li><a href="#trace-word">Trace-Word</a></li>
+<li><a href="#select-colorstring">Select-ColorString</a></li>
+<li><a href="#select-colorstring-demo">Select-ColorString demo</a></li>
+<li><a href="#select-string---split">Select-String &amp; -Split</a></li>
+<li><a href="#trace-word--select-colorstring">Trace-Word &amp; Select-ColorString</a></li>
+<li><a href="#update-2018-11-19-on-new-switch--multicolorsforsimplepattern">Update 2018-11-19 on new switch -MultiColorsForSimplePattern</a></li>
+<li><a href="#select-colorstring-source-code">Select-ColorString source code</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <h1 id="update-2019-12-28-powershell-7-select-string-default-highlighting">Update 2019-12-28 Powershell 7 Select-String default highlighting</h1>
+
+<p>Update 2019-12-28: It’s very exciting to see that <strong>since <a href="https://github.com/PowerShell/PowerShell/pull/8963">Powershell 7</a>, the Select-String has highlighting (internal name: emphasis) by default</strong>. It uses similar way (index, length) to find and highlight the matches. The emphasis uses negative colors based on your PowerShell background and text colors. To <a href="https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/select-string?view=powershell-7">disable the emphasis</a>, use the <code class="language-plaintext highlighter-rouge">-NoEmphasis</code> switch. <strong>So I highly recommend everyone to switch to Powershell 7 (<a href="https://devblogs.microsoft.com/powershell/announcing-the-powershell-7-0-release-candidate/">RC is supported by Microsoft</a>)</strong>, it has also many other new powerful features.</p>
+
+<p>BTW, in Powershell 7, Select-String <code class="language-plaintext highlighter-rouge">-AllMatches</code> is set as $false by default. I think it would be nice to have an inverse switch -NoAllMatches just like -NoEmphasis, and let -AllMatches to be $true by default.</p>
+
+<p><strong>Update 2019-12-31</strong>: I just found <a href="https://github.com/PowerShell/PowerShell/issues/11447#issuecomment-569854982">a workaround here</a>, by specifying <code class="language-plaintext highlighter-rouge">$PSDefaultParameterValues['Select-String:AllMatches'] = $true</code> in the Profile.ps1. I don’t know if you have the same feeling as the mine, this feature is killing, it will help me for many other things :)</p>
+
+<p>Powershell 7 Select-String default highlighting demo:</p>
+
+<p><img src="https://github.com/copdips/copdips.github.io/raw/master/_image/blog/2018-05-26-grep-like-powershell-colorful-select-string/powershell7-default-highlighting.png" alt=""></p>
+
+<p>The original post before the Emphasis has been introduced in Powershell 7:</p>
+
+<blockquote>
+  <p><a href="https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/select-string?view=powershell-6">Select-String</a> in Powershell is a very powerful cmdlet to search a string or a pattern in input or files. It’s very much like the famous command-line <a href="https://www.gnu.org/savannah-checkouts/gnu/grep/manual/grep.html">grep</a> in Unix. But from my personal point of view, it’s a little bit pity that Select-String doesn’t highlight the matching patterns, so I will show you in this post how to make it possible (more or less) with Select-ColorString.</p>
+</blockquote>
+
+<h1 id="trace-word">Trace-Word</h1>
+
+<p>First of all, I must mention another powershell cmdlet <a href="https://ridicurious.com/2018/03/14/highlight-words-in-powershell-console/">Trace-Word that I read on Prateek Singh’s blog ridicurious.com</a>.</p>
+
+<p>Let me show you a screenshot of his Trace-Word to let you have an idea about what it can do:</p>
+
+<p><img src="https://github.com/copdips/copdips.github.io/raw/master/_image/blog/2018-05-26-grep-like-powershell-colorful-select-string/trace-word-screenshot.png" alt=""></p>
+
+<p>Indeed, I was deeply impressed when I read his post, the color in Powershell string search results had been one of my most expected Powershell functionalities. Prateek Singh made it, thanks!</p>
+
+<p>When I checked the code source of Trace-Word, I found the cmdlet logic is:</p>
+
+<ol>
+  <li>
+    <p>Firstly reads the input content line by line:</p>
+
+    <div class="language-powershell highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code><span class="w"> </span><span class="nv">$content</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">ForEach-Object</span><span class="w"> </span><span class="p">{</span><span class="o">...</span><span class="p">}</span><span class="w">
+</span></code></pre></div>    </div>
+  </li>
+  <li>And then splits each line by white-space:
+    <div class="language-powershell highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code><span class="w"> </span><span class="err">`</span><span class="bp">$_</span><span class="o">.</span><span class="nf">split</span><span class="p">()</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">Where-Object</span><span class="w"> </span><span class="p">{</span><span class="w">
+     </span><span class="o">-not</span><span class="w"> </span><span class="p">[</span><span class="n">string</span><span class="p">]::</span><span class="n">IsNullOrWhiteSpace</span><span class="p">(</span><span class="bp">$_</span><span class="p">)</span><span class="w">
+ </span><span class="p">}</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">ForEach-Object</span><span class="p">{</span><span class="o">...</span><span class="p">}</span><span class="w">
+</span></code></pre></div>    </div>
+  </li>
+  <li>At last checks each splitted token against the searching words:
+    <div class="language-powershell highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code><span class="w"> </span><span class="kr">if</span><span class="p">(</span><span class="nv">$Token</span><span class="w"> </span><span class="o">-like</span><span class="w"> </span><span class="s2">"*</span><span class="nv">$Word</span><span class="s2">*"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+     </span><span class="nv">$before</span><span class="p">,</span><span class="w"> </span><span class="nv">$after</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$Token</span><span class="w"> </span><span class="o">-Split</span><span class="w"> </span><span class="s2">"</span><span class="nv">$Word</span><span class="s2">"</span><span class="p">;</span><span class="w">
+     </span><span class="o">...</span><span class="w">
+ </span><span class="p">}</span><span class="w">
+</span></code></pre></div>    </div>
+  </li>
+  <li>Now we have <code class="language-plaintext highlighter-rouge">$before, $Word, $after</code>, so just need to <code class="language-plaintext highlighter-rouge">Write-Host $Word with color</code> to highlight the wanted $Word.</li>
+</ol>
+
+<p>That’s done, pretty cool and quite straightforward, nothing complicated, I like it so much.</p>
+
+<p>I contacted Prateek to ask if I can use his idea to write something similar but with another method, he said YES and that comes my Select-ColorString, thanks Prateek again.</p>
+
+<h1 id="select-colorstring">Select-ColorString</h1>
+
+<p>Although Prateek Singh’s Trace-Word is wonderful enough, I still want a bit more capabilities: the regex and the customizable color choice.</p>
+
+<p>The first thing that I thought about the regex is <code class="language-plaintext highlighter-rouge">Select-String</code> which I’m using almost everyday with sls.</p>
+
+<blockquote>
+  <p>Sometimes I was obliged to use the DOS command-line <code class="language-plaintext highlighter-rouge">findstr</code> due to that Select-String catches the input too earlier before it is been displayed a pure string on console screen. But findstr just finds what you want among what is shown on the screen. Although <code class="language-plaintext highlighter-rouge">$input | Out-String | Select-String</code> might solve the issue sometimes but it’s not sexy to use 2 cmdlets to do one single task and sometimes this workaround even doesn’t work.</p>
+</blockquote>
+
+<p>Powershell Select-String returns some <code class="language-plaintext highlighter-rouge">MatchInfo</code> objects, from its MemberType, the <code class="language-plaintext highlighter-rouge">Matches</code> property is what I will use to color the matching patterns. The <code class="language-plaintext highlighter-rouge">Index</code> key gives the index of the first char of the matching pattern in a given line string, with that I know from where I could Write-Host with color.</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">PS</span><span class="err">&gt;</span><span class="w"> </span><span class="s1">'a is good, b is good too'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">sls</span><span class="w"> </span><span class="nx">good</span><span class="w"> </span><span class="nt">-AllMatches</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">gm</span><span class="w">
+
+
+   </span><span class="n">TypeName:Microsoft.PowerShell.Commands.MatchInfo</span><span class="w">
+
+</span><span class="n">Name</span><span class="w">         </span><span class="nx">MemberType</span><span class="w"> </span><span class="nx">Definition</span><span class="w">
+</span><span class="o">----</span><span class="w">         </span><span class="o">----------</span><span class="w"> </span><span class="o">----------</span><span class="w">
+</span><span class="n">Equals</span><span class="w">       </span><span class="nx">Method</span><span class="w">     </span><span class="nx">bool</span><span class="w"> </span><span class="nx">Equals</span><span class="p">(</span><span class="n">System.Object</span><span class="w"> </span><span class="nx">obj</span><span class="p">)</span><span class="w">
+</span><span class="n">GetHashCode</span><span class="w">  </span><span class="nx">Method</span><span class="w">     </span><span class="nx">int</span><span class="w"> </span><span class="nx">GetHashCode</span><span class="p">()</span><span class="w">
+</span><span class="n">GetType</span><span class="w">      </span><span class="nx">Method</span><span class="w">     </span><span class="nx">type</span><span class="w"> </span><span class="nx">GetType</span><span class="p">()</span><span class="w">
+</span><span class="n">RelativePath</span><span class="w"> </span><span class="nx">Method</span><span class="w">     </span><span class="nx">string</span><span class="w"> </span><span class="nx">RelativePath</span><span class="p">(</span><span class="n">string</span><span class="w"> </span><span class="nx">directory</span><span class="p">)</span><span class="w">
+</span><span class="n">ToString</span><span class="w">     </span><span class="nx">Method</span><span class="w">     </span><span class="nx">string</span><span class="w"> </span><span class="nx">ToString</span><span class="p">(),</span><span class="w"> </span><span class="n">string</span><span class="w"> </span><span class="nx">ToString</span><span class="p">(</span><span class="n">string</span><span class="w"> </span><span class="nx">directory</span><span class="p">)</span><span class="w">
+</span><span class="n">Context</span><span class="w">      </span><span class="nx">Property</span><span class="w">   </span><span class="nx">Microsoft.PowerShell.Commands.MatchInfoContext</span><span class="w"> </span><span class="nx">Context</span><span class="w"> </span><span class="p">{</span><span class="n">get</span><span class="p">;</span><span class="n">set</span><span class="p">;}</span><span class="w">
+</span><span class="n">Filename</span><span class="w">     </span><span class="nx">Property</span><span class="w">   </span><span class="nx">string</span><span class="w"> </span><span class="nx">Filename</span><span class="w"> </span><span class="p">{</span><span class="n">get</span><span class="p">;}</span><span class="w">
+</span><span class="n">IgnoreCase</span><span class="w">   </span><span class="nx">Property</span><span class="w">   </span><span class="nx">bool</span><span class="w"> </span><span class="nx">IgnoreCase</span><span class="w"> </span><span class="p">{</span><span class="n">get</span><span class="p">;</span><span class="n">set</span><span class="p">;}</span><span class="w">
+</span><span class="n">Line</span><span class="w">         </span><span class="nx">Property</span><span class="w">   </span><span class="nx">string</span><span class="w"> </span><span class="nx">Line</span><span class="w"> </span><span class="p">{</span><span class="n">get</span><span class="p">;</span><span class="n">set</span><span class="p">;}</span><span class="w">
+</span><span class="n">LineNumber</span><span class="w">   </span><span class="nx">Property</span><span class="w">   </span><span class="nx">int</span><span class="w"> </span><span class="nx">LineNumber</span><span class="w"> </span><span class="p">{</span><span class="n">get</span><span class="p">;</span><span class="n">set</span><span class="p">;}</span><span class="w">
+</span><span class="n">Matches</span><span class="w">      </span><span class="nx">Property</span><span class="w">   </span><span class="nx">System.Text.RegularExpressions.Match</span><span class="p">[]</span><span class="w"> </span><span class="nx">Matches</span><span class="w"> </span><span class="p">{</span><span class="n">get</span><span class="p">;</span><span class="n">set</span><span class="p">;}</span><span class="w">
+</span><span class="n">Path</span><span class="w">         </span><span class="nx">Property</span><span class="w">   </span><span class="nx">string</span><span class="w"> </span><span class="nx">Path</span><span class="w"> </span><span class="p">{</span><span class="n">get</span><span class="p">;</span><span class="n">set</span><span class="p">;}</span><span class="w">
+</span><span class="n">Pattern</span><span class="w">      </span><span class="nx">Property</span><span class="w">   </span><span class="nx">string</span><span class="w"> </span><span class="nx">Pattern</span><span class="w"> </span><span class="p">{</span><span class="n">get</span><span class="p">;</span><span class="n">set</span><span class="p">;}</span><span class="w">
+
+
+</span><span class="n">PS</span><span class="err">&gt;</span><span class="w"> </span><span class="s1">'a is good, b is good too'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">sls</span><span class="w"> </span><span class="nx">good</span><span class="w"> </span><span class="nt">-AllMatches</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">matches</span><span class="w">
+
+
+</span><span class="n">Groups</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">}</span><span class="w">
+</span><span class="n">Success</span><span class="w">  </span><span class="p">:</span><span class="w"> </span><span class="nx">True</span><span class="w">
+</span><span class="n">Name</span><span class="w">     </span><span class="p">:</span><span class="w"> </span><span class="nx">0</span><span class="w">
+</span><span class="n">Captures</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">}</span><span class="w">
+</span><span class="n">Index</span><span class="w">    </span><span class="p">:</span><span class="w"> </span><span class="nx">5</span><span class="w">
+</span><span class="n">Length</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="nx">4</span><span class="w">
+</span><span class="n">Value</span><span class="w">    </span><span class="p">:</span><span class="w"> </span><span class="nx">good</span><span class="w">
+
+</span><span class="n">Groups</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">}</span><span class="w">
+</span><span class="n">Success</span><span class="w">  </span><span class="p">:</span><span class="w"> </span><span class="nx">True</span><span class="w">
+</span><span class="n">Name</span><span class="w">     </span><span class="p">:</span><span class="w"> </span><span class="nx">0</span><span class="w">
+</span><span class="n">Captures</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">}</span><span class="w">
+</span><span class="n">Index</span><span class="w">    </span><span class="p">:</span><span class="w"> </span><span class="nx">16</span><span class="w">
+</span><span class="n">Length</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="nx">4</span><span class="w">
+</span><span class="n">Value</span><span class="w">    </span><span class="p">:</span><span class="w"> </span><span class="nx">good</span><span class="w">
+</span></code></pre></div></div>
+
+<p>So for my Select-ColorString, its logic is:</p>
+
+<ol>
+  <li>
+    <p>Split the input content in lines.</p>
+
+    <div class="language-powershell highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code><span class="w"> </span><span class="kr">foreach</span><span class="w"> </span><span class="p">(</span><span class="nv">$line</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="nv">$Content</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="o">...</span><span class="p">}</span><span class="w">
+</span></code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Find all the matches in a given line.</p>
+
+    <div class="language-powershell highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code><span class="w"> </span><span class="nv">$paramSelectString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">@{</span><span class="w">
+         </span><span class="nx">Pattern</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">$Pattern</span><span class="w">
+         </span><span class="nx">AllMatches</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="bp">$true</span><span class="w">
+         </span><span class="nx">CaseSensitive</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$CaseSensitive</span><span class="w">
+ </span><span class="p">}</span><span class="w">
+ </span><span class="nv">$matchList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$line</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">Select-String</span><span class="w"> </span><span class="err">@</span><span class="nx">paramSelectString</span><span class="w">
+</span></code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Write <code class="language-plaintext highlighter-rouge">without color</code> for the string before the match.</p>
+
+    <div class="language-powershell highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code><span class="w"> </span><span class="nv">$index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w">
+ </span><span class="kr">foreach</span><span class="w"> </span><span class="p">(</span><span class="nv">$myMatch</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="nv">$matchList</span><span class="o">.</span><span class="nf">Matches</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+     </span><span class="nv">$length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$myMatch</span><span class="o">.</span><span class="nf">Index</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nv">$index</span><span class="w">
+     </span><span class="n">Write-Host</span><span class="w"> </span><span class="nv">$line</span><span class="o">.</span><span class="nf">Substring</span><span class="p">(</span><span class="nv">$index</span><span class="p">,</span><span class="w"> </span><span class="nv">$length</span><span class="p">)</span><span class="w"> </span><span class="nt">-NoNewline</span><span class="w">
+     </span><span class="o">...</span><span class="w">
+ </span><span class="p">}</span><span class="w">
+</span></code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Right after, write the match <code class="language-plaintext highlighter-rouge">with color</code>.</p>
+
+    <div class="language-powershell highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code><span class="w"> </span><span class="kr">foreach</span><span class="w"> </span><span class="p">(</span><span class="nv">$myMatch</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="nv">$matchList</span><span class="o">.</span><span class="nf">Matches</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+     </span><span class="o">...</span><span class="w">
+     </span><span class="nv">$paramWriteHost</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">@{</span><span class="w">
+         </span><span class="nx">Object</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">$line</span><span class="err">.</span><span class="nx">Substring</span><span class="err">(</span><span class="nv">$myMatch</span><span class="err">.</span><span class="nx">Index</span><span class="p">,</span><span class="w"> </span><span class="nv">$myMatch</span><span class="err">.</span><span class="nx">Length</span><span class="err">)</span><span class="w">
+         </span><span class="nx">NoNewline</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="bp">$true</span><span class="w">
+         </span><span class="nx">ForegroundColor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$ForegroundColor</span><span class="w">
+         </span><span class="nx">BackgroundColor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$BackgroundColor</span><span class="w">
+     </span><span class="p">}</span><span class="w">
+     </span><span class="n">Write-Host</span><span class="w"> </span><span class="err">@</span><span class="nx">paramWriteHost</span><span class="w">
+     </span><span class="o">...</span><span class="w">
+ </span><span class="p">}</span><span class="w">
+</span></code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Recalculate the index for the next match in the same line.</p>
+
+    <div class="language-powershell highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code><span class="w"> </span><span class="nv">$index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w">
+ </span><span class="kr">foreach</span><span class="w"> </span><span class="p">(</span><span class="nv">$myMatch</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="nv">$matchList</span><span class="o">.</span><span class="nf">Matches</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+     </span><span class="o">...</span><span class="w">
+     </span><span class="nv">$index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$myMatch</span><span class="o">.</span><span class="nf">Index</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nv">$myMatch</span><span class="o">.</span><span class="nf">Length</span><span class="w">
+ </span><span class="p">}</span><span class="w">
+</span></code></pre></div>    </div>
+  </li>
+  <li>
+    <p>When there’s no more matches in the same line, just write <code class="language-plaintext highlighter-rouge">without color</code> all the rest.</p>
+
+    <div class="language-powershell highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code><span class="w"> </span><span class="nv">$index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w">
+ </span><span class="kr">foreach</span><span class="w"> </span><span class="p">(</span><span class="nv">$myMatch</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="nv">$matchList</span><span class="o">.</span><span class="nf">Matches</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+     </span><span class="o">...</span><span class="w">
+     </span><span class="nv">$index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$myMatch</span><span class="o">.</span><span class="nf">Index</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nv">$myMatch</span><span class="o">.</span><span class="nf">Length</span><span class="w">
+ </span><span class="p">}</span><span class="w">
+ </span><span class="n">Write-Host</span><span class="w"> </span><span class="nv">$line</span><span class="o">.</span><span class="nf">Substring</span><span class="p">(</span><span class="nv">$index</span><span class="p">)</span><span class="w">
+</span></code></pre></div>    </div>
+  </li>
+</ol>
+
+<p>That’s all, let’s see a demo on Select-ColorString.</p>
+
+<h1 id="select-colorstring-demo">Select-ColorString demo</h1>
+
+<p>The demo reads in real-time a test file and use Select-ColorString to highlight the keyword <code class="language-plaintext highlighter-rouge">warn</code></p>
+
+<p><img src="https://github.com/copdips/copdips.github.io/raw/master/_image/blog/2018-05-26-grep-like-powershell-colorful-select-string/Select-ColorString-demo.gif" alt=""></p>
+
+<h1 id="select-string---split">Select-String &amp; -Split</h1>
+
+<p>In fact Powershell -split operator can also <a href="https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_split?view=powershell-6#options">take regex pattern</a>, and is as powerful as Select-String can do in terms of searching pattern. The reason that I chose Select-String instead of -split is because :</p>
+
+<ol>
+  <li>
+    <p>Select-String makes sense to ‘port’ Unix grep on Powershell, they’re both for searching patterns and display them.</p>
+  </li>
+  <li>
+    <p>-split just splits the line by pattern, you still need to iterate on each splitted token and perform a -like or -match operation, which might take more time to display then Select-String does, as the later stores the matches already, it just needs to move the index and display the matches in color. But to be honest, I’ve never tested the execution duration difference between -split and Select-String, maybe -split is faster.</p>
+  </li>
+</ol>
+
+<p>When I have time, I will write new function based on -split with regex to test its power.</p>
+
+<h1 id="trace-word--select-colorstring">Trace-Word &amp; Select-ColorString</h1>
+
+<p>Both of them are in my toolkit, and I use them in different scenarios.</p>
+
+<ul>
+  <li>When I only need to search patterns based on words, I will <code class="language-plaintext highlighter-rouge">use Trace-Word</code>, as it can display different colors on different words. A typical use case is monitoring the log files which have some keywords like info, warning, error, etc. The output is much more beautiful.</li>
+  <li>When I need to search patterns which include white space for example, I will <code class="language-plaintext highlighter-rouge">use Select-ColorString</code> as it takes regex and it doesn’t split the line by white space in advance</li>
+</ul>
+
+<p>BTW, I also set an alias on each of them:</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">PS</span><span class="err">&gt;</span><span class="w"> </span><span class="nx">Set-Alias</span><span class="w"> </span><span class="nx">tw</span><span class="w"> </span><span class="nx">Trace-Word</span><span class="w">
+</span><span class="n">PS</span><span class="err">&gt;</span><span class="w"> </span><span class="nx">Set-Alias</span><span class="w"> </span><span class="nx">scs</span><span class="w"> </span><span class="nx">Select-ColorString</span><span class="w">
+</span></code></pre></div></div>
+
+<h1 id="update-2018-11-19-on-new-switch--multicolorsforsimplepattern">Update 2018-11-19 on new switch -MultiColorsForSimplePattern</h1>
+
+<p>I added a new switch <a href="https://github.com/copdips/PSScripts/commit/76361019f11602d607e7d95199a6f34e0a666c39">-MultiColorsForSimplePattern</a> last week. This switch enables the Select-ColorString to display the different keywords in different colors just like Trace-Word. This is very useful at least for me to search some keywords like <em>error</em>, <em>warning</em> in the log files.</p>
+
+<p><img src="https://github.com/copdips/copdips.github.io/raw/master/_image/blog/2018-05-26-grep-like-powershell-colorful-select-string/new-switch-MultiColorsForSimplePattern.PNG" alt=""></p>
+
+<p>There’s a limitation on this new switch that the multicolors only works for simple pattern which contains only keywords separated by “|” as shown in above screenshot. And it cannot be used with regex, this is because by using regex, the color selection will take much more time than the simple keywords. Maybe in the future I will add a new switch <strong>-MultiColorsForRegexPatternWithFastCpu</strong>.</p>
+
+<h1 id="select-colorstring-source-code">Select-ColorString source code</h1>
+
+<p>Finally, you can find the the source code of <a href="https://github.com/copdips/PSScripts/blob/master/Text/Select-ColorString.ps1">Select-ColorString on Github</a>.</p>
+
+<blockquote>
+  <p>As I forced to use only a few of the original Select-String’s parameters, Select-ColorString cannot do everything that Select-String does, that’s why I said <em>more or less</em> at the beginning of this post.</p>
+
+  <p>Some better ways that I think to archive the goal is whether use <a href="https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_functions_advanced_parameters?view=powershell-6#valuefromremainingarguments-argument">ValueFromRemainingArguments</a> to send all the remaing non-handled Select-ColorString parameters to Select-String, whether let Microsoft Powershell team to modify directly the <a href="https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_types.ps1xml?view=powershell-6">Types.ps1xml</a></p>
+</blockquote>
+
+<figure class="highlight"><pre><code class="language-powershell" data-lang="powershell"><table class="rouge-table"><tbody><tr>
+<td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+</pre></td>
+<td class="code"><pre><span class="kr">function</span><span class="w"> </span><span class="nf">Select-ColorString</span><span class="w"> </span><span class="p">{</span><span class="w">
+     </span><span class="cm">&lt;#
+    </span><span class="cs">.SYNOPSIS</span><span class="cm">
+
+    Find the matches in a given content by the pattern and write the matches in color like grep.
+
+    </span><span class="cs">.NOTES</span><span class="cm">
+
+    inspired by: https://ridicurious.com/2018/03/14/highlight-words-in-powershell-console/
+
+    </span><span class="cs">.EXAMPLE</span><span class="cm">
+
+    &gt; 'aa bb cc', 'A line' | Select-ColorString a
+
+    Both line 'aa bb cc' and line 'A line' are displayed as both contain "a" case insensitive.
+
+    </span><span class="cs">.EXAMPLE</span><span class="cm">
+
+    &gt; 'aa bb cc', 'A line' | Select-ColorString a -NotMatch
+
+    Nothing will be displayed as both lines have "a".
+
+    </span><span class="cs">.EXAMPLE</span><span class="cm">
+
+    &gt; 'aa bb cc', 'A line' | Select-ColorString a -CaseSensitive
+
+    Only line 'aa bb cc' is displayed with color on all occurrences of "a" case sensitive.
+
+    </span><span class="cs">.EXAMPLE</span><span class="cm">
+
+    &gt; 'aa bb cc', 'A line' | Select-ColorString '\(a)|\(\sb)' -CaseSensitive -BackgroundColor White
+
+    Only line 'aa bb cc' is displayed with background color White on all occurrences of regex '\(a)|\(\sb)' case sensitive.
+
+    </span><span class="cs">.EXAMPLE</span><span class="cm">
+
+    &gt; 'aa bb cc', 'A line' | Select-ColorString b -KeepNotMatch
+
+    Both line 'aa bb cc' and 'A line' are displayed with color on all occurrences of "b" case insensitive,
+    and for lines without the keyword "b", they will be only displayed but without color.
+
+    </span><span class="cs">.EXAMPLE</span><span class="cm">
+
+    &gt; Get-Content app.log -Wait -Tail 100 | Select-ColorString \"error|warning|critical\" -MultiColorsForSimplePattern -KeepNotMatch
+
+    Search the 3 key words "error", "warning", and "critical" in the last 100 lines of the active file app.log and display the 3 key words in 3 colors.
+    For lines without the keys words, hey will be only displayed but without color.
+
+    </span><span class="cs">.EXAMPLE</span><span class="cm">
+
+    &gt; Get-Content \"C:\Windows\Logs\DISM\dism.log\" -Tail 100 -Wait | Select-ColorString win
+
+    Find and color the keyword "win" in the last ongoing 100 lines of dism.log.
+
+    </span><span class="cs">.EXAMPLE</span><span class="cm">
+
+    &gt; Get-WinEvent -FilterHashtable @{logname='System'; StartTime = \(Get-Date).AddDays\(-1)} | Select-Object time\*,level\*,message | Select-ColorString win
+
+    Find and color the keyword "win" in the System event log from the last 24 hours.
+    #&gt;</span><span class="w">
+
+    </span><span class="p">[</span><span class="n">Cmdletbinding</span><span class="p">(</span><span class="n">DefaultParametersetName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Match'</span><span class="p">)]</span><span class="w">
+    </span><span class="kr">param</span><span class="p">(</span><span class="w">
+        </span><span class="p">[</span><span class="n">Parameter</span><span class="p">(</span><span class="w">
+            </span><span class="n">Position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">)]</span><span class="w">
+        </span><span class="p">[</span><span class="n">ValidateNotNullOrEmpty</span><span class="p">()]</span><span class="w">
+        </span><span class="p">[</span><span class="n">String</span><span class="p">]</span><span class="nv">$Pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">$</span><span class="p">(</span><span class="kr">throw</span><span class="w"> </span><span class="s2">"</span><span class="si">$(</span><span class="bp">$MyInvocation</span><span class="o">.</span><span class="nf">MyCommand</span><span class="o">.</span><span class="nf">Name</span><span class="si">)</span><span class="s2"> : "</span><span class="w"> </span><span class="se">`</span><span class="w">
+                </span><span class="o">+</span><span class="w"> </span><span class="s2">"Cannot bind null or empty value to the parameter </span><span class="se">`"</span><span class="s2">Pattern</span><span class="se">`"</span><span class="s2">"</span><span class="p">),</span><span class="w">
+
+        </span><span class="p">[</span><span class="n">Parameter</span><span class="p">(</span><span class="w">
+            </span><span class="n">ValueFromPipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">$true</span><span class="p">,</span><span class="w">
+            </span><span class="n">HelpMessage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"String or list of string to be checked against the pattern"</span><span class="p">)]</span><span class="w">
+        </span><span class="p">[</span><span class="n">String</span><span class="p">[]]</span><span class="nv">$Content</span><span class="p">,</span><span class="w">
+
+        </span><span class="p">[</span><span class="n">Parameter</span><span class="p">()]</span><span class="w">
+        </span><span class="p">[</span><span class="n">ValidateSet</span><span class="p">(</span><span class="w">
+            </span><span class="s1">'Black'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'DarkBlue'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'DarkGreen'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'DarkCyan'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'DarkRed'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'DarkMagenta'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'DarkYellow'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'Gray'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'DarkGray'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'Blue'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'Green'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'Cyan'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'Red'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'Magenta'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'Yellow'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'White'</span><span class="p">)]</span><span class="w">
+        </span><span class="p">[</span><span class="n">String</span><span class="p">]</span><span class="nv">$ForegroundColor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Black'</span><span class="p">,</span><span class="w">
+
+        </span><span class="p">[</span><span class="n">Parameter</span><span class="p">()]</span><span class="w">
+        </span><span class="p">[</span><span class="n">ValidateSet</span><span class="p">(</span><span class="w">
+            </span><span class="s1">'Black'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'DarkBlue'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'DarkGreen'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'DarkCyan'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'DarkRed'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'DarkMagenta'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'DarkYellow'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'Gray'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'DarkGray'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'Blue'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'Green'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'Cyan'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'Red'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'Magenta'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'Yellow'</span><span class="p">,</span><span class="w">
+            </span><span class="s1">'White'</span><span class="p">)]</span><span class="w">
+        </span><span class="p">[</span><span class="n">ValidateScript</span><span class="p">(</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="bp">$Host</span><span class="o">.</span><span class="nf">ui</span><span class="o">.</span><span class="nf">RawUI</span><span class="o">.</span><span class="nf">BackgroundColor</span><span class="w"> </span><span class="o">-eq</span><span class="w"> </span><span class="bp">$_</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="kr">throw</span><span class="w"> </span><span class="s2">"Current host background color is also set to </span><span class="se">`"</span><span class="bp">$_</span><span class="se">`"</span><span class="s2">, "</span><span class="w"> </span><span class="se">`</span><span class="w">
+                        </span><span class="o">+</span><span class="w"> </span><span class="s2">"please choose another color for a better readability"</span><span class="w">
+                </span><span class="p">}</span><span class="w">
+                </span><span class="kr">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="kr">return</span><span class="w"> </span><span class="bp">$true</span><span class="w">
+                </span><span class="p">}</span><span class="w">
+            </span><span class="p">})]</span><span class="w">
+        </span><span class="p">[</span><span class="n">String</span><span class="p">]</span><span class="nv">$BackgroundColor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Yellow'</span><span class="p">,</span><span class="w">
+
+        </span><span class="p">[</span><span class="n">Parameter</span><span class="p">()]</span><span class="w">
+        </span><span class="p">[</span><span class="n">Switch</span><span class="p">]</span><span class="nv">$CaseSensitive</span><span class="p">,</span><span class="w">
+
+        </span><span class="p">[</span><span class="n">Parameter</span><span class="p">(</span><span class="w">
+            </span><span class="n">HelpMessage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Available only if the pattern is simple non-regex string "</span><span class="w"> </span><span class="se">`</span><span class="w">
+                </span><span class="o">+</span><span class="w"> </span><span class="s2">"separated by '|', use this switch with fast CPU."</span><span class="p">)]</span><span class="w">
+        </span><span class="p">[</span><span class="n">Switch</span><span class="p">]</span><span class="nv">$MultiColorsForSimplePattern</span><span class="p">,</span><span class="w">
+
+        </span><span class="p">[</span><span class="n">Parameter</span><span class="p">(</span><span class="w">
+            </span><span class="n">ParameterSetName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'NotMatch'</span><span class="p">,</span><span class="w">
+            </span><span class="n">HelpMessage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"If true, write only not matching lines; "</span><span class="w"> </span><span class="se">`</span><span class="w">
+                </span><span class="o">+</span><span class="w"> </span><span class="s2">"if false, write only matching lines"</span><span class="p">)]</span><span class="w">
+        </span><span class="p">[</span><span class="n">Switch</span><span class="p">]</span><span class="nv">$NotMatch</span><span class="p">,</span><span class="w">
+
+        </span><span class="p">[</span><span class="n">Parameter</span><span class="p">(</span><span class="w">
+            </span><span class="n">ParameterSetName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Match'</span><span class="p">,</span><span class="w">
+            </span><span class="n">HelpMessage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"If true, write all the lines; "</span><span class="w"> </span><span class="se">`</span><span class="w">
+                </span><span class="o">+</span><span class="w"> </span><span class="s2">"if false, write only matching lines"</span><span class="p">)]</span><span class="w">
+        </span><span class="p">[</span><span class="n">Switch</span><span class="p">]</span><span class="nv">$KeepNotMatch</span><span class="w">
+    </span><span class="p">)</span><span class="w">
+
+    </span><span class="kr">begin</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nv">$paramSelectString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">@{</span><span class="w">
+            </span><span class="nx">Pattern</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">$Pattern</span><span class="w">
+            </span><span class="nx">AllMatches</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="bp">$true</span><span class="w">
+            </span><span class="nx">CaseSensitive</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$CaseSensitive</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+        </span><span class="nv">$writeNotMatch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$KeepNotMatch</span><span class="w"> </span><span class="o">-or</span><span class="w"> </span><span class="nv">$NotMatch</span><span class="w">
+
+        </span><span class="p">[</span><span class="n">System.Collections.ArrayList</span><span class="p">]</span><span class="nv">$colorList</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="p">[</span><span class="n">System.Enum</span><span class="p">]::</span><span class="n">GetValues</span><span class="p">([</span><span class="n">System.ConsoleColor</span><span class="p">])</span><span class="w">
+        </span><span class="nv">$currentBackgroundColor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">$Host</span><span class="o">.</span><span class="nf">ui</span><span class="o">.</span><span class="nf">RawUI</span><span class="o">.</span><span class="nf">BackgroundColor</span><span class="w">
+        </span><span class="nv">$colorList</span><span class="o">.</span><span class="nf">Remove</span><span class="p">(</span><span class="nv">$currentBackgroundColor</span><span class="o">.</span><span class="nf">ToString</span><span class="p">())</span><span class="w">
+        </span><span class="nv">$colorList</span><span class="o">.</span><span class="nf">Remove</span><span class="p">(</span><span class="nv">$ForegroundColor</span><span class="p">)</span><span class="w">
+        </span><span class="nv">$colorList</span><span class="o">.</span><span class="nf">Reverse</span><span class="p">()</span><span class="w">
+        </span><span class="nv">$colorCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$colorList</span><span class="o">.</span><span class="nf">Count</span><span class="w">
+
+        </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nv">$MultiColorsForSimplePattern</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="c"># Get all the console foreground and background colors mapping display effet:</span><span class="w">
+            </span><span class="c"># https://gist.github.com/timabell/cc9ca76964b59b2a54e91bda3665499e</span><span class="w">
+            </span><span class="nv">$patternToColorMapping</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">Ordered</span><span class="p">]@{}</span><span class="w">
+            </span><span class="c"># Available only if the pattern is a simple non-regex string separated by '|', use this with fast CPU.</span><span class="w">
+            </span><span class="c"># We dont support regex as -Pattern for this switch as it will need much more CPU.</span><span class="w">
+            </span><span class="c"># This switch is useful when you need to search some words,</span><span class="w">
+            </span><span class="c"># for example searching "error|warn|crtical" these 3 words in a log file.</span><span class="w">
+            </span><span class="nv">$expectedMatches</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$Pattern</span><span class="o">.</span><span class="nf">split</span><span class="p">(</span><span class="s2">"|"</span><span class="p">)</span><span class="w">
+            </span><span class="nv">$expectedMatchesCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$expectedMatches</span><span class="o">.</span><span class="nf">Count</span><span class="w">
+            </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nv">$expectedMatchesCount</span><span class="w"> </span><span class="o">-ge</span><span class="w"> </span><span class="nv">$colorCount</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="n">Write-Host</span><span class="w"> </span><span class="s2">"The switch -MultiColorsForSimplePattern is True, "</span><span class="w"> </span><span class="se">`
+</span><span class="w">                    </span><span class="o">+</span><span class="w"> </span><span class="s2">"but there're more patterns than the available colors number "</span><span class="w"> </span><span class="se">`
+</span><span class="w">                    </span><span class="o">+</span><span class="w"> </span><span class="s2">"which is </span><span class="nv">$colorCount</span><span class="s2">, so rotation color list will be used."</span><span class="w"> </span><span class="se">`
+</span><span class="w">                    </span><span class="nt">-ForegroundColor</span><span class="w"> </span><span class="nx">Yellow</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+            </span><span class="mi">0</span><span class="o">..</span><span class="n">\</span><span class="p">(</span><span class="n">\</span><span class="nv">$expectedMatchesCount</span><span class="w"> </span><span class="nt">-1</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nv">$patternToColorMapping</span><span class="o">.</span><span class="p">(</span><span class="nv">$expectedMatches</span><span class="p">[</span><span class="bp">$_</span><span class="p">])</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$colorList</span><span class="p">[</span><span class="bp">$_</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="nv">$colorCount</span><span class="p">]</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+
+    </span><span class="kr">process</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="kr">foreach</span><span class="w"> </span><span class="p">(</span><span class="nv">$line</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="nv">$Content</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="n">\</span><span class="nv">$matchList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">\</span><span class="nv">$line</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">Select-String</span><span class="w"> </span><span class="err">@</span><span class="nx">paramSelectString</span><span class="w">
+
+            </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="w"> </span><span class="o">-lt</span><span class="w"> </span><span class="nv">$matchList</span><span class="o">.</span><span class="nf">Count</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="o">-not</span><span class="w"> </span><span class="nv">$NotMatch</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="nv">$index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w">
+                    </span><span class="kr">foreach</span><span class="w"> </span><span class="p">(</span><span class="nv">$myMatch</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="nv">$matchList</span><span class="o">.</span><span class="nf">Matches</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+                        </span><span class="nv">$length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$myMatch</span><span class="o">.</span><span class="nf">Index</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nv">$index</span><span class="w">
+                        </span><span class="n">Write-Host</span><span class="w"> </span><span class="nv">$line</span><span class="o">.</span><span class="nf">Substring</span><span class="p">(</span><span class="nv">$index</span><span class="p">,</span><span class="w"> </span><span class="nv">$length</span><span class="p">)</span><span class="w"> </span><span class="nt">-NoNewline</span><span class="w">
+
+                        </span><span class="nv">$expectedBackgroupColor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$BackgroundColor</span><span class="w">
+                        </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nv">$MultiColorsForSimplePattern</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+                            </span><span class="nv">$expectedBackgroupColor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$patternToColorMapping</span><span class="p">[</span><span class="nv">$myMatch</span><span class="o">.</span><span class="nf">Value</span><span class="p">]</span><span class="w">
+                        </span><span class="p">}</span><span class="w">
+
+                        </span><span class="nv">$paramWriteHost</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">@{</span><span class="w">
+                            </span><span class="nx">Object</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">$line</span><span class="err">.</span><span class="nx">Substring</span><span class="err">(</span><span class="nv">$myMatch</span><span class="err">.</span><span class="nx">Index</span><span class="p">,</span><span class="w"> </span><span class="nv">$myMatch</span><span class="err">.</span><span class="nx">Length</span><span class="err">)</span><span class="w">
+                            </span><span class="nx">NoNewline</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="bp">$true</span><span class="w">
+                            </span><span class="nx">ForegroundColor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$ForegroundColor</span><span class="w">
+                            </span><span class="nx">BackgroundColor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$expectedBackgroupColor</span><span class="w">
+                        </span><span class="p">}</span><span class="w">
+                        </span><span class="n">Write-Host</span><span class="w"> </span><span class="err">@</span><span class="nx">paramWriteHost</span><span class="w">
+
+                        </span><span class="nv">$index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$myMatch</span><span class="o">.</span><span class="nf">Index</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nv">$myMatch</span><span class="o">.</span><span class="nf">Length</span><span class="w">
+                    </span><span class="p">}</span><span class="w">
+                    </span><span class="n">Write-Host</span><span class="w"> </span><span class="nv">$line</span><span class="o">.</span><span class="nf">Substring</span><span class="p">(</span><span class="nv">$index</span><span class="p">)</span><span class="w">
+                </span><span class="p">}</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+            </span><span class="kr">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nv">$writeNotMatch</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="n">Write-Host</span><span class="w"> </span><span class="s2">"</span><span class="nv">$line</span><span class="s2">"</span><span class="w">
+                </span><span class="p">}</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+
+    </span><span class="kr">end</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span>
+</pre></td>
+</tr></tbody></table></code></pre></figure>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#powershell" class="page__taxonomy-item p-category" rel="tag">powershell</a><span class="sep">, </span>
+    
+      <a href="/tags/#regex" class="page__taxonomy-item p-category" rel="tag">regex</a><span class="sep">, </span>
+    
+      <a href="/tags/#string" class="page__taxonomy-item p-category" rel="tag">string</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2019-12-31">December 31, 2019</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Select-ColorString+%3A+A+Unix%27s+grep-like+Powershell+Cmdlet+Based+On+Select-String+With+Color%20https%3A%2F%2Fwww.copdips.com%2F2018%2F05%2Fgrep-like-powershell-colorful-select-string.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.copdips.com%2F2018%2F05%2Fgrep-like-powershell-colorful-select-string.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.copdips.com%2F2018%2F05%2Fgrep-like-powershell-colorful-select-string.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+
+  <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.copdips.com%2F2018%2F05%2Fgrep-like-powershell-colorful-select-string.html&title=Select-ColorString%20:%20A%20Unix's%20grep-like%20Powershell%20Cmdlet%20Based%20On%20Select-String%20With%20Color" class="btn btn--reddit" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Reddit"><i class="fab fa-fw fa-reddit" aria-hidden="true"></i><span> Reddit</span></a>
+</section>
+
+
+      <script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+      <div id="qrcode"></div>
+      <script type="text/javascript">
+        var qrcode = new QRCode('qrcode', {width: 100, height: 100, text: location.href});
+      </script>
+
+      
+  <nav class="pagination">
+    
+      <a href="/2018/05/using-readline-in-python-repl-on-windows.html" class="pagination--pager" title="Using Readline In Python REPL On Windows With PyReadline and PtPython
+">Previous</a>
+    
+    
+      <a href="/2018/06/converting-python-json-list-to-csv-in-2-lines-of-code-by-pandas.html" class="pagination--pager" title="Converting Python json dict list to csv file in 2 lines of code by pandas
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+      <h4 class="page__comments-title">Leave a comment</h4>
+      <section id="disqus_thread"></section>
+    
+</div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-deploy-static-files-to-azure-web-app.html" rel="permalink">Github actions - deploy static files to azure web app
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/Some-nice-CICD-bash-common-scripts.html" rel="permalink">Some nice cicd bash common scripts
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          less than 1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-bash-shell-pipefail.html" rel="permalink">Github Actions - Bash shell -e -o pipefail
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-08T00:00:00+00:00">November 8, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/10/hashing-files.html" rel="permalink">Hashing files
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-10-21T00:00:00+00:00">October 21, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap">
+<form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term...">
+  </form>
+  <div id="results" class="results"></div>
+</div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="mailto:xiang.zhu@outlook.com" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email</a></li>
+        
+      
+        
+          <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+          <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://uptimerobot.com/dashboard#785564645" rel="nofollow noopener noreferrer"><i class="fas fa-clock" aria-hidden="true"></i> Uptime</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2023 Xiang ZHU. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp;
+<a href="https://mmistakes.github.io/minimal-mistakes/about/" rel="nofollow">Minimal Mistakes</a>
+.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'G-L9KPHRQNQN']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "https://www.copdips.com/2018/05/grep-like-powershell-colorful-select-string.html";  /* Replace PAGE_URL with your page's canonical URL variable */
+      this.page.identifier = "/2018/05/grep-like-powershell-colorful-select-string"; /* Replace PAGE_IDENTIFIER with your page's unique identifier variable */
+    };
+    (function() { /* DON'T EDIT BELOW THIS LINE */
+      var d = document, s = d.createElement('script');
+      s.src = 'https://copdips.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+
+  
+
+
+
+
+
+  </body>
+</html>

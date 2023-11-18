@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+--><html lang="en" class="no-js">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Github Actions - Cache - A code to remember</title>
+<meta name="description" content="Python developer">
+
+
+  <meta name="author" content="Xiang ZHU">
+  
+  <meta property="article:author" content="Xiang ZHU">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="A code to remember">
+<meta property="og:title" content="Github Actions - Cache">
+<meta property="og:url" content="https://www.copdips.com/2023/09/github-actions-cache.html">
+
+
+  <meta property="og:description" content="Python developer">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2023-09-19T00:00:00+00:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="https://www.copdips.com/2023/09/github-actions-cache.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Xiang ZHU",
+      "url": "https://www.copdips.com/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="A code to remember Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          A code to remember
+          
+        </a>
+        <ul class="visible-links">
+<li class="masthead__menu-item">
+              <a href="/">Home</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/tags/">Tags</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/year-archive/">Year Archive</a>
+            </li>
+</ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<!-- back to top button -->
+<!-- https://github.com/mmistakes/minimal-mistakes/issues/1731#issuecomment-628997645 -->
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>addBackToTop({
+  diameter: 56,
+  backgroundColor: '#F16334',
+  textColor: '#fff'
+})</script>
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.copdips.com/">
+        <img src="/image/avatar/zhuxiang-smile.jpg" alt="Xiang ZHU" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.copdips.com/" itemprop="url">Xiang ZHU</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Python DevOps</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Paris</span>
+        </li>
+      
+
+      
+        
+          
+            <li><a href="https://www.copdips.com" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fas fa-fw fa-link" aria-hidden="true"></i><span class="label">Website</span></a></li>
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">LinkedIn</span></a></li>
+          
+        
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:xiang.zhu@outlook.com" rel="me" class="u-email">
+            <meta itemprop="email" content="xiang.zhu@outlook.com">
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+      <!-- 
+<script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+<div id="qrcode"></div>
+<script type="text/javascript">
+  var qrcode = new QRCode('qrcode', {width: 10, height: 10, text: location.href});
+</script>
+ -->
+    </ul>
+  </div>
+</div>
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Github Actions - Cache">
+    <meta itemprop="description" content="">
+    <meta itemprop="datePublished" content="2023-09-19T00:00:00+00:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.copdips.com/2023/09/github-actions-cache.html" class="u-url" itemprop="url">Github Actions - Cache
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-09-19T00:00:00+00:00">September 19, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title">
+<i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu">
+<li><a href="#life-span">Life span</a></li>
+<li>
+<a href="#standard-cache">Standard Cache</a><ul>
+<li><a href="#pip-cache-dir-vs-pip-install-dir">pip cache dir vs pip install dir</a></li>
+<li><a href="#hashfiles">hashFiles</a></li>
+</ul>
+</li>
+<li><a href="#cache-with-actionssetup-python">Cache with actions/setup-python</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <h2 id="life-span">Life span</h2>
+
+<p>Github Actions cache has a life span of <a href="https://github.com/actions/toolkit/tree/main/packages/cache#actionscache">7 days</a>, and the total size of all caches in a repository is limited to 10 GB.</p>
+
+<h2 id="standard-cache">Standard Cache</h2>
+
+<p>Cache key should be as specific as possible, so that the post cache restore installation can be reduced or skipped.</p>
+
+<p>For Python pip install, we could use the following cache key:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Get pip cache dir</span>
+  <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+    <span class="s">os_version=$(cat /etc/os-release | grep -i "version=" | cut -c9- | tr -d '"' | tr ' ' '_')</span>
+    <span class="s">github_workflow_full_path="${GITHUB_WORKFLOW_REF%@*}"</span>
+    <span class="s">python_full_version=$(python -c 'import platform; print(platform.python_version())')</span>
+    <span class="s">node_major_version=$(node --version | cut -d'.' -f1 | tr -d 'v')</span>
+    <span class="s">echo "os_version=$os_version" &gt;&gt; $GITHUB_ENV</span>
+    <span class="s">echo "github_workflow_full_path=$github_workflow_full_path" &gt;&gt; $GITHUB_ENV</span>
+    <span class="s">echo "python_full_version=$python_full_version" &gt;&gt; $GITHUB_ENV</span>
+    <span class="s">echo "PIP_CACHE_DIR=$(pip cache dir)" &gt;&gt; $GITHUB_ENV</span>
+
+<span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">cache pip</span>
+  <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/cache@v3</span>
+  <span class="na">with</span><span class="pi">:</span>
+    <span class="c1"># path: ${{ env.PIP_CACHE_DIR }}</span>
+    <span class="na">path</span><span class="pi">:</span> <span class="s">${{ env.pythonLocation }}</span>
+    <span class="na">key</span><span class="pi">:</span> <span class="s">${{ env.github_workflow_full_path}}-${{ env.os_version }}-${{ env.python_full_version }}-${{ env.node_major_version}}-${{ hashFiles('requirements/*.txt') }}</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">cache</code> action repository provides also some <a href="https://github.com/actions/cache/blob/main/examples.md#python---pip">Python caching examples</a>.</p>
+
+<h3 id="pip-cache-dir-vs-pip-install-dir">pip cache dir vs pip install dir</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">path</code> parameter in <code class="language-plaintext highlighter-rouge">actions/cache@v3</code> could be:</p>
+
+<ul>
+  <li>
+<code class="language-plaintext highlighter-rouge">${{ env.PIP_CACHE_DIR }}</code> if you only want to cache the pip cache dir, so you can skip the Python package download step, but you still need to install the packages.</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">${{ env.pythonLocation }}</code> if you want to cache the whole python installation dir, this is useful when you want to cache the <code class="language-plaintext highlighter-rouge">site-packages</code> dir, so that the <code class="language-plaintext highlighter-rouge">pip install</code> step can be reduced or skipped, this is also why we must use the <code class="language-plaintext highlighter-rouge">${{ env.os_version }}</code>, <code class="language-plaintext highlighter-rouge">${{ env.python_full_version }}</code> in the cache key. In most of cases, this is the best choice.</li>
+</ul>
+
+<h3 id="hashfiles">hashFiles</h3>
+
+<p>In <a href="https://learn.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops">Azure Pipelines</a>, there’s similar thing as <a href="https://docs.github.com/en/actions/learn-github-actions/expressions#hashfiles">hashFiles()</a> function, it should be in the form of glob pattern, like <code class="language-plaintext highlighter-rouge">requirements/*.txt</code>, but without double quotes, otherwise treated as a static string.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Azure Pipelines</span>
+<span class="pi">-</span> <span class="na">task</span><span class="pi">:</span> <span class="s">Cache@2</span>
+  <span class="na">inputs</span><span class="pi">:</span>
+    <span class="na">key</span><span class="pi">:</span> <span class="s1">'</span><span class="s">python</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">"$(pythonFullVersion)"</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">"$(osVersion)"</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">"$(System.TeamProject)"</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">"$(Build.DefinitionName)"</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">"$(Agent.JobName)"</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">requirements/*.txt'</span>
+    <span class="na">path</span><span class="pi">:</span> <span class="s">...</span>
+  <span class="na">displayName</span><span class="pi">:</span> <span class="s">...</span>
+</code></pre></div></div>
+
+<p>Otherwise, we can also achieve the same result by some pure bash commands:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># suppose parameters.requirementsFilePathList is a list of file paths</span>
+<span class="pi">-</span> <span class="na">script</span><span class="pi">:</span> <span class="pi">|</span>
+    <span class="s">echo REQUIREMENTS_FILE_PATH_LIST_STRING: $REQUIREMENTS_FILE_PATH_LIST_STRING</span>
+    <span class="s">all_files_in_one_line=$(echo $REQUIREMENTS_FILE_PATH_LIST_STRING | jq  '. | join(" ")' -r)</span>
+    <span class="s">echo all_files_in_one_line: $all_files_in_one_line</span>
+    <span class="s">all_files_md5sum=$(cat $all_files_in_one_line | md5sum | awk '{print $1}')</span>
+    <span class="s">echo all_files_md5sum: $all_files_md5sum</span>
+    <span class="s">echo "##vso[task.setvariable variable=pythonRequirementsFilesHash;]$all_files_md5sum"</span>
+  <span class="na">displayName</span><span class="pi">:</span> <span class="s">Set pythonRequirementsFilesHash</span>
+  <span class="na">env</span><span class="pi">:</span>
+    <span class="na">REQUIREMENTS_FILE_PATH_LIST_STRING</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${{</span><span class="nv"> </span><span class="s">convertToJson(parameters.requirementsFilePathList)</span><span class="nv"> </span><span class="s">}}"</span>
+</code></pre></div></div>
+
+<h2 id="cache-with-actionssetup-python">Cache with actions/setup-python</h2>
+
+<p>The action <a href="https://github.com/actions/setup-python#caching-packages-dependencies">actions/setup-python</a> has built-in functionality for caching and restoring dependencies with <code class="language-plaintext highlighter-rouge">cache</code> key. This cache method can only cache the pip cache dir to reduce the Python packages download time like <code class="language-plaintext highlighter-rouge">path: ${{ env.PIP_CACHE_DIR }}</code> in above <a href="#standard-cache">example</a>, but still need to install the packages, which is <a href="#pip-cache-dir-vs-pip-install-dir">much slower than caching the package installation location</a>. As the time of writing, the cache source dir (which is the pip cache dir) is generated by the action itself, and cannot be customized.</p>
+
+<p>The cache key is something like: <code class="language-plaintext highlighter-rouge">setup-python-Linux-22.04-Ubuntu-python-3.10.13-pip-308f89683977de8773e433ddf87c874b6bd931347b779ef0ab18f37ecc4fa914</code> (copied from workflow run log), which is generated as per this <a href="https://github.com/actions/setup-python/issues/732">answer</a>.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">steps</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/checkout@v4</span>
+<span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/setup-python@v4</span>
+  <span class="na">with</span><span class="pi">:</span>
+    <span class="na">python-version</span><span class="pi">:</span> <span class="s1">'</span><span class="s">3.10'</span>
+    <span class="na">cache</span><span class="pi">:</span> <span class="s1">'</span><span class="s">pip'</span> <span class="c1"># caching pip dependencies, could be pip, pipenv, or poetry</span>
+    <span class="na">cache-dependency-path</span><span class="pi">:</span> <span class="s">requirements/*.txt</span>
+<span class="pi">-</span> <span class="na">run</span><span class="pi">:</span> <span class="s">pip install -r requirements.txt</span>
+</code></pre></div></div>
+
+<p>If <code class="language-plaintext highlighter-rouge">cache-dependency-path</code> is not specified, and if the cache type is <code class="language-plaintext highlighter-rouge">pip</code>, it will try to <a href="https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python#caching-dependencies">find all the requirements.txt files</a> in the repo and hash them to generate the cache key. For cache type with <code class="language-plaintext highlighter-rouge">pipenv</code> or <code class="language-plaintext highlighter-rouge">poetry</code>, I didn’t test them.</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#azure" class="page__taxonomy-item p-category" rel="tag">azure</a><span class="sep">, </span>
+    
+      <a href="/tags/#cache" class="page__taxonomy-item p-category" rel="tag">cache</a><span class="sep">, </span>
+    
+      <a href="/tags/#cicd" class="page__taxonomy-item p-category" rel="tag">cicd</a><span class="sep">, </span>
+    
+      <a href="/tags/#githubaction" class="page__taxonomy-item p-category" rel="tag">githubaction</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2023-09-19T00:00:00+00:00">September 19, 2023</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Github+Actions+-+Cache%20https%3A%2F%2Fwww.copdips.com%2F2023%2F09%2Fgithub-actions-cache.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.copdips.com%2F2023%2F09%2Fgithub-actions-cache.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.copdips.com%2F2023%2F09%2Fgithub-actions-cache.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+
+  <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.copdips.com%2F2023%2F09%2Fgithub-actions-cache.html&title=Github%20Actions%20-%20Cache" class="btn btn--reddit" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Reddit"><i class="fab fa-fw fa-reddit" aria-hidden="true"></i><span> Reddit</span></a>
+</section>
+
+
+      <script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+      <div id="qrcode"></div>
+      <script type="text/javascript">
+        var qrcode = new QRCode('qrcode', {width: 100, height: 100, text: location.href});
+      </script>
+
+      
+  <nav class="pagination">
+    
+      <a href="/2023/09/python-asyncio.html" class="pagination--pager" title="Python Asyncio
+">Previous</a>
+    
+    
+      <a href="/2023/09/github-actions-custom-actions.html" class="pagination--pager" title="Github Actions - Custom Actions
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+      <h4 class="page__comments-title">Leave a comment</h4>
+      <section id="disqus_thread"></section>
+    
+</div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-deploy-static-files-to-azure-web-app.html" rel="permalink">Github actions - deploy static files to azure web app
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/Some-nice-CICD-bash-common-scripts.html" rel="permalink">Some nice cicd bash common scripts
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          less than 1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-bash-shell-pipefail.html" rel="permalink">Github Actions - Bash shell -e -o pipefail
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-08T00:00:00+00:00">November 8, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/10/hashing-files.html" rel="permalink">Hashing files
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-10-21T00:00:00+00:00">October 21, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap">
+<form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term...">
+  </form>
+  <div id="results" class="results"></div>
+</div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="mailto:xiang.zhu@outlook.com" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email</a></li>
+        
+      
+        
+          <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+          <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://uptimerobot.com/dashboard#785564645" rel="nofollow noopener noreferrer"><i class="fas fa-clock" aria-hidden="true"></i> Uptime</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2023 Xiang ZHU. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp;
+<a href="https://mmistakes.github.io/minimal-mistakes/about/" rel="nofollow">Minimal Mistakes</a>
+.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'G-L9KPHRQNQN']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "https://www.copdips.com/2023/09/github-actions-cache.html";  /* Replace PAGE_URL with your page's canonical URL variable */
+      this.page.identifier = "/2023/09/github-actions-cache"; /* Replace PAGE_IDENTIFIER with your page's unique identifier variable */
+    };
+    (function() { /* DON'T EDIT BELOW THIS LINE */
+      var d = document, s = d.createElement('script');
+      s.src = 'https://copdips.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+
+  
+
+
+
+
+
+  </body>
+</html>

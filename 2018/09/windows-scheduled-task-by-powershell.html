@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+--><html lang="en" class="no-js">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Use Powershell to manage Windows Scheduled Task - A code to remember</title>
+<meta name="description" content="Create, get, migrate Windows scheduled task by a pure Powershell way.">
+
+
+  <meta name="author" content="Xiang ZHU">
+  
+  <meta property="article:author" content="Xiang ZHU">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="A code to remember">
+<meta property="og:title" content="Use Powershell to manage Windows Scheduled Task">
+<meta property="og:url" content="https://www.copdips.com/2018/09/windows-scheduled-task-by-powershell.html">
+
+
+  <meta property="og:description" content="Create, get, migrate Windows scheduled task by a pure Powershell way.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2018-09-05T00:00:00+00:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="https://www.copdips.com/2018/09/windows-scheduled-task-by-powershell.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Xiang ZHU",
+      "url": "https://www.copdips.com/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="A code to remember Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          A code to remember
+          
+        </a>
+        <ul class="visible-links">
+<li class="masthead__menu-item">
+              <a href="/">Home</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/tags/">Tags</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/year-archive/">Year Archive</a>
+            </li>
+</ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<!-- back to top button -->
+<!-- https://github.com/mmistakes/minimal-mistakes/issues/1731#issuecomment-628997645 -->
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>addBackToTop({
+  diameter: 56,
+  backgroundColor: '#F16334',
+  textColor: '#fff'
+})</script>
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.copdips.com/">
+        <img src="/image/avatar/zhuxiang-smile.jpg" alt="Xiang ZHU" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.copdips.com/" itemprop="url">Xiang ZHU</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Python DevOps</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Paris</span>
+        </li>
+      
+
+      
+        
+          
+            <li><a href="https://www.copdips.com" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fas fa-fw fa-link" aria-hidden="true"></i><span class="label">Website</span></a></li>
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">LinkedIn</span></a></li>
+          
+        
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:xiang.zhu@outlook.com" rel="me" class="u-email">
+            <meta itemprop="email" content="xiang.zhu@outlook.com">
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+      <!-- 
+<script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+<div id="qrcode"></div>
+<script type="text/javascript">
+  var qrcode = new QRCode('qrcode', {width: 10, height: 10, text: location.href});
+</script>
+ -->
+    </ul>
+  </div>
+</div>
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Use Powershell to manage Windows Scheduled Task">
+    <meta itemprop="description" content="Create, get, migrate Windows scheduled task by a pure Powershell way.">
+    <meta itemprop="datePublished" content="2018-09-05T00:00:00+00:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.copdips.com/2018/09/windows-scheduled-task-by-powershell.html" class="u-url" itemprop="url">Use Powershell to manage Windows Scheduled Task
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2018-09-05T00:00:00+00:00">September 5, 2018</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          6 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title">
+<i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu">
+<li><a href="#scheduled-task-powershell-cmdlets">Scheduled task Powershell cmdlets</a></li>
+<li><a href="#create-scheduled-task-folder">Create scheduled task folder</a></li>
+<li><a href="#disable-disabledomaincreds">Disable disabledomaincreds</a></li>
+<li><a href="#create-scheduled-task">Create scheduled task</a></li>
+<li><a href="#get-scheduled-task-info">Get scheduled task info</a></li>
+<li><a href="#get-scheduled-task-log">Get scheduled task log</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <blockquote>
+  <p>A recent project made me to use the Windows scheduled task to execute periodically some python scripts. After the project, I find using Powershell to manage the Windows scheduled task is not so straightforward, that’s why I opened this post to share my experience on some common usage, and hope this can save your time if you also need to use it.</p>
+</blockquote>
+
+<h1 id="scheduled-task-powershell-cmdlets">Scheduled task Powershell cmdlets</h1>
+
+<p>From the official Windows scheduled task powershell <a href="https://docs.microsoft.com/en-us/powershell/module/scheduledtasks/">doc</a>, we can find the ScheduledTasks module provides many cmdlets:</p>
+
+<ul>
+  <li>Disable-ScheduledTask</li>
+  <li>Enable-ScheduledTask</li>
+  <li>Export-ScheduledTask</li>
+  <li>Get-ScheduledTask</li>
+  <li>Get-ScheduledTaskInfo</li>
+  <li>New-ScheduledTask</li>
+  <li>New-ScheduledTaskAction</li>
+  <li>New-ScheduledTaskPrincipal</li>
+  <li>New-ScheduledTaskSettingsSet</li>
+  <li>New-ScheduledTaskTrigger</li>
+  <li>Register-ScheduledTask</li>
+  <li>Set-ScheduledTask</li>
+  <li>Start-ScheduledTask</li>
+  <li>Stop-ScheduledTask</li>
+  <li>Unregister-ScheduledTask</li>
+</ul>
+
+<p>Guess what is the cmdlet to create the task? New-ScheduledTask? Wrong, it’s Register-ScheduledTask.</p>
+
+<h1 id="create-scheduled-task-folder">Create scheduled task folder</h1>
+
+<p>By default, all the scheduled tasks are created under the root “\” folder, if you have many tasks here, from the taskschd.msc GUI, it might take time to display all of them. So I suggest to <a href="https://blogs.technet.microsoft.com/heyscriptingguy/2015/01/15/use-powershell-to-create-scheduled-tasks-folders/">create your tasks to some custom task folders</a>. And withthat, you can easily filter on (Get-ScheduledTask -TaskPath) only your interested tasks especially if some other tasks have the similar name as the yours.</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Create a task folder named 'project1' under the root path \</span><span class="w">
+</span><span class="nv">$taskFolderName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'project1'</span><span class="w">
+</span><span class="nv">$taskPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"\</span><span class="nv">$taskFolderName</span><span class="s2">"</span><span class="w">
+</span><span class="nv">$scheduleObject</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">New-Object</span><span class="w"> </span><span class="nt">-ComObject</span><span class="w"> </span><span class="nx">schedule.service</span><span class="w">
+</span><span class="nv">$scheduleObject</span><span class="o">.</span><span class="nf">connect</span><span class="p">()</span><span class="w">
+</span><span class="nv">$taskRootFolder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$scheduleObject</span><span class="o">.</span><span class="nf">GetFolder</span><span class="p">(</span><span class="s2">"\"</span><span class="p">)</span><span class="w">
+</span><span class="nv">$taskRootFolder</span><span class="o">.</span><span class="nf">CreateFolder</span><span class="p">(</span><span class="nv">$taskPath</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h1 id="disable-disabledomaincreds">Disable disabledomaincreds</h1>
+
+<p>In some corporate networks, the Windows or security admins might enable the security policy : <code class="language-plaintext highlighter-rouge">Network access: Do not allow storage of passwords and credentials for network authentication</code>. If this policy is enabled, we will not be able to use Register-ScheduledTask with the <code class="language-plaintext highlighter-rouge">-User</code> param. Its registry setting can be found from the <a href="https://www.microsoft.com/en-us/download/confirmation.aspx?id=25250">Microsoft official excel file for Group Policy Settings Reference for Windows and Windows Server</a>, There’s also a online variant here: (http://gpsearch.azurewebsites.net/).</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Set the key 'disabledomaincreds' to value 0 to disable it.</span><span class="w">
+</span><span class="nv">$regPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa'</span><span class="w">
+</span><span class="nv">$regName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'disabledomaincreds'</span><span class="w">
+</span><span class="nv">$regValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w">
+</span><span class="n">Set-ItemProperty</span><span class="w"> </span><span class="nt">-Path</span><span class="w"> </span><span class="nv">$regPath</span><span class="w"> </span><span class="nt">-Name</span><span class="w"> </span><span class="nv">$regName</span><span class="w"> </span><span class="nt">-Value</span><span class="w"> </span><span class="nv">$regValue</span><span class="w">
+</span></code></pre></div></div>
+
+<h1 id="create-scheduled-task">Create scheduled task</h1>
+
+<p>Suppose we need to :</p>
+<ul>
+  <li>Run the script ‘d:/scripts/job1.ps1 arg1’ every 30 minutes from 2018-09-05T18:00:00.</li>
+  <li>The script should be stopped if it runs more then 15 minutes.</li>
+  <li>The script should be executed under the account ‘user1’ with the password ‘password1’.</li>
+  <li>The task should be in the ‘project1’ task folder.</li>
+  <li>The task name is ‘task1’.</li>
+</ul>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$taskName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'task1'</span><span class="w">
+</span><span class="nv">$taskFolderName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'project1'</span><span class="w">
+</span><span class="nv">$taskPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"\</span><span class="nv">$taskFolderName</span><span class="s2">"</span><span class="w">
+</span><span class="nv">$taskUser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'user1'</span><span class="w">
+</span><span class="nv">$taskPassword</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'password1'</span><span class="w"> </span><span class="c"># $taskPassword is given by un-secure clear string, it's only for demo. In addition, if you use clear string, please careful with the single-quoted because some passwords might contain the char $ which can be evaluated if you use the double-quoted string. https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_quoting_rules?view=powershell-6</span><span class="w">
+</span><span class="nv">$taskAction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">New-ScheduledTaskAction</span><span class="w"> </span><span class="nt">-Execute</span><span class="w"> </span><span class="nx">powershell.exe</span><span class="w"> </span><span class="nt">-Argument</span><span class="w"> </span><span class="s1">'d:/scripts/job1.ps1 arg1'</span><span class="w">
+
+</span><span class="c"># some online docs give also the param -RepetitionDuration ([TimeSpan]::MaxValue),</span><span class="w">
+</span><span class="c"># but this doesn't work for windows server 2016, it's a bug, this is also why I wrote this post.</span><span class="w">
+</span><span class="c"># On windows server 2016, there's another bug is that we must use -Once -RepetitionInterval to run a repeated action,</span><span class="w">
+</span><span class="c"># not -daily with 'Repeat task every 30 minutes' option in the advanced settings which is an option available only from taskschd.msc GUI,</span><span class="w">
+</span><span class="c"># otherwise, the scheduled task will also be automatically triggered by the system reboot.</span><span class="w">
+</span><span class="nv">$taskTrigger</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">New-ScheduledTaskTrigger</span><span class="w"> </span><span class="nt">-Once</span><span class="w"> </span><span class="nt">-RepetitionInterval</span><span class="w"> </span><span class="p">(</span><span class="n">New-TimeSpan</span><span class="w"> </span><span class="nt">-Minutes</span><span class="w"> </span><span class="nx">30</span><span class="p">)</span><span class="w"> </span><span class="nt">-At</span><span class="w"> </span><span class="p">(</span><span class="n">get-date</span><span class="w"> </span><span class="s1">'2018-09-05T18:00:00'</span><span class="p">)</span><span class="w">
+
+</span><span class="c"># the task is scheduled for every 30 minutes,</span><span class="w">
+</span><span class="c"># but if it is running more than 15 minutes,</span><span class="w">
+</span><span class="c"># I consider the task is hanging or failed, and I want to stop it.</span><span class="w">
+</span><span class="nv">$taskSetting</span><span class="o">=</span><span class="w"> </span><span class="n">New-ScheduledTaskSettingsSet</span><span class="w"> </span><span class="nt">-ExecutionTimeLimit</span><span class="w"> </span><span class="p">(</span><span class="n">New-TimeSpan</span><span class="w"> </span><span class="nt">-Minutes</span><span class="w"> </span><span class="nx">15</span><span class="p">)</span><span class="w">
+
+
+</span><span class="c"># finally create the task</span><span class="w">
+</span><span class="nv">$registerScheduledTaskParam</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">@{</span><span class="w">
+  </span><span class="nx">TaskName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$taskName</span><span class="w">
+  </span><span class="nx">TaskPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$taskPath</span><span class="w">
+  </span><span class="nx">User</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$taskUser</span><span class="w">
+  </span><span class="nx">Password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$taskPassword</span><span class="w">
+  </span><span class="nx">Action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$taskAction</span><span class="w">
+  </span><span class="nx">Trigger</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$taskTrigger</span><span class="w">
+  </span><span class="nx">Settings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">$taskSetting</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">Register-ScheduledTask</span><span class="w"> </span><span class="err">@</span><span class="nx">registerScheduledTaskParam</span><span class="w">
+
+</span><span class="n">TaskPath</span><span class="w">                                       </span><span class="nx">TaskName</span><span class="w">                          </span><span class="nx">State</span><span class="w">
+</span><span class="o">--------</span><span class="w">                                       </span><span class="o">--------</span><span class="w">                          </span><span class="o">-----</span><span class="w">
+</span><span class="n">\project1\</span><span class="w">                                     </span><span class="nx">task1</span><span class="w">                             </span><span class="nx">Ready</span><span class="w">
+</span></code></pre></div></div>
+
+<h1 id="get-scheduled-task-info">Get scheduled task info</h1>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$taskFolderName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'project1'</span><span class="w">
+</span><span class="c"># when using Register-SchduledTask, one of its params $taskPath = "\$taskFolderName"</span><span class="w">
+</span><span class="c"># doesn't contain the the ending "\", but for Get-ScheduledTask,</span><span class="w">
+</span><span class="c"># we must add it. This is a bug on Windows Server 2016 at least.</span><span class="w">
+</span><span class="nv">$taskPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"\</span><span class="nv">$taskFolderName</span><span class="s2">\"</span><span class="w">
+</span><span class="n">Get-ScheduledTask</span><span class="w"> </span><span class="nv">$taskName</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">fl</span><span class="w"> </span><span class="o">*</span><span class="w">
+
+</span><span class="n">State</span><span class="w">                 </span><span class="p">:</span><span class="w"> </span><span class="nx">Ready</span><span class="w">
+</span><span class="n">Actions</span><span class="w">               </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="n">MSFT_TaskExecAction</span><span class="p">}</span><span class="w">
+</span><span class="n">Author</span><span class="w">                </span><span class="p">:</span><span class="w">
+</span><span class="n">Date</span><span class="w">                  </span><span class="p">:</span><span class="w">
+</span><span class="n">Description</span><span class="w">           </span><span class="p">:</span><span class="w">
+</span><span class="n">Documentation</span><span class="w">         </span><span class="p">:</span><span class="w">
+</span><span class="n">Principal</span><span class="w">             </span><span class="p">:</span><span class="w"> </span><span class="nx">MSFT_TaskPrincipal2</span><span class="w">
+</span><span class="n">SecurityDescriptor</span><span class="w">    </span><span class="p">:</span><span class="w">
+</span><span class="n">Settings</span><span class="w">              </span><span class="p">:</span><span class="w"> </span><span class="nx">MSFT_TaskSettings3</span><span class="w">
+</span><span class="n">Source</span><span class="w">                </span><span class="p">:</span><span class="w">
+</span><span class="n">TaskName</span><span class="w">              </span><span class="p">:</span><span class="w"> </span><span class="nx">task1</span><span class="w">
+</span><span class="n">TaskPath</span><span class="w">              </span><span class="p">:</span><span class="w"> </span><span class="nx">\project1\</span><span class="w">
+</span><span class="n">Triggers</span><span class="w">              </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="n">MSFT_TaskTimeTrigger</span><span class="p">}</span><span class="w">
+</span><span class="n">URI</span><span class="w">                   </span><span class="p">:</span><span class="w"> </span><span class="nx">\project1\task1</span><span class="w">
+</span><span class="n">Version</span><span class="w">               </span><span class="p">:</span><span class="w">
+</span><span class="n">PSComputerName</span><span class="w">        </span><span class="p">:</span><span class="w">
+</span><span class="n">CimClass</span><span class="w">              </span><span class="p">:</span><span class="w"> </span><span class="nx">Root/Microsoft/Windows/TaskScheduler:MSFT_ScheduledTask</span><span class="w">
+</span><span class="n">CimInstanceProperties</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="n">Actions</span><span class="p">,</span><span class="w"> </span><span class="nx">Author</span><span class="p">,</span><span class="w"> </span><span class="nx">Date</span><span class="p">,</span><span class="w"> </span><span class="nx">Description...</span><span class="p">}</span><span class="w">
+</span><span class="n">CimSystemProperties</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="nx">Microsoft.Management.Infrastructure.CimSystemProperties</span><span class="w">
+
+</span><span class="c"># The result shown above is not straightforward for admin,</span><span class="w">
+</span><span class="c"># we need to deep into many sub properties to get some scheduled task basic information.</span><span class="w">
+</span><span class="c"># Hereunder some ways to archive that.</span><span class="w">
+
+</span><span class="c"># Way 1: oneliner by using the custom properties</span><span class="w">
+</span><span class="nv">$taskPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"\project1\"</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="n">Get-ScheduledTask</span><span class="w"> </span><span class="nt">-TaskPath</span><span class="w"> </span><span class="nv">$taskPath</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">Select-Object</span><span class="w"> </span><span class="se">`
+</span><span class="nx">TaskName</span><span class="p">,</span><span class="w"> </span><span class="nx">State</span><span class="p">,</span><span class="w"> </span><span class="se">`
+</span><span class="p">@{</span><span class="nx">n</span><span class="o">=</span><span class="s1">'TaskEnabled'</span><span class="p">;</span><span class="w"> </span><span class="nx">e</span><span class="o">=</span><span class="p">{</span><span class="bp">$_</span><span class="o">.</span><span class="nf">Settings</span><span class="o">.</span><span class="nf">Enabled</span><span class="p">}},</span><span class="w"> </span><span class="se">`
+</span><span class="p">@{</span><span class="nx">n</span><span class="o">=</span><span class="s1">'TriggerEnabled'</span><span class="p">;</span><span class="w"> </span><span class="nx">e</span><span class="o">=</span><span class="p">{</span><span class="bp">$_</span><span class="o">.</span><span class="nf">Triggers</span><span class="o">.</span><span class="nf">Enabled</span><span class="p">}},</span><span class="w"> </span><span class="se">`
+</span><span class="p">@{</span><span class="nx">n</span><span class="o">=</span><span class="s1">'User'</span><span class="p">;</span><span class="w"> </span><span class="nx">e</span><span class="o">=</span><span class="p">{</span><span class="bp">$_</span><span class="o">.</span><span class="nf">Principal</span><span class="o">.</span><span class="nf">UserID</span><span class="p">}},</span><span class="w"> </span><span class="se">`
+</span><span class="p">@{</span><span class="nx">n</span><span class="o">=</span><span class="s1">'TriggerStartBoundary'</span><span class="p">;</span><span class="w"> </span><span class="nx">e</span><span class="o">=</span><span class="p">{</span><span class="bp">$_</span><span class="o">.</span><span class="nf">Triggers</span><span class="o">.</span><span class="nf">StartBoundary</span><span class="p">}},</span><span class="w"> </span><span class="se">`
+</span><span class="p">@{</span><span class="nx">n</span><span class="o">=</span><span class="s1">'TriggerInterval'</span><span class="p">;</span><span class="w"> </span><span class="nx">e</span><span class="o">=</span><span class="p">{</span><span class="bp">$_</span><span class="o">.</span><span class="nf">Triggers</span><span class="o">.</span><span class="nf">Repetition</span><span class="o">.</span><span class="nf">Interval</span><span class="p">}},</span><span class="w"> </span><span class="se">`
+</span><span class="p">@{</span><span class="nx">n</span><span class="o">=</span><span class="s1">'ExecutionTimeLimit'</span><span class="p">;</span><span class="w"> </span><span class="nx">e</span><span class="o">=</span><span class="p">{</span><span class="bp">$_</span><span class="o">.</span><span class="nf">Settings</span><span class="o">.</span><span class="nf">ExecutionTimeLimit</span><span class="p">}},</span><span class="se">`
+</span><span class="p">@{</span><span class="nx">n</span><span class="o">=</span><span class="s1">'LastRunTime'</span><span class="p">;</span><span class="w"> </span><span class="nx">e</span><span class="o">=</span><span class="p">{</span><span class="bp">$_</span><span class="w"> </span><span class="o">|</span><span class="w">  </span><span class="n">Get-ScheduledTaskInfo</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">LastRunTime</span><span class="p">}},</span><span class="w"> </span><span class="err">`</span><span class="w">
+</span><span class="p">@{</span><span class="nx">n</span><span class="o">=</span><span class="s1">'LastTaskResult'</span><span class="p">;</span><span class="w"> </span><span class="nx">e</span><span class="o">=</span><span class="p">{</span><span class="bp">$_</span><span class="w"> </span><span class="o">|</span><span class="w">  </span><span class="n">Get-ScheduledTaskInfo</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">LastTaskResult</span><span class="p">}},</span><span class="w"> </span><span class="err">`</span><span class="w">
+</span><span class="p">@{</span><span class="nx">n</span><span class="o">=</span><span class="s1">'NextRunTime'</span><span class="p">;</span><span class="w"> </span><span class="nx">e</span><span class="o">=</span><span class="p">{</span><span class="bp">$_</span><span class="w"> </span><span class="o">|</span><span class="w">  </span><span class="n">Get-ScheduledTaskInfo</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">NextRunTime</span><span class="p">}},</span><span class="w"> </span><span class="err">`</span><span class="w">
+</span><span class="p">@{</span><span class="nx">n</span><span class="o">=</span><span class="s1">'Action'</span><span class="p">;</span><span class="w"> </span><span class="nx">e</span><span class="o">=</span><span class="p">{</span><span class="bp">$_</span><span class="o">.</span><span class="nf">Actions</span><span class="o">.</span><span class="nf">Execute</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">' '</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="bp">$_</span><span class="o">.</span><span class="nf">Actions</span><span class="o">.</span><span class="nf">Arguments</span><span class="p">}}</span><span class="w">
+
+</span><span class="c"># Way 2: Export the task config to XML and view the XML content directly</span><span class="w">
+</span><span class="nv">$taskPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"\project1\"</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="nx">Get</span><span class="err">-</span><span class="nx">ScheduledTask</span><span class="w"> </span><span class="err">-</span><span class="nx">TaskPath</span><span class="w"> </span><span class="nv">$taskPath</span><span class="w"> </span><span class="err">|</span><span class="w"> </span><span class="err">%</span><span class="w"> </span><span class="p">{</span><span class="n">Write-Host</span><span class="w"> </span><span class="s2">"</span><span class="se">`n</span><span class="s2">Task: </span><span class="si">$(</span><span class="bp">$_</span><span class="o">.</span><span class="nf">TaskName</span><span class="si">)</span><span class="s2">"</span><span class="w"> </span><span class="nt">-BackgroundColor</span><span class="w"> </span><span class="nx">Red</span><span class="w"> </span><span class="p">;</span><span class="w">  </span><span class="n">Export-ScheduledTask</span><span class="w"> </span><span class="bp">$_</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="bp">$_</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">Get-ScheduledTaskInfo</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h1 id="get-scheduled-task-log">Get scheduled task log</h1>
+
+<p>It seems that there’s no cmdlet to get the task log from the *-ScheduledTask cmdlets list. Yes, you’re right, the task log is saved directly to the standard windows event log. You can use Get-WinEvent (Get-EventLog is an old way) to get it.</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># if you're not admin on the server,</span><span class="w">
+</span><span class="c"># you might get some error when running below Get-WinEvent command,</span><span class="w">
+</span><span class="c"># you can set $ErrorActionPreference = "SilentlyContinue" to hide it.</span><span class="w">
+</span><span class="err">&gt;</span><span class="w"> </span><span class="n">Get-WinEvent</span><span class="w"> </span><span class="nt">-ListLog</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nf">?</span><span class="w"> </span><span class="nx">logname</span><span class="w"> </span><span class="o">-match</span><span class="w"> </span><span class="nx">task</span><span class="w">
+
+</span><span class="n">LogMode</span><span class="w">   </span><span class="nx">MaximumSizeInBytes</span><span class="w"> </span><span class="nx">RecordCount</span><span class="w"> </span><span class="nx">LogName</span><span class="w">
+</span><span class="o">-------</span><span class="w">   </span><span class="o">------------------</span><span class="w"> </span><span class="o">-----------</span><span class="w"> </span><span class="o">-------</span><span class="w">
+</span><span class="n">Circular</span><span class="w">             </span><span class="nx">1052672</span><span class="w">          </span><span class="nx">32</span><span class="w"> </span><span class="nx">Microsoft-Windows-BackgroundTaskInfrastructure/Operational</span><span class="w">
+</span><span class="n">Circular</span><span class="w">             </span><span class="nx">1052672</span><span class="w">           </span><span class="nx">0</span><span class="w"> </span><span class="nx">Microsoft-Windows-Mobile-Broadband-Experience-Parser-Task/Operational</span><span class="w">
+</span><span class="n">Circular</span><span class="w">             </span><span class="nx">1052672</span><span class="w">           </span><span class="nx">0</span><span class="w"> </span><span class="nx">Microsoft-Windows-Shell-Core/LogonTasksChannel</span><span class="w">
+</span><span class="n">Circular</span><span class="w">             </span><span class="nx">1052672</span><span class="w">         </span><span class="nx">636</span><span class="w"> </span><span class="nx">Microsoft-Windows-TaskScheduler/Maintenance</span><span class="w">
+</span><span class="n">Circular</span><span class="w">            </span><span class="nx">10485760</span><span class="w">             </span><span class="nx">Microsoft-Windows-TaskScheduler/Operational</span><span class="w">
+
+</span><span class="c"># No RecordCount for Microsoft-Windows-TaskScheduler/Operational</span><span class="w">
+</span><span class="c"># because the log history is disabled by default, enable it by wevtutil.</span><span class="w">
+</span><span class="err">&gt;</span><span class="w"> </span><span class="n">wevtutil</span><span class="w"> </span><span class="nx">set-log</span><span class="w"> </span><span class="nx">Microsoft-Windows-TaskScheduler/Operational</span><span class="w"> </span><span class="nx">/enabled:true</span><span class="w">
+</span><span class="err">&gt;</span><span class="w"> </span><span class="n">wevtutil</span><span class="w"> </span><span class="nx">get-log</span><span class="w"> </span><span class="nx">Microsoft-Windows-TaskScheduler/Operational</span><span class="w">
+</span><span class="err">&gt;</span><span class="w"> </span><span class="n">Get-WinEvent</span><span class="w"> </span><span class="nt">-ListLog</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nf">?</span><span class="w"> </span><span class="nx">logname</span><span class="w"> </span><span class="o">-match</span><span class="w"> </span><span class="nx">task</span><span class="w">
+
+</span><span class="n">LogMode</span><span class="w">   </span><span class="nx">MaximumSizeInBytes</span><span class="w"> </span><span class="nx">RecordCount</span><span class="w"> </span><span class="nx">LogName</span><span class="w">
+</span><span class="o">-------</span><span class="w">   </span><span class="o">------------------</span><span class="w"> </span><span class="o">-----------</span><span class="w"> </span><span class="o">-------</span><span class="w">
+</span><span class="n">Circular</span><span class="w">             </span><span class="nx">1052672</span><span class="w">          </span><span class="nx">32</span><span class="w"> </span><span class="nx">Microsoft-Windows-BackgroundTaskInfrastructure/Operational</span><span class="w">
+</span><span class="n">Circular</span><span class="w">             </span><span class="nx">1052672get-</span><span class="w">           </span><span class="nx">0</span><span class="w"> </span><span class="nx">Microsoft-Windows-Mobile-Broadband-Experience-Parser-Task/Operational</span><span class="w">
+</span><span class="n">Circular</span><span class="w">             </span><span class="nx">1052672</span><span class="w">           </span><span class="nx">0</span><span class="w"> </span><span class="nx">Microsoft-Windows-Shell-Core/LogonTasksChannel</span><span class="w">
+</span><span class="n">Circular</span><span class="w">             </span><span class="nx">1052672</span><span class="w">         </span><span class="nx">636</span><span class="w"> </span><span class="nx">Microsoft-Windows-TaskScheduler/Maintenance</span><span class="w">
+</span><span class="n">Circular</span><span class="w">            </span><span class="nx">10485760</span><span class="w">          </span><span class="nx">12</span><span class="w"> </span><span class="nx">Microsoft-Windows-TaskScheduler/Operational</span><span class="w">
+
+</span><span class="c"># All the logs of all the tasks are saved in the same place,</span><span class="w">
+</span><span class="c"># and the event object doesn't have a task name property,</span><span class="w">
+</span><span class="c"># this is why when we view the task history from the taskschd.msc GUI,</span><span class="w">
+</span><span class="c"># it's too slow to display, not cool /_\.</span><span class="w">
+</span><span class="c"># So if we want to see the logs of a single task, there's still something to do.</span><span class="w">
+</span><span class="err">&gt;</span><span class="w"> </span><span class="n">Get-WinEvent</span><span class="w"> </span><span class="nt">-FilterHashtable</span><span class="w"> </span><span class="p">@{</span><span class="nx">logname</span><span class="o">=</span><span class="s2">"Microsoft-Windows-TaskScheduler/Operational"</span><span class="p">;</span><span class="w"> </span><span class="nx">StartTime</span><span class="o">=</span><span class="err">$(</span><span class="nx">get</span><span class="err">-</span><span class="nx">date</span><span class="err">).</span><span class="nx">AddDays</span><span class="err">(-</span><span class="mi">2</span><span class="err">)</span><span class="p">}</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">so</span><span class="w"> </span><span class="nt">-fir</span><span class="w"> </span><span class="nx">1</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">fl</span><span class="w"> </span><span class="o">*</span><span class="w">
+
+
+</span><span class="n">Message</span><span class="w">              </span><span class="p">:</span><span class="w"> </span><span class="nx">Task</span><span class="w"> </span><span class="nx">Scheduler</span><span class="w"> </span><span class="nx">launched</span><span class="w"> </span><span class="s2">"{F14F3BF1-DAA7-4286-93BF-1BB1EE3B2C0C}"</span><span class="w"> </span><span class="nx">instance</span><span class="w"> </span><span class="nx">of</span><span class="w"> </span><span class="nx">task</span><span class="w"> </span><span class="s2">"\project1\task1"</span><span class="w">  </span><span class="nx">for</span><span class="w"> </span><span class="nx">user</span><span class="w"> </span><span class="s2">"user1"</span><span class="w"> </span><span class="o">.</span><span class="w">
+</span><span class="n">Id</span><span class="w">                   </span><span class="p">:</span><span class="w"> </span><span class="nx">110</span><span class="w">
+</span><span class="n">Version</span><span class="w">              </span><span class="p">:</span><span class="w"> </span><span class="nx">0</span><span class="w">
+</span><span class="n">Qualifiers</span><span class="w">           </span><span class="p">:</span><span class="w">
+</span><span class="n">Level</span><span class="w">                </span><span class="p">:</span><span class="w"> </span><span class="nx">4</span><span class="w">
+</span><span class="n">Task</span><span class="w">                 </span><span class="p">:</span><span class="w"> </span><span class="nx">110</span><span class="w">
+</span><span class="n">Opcode</span><span class="w">               </span><span class="p">:</span><span class="w"> </span><span class="nx">0</span><span class="w">
+</span><span class="n">Keywords</span><span class="w">             </span><span class="p">:</span><span class="w"> </span><span class="nt">-9223372036854775808</span><span class="w">
+</span><span class="n">RecordId</span><span class="w">             </span><span class="p">:</span><span class="w"> </span><span class="nx">6</span><span class="w">
+</span><span class="n">ProviderName</span><span class="w">         </span><span class="p">:</span><span class="w"> </span><span class="nx">Microsoft-Windows-TaskScheduler</span><span class="w">
+</span><span class="n">ProviderId</span><span class="w">           </span><span class="p">:</span><span class="w"> </span><span class="nx">de7b24ea-73c8-4a09-985d-5bdadcfa9017</span><span class="w">
+</span><span class="n">LogName</span><span class="w">              </span><span class="p">:</span><span class="w"> </span><span class="nx">microsoft-windows-taskscheduler/operational</span><span class="w">
+</span><span class="n">ProcessId</span><span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="nx">1612</span><span class="w">
+</span><span class="n">ThreadId</span><span class="w">             </span><span class="p">:</span><span class="w"> </span><span class="nx">10152</span><span class="w">
+</span><span class="n">MachineName</span><span class="w">          </span><span class="p">:</span><span class="w"> </span><span class="nx">DELL-ZX</span><span class="w">
+</span><span class="n">UserId</span><span class="w">               </span><span class="p">:</span><span class="w"> </span><span class="nx">S-1-5-18</span><span class="w">
+</span><span class="n">TimeCreated</span><span class="w">          </span><span class="p">:</span><span class="w"> </span><span class="nx">2018-09-05</span><span class="w"> </span><span class="nx">00:48:37</span><span class="w">
+</span><span class="n">ActivityId</span><span class="w">           </span><span class="p">:</span><span class="w"> </span><span class="nx">f14f3bf1-daa7-4286-93bf-1bb1ee3b2c0c</span><span class="w">
+</span><span class="n">RelatedActivityId</span><span class="w">    </span><span class="p">:</span><span class="w">
+</span><span class="n">ContainerLog</span><span class="w">         </span><span class="p">:</span><span class="w"> </span><span class="nx">microsoft-windows-taskscheduler/operational</span><span class="w">
+</span><span class="n">MatchedQueryIds</span><span class="w">      </span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w">
+</span><span class="n">Bookmark</span><span class="w">             </span><span class="p">:</span><span class="w"> </span><span class="nx">System.Diagnostics.Eventing.Reader.EventBookmark</span><span class="w">
+</span><span class="n">LevelDisplayName</span><span class="w">     </span><span class="p">:</span><span class="w"> </span><span class="nx">Information</span><span class="w">
+</span><span class="n">OpcodeDisplayName</span><span class="w">    </span><span class="p">:</span><span class="w"> </span><span class="nx">Info</span><span class="w">
+</span><span class="n">TaskDisplayName</span><span class="w">      </span><span class="p">:</span><span class="w"> </span><span class="nx">Task</span><span class="w"> </span><span class="nx">triggered</span><span class="w"> </span><span class="nx">by</span><span class="w"> </span><span class="nx">user</span><span class="w">
+</span><span class="n">KeywordsDisplayNames</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w">
+</span><span class="n">Properties</span><span class="w">           </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="n">System.Diagnostics.Eventing.Reader.EventProperty</span><span class="p">,</span><span class="w"> </span><span class="nx">System.Diagnostics.Eventing.Reader.EventProperty</span><span class="p">,</span><span class="w"> </span><span class="nx">System.Diagnostics.Eventing.Reader.EventProperty</span><span class="p">}</span><span class="w">
+
+</span><span class="err">&gt;</span><span class="w"> </span><span class="n">Get-WinEvent</span><span class="w"> </span><span class="nt">-FilterHashtable</span><span class="w"> </span><span class="p">@{</span><span class="nx">logname</span><span class="o">=</span><span class="s2">"Microsoft-Windows-TaskScheduler/Operational"</span><span class="p">;</span><span class="w"> </span><span class="nx">StartTime</span><span class="o">=</span><span class="err">$(</span><span class="nx">get</span><span class="err">-</span><span class="nx">date</span><span class="err">).</span><span class="nx">AddDays</span><span class="err">(-</span><span class="mi">2</span><span class="err">)</span><span class="p">}</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nf">?</span><span class="w"> </span><span class="nx">message</span><span class="w"> </span><span class="o">-match</span><span class="w"> </span><span class="s2">"\\project1\\task1"</span><span class="w">
+</span></code></pre></div></div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#powershell" class="page__taxonomy-item p-category" rel="tag">powershell</a><span class="sep">, </span>
+    
+      <a href="/tags/#scheduled-task" class="page__taxonomy-item p-category" rel="tag">scheduled-task</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2018-09-05T00:00:00+00:00">September 5, 2018</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Use+Powershell+to+manage+Windows+Scheduled+Task%20https%3A%2F%2Fwww.copdips.com%2F2018%2F09%2Fwindows-scheduled-task-by-powershell.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.copdips.com%2F2018%2F09%2Fwindows-scheduled-task-by-powershell.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.copdips.com%2F2018%2F09%2Fwindows-scheduled-task-by-powershell.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+
+  <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.copdips.com%2F2018%2F09%2Fwindows-scheduled-task-by-powershell.html&title=Use%20Powershell%20to%20manage%20Windows%20Scheduled%20Task" class="btn btn--reddit" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Reddit"><i class="fab fa-fw fa-reddit" aria-hidden="true"></i><span> Reddit</span></a>
+</section>
+
+
+      <script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+      <div id="qrcode"></div>
+      <script type="text/javascript">
+        var qrcode = new QRCode('qrcode', {width: 100, height: 100, text: location.href});
+      </script>
+
+      
+  <nav class="pagination">
+    
+      <a href="/2018/07/convert-markdown-or-rst-to-atlassian-confluance-documentation-format.html" class="pagination--pager" title="Convert markdown or rst to Atlassian Confluance documentation format
+">Previous</a>
+    
+    
+      <a href="/2018/09/install-gitlab-ce-in-docker-on-ubuntu.html" class="pagination--pager" title="Install Gitlab-CE in Docker on Ubuntu
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+      <h4 class="page__comments-title">Leave a comment</h4>
+      <section id="disqus_thread"></section>
+    
+</div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-deploy-static-files-to-azure-web-app.html" rel="permalink">Github actions - deploy static files to azure web app
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/Some-nice-CICD-bash-common-scripts.html" rel="permalink">Some nice cicd bash common scripts
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          less than 1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-bash-shell-pipefail.html" rel="permalink">Github Actions - Bash shell -e -o pipefail
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-08T00:00:00+00:00">November 8, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/10/hashing-files.html" rel="permalink">Hashing files
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-10-21T00:00:00+00:00">October 21, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap">
+<form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term...">
+  </form>
+  <div id="results" class="results"></div>
+</div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="mailto:xiang.zhu@outlook.com" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email</a></li>
+        
+      
+        
+          <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+          <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://uptimerobot.com/dashboard#785564645" rel="nofollow noopener noreferrer"><i class="fas fa-clock" aria-hidden="true"></i> Uptime</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2023 Xiang ZHU. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp;
+<a href="https://mmistakes.github.io/minimal-mistakes/about/" rel="nofollow">Minimal Mistakes</a>
+.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'G-L9KPHRQNQN']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "https://www.copdips.com/2018/09/windows-scheduled-task-by-powershell.html";  /* Replace PAGE_URL with your page's canonical URL variable */
+      this.page.identifier = "/2018/09/windows-scheduled-task-by-powershell"; /* Replace PAGE_IDENTIFIER with your page's unique identifier variable */
+    };
+    (function() { /* DON'T EDIT BELOW THIS LINE */
+      var d = document, s = d.createElement('script');
+      s.src = 'https://copdips.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+
+  
+
+
+
+
+
+  </body>
+</html>

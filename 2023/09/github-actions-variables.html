@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+--><html lang="en" class="no-js">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Github Actions - Variables - A code to remember</title>
+<meta name="description" content="Python developer">
+
+
+  <meta name="author" content="Xiang ZHU">
+  
+  <meta property="article:author" content="Xiang ZHU">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="A code to remember">
+<meta property="og:title" content="Github Actions - Variables">
+<meta property="og:url" content="https://www.copdips.com/2023/09/github-actions-variables.html">
+
+
+  <meta property="og:description" content="Python developer">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2023-09-19T00:00:00+00:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="https://www.copdips.com/2023/09/github-actions-variables.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Xiang ZHU",
+      "url": "https://www.copdips.com/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="A code to remember Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          A code to remember
+          
+        </a>
+        <ul class="visible-links">
+<li class="masthead__menu-item">
+              <a href="/">Home</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/tags/">Tags</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/year-archive/">Year Archive</a>
+            </li>
+</ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<!-- back to top button -->
+<!-- https://github.com/mmistakes/minimal-mistakes/issues/1731#issuecomment-628997645 -->
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>addBackToTop({
+  diameter: 56,
+  backgroundColor: '#F16334',
+  textColor: '#fff'
+})</script>
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.copdips.com/">
+        <img src="/image/avatar/zhuxiang-smile.jpg" alt="Xiang ZHU" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.copdips.com/" itemprop="url">Xiang ZHU</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Python DevOps</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Paris</span>
+        </li>
+      
+
+      
+        
+          
+            <li><a href="https://www.copdips.com" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fas fa-fw fa-link" aria-hidden="true"></i><span class="label">Website</span></a></li>
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">LinkedIn</span></a></li>
+          
+        
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:xiang.zhu@outlook.com" rel="me" class="u-email">
+            <meta itemprop="email" content="xiang.zhu@outlook.com">
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+      <!-- 
+<script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+<div id="qrcode"></div>
+<script type="text/javascript">
+  var qrcode = new QRCode('qrcode', {width: 10, height: 10, text: location.href});
+</script>
+ -->
+    </ul>
+  </div>
+</div>
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Github Actions - Variables">
+    <meta itemprop="description" content="">
+    <meta itemprop="datePublished" content="2023-09-19T00:00:00+00:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.copdips.com/2023/09/github-actions-variables.html" class="u-url" itemprop="url">Github Actions - Variables
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-09-19T00:00:00+00:00">September 19, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          6 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title">
+<i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu">
+<li><a href="#variables-upon-git-events">Variables upon Git events</a></li>
+<li><a href="#setting-environment-variables-by-python">Setting environment variables by Python</a></li>
+<li>
+<a href="#json-variables">JSON Variables</a><ul>
+<li><a href="#json-variables-with-github_output">JSON variables with GITHUB_OUTPUT</a></li>
+<li><a href="#do-not-create-json-secrets">Do not create JSON secrets</a></li>
+</ul>
+</li>
+<li>
+<a href="#parsing-variables">Parsing variables</a><ul>
+<li><a href="#parsing-variables-with-object-type">Parsing variables with object type</a></li>
+<li><a href="#parsing-variables-with-boolean-type">Parsing variables with boolean type</a></li>
+</ul>
+</li>
+<li>
+<a href="#passing-variables">Passing variables</a><ul>
+<li>
+<a href="#passing-data-between-steps-inside-a-job">Passing data between steps inside a job</a><ul>
+<li><a href="#passing-by-github_env-between-steps">Passing by $GITHUB_ENV between steps</a></li>
+<li><a href="#passing-by-github_output-between-steps">Passing by $GITHUB_OUTPUT between steps</a></li>
+</ul>
+</li>
+<li>
+<a href="#passing-data-between-jobs-inside-a-workflow">Passing data between jobs inside a workflow</a><ul>
+<li><a href="#passing-by-artifacts-between-jobs">Passing by artifacts between jobs</a></li>
+<li><a href="#passing-by-github_output-between-jobs">Passing by $GITHUB_OUTPUT between jobs</a></li>
+</ul>
+</li>
+<li><a href="#passing-data-between-caller-workflow-and-called-reusable-workflow">Passing data between caller workflow and called (reusable) workflow</a></li>
+<li><a href="#passing-data-between-irrelevant-workflows">Passing data between irrelevant workflows</a></li>
+</ul>
+</li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <h2 id="variables-upon-git-events">Variables upon Git events</h2>
+
+<p>Suppose we create a new branch named <code class="language-plaintext highlighter-rouge">new_branch</code>, and create a pull request (with id <code class="language-plaintext highlighter-rouge">123</code>) from the new branch <code class="language-plaintext highlighter-rouge">new_branch</code> to the <code class="language-plaintext highlighter-rouge">main</code> branch.
+During the pipeline, we can see following predefined variables in different GIT events.</p>
+
+<p class="notice--info">Check <a href="https://copdips.com/2022/01/azure-pipeline-predefined-variables.html#variables-upon-git-events">here</a> for variables upon git events in Azure Pipelines.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>variable name \ git action</th>
+      <th>on push</th>
+      <th>on pull request</th>
+      <th>on merge (after merge, a push event will be triggered)</th>
+      <th>on manual trigger</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$GITHUB_REF</td>
+      <td>refs/heads/new_branch</td>
+      <td>refs/pull/123/merge</td>
+      <td>refs/heads/main</td>
+      <td>refs/heads/new_branch</td>
+    </tr>
+    <tr>
+      <td>$GITHUB_REF_NAME</td>
+      <td>new_branch</td>
+      <td>132/merge</td>
+      <td>main</td>
+      <td>new_branch</td>
+    </tr>
+    <tr>
+      <td>$GITHUB_EVENT_NAME</td>
+      <td>push</td>
+      <td>pull_request</td>
+      <td>pull_request_target</td>
+      <td>workflow_dispatch</td>
+    </tr>
+    <tr>
+      <td>$GITHUB_REF_TYPE</td>
+      <td>branch</td>
+      <td>branch</td>
+      <td>branch</td>
+      <td>branch</td>
+    </tr>
+    <tr>
+      <td>$GITHUB_SHA</td>
+      <td>last commit in branch</td>
+      <td>workflow commit (not merge commit)</td>
+      <td>merge commit</td>
+      <td>last commit in branch</td>
+    </tr>
+    <tr>
+      <td>${{ github.event.head_commit.message }}</td>
+      <td>last commit message</td>
+      <td>VAR_NOT_EXISTS</td>
+      <td>VAR_NOT_EXISTS</td>
+      <td>VAR_NOT_EXISTS</td>
+    </tr>
+    <tr>
+      <td>${{ github.event.pull_request.merge_commit_sha }}</td>
+      <td>VAR_NOT_EXISTS</td>
+      <td>merge commit</td>
+      <td>merge commit</td>
+      <td>VAR_NOT_EXISTS</td>
+    </tr>
+    <tr>
+      <td>${{ github.event.pull_request.head.sha }}</td>
+      <td>VAR_NOT_EXISTS</td>
+      <td>last commit in PR (not merge commit)</td>
+      <td>last commit in PR (not merge commit)</td>
+      <td>VAR_NOT_EXISTS</td>
+    </tr>
+    <tr>
+      <td>${{ github.event.pull_request.number }}</td>
+      <td>VAR_NOT_EXISTS</td>
+      <td>123</td>
+      <td>123</td>
+      <td>VAR_NOT_EXISTS</td>
+    </tr>
+    <tr>
+      <td>${{ github.event.number }}</td>
+      <td>VAR_NOT_EXISTS</td>
+      <td>123</td>
+      <td>123</td>
+      <td>VAR_NOT_EXISTS</td>
+    </tr>
+    <tr>
+      <td>${{ github.event.pull_request.merged }}</td>
+      <td>VAR_NOT_EXISTS</td>
+      <td>false</td>
+      <td>true</td>
+      <td>VAR_NOT_EXISTS</td>
+    </tr>
+    <tr>
+      <td>${{ github.event.pull_request.merged_by.login }}</td>
+      <td>VAR_NOT_EXISTS</td>
+      <td>null</td>
+      <td>user login</td>
+      <td>VAR_NOT_EXISTS</td>
+    </tr>
+    <tr>
+      <td>${{ github.event.pull_request.merged_by.type }}</td>
+      <td>VAR_NOT_EXISTS</td>
+      <td>null</td>
+      <td>User, etc</td>
+      <td>VAR_NOT_EXISTS</td>
+    </tr>
+    <tr>
+      <td>${{ github.event.pull_request.title }}</td>
+      <td>VAR_NOT_EXISTS</td>
+      <td>null or pr title</td>
+      <td>null or pr title</td>
+      <td>VAR_NOT_EXISTS</td>
+    </tr>
+    <tr>
+      <td>${{ github.event.pull_request.body}}</td>
+      <td>VAR_NOT_EXISTS</td>
+      <td>null or pr body</td>
+      <td>null or pr bod</td>
+      <td>VAR_NOT_EXISTS</td>
+    </tr>
+    <tr>
+      <td>${{ github.event.after }}</td>
+      <td>last SHA in commit</td>
+      <td>last commit in PR (not merge commit)</td>
+      <td>VAR_NOT_EXISTS</td>
+      <td>VAR_NOT_EXISTS</td>
+    </tr>
+    <tr>
+      <td>${{ github.event.action}}</td>
+      <td>VAR_NOT_EXISTS</td>
+      <td>opened, synchronize, edited, reopned, <a href="https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request">etc</a>..</td>
+      <td>closed</td>
+      <td>VAR_NOT_EXISTS</td>
+    </tr>
+    <tr>
+      <td>${{ github.head_ref }}</td>
+      <td>VAR_NOT_EXISTS</td>
+      <td>new_branch</td>
+      <td>new_branch</td>
+      <td>VAR_NOT_EXISTS</td>
+    </tr>
+    <tr>
+      <td>${{ github.base_ref }}</td>
+      <td>null</td>
+      <td>main</td>
+      <td>main</td>
+      <td>VAR_NOT_EXISTS</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="setting-environment-variables-by-python">Setting environment variables by Python</h2>
+
+<p>Same approach applies to other languages:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Create new env vars by Python</span>
+  <span class="na">shell</span><span class="pi">:</span> <span class="s">python</span>
+  <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+    <span class="s">import os</span>
+    <span class="s">with open(os.environ["GITHUB_ENV"], "a") as f:</span>
+      <span class="s">f.write("ENV_VAR_1=value_1\nENV_VAR_2=value_2\n")</span>
+</code></pre></div></div>
+
+<h2 id="json-variables">JSON Variables</h2>
+
+<h3 id="json-variables-with-github_output">JSON variables with GITHUB_OUTPUT</h3>
+
+<p>When setting a JSON variable in string as <code class="language-plaintext highlighter-rouge">$GITHUB_OUTPUT</code>, and using it in a subsequent step, we should use the Github actions expressions syntax. However, the method of using this syntax can vary based on its context. Consider the following example on a Github Ubuntu runner with a bash shell:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Write json outputs</span>
+  <span class="na">id</span><span class="pi">:</span> <span class="s">write-json-outputs</span>
+  <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+    <span class="s">json_raw='{"name":"foo"}'</span>
+    <span class="s">json_quotes_escaped="{\"name\":\"foo\"}"</span>
+    <span class="s">json_quotes_backslash_escaped="{\\\"name\\\":\\\"foo\\\"}"</span>
+    <span class="s">json_ascii="{\x22name\x22: \x22foo\x22}"</span>
+
+    <span class="s">echo "json_raw=$json_raw" &gt;&gt; $GITHUB_OUTPUT</span>
+    <span class="s">echo "json_quotes_escaped=$json_quotes_escaped" &gt;&gt; $GITHUB_OUTPUT</span>
+    <span class="s">echo "json_quotes_backslash_escaped=$json_quotes_backslash_escaped" &gt;&gt; $GITHUB_OUTPUT</span>
+    <span class="s">echo -e "json_ascii=$json_ascii" &gt;&gt; $GITHUB_OUTPUT</span>
+
+    <span class="s">echo "GITHUB_OUTPUT content:"</span>
+    <span class="s">cat $GITHUB_OUTPUT</span>
+
+<span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Show json outputs</span>
+  <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+    <span class="s">json_raw_wo_quotes=${{ steps.write-json-outputs.outputs.json_raw }}</span>
+    <span class="s">json_raw="${{ steps.write-json-outputs.outputs.json_raw }}"</span>
+    <span class="s">json_quotes_escaped="${{ steps.write-json-outputs.outputs.json_quotes_escaped }}"</span>
+    <span class="s">json_quotes_backslash_escaped="${{ steps.write-json-outputs.outputs.json_quotes_backslash_escaped }}"</span>
+    <span class="s">json_ascii="${{ steps.write-json-outputs.outputs.json_ascii }}"</span>
+
+    <span class="s"># echo vars from templating inside bash</span>
+    <span class="s">echo "json_raw_wo_quotes: $json_raw_wo_quotes"</span>
+    <span class="s">echo "json_raw: $json_raw"</span>
+    <span class="s">echo "json_quotes_escaped: $json_quotes_escaped"</span>
+    <span class="s">echo "json_quotes_backslash_escaped: $json_quotes_backslash_escaped"</span>
+    <span class="s">echo "json_ascii: $json_ascii"</span>
+
+    <span class="s"># echo vars from env variables</span>
+    <span class="s">echo "JSON_RAW: $JSON_RAW"</span>
+    <span class="s">echo "JSON_QUOTES_ESCAPED: $JSON_QUOTES_ESCAPED"</span>
+    <span class="s">echo "JSON_QUOTES_BACKSLASH_ESCAPED: $JSON_QUOTES_BACKSLASH_ESCAPED"</span>
+    <span class="s">echo "JSON_QUOTES_BACKSLASH_ESCAPED_TO_JSON: $JSON_QUOTES_BACKSLASH_ESCAPED_TO_JSON"</span>
+    <span class="s">echo "JSON_QUOTES_BACKSLASH_ESCAPED_WITH_QUOTES: $JSON_QUOTES_BACKSLASH_ESCAPED_WITH_QUOTES"</span>
+    <span class="s">echo "JSON_ASCII: $JSON_ASCII"</span>
+  <span class="na">env</span><span class="pi">:</span>
+    <span class="na">JSON_RAW</span><span class="pi">:</span> <span class="s">${{ steps.write-json-outputs.outputs.json_raw }}</span>
+    <span class="na">JSON_QUOTES_ESCAPED</span><span class="pi">:</span> <span class="s">${{ steps.write-json-outputs.outputs.json_quotes_escaped }}</span>
+    <span class="na">JSON_QUOTES_BACKSLASH_ESCAPED</span><span class="pi">:</span> <span class="s">${{ steps.write-json-outputs.outputs.json_quotes_backslash_escaped }}</span>
+    <span class="na">JSON_QUOTES_BACKSLASH_ESCAPED_TO_JSON</span><span class="pi">:</span> <span class="s">${{ toJson(steps.write-json-outputs.outputs.json_quotes_backslash_escaped) }}</span>
+    <span class="na">JSON_QUOTES_BACKSLASH_ESCAPED_WITH_QUOTES</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${{</span><span class="nv"> </span><span class="s">steps.write-json-outputs.outputs.json_quotes_backslash_escaped</span><span class="nv"> </span><span class="s">}}"</span>
+    <span class="na">JSON_ASCII</span><span class="pi">:</span> <span class="s">${{ steps.write-json-outputs.outputs.json_ascii }}</span>
+</code></pre></div></div>
+
+<p class="notice--info">When creating the json string, it would be better to not use blank spaces between keys and values,  <code class="language-plaintext highlighter-rouge">json_raw='{"name":"foo"}'</code> instead of <code class="language-plaintext highlighter-rouge">json_raw='{"name": "foo"}</code>, in order to prevent from bash variable mangling issue.</p>
+
+<p>We have the following output:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Write json outputs
+  GITHUB_OUTPUT content:
+  <span class="nv">json_raw</span><span class="o">={</span><span class="s2">"name"</span>:<span class="s2">"foo"</span><span class="o">}</span>
+  <span class="nv">json_quotes_escaped</span><span class="o">={</span><span class="s2">"name"</span>:<span class="s2">"foo"</span><span class="o">}</span>
+  <span class="nv">json_quotes_backslash_escaped</span><span class="o">={</span><span class="se">\"</span>name<span class="se">\"</span>:<span class="se">\"</span>foo<span class="se">\"</span><span class="o">}</span>
+  <span class="nv">json_ascii</span><span class="o">={</span><span class="s2">"name"</span>:<span class="s2">"foo"</span><span class="o">}</span>
+
+Show json outputs
+  json_raw_wo_quotes: <span class="o">{</span>name:foo<span class="o">}</span>
+  json_raw: <span class="o">{</span>name:foo<span class="o">}</span>
+  json_quotes_escaped: <span class="o">{</span>name:foo<span class="o">}</span>
+  json_quotes_backslash_escaped: <span class="o">{</span><span class="s2">"name"</span>:<span class="s2">"foo"</span><span class="o">}</span>
+  json_ascii: <span class="o">{</span>name:foo<span class="o">}</span>
+  JSON_RAW: <span class="o">{</span><span class="s2">"name"</span>:<span class="s2">"foo"</span><span class="o">}</span>
+  JSON_QUOTES_ESCAPED: <span class="o">{</span><span class="s2">"name"</span>:<span class="s2">"foo"</span><span class="o">}</span>
+  JSON_QUOTES_BACKSLASH_ESCAPED: <span class="o">{</span><span class="se">\"</span>name<span class="se">\"</span>:<span class="se">\"</span>foo<span class="se">\"</span><span class="o">}</span>
+  JSON_QUOTES_BACKSLASH_ESCAPED_TO_JSON: <span class="s2">"{</span><span class="se">\\\"</span><span class="s2">name</span><span class="se">\\\"</span><span class="s2">:</span><span class="se">\\\"</span><span class="s2">foo</span><span class="se">\\\"</span><span class="s2">}"</span>
+  JSON_QUOTES_BACKSLASH_ESCAPED_WITH_QUOTES: <span class="o">{</span><span class="se">\"</span>name<span class="se">\"</span>:<span class="se">\"</span>foo<span class="se">\"</span><span class="o">}</span>
+  JSON_ASCII: <span class="o">{</span><span class="s2">"name"</span>:<span class="s2">"foo"</span><span class="o">}</span>
+</code></pre></div></div>
+
+<p>From the output we can see that there’re two ways to have a valid json string in the show step:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Show json outputs</span>
+  <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+    <span class="s">json_quotes_backslash_escaped="${{ steps.write-json-outputs.outputs.json_quotes_backslash_escaped }}"</span>
+    <span class="s">echo "json_quotes_backslash_escaped: $json_quotes_backslash_escaped"</span>
+
+    <span class="s"># echo vars from env</span>
+    <span class="s">echo "JSON_RAW: $JSON_RAW"</span>
+    <span class="s">echo "JSON_QUOTES_ESCAPED: $JSON_QUOTES_ESCAPED"</span>
+    <span class="s">echo "JSON_ASCII: $JSON_ASCII"</span>
+  <span class="na">env</span><span class="pi">:</span>
+    <span class="na">JSON_RAW</span><span class="pi">:</span> <span class="s">${{ steps.write-json-outputs.outputs.json_raw }}</span>
+    <span class="na">JSON_QUOTES_ESCAPED</span><span class="pi">:</span> <span class="s">${{ steps.write-json-outputs.outputs.json_quotes_escaped }}</span>
+    <span class="na">JSON_ASCII</span><span class="pi">:</span> <span class="s">${{ steps.write-json-outputs.outputs.json_ascii }}</span>
+</code></pre></div></div>
+
+<p>Creating a JSON string in GITHUB_OUTPUT without escaping backslashes, like <code class="language-plaintext highlighter-rouge">json_quotes_escaped="{\"name\":\"foo\"}"</code>, is more concise than <code class="language-plaintext highlighter-rouge">"{\\\"name\\\":\\\"foo\\\"}"</code>. However, when using <code class="language-plaintext highlighter-rouge">${{ &lt;expression&gt; }}</code> in a bash shell within GitHub Actions, it’s not a valid JSON string. This is because the expressions are processed before the bash shell runs the script, replacing the expression with its value and discarding double quotes. This results in an output like <code class="language-plaintext highlighter-rouge">json_raw: {name:foo}</code>. To address this, the <a href="https://docs.github.com/en/enterprise-cloud@latest/actions/learn-github-actions/expressions#tojson"><code class="language-plaintext highlighter-rouge">toJson</code></a> function can be used to convert the string into valid JSON.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Show json outputs</span>
+  <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+    <span class="s"># use toJson() to parse the string to a valid json string</span>
+    <span class="s">json_raw="${{ toJson(steps.write-json-outputs.outputs.json_raw) }}"</span>
+    <span class="s">json_quotes_escaped="${{ toJson(steps.write-json-outputs.outputs.json_quotes_escaped) }}"</span>
+    <span class="s">json_ascii="${{ toJson(steps.write-json-outputs.outputs.json_ascii) }}"</span>
+
+    <span class="s"># echo vars from templating inside bash</span>
+    <span class="s">echo "json_raw: $json_raw"</span>
+    <span class="s">echo "json_quotes_escaped: $json_quotes_escaped"</span>
+    <span class="s">echo "json_ascii: $json_ascii"</span>
+
+    <span class="s"># echo vars from env variables</span>
+    <span class="s">echo "JSON_RAW: $JSON_RAW"</span>
+    <span class="s">echo "JSON_QUOTES_ESCAPED: $JSON_QUOTES_ESCAPED"</span>
+    <span class="s">echo "JSON_ASCII: $JSON_ASCII"</span>
+  <span class="na">env</span><span class="pi">:</span>
+    <span class="na">JSON_RAW</span><span class="pi">:</span> <span class="s">${{ steps.write-json-outputs.outputs.json_raw }}</span>
+    <span class="na">JSON_QUOTES_ESCAPED</span><span class="pi">:</span> <span class="s">${{ steps.write-json-outputs.outputs.json_quotes_escaped }}</span>
+    <span class="na">JSON_ASCII</span><span class="pi">:</span> <span class="s">${{ steps.write-json-outputs.outputs.json_ascii }}</span>
+</code></pre></div></div>
+
+<p class="notice--info">Check also the <a href="https://docs.github.com/en/actions/learn-github-actions/expressions#fromjson"><code class="language-plaintext highlighter-rouge">fromJson</code></a> function to see how to parse json string to object.</p>
+
+<h3 id="do-not-create-json-secrets">Do not create JSON secrets</h3>
+
+<p>When creating a secret, we should not create a JSON secret. For e.g. the Github action <code class="language-plaintext highlighter-rouge">Azure/Login</code> provides <a href="https://github.com/Azure/login#sample-workflow-that-uses-azure-login-action-to-run-az-cli">an example how to pass creds inputs with a JSON secret</a>:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">azure/login@v1</span>
+  <span class="na">with</span><span class="pi">:</span>
+    <span class="na">creds</span><span class="pi">:</span> <span class="s">${{ secrets.AZURE_CREDENTIALS }}</span>
+</code></pre></div></div>
+
+<p>This works but the drawback is that as the curly brackets are stored in the JSON secret, so whenever we want to show <code class="language-plaintext highlighter-rouge">{</code> or <code class="language-plaintext highlighter-rouge">}</code> in the Github action logs, they will be replaced by <code class="language-plaintext highlighter-rouge">***</code>, as Github actions considers the curly brackets are secret chars. This doesn’t block the successful run of github workflows, but it’s not convenient for debugging.</p>
+
+<p>A better usage of Azure/Login is also provided in its documentation <a href="https://github.com/Azure/login#configure-deployment-credentials">here</a>:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">Azure/login@v1</span>
+    <span class="s">with</span><span class="err">:</span>
+      <span class="na">creds</span><span class="pi">:</span> <span class="s1">'</span><span class="s">{"clientId":"${{</span><span class="nv"> </span><span class="s">secrets.CLIENT_ID</span><span class="nv"> </span><span class="s">}}","clientSecret":"${{</span><span class="nv"> </span><span class="s">secrets.CLIENT_SECRET</span><span class="nv"> </span><span class="s">}}","subscriptionId":"${{</span><span class="nv"> </span><span class="s">secrets.SUBSCRIPTION_ID</span><span class="nv"> </span><span class="s">}}","tenantId":"${{</span><span class="nv"> </span><span class="s">secrets.TENANT_ID</span><span class="nv"> </span><span class="s">}}"}'</span>
+</code></pre></div></div>
+
+<h2 id="parsing-variables">Parsing variables</h2>
+
+<h3 id="parsing-variables-with-object-type">Parsing variables with object type</h3>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="pi">-</span> <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+    <span class="s">echo "github.event: ${{ github.event }}"</span>
+    <span class="s">echo "github.event toJson: $GITHUB_EVENT"</span>
+  <span class="na">env</span><span class="pi">:</span>
+    <span class="na">GITHUB_EVENT</span><span class="pi">:</span> <span class="s">${{ toJson(github.event) }}</span>
+
+<span class="c1"># output:</span>
+<span class="na">github.event</span><span class="pi">:</span> <span class="s">Object</span>
+<span class="na">github.event toJson</span><span class="pi">:</span> <span class="pi">{</span>
+  <span class="nv">after</span><span class="pi">:</span> <span class="nv">9da8166fcc52c437871a2e903b3e200a35c09a1e</span><span class="pi">,</span>
+  <span class="nv">base_ref</span><span class="pi">:</span> <span class="nv">null</span><span class="pi">,</span>
+  <span class="nv">before</span><span class="pi">:</span> <span class="nv">1448cfbf10fc149b7d200d0a0e15493f41cc8896</span><span class="pi">,</span>
+  <span class="nv">...</span>
+<span class="pi">}</span>
+</code></pre></div></div>
+
+<p class="notice--warning"><code class="language-plaintext highlighter-rouge">echo "github.event toJson: ${{ toJSON(github.event) }}"</code> will <a href="https://github.com/actions/runner/issues/1656#issuecomment-1030077729">raise error</a>, must parse the variable to environment variable <code class="language-plaintext highlighter-rouge">$GITHUB_EVENT</code> at first. So when using <code class="language-plaintext highlighter-rouge">toJson</code> method to parse object type variable, it is recommended to send the value to an environment variable first.</p>
+
+<h3 id="parsing-variables-with-boolean-type">Parsing variables with boolean type</h3>
+
+<p>Check with <code class="language-plaintext highlighter-rouge">if</code>:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">on</span><span class="pi">:</span>
+  <span class="na">workflow_dispatch</span><span class="pi">:</span>
+    <span class="na">inputs</span><span class="pi">:</span>
+      <span class="na">print_tags</span><span class="pi">:</span>
+        <span class="na">description</span><span class="pi">:</span> <span class="s1">'</span><span class="s">True</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">print</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">STDOUT'</span>
+        <span class="na">required</span><span class="pi">:</span> <span class="kc">true</span>
+        <span class="na">type</span><span class="pi">:</span> <span class="s">boolean</span>
+
+<span class="na">jobs</span><span class="pi">:</span>
+  <span class="na">print-tag</span><span class="pi">:</span>
+    <span class="na">runs-on</span><span class="pi">:</span> <span class="s">ubuntu-latest</span>
+    <span class="c1"># all the 4 syntaxes below are valid</span>
+    <span class="na">if</span><span class="pi">:</span> <span class="s">inputs.print_tags</span>
+    <span class="na">if</span><span class="pi">:</span> <span class="s">${{ inputs.print_tags }}</span>
+    <span class="na">if</span><span class="pi">:</span> <span class="s">inputs.print_tags == </span><span class="kc">true</span>
+    <span class="na">if</span><span class="pi">:</span> <span class="s">${{ inputs.print_tags == </span><span class="kc">true</span><span class="s">}}</span>
+    <span class="na">steps</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Print the input tag to STDOUT</span>
+        <span class="na">run</span><span class="pi">:</span> <span class="s">echo The tags are ${{ inputs.tags }}</span>
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Print the input tag to STDOUT</span>
+        <span class="c1"># in bash, compare boolean with string value</span>
+        <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+          <span class="s">if [[ "${{ inputs.print_tags }}" == "true" ]]; then</span>
+            <span class="s">echo The tags are ${{ inputs.tags }}</span>
+          <span class="s">else</span>
+            <span class="s">echo "print_tags is false"</span>
+          <span class="s">fi</span>
+          <span class="s">if [[ "$PRINT_TAGS" == "true" ]]; then</span>
+            <span class="s">echo The tags are ${{ inputs.tags }}</span>
+          <span class="s">else</span>
+            <span class="s">echo "print_tags is false"</span>
+          <span class="s">fi</span>
+        <span class="na">env</span><span class="pi">:</span>
+          <span class="na">PRINT_TAGS</span><span class="pi">:</span> <span class="s">${{ inputs.print_tags }}</span>
+</code></pre></div></div>
+
+<p class="notice--warning">Never use <code class="language-plaintext highlighter-rouge">if: ${{ inputs.print_tags }} == false</code> with <code class="language-plaintext highlighter-rouge">==</code> outside of <code class="language-plaintext highlighter-rouge">{{}}</code>, it will always be true.</p>
+
+<h2 id="passing-variables">Passing variables</h2>
+
+<h3 id="passing-data-between-steps-inside-a-job">Passing data between steps inside a job</h3>
+
+<h4 id="passing-by-github_env-between-steps">Passing by $GITHUB_ENV between steps</h4>
+
+<p>You can make an environment variable available to any subsequent steps in a workflow job by defining or updating the environment variable and writing this to the <a href="https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable">GITHUB_ENV</a> environment file.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="pi">-</span> <span class="na">run</span><span class="pi">:</span> <span class="s">echo "var_1=value1" &gt;&gt; $GITHUB_ENV</span>
+<span class="pi">-</span> <span class="na">run</span><span class="pi">:</span> <span class="s">echo "var_1</span><span class="err">:</span> <span class="s">$var1"</span>
+</code></pre></div></div>
+
+<h4 id="passing-by-github_output-between-steps">Passing by $GITHUB_OUTPUT between steps</h4>
+
+<p>Sets a step’s <a href="https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-output-parameter">output parameter</a>. Note that the step will need an id to be defined to later retrieve the output value</p>
+
+<h3 id="passing-data-between-jobs-inside-a-workflow">Passing data between jobs inside a workflow</h3>
+
+<h4 id="passing-by-artifacts-between-jobs">Passing by artifacts between jobs</h4>
+
+<p>You can use the <a href="https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts#passing-data-between-jobs-in-a-workflow">upload-artifact and download-artifact actions</a> to share data (in the forms of a file) between jobs in a workflow.</p>
+
+<p>To share variables, you can save the variables in a file with format:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">VAR_1</span><span class="o">=</span>value1
+<span class="nv">VAR_2</span><span class="o">=</span>value2
+</code></pre></div></div>
+
+<p>Then download the file from another job and source it to load the variables:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="pi">-</span> <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+    <span class="s">sed "" {downloaded_file_path} &gt;&gt; $GITHUB_ENV</span>
+  <span class="na">shell</span><span class="pi">:</span> <span class="s">bash</span>
+</code></pre></div></div>
+
+<h4 id="passing-by-github_output-between-jobs">Passing by $GITHUB_OUTPUT between jobs</h4>
+
+<p><a href="https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idoutputs">https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idoutputs</a></p>
+
+<h3 id="passing-data-between-caller-workflow-and-called-reusable-workflow">Passing data between caller workflow and called (reusable) workflow</h3>
+
+<p>Use <a href="https://docs.github.com/en/actions/using-workflows/reusing-workflows#using-outputs-from-a-reusable-workflow">on.workflow_call.outputs</a>, called workflow outputs are available to all downstream jobs in the caller workflow.</p>
+
+<h3 id="passing-data-between-irrelevant-workflows">Passing data between irrelevant workflows</h3>
+
+<ul>
+  <li><a href="https://github.com/actions/download-artifact/issues/3#issuecomment-580658517">https://github.com/actions/download-artifact/issues/3#issuecomment-580658517</a></li>
+  <li><a href="https://github.com/actions/download-artifact/issues/3#issuecomment-1017141067">https://github.com/actions/download-artifact/issues/3#issuecomment-1017141067</a></li>
+  <li><a href="https://github.com/dawidd6/action-download-artifact">https://github.com/dawidd6/action-download-artifact</a></li>
+</ul>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#cicd" class="page__taxonomy-item p-category" rel="tag">cicd</a><span class="sep">, </span>
+    
+      <a href="/tags/#githubaction" class="page__taxonomy-item p-category" rel="tag">githubaction</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2023-09-19T00:00:00+00:00">September 19, 2023</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Github+Actions+-+Variables%20https%3A%2F%2Fwww.copdips.com%2F2023%2F09%2Fgithub-actions-variables.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.copdips.com%2F2023%2F09%2Fgithub-actions-variables.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.copdips.com%2F2023%2F09%2Fgithub-actions-variables.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+
+  <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.copdips.com%2F2023%2F09%2Fgithub-actions-variables.html&title=Github%20Actions%20-%20Variables" class="btn btn--reddit" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Reddit"><i class="fab fa-fw fa-reddit" aria-hidden="true"></i><span> Reddit</span></a>
+</section>
+
+
+      <script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+      <div id="qrcode"></div>
+      <script type="text/javascript">
+        var qrcode = new QRCode('qrcode', {width: 100, height: 100, text: location.href});
+      </script>
+
+      
+  <nav class="pagination">
+    
+      <a href="/2023/09/github-actions-environment.html" class="pagination--pager" title="Github Actions - Environment
+">Previous</a>
+    
+    
+      <a href="/2023/09/github-actions-error-handling.html" class="pagination--pager" title="Github Actions - Error handling
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+      <h4 class="page__comments-title">Leave a comment</h4>
+      <section id="disqus_thread"></section>
+    
+</div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-deploy-static-files-to-azure-web-app.html" rel="permalink">Github actions - deploy static files to azure web app
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/Some-nice-CICD-bash-common-scripts.html" rel="permalink">Some nice cicd bash common scripts
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          less than 1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-bash-shell-pipefail.html" rel="permalink">Github Actions - Bash shell -e -o pipefail
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-08T00:00:00+00:00">November 8, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/10/hashing-files.html" rel="permalink">Hashing files
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-10-21T00:00:00+00:00">October 21, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap">
+<form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term...">
+  </form>
+  <div id="results" class="results"></div>
+</div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="mailto:xiang.zhu@outlook.com" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email</a></li>
+        
+      
+        
+          <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+          <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://uptimerobot.com/dashboard#785564645" rel="nofollow noopener noreferrer"><i class="fas fa-clock" aria-hidden="true"></i> Uptime</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2023 Xiang ZHU. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp;
+<a href="https://mmistakes.github.io/minimal-mistakes/about/" rel="nofollow">Minimal Mistakes</a>
+.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'G-L9KPHRQNQN']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "https://www.copdips.com/2023/09/github-actions-variables.html";  /* Replace PAGE_URL with your page's canonical URL variable */
+      this.page.identifier = "/2023/09/github-actions-variables"; /* Replace PAGE_IDENTIFIER with your page's unique identifier variable */
+    };
+    (function() { /* DON'T EDIT BELOW THIS LINE */
+      var d = document, s = d.createElement('script');
+      s.src = 'https://copdips.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+
+  
+
+
+
+
+
+  </body>
+</html>

@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+--><html lang="en" class="no-js">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Backup and restore Gitlab in docker - A code to remember</title>
+<meta name="description" content="Step by step procedure to backup and restore Gitlab in docker.">
+
+
+  <meta name="author" content="Xiang ZHU">
+  
+  <meta property="article:author" content="Xiang ZHU">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="A code to remember">
+<meta property="og:title" content="Backup and restore Gitlab in docker">
+<meta property="og:url" content="https://www.copdips.com/2018/09/backup-and-restore-gitlab-in-docker.html">
+
+
+  <meta property="og:description" content="Step by step procedure to backup and restore Gitlab in docker.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2018-09-24T00:00:00+00:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="https://www.copdips.com/2018/09/backup-and-restore-gitlab-in-docker.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Xiang ZHU",
+      "url": "https://www.copdips.com/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="A code to remember Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          A code to remember
+          
+        </a>
+        <ul class="visible-links">
+<li class="masthead__menu-item">
+              <a href="/">Home</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/tags/">Tags</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/year-archive/">Year Archive</a>
+            </li>
+</ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<!-- back to top button -->
+<!-- https://github.com/mmistakes/minimal-mistakes/issues/1731#issuecomment-628997645 -->
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>addBackToTop({
+  diameter: 56,
+  backgroundColor: '#F16334',
+  textColor: '#fff'
+})</script>
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.copdips.com/">
+        <img src="/image/avatar/zhuxiang-smile.jpg" alt="Xiang ZHU" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.copdips.com/" itemprop="url">Xiang ZHU</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Python DevOps</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Paris</span>
+        </li>
+      
+
+      
+        
+          
+            <li><a href="https://www.copdips.com" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fas fa-fw fa-link" aria-hidden="true"></i><span class="label">Website</span></a></li>
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">LinkedIn</span></a></li>
+          
+        
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:xiang.zhu@outlook.com" rel="me" class="u-email">
+            <meta itemprop="email" content="xiang.zhu@outlook.com">
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+      <!-- 
+<script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+<div id="qrcode"></div>
+<script type="text/javascript">
+  var qrcode = new QRCode('qrcode', {width: 10, height: 10, text: location.href});
+</script>
+ -->
+    </ul>
+  </div>
+</div>
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Backup and restore Gitlab in docker">
+    <meta itemprop="description" content="Step by step procedure to backup and restore Gitlab in docker.">
+    <meta itemprop="datePublished" content="2018-09-24T00:00:00+00:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.copdips.com/2018/09/backup-and-restore-gitlab-in-docker.html" class="u-url" itemprop="url">Backup and restore Gitlab in docker
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2018-09-24T00:00:00+00:00">September 24, 2018</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          8 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title">
+<i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu">
+<li><a href="#some-docs-on-the-internet">Some docs on the Internet</a></li>
+<li>
+<a href="#backup-prerequisites">Backup prerequisites</a><ul>
+<li><a href="#tar-version">Tar version</a></li>
+<li><a href="#vm-snapshot">VM snapshot</a></li>
+<li><a href="#gitlab-version">Gitlab version</a></li>
+</ul>
+</li>
+<li>
+<a href="#backup-gitlab-in-docker">Backup Gitlab in docker</a><ul>
+<li><a href="#locate-backup-path">Locate backup path</a></li>
+<li><a href="#create-the-backup">Create the backup</a></li>
+<li><a href="#check-the-backup">Check the backup</a></li>
+<li><a href="#backup-configuration-and-secret-files">Backup configuration and secret files</a></li>
+<li><a href="#upload-backups-to-remote-storage">Upload backups to remote storage</a></li>
+</ul>
+</li>
+<li>
+<a href="#restore-gitlab">Restore Gitlab</a><ul>
+<li><a href="#stop-some-gitlab-services">Stop some Gitlab services</a></li>
+<li><a href="#start-the-restore">Start the restore</a></li>
+<li><a href="#restart-gitlab-with-sanity-check">Restart Gitlab with sanity check</a></li>
+</ul>
+</li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <blockquote>
+  <p>Gitlab hosts everything about the code including the docs and the pipeline data, etc. It’s crucial to back it up. You can also use restore to migrate the Gitlab to another server. This post will show you how to backup and restore the Gitlab-CE docker version.</p>
+</blockquote>
+
+<h1 id="some-docs-on-the-internet">Some docs on the Internet</h1>
+
+<ol>
+  <li><a href="https://docs.gitlab.com/ee/raketasks/backup_restore.html">Backing up and restoring Gitlab from docs.gitlab.com</a></li>
+  <li><a href="https://docs.gitlab.com/omnibus/settings/backups.html">Gitlab omnibus backup from docs.gitlab.com</a></li>
+  <li><a href="https://codereviewvideos.com/course/your-own-private-github/video/gitlab-backup">Gitlab Backup from codereviewvideos.com</a></li>
+  <li><a href="https://www.icicletech.com/blog/gitlab-backup-made-easy">GitLab Backup Made Easy from icicletech.com</a></li>
+</ol>
+
+<h1 id="backup-prerequisites">Backup prerequisites</h1>
+
+<h2 id="tar-version">Tar version</h2>
+<p>The <a href="https://docs.gitlab.com/ee/raketasks/backup_restore.html#requirements">official doc</a> says that the backup and restore tasks use tar with minimum <code class="language-plaintext highlighter-rouge">version 1.3</code>. Check the tar version by <code class="language-plaintext highlighter-rouge">tar --version</code>. The default tar version installed by Gitlab with docker (Gitlab-CE v10.8.3) is v1.28, after the test, the backup and restore both work well with tar in version v1.28. After the test, I find that the default tar v1.28 is also good.</p>
+
+<h2 id="vm-snapshot">VM snapshot</h2>
+
+<p>If your Gitlab is installed on a VM, you can create a snapshot before any action. Please note that <strong>snapshot is not a backup</strong>, you should delete it as soon as your backup or restore task is completed.</p>
+
+<h2 id="gitlab-version">Gitlab version</h2>
+
+<p>Be aware that we can only restore to exactly the same version and type of Gitlab. The default backup file has the Gitlab version and type in the end of the file name which is in the format <code class="language-plaintext highlighter-rouge">EPOCH_YYYY_MM_DD_GitLab_version</code>.</p>
+
+<blockquote>
+  <p><a href="https://docs.gitlab.com/ee/raketasks/backup_restore.html#backup-timestamp">https://docs.gitlab.com/ee/raketasks/backup_restore.html#backup-timestamp</a>:</p>
+
+  <p>The backup archive will be saved in <code class="language-plaintext highlighter-rouge">backup_path</code>, which is specified in the <code class="language-plaintext highlighter-rouge">config/gitlab.yml</code> file. The filename will be <code class="language-plaintext highlighter-rouge">[TIMESTAMP]_gitlab_backup.tar</code>, where <code class="language-plaintext highlighter-rouge">TIMESTAMP</code> identifies the time at which each backup was created, plus the GitLab version. The timestamp is needed if you need to restore GitLab and multiple backups are available.</p>
+
+  <p>For example, if the backup name is <code class="language-plaintext highlighter-rouge">1493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar</code>, then the timestamp is <code class="language-plaintext highlighter-rouge">1493107454_2018_04_25_10.6.4-ce</code>.</p>
+</blockquote>
+
+<p class="notice--warning"><code class="language-plaintext highlighter-rouge">config/gitlab.yml</code> is migrated to <code class="language-plaintext highlighter-rouge">/etc/gitlab/gitlab.rb</code> in newer Gitlab version</p>
+
+<h1 id="backup-gitlab-in-docker">Backup Gitlab in docker</h1>
+
+<h2 id="locate-backup-path">Locate backup path</h2>
+
+<p><code class="language-plaintext highlighter-rouge">gitlab_rails['backup_path']</code> is commented in the Gitlab configuration file <code class="language-plaintext highlighter-rouge">gitlab.rb</code>, its value is the default backup path which is at <code class="language-plaintext highlighter-rouge">/var/opt/gitlab/backups</code>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># From Gitlab docker</span>
+
+root@gitlab:/etc/gitlab# <span class="nb">cat</span> /etc/gitlab/gitlab.rb | <span class="nb">grep </span>backup_path
+<span class="c"># gitlab_rails['manage_backup_path'] = true</span>
+<span class="c"># gitlab_rails['backup_path'] = "/var/opt/gitlab/backups"</span>
+</code></pre></div></div>
+
+<h2 id="create-the-backup">Create the backup</h2>
+
+<p>You don’t need to stop anything before creating the backup.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># From Ubuntu host outside of the Gitlab docker</span>
+
+xiang@ubuntu1804:~<span class="nv">$ </span>docker <span class="nb">exec</span> <span class="nt">-it</span> gitlab1083 gitlab-rake gitlab:backup:create
+Dumping database ...
+Dumping PostgreSQL database gitlabhq_production ... <span class="o">[</span>DONE]
+<span class="k">done
+</span>Dumping repositories ...
+ <span class="k">*</span> win/flaskapi ... <span class="o">[</span>DONE]
+ <span class="k">*</span> win/flaskapi.wiki ...  <span class="o">[</span>SKIPPED]
+ <span class="k">*</span> xiang/flaskapi ... <span class="o">[</span>DONE]
+ <span class="k">*</span> xiang/flaskapi.wiki ...  <span class="o">[</span>SKIPPED]
+<span class="k">done
+</span>Dumping uploads ...
+<span class="k">done
+</span>Dumping builds ...
+<span class="k">done
+</span>Dumping artifacts ...
+<span class="k">done
+</span>Dumping pages ...
+<span class="k">done
+</span>Dumping lfs objects ...
+<span class="k">done
+</span>Dumping container registry images ...
+<span class="o">[</span>DISABLED]
+Creating backup archive: 1537738648_2018_09_23_10.8.3_gitlab_backup.tar ... <span class="k">done
+</span>Uploading backup archive to remote storage  ... skipped
+Deleting tmp directories ... <span class="k">done
+done
+done
+done
+done
+done
+done
+done
+</span>Deleting old backups ... skipping
+xiang@ubuntu1804:~<span class="err">$</span>
+</code></pre></div></div>
+
+<p class="notice--info">The backup uses the Linux commands <code class="language-plaintext highlighter-rouge">tar</code> and <code class="language-plaintext highlighter-rouge">gzip</code>. This works fine in most cases, but can cause problems when data is rapidly changing. When data changes while tar is reading it, the error <code class="language-plaintext highlighter-rouge">file changed as we read it</code> may occur, and will cause the backup process to fail. In such case, you add the copy strategy to your backup command like <code class="language-plaintext highlighter-rouge">docker exec -it gitlab1083 gitlab-rake gitlab:backup:create STRATEGY=copy</code>.</p>
+
+<h2 id="check-the-backup">Check the backup</h2>
+
+<p>In fact, I created twice the backup, so we can see two backups here with different timestamps: <code class="language-plaintext highlighter-rouge">1537738648_2018_09_23_10.8.3</code>, <code class="language-plaintext highlighter-rouge">1537738690_2018_09_23_10.8.3</code>.</p>
+
+<p>Notice that the backup file names don’t contain the Gitlab type (ce for community edition), they only have the creation time (1537738648_2018_09_23 for the first backup file) and the Gitlab version (10.8.3).</p>
+
+<p>We can also find that the backup account is <code class="language-plaintext highlighter-rouge">git</code>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># From Gitlab docker</span>
+
+root@gitlab:/etc/gitlab# <span class="nb">ls</span> <span class="nt">-lart</span> /var/opt/gitlab/backups
+total 644
+drwxr-xr-x 19 root root   4096 Sep 22 23:52 ..
+<span class="nt">-rw-------</span>  1 git  git  215040 Sep 23 21:37 1537738648_2018_09_23_10.8.3_gitlab_backup.tar
+<span class="nt">-rw-------</span>  1 git  git  215040 Sep 23 21:38 1537738690_2018_09_23_10.8.3_gitlab_backup.tar
+drwx------  2 git  root   4096 Sep 23 21:38 <span class="nb">.</span>
+</code></pre></div></div>
+
+<h2 id="backup-configuration-and-secret-files">Backup configuration and secret files</h2>
+
+<p>Yes, the configuration and secret files are not backed up during the <a href="#create-the-backup">previous backup procedure</a>. This is because the previous one <a href="https://docs.gitlab.com/ee/raketasks/backup_restore.html#storing-configuration-files">encrypts the some Gitlab data by using the secret key</a> in the configuration and secret files. If you save them to the same place, you’re just defeating the encryption.</p>
+
+<p>So please also backup <code class="language-plaintext highlighter-rouge">/etc/gitlab/gitlab.rb</code> and <code class="language-plaintext highlighter-rouge">/etc/gitlab/gitlab-secrets.json</code> and save them to a secure place from other Gitlab backup data.</p>
+
+<h2 id="upload-backups-to-remote-storage">Upload backups to remote storage</h2>
+
+<p>I haven’t tested yet, here is the <a href="https://docs.gitlab.com/ee/raketasks/backup_restore.html#uploading-backups-to-a-remote-cloud-storage">official doc</a>.</p>
+
+<h1 id="restore-gitlab">Restore Gitlab</h1>
+
+<p>You can only restore the Gitlab backup to exactly the same Gitlab version and type. And you also need to have a working Gitlab instance.</p>
+
+<h2 id="stop-some-gitlab-services">Stop some Gitlab services</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># From Gitlab docker</span>
+
+gitlab-ctl reconfigure
+gitlab-ctl start
+gitlab-ctl stop unicorn
+gitlab-ctl stop sidekiq
+gitlab-ctl status
+<span class="nb">ls</span> <span class="nt">-lart</span> /var/opt/gitlab/backups
+</code></pre></div></div>
+
+<h2 id="start-the-restore">Start the restore</h2>
+
+<p>The backup file must can be found in the <a href="#locate-backup-path">backup path</a>, which is defined in the configuration file <code class="language-plaintext highlighter-rouge">/etc/gitlab/gitlab.rb</code> by the key <code class="language-plaintext highlighter-rouge">gitlab_rails['backup_path']</code>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># From Ubuntu host outside of the Gitlab docker</span>
+
+xiang@ubuntu1804:~<span class="nv">$ </span>docker <span class="nb">exec</span> <span class="nt">-it</span> gitlab1083 gitlab-rake gitlab:backup:restore <span class="nt">--trace</span>
+<span class="k">**</span> Invoke gitlab:backup:restore <span class="o">(</span>first_time<span class="o">)</span>
+<span class="k">**</span> Invoke gitlab_environment <span class="o">(</span>first_time<span class="o">)</span>
+<span class="k">**</span> Invoke environment <span class="o">(</span>first_time<span class="o">)</span>
+<span class="k">**</span> Execute environment
+<span class="k">**</span> Execute gitlab_environment
+<span class="k">**</span> Execute gitlab:backup:restore
+Unpacking backup ... <span class="k">done
+</span>Before restoring the database, we will remove all existing
+tables to avoid future upgrade problems. Be aware that <span class="k">if </span>you have
+custom tables <span class="k">in </span>the GitLab database these tables and all data will be
+removed.
+
+Do you want to <span class="k">continue</span> <span class="o">(</span><span class="nb">yes</span>/no<span class="o">)</span>? <span class="nb">yes
+</span>Removing all tables. Press <span class="sb">`</span>Ctrl-C<span class="sb">`</span> within 5 seconds to abort
+<span class="o">(</span>...<span class="o">)</span>
+COPY 0
+ setval
+<span class="nt">--------</span>
+      1
+<span class="o">(</span>1 row<span class="o">)</span>
+
+COPY 0
+ setval
+<span class="nt">--------</span>
+      1
+<span class="o">(</span>1 row<span class="o">)</span>
+<span class="o">(</span>...<span class="o">)</span>
+ALTER TABLE
+ALTER TABLE
+<span class="o">(</span>...<span class="o">)</span>
+CREATE INDEX
+<span class="o">(</span>...<span class="o">)</span>
+ALTER TABLE
+ALTER TABLE
+<span class="o">(</span>...<span class="o">)</span>
+WARNING:  no privileges were granted <span class="k">for</span> <span class="s2">"public"</span>
+GRANT
+<span class="o">[</span>DONE]
+<span class="k">done</span>
+<span class="k">**</span> Invoke gitlab:backup:repo:restore <span class="o">(</span>first_time<span class="o">)</span>
+<span class="k">**</span> Invoke gitlab_environment
+<span class="k">**</span> Execute gitlab:backup:repo:restore
+Restoring repositories ...
+ <span class="k">*</span> win/flaskapi ... <span class="o">[</span>DONE]
+ <span class="k">*</span> xiang/flaskapi ... <span class="o">[</span>DONE]
+Put GitLab hooks <span class="k">in </span>repositories <span class="nb">dirs</span> <span class="o">[</span>DONE]
+<span class="k">done</span>
+<span class="k">**</span> Invoke gitlab:backup:uploads:restore <span class="o">(</span>first_time<span class="o">)</span>
+<span class="k">**</span> Invoke gitlab_environment
+<span class="k">**</span> Execute gitlab:backup:uploads:restore
+Restoring uploads ...
+<span class="k">done</span>
+<span class="k">**</span> Invoke gitlab:backup:builds:restore <span class="o">(</span>first_time<span class="o">)</span>
+<span class="k">**</span> Invoke gitlab_environment
+<span class="k">**</span> Execute gitlab:backup:builds:restore
+Restoring builds ...
+<span class="k">done</span>
+<span class="k">**</span> Invoke gitlab:backup:artifacts:restore <span class="o">(</span>first_time<span class="o">)</span>
+<span class="k">**</span> Invoke gitlab_environment
+<span class="k">**</span> Execute gitlab:backup:artifacts:restore
+Restoring artifacts ...
+<span class="k">done</span>
+<span class="k">**</span> Invoke gitlab:backup:pages:restore <span class="o">(</span>first_time<span class="o">)</span>
+<span class="k">**</span> Invoke gitlab_environment
+<span class="k">**</span> Execute gitlab:backup:pages:restore
+Restoring pages ...
+<span class="k">done</span>
+<span class="k">**</span> Invoke gitlab:backup:lfs:restore <span class="o">(</span>first_time<span class="o">)</span>
+<span class="k">**</span> Invoke gitlab_environment
+<span class="k">**</span> Execute gitlab:backup:lfs:restore
+Restoring lfs objects ...
+<span class="k">done</span>
+<span class="k">**</span> Invoke gitlab:shell:setup <span class="o">(</span>first_time<span class="o">)</span>
+<span class="k">**</span> Invoke gitlab_environment
+<span class="k">**</span> Execute gitlab:shell:setup
+This will rebuild an authorized_keys file.
+You will lose any data stored <span class="k">in </span>authorized_keys file.
+Do you want to <span class="k">continue</span> <span class="o">(</span><span class="nb">yes</span>/no<span class="o">)</span>? <span class="nb">yes</span>
+
+<span class="k">**</span> Invoke cache:clear <span class="o">(</span>first_time<span class="o">)</span>
+<span class="k">**</span> Invoke cache:clear:redis <span class="o">(</span>first_time<span class="o">)</span>
+<span class="k">**</span> Invoke environment
+<span class="k">**</span> Execute cache:clear:redis
+<span class="k">**</span> Execute cache:clear
+Deleting tmp directories ... <span class="k">done
+done
+done
+done
+done
+done
+done
+done
+</span>xiang@ubuntu1804:~<span class="err">$</span>
+</code></pre></div></div>
+
+<p class="notice--info">We can also add the param BACKUP to specify the backup file if there’re more than one backup tar file in the backup path. The value of the BACKUP is the <a href="#gitlab-version">backup file timestamp</a>, for example : <code class="language-plaintext highlighter-rouge">docker exec -it gitlab1083 gitlab-rake gitlab:backup:restore BACKUP=1537738690_2018_09_23_10.8.3 --trace</code>.</p>
+
+<h2 id="restart-gitlab-with-sanity-check">Restart Gitlab with sanity check</h2>
+
+<p>Restart the Gitlab services by <code class="language-plaintext highlighter-rouge">gitlab-ctl restart</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># From Gitlab docker</span>
+
+root@gitlab:/# gitlab-ctl restart
+ok: run: alertmanager: <span class="o">(</span>pid 2789<span class="o">)</span> 1s
+ok: run: gitaly: <span class="o">(</span>pid 2797<span class="o">)</span> 0s
+ok: run: gitlab-monitor: <span class="o">(</span>pid 2806<span class="o">)</span> 0s
+ok: run: gitlab-workhorse: <span class="o">(</span>pid 2811<span class="o">)</span> 1s
+ok: run: logrotate: <span class="o">(</span>pid 2827<span class="o">)</span> 0s
+ok: run: nginx: <span class="o">(</span>pid 2834<span class="o">)</span> 1s
+ok: run: node-exporter: <span class="o">(</span>pid 2839<span class="o">)</span> 0s
+ok: run: postgres-exporter: <span class="o">(</span>pid 2845<span class="o">)</span> 1s
+ok: run: postgresql: <span class="o">(</span>pid 2855<span class="o">)</span> 0s
+ok: run: prometheus: <span class="o">(</span>pid 2864<span class="o">)</span> 0s
+ok: run: redis: <span class="o">(</span>pid 2873<span class="o">)</span> 1s
+ok: run: redis-exporter: <span class="o">(</span>pid 2877<span class="o">)</span> 0s
+ok: run: sidekiq: <span class="o">(</span>pid 2957<span class="o">)</span> 0s
+ok: run: sshd: <span class="o">(</span>pid 2960<span class="o">)</span> 0s
+ok: run: unicorn: <span class="o">(</span>pid 2968<span class="o">)</span> 1s
+</code></pre></div></div>
+
+<p>Launch the Gitlab sanity check by <code class="language-plaintext highlighter-rouge">gitlab-rake gitlab:check SANITIZE=true</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@gitlab:/# gitlab-rake gitlab:check <span class="nv">SANITIZE</span><span class="o">=</span><span class="nb">true
+</span>Checking GitLab Shell ...
+
+GitLab Shell version <span class="o">&gt;=</span> 7.1.2 ? ... OK <span class="o">(</span>7.1.2<span class="o">)</span>
+Repo base directory exists?
+default... <span class="nb">yes
+</span>Repo storage directories are symlinks?
+default... no
+Repo paths owned by git:root, or git:git?
+default... <span class="nb">yes
+</span>Repo paths access is drwxrws---?
+default... <span class="nb">yes
+</span>hooks directories <span class="k">in </span>repos are links: ...
+3/2 ... ok
+2/3 ... ok
+Running /opt/gitlab/embedded/service/gitlab-shell/bin/check
+Check GitLab API access: FAILED: Failed to connect to internal API
+gitlab-shell self-check failed
+  Try fixing it:
+  Make sure GitLab is running<span class="p">;</span>
+  Check the gitlab-shell configuration file:
+  <span class="nb">sudo</span> <span class="nt">-u</span> git <span class="nt">-H</span> editor /opt/gitlab/embedded/service/gitlab-shell/config.yml
+  Please fix the error above and rerun the checks.
+
+Checking GitLab Shell ... Finished
+
+Checking Sidekiq ...
+
+Running? ... no
+  Try fixing it:
+  <span class="nb">sudo</span> <span class="nt">-u</span> git <span class="nt">-H</span> <span class="nv">RAILS_ENV</span><span class="o">=</span>production bin/background_jobs start
+  For more information see:
+  doc/install/installation.md <span class="k">in </span>section <span class="s2">"Install Init Script"</span>
+  see log/sidekiq.log <span class="k">for </span>possible errors
+  Please fix the error above and rerun the checks.
+
+Checking Sidekiq ... Finished
+
+Reply by email is disabled <span class="k">in </span>config/gitlab.yml
+Checking LDAP ...
+
+LDAP is disabled <span class="k">in </span>config/gitlab.yml
+
+Checking LDAP ... Finished
+
+Checking GitLab ...
+
+Git configured correctly? ... <span class="nb">yes
+</span>Database config exists? ... <span class="nb">yes
+</span>All migrations up? ... yesyes
+Database contains orphaned GroupMembers? ... nono
+GitLab config exists? ... <span class="nb">yes
+</span>GitLab config up to <span class="nb">date</span>? ... <span class="nb">yes
+</span>Log directory writable? ... <span class="nb">yes
+</span>Tmp directory writable? ... <span class="nb">yes
+</span>Uploads directory exists? ... <span class="nb">yes
+</span>Uploads directory has correct permissions? ... <span class="nb">yes
+</span>Uploads directory tmp has correct permissions? ... <span class="nb">yes
+</span>Init script exists? ... skipped <span class="o">(</span>omnibus-gitlab has no init script<span class="o">)</span>
+Init script up-to-date? ... skipped <span class="o">(</span>omnibus-gitlab has no init script<span class="o">)</span>
+Projects have namespace: ...
+3/2 ... yesyes
+2/3 ... <span class="nb">yes
+</span>Redis version <span class="o">&gt;=</span> 2.8.0? ... <span class="nb">yes
+</span>Ruby version <span class="o">&gt;=</span> 2.3.5 ? ... <span class="nb">yes
+</span>Ruby version <span class="o">&gt;=</span> 2.3.5 ? ... <span class="nb">yes</span> <span class="o">(</span>2.3.7<span class="o">)</span>
+Git version <span class="o">&gt;=</span> 2.9.5 ? ... <span class="nb">yes</span> <span class="o">(</span>2.16.4<span class="o">)</span><span class="nb">yes</span> <span class="o">(</span>2.3.7<span class="o">)</span>
+Git version <span class="o">&gt;=</span> 2.9.5 ? ... <span class="nb">yes</span> <span class="o">(</span>2.16.4<span class="o">)</span>
+Git user has default SSH configuration? ... <span class="nb">yes
+</span>Active <span class="nb">users</span>: ... 2
+
+Checking GitLab ... Finished
+
+root@gitlab:/#
+</code></pre></div></div>
+
+<p>Verify the Gitlab container health by <code class="language-plaintext highlighter-rouge">docker ps</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># From Ubuntu host outside of the Gitlab docker</span>
+
+xiang@ubuntu1804:~<span class="nv">$ </span>docker ps
+CONTAINER ID        IMAGE                          COMMAND             CREATED             STATUS
+PORTS                                                            NAMES
+707439b39dd1        gitlab/gitlab-ce:10.8.3-ce.0   <span class="s2">"/assets/wrapper"</span>   2 weeks ago         Up 15 minutes <span class="o">(</span>healthy<span class="o">)</span>
+0.0.0.0:80-&gt;80/tcp, 0.0.0.0:443-&gt;443/tcp, 0.0.0.0:2222-&gt;22/tcp   gitlab1083
+</code></pre></div></div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#backup" class="page__taxonomy-item p-category" rel="tag">backup</a><span class="sep">, </span>
+    
+      <a href="/tags/#cicd" class="page__taxonomy-item p-category" rel="tag">cicd</a><span class="sep">, </span>
+    
+      <a href="/tags/#docker" class="page__taxonomy-item p-category" rel="tag">docker</a><span class="sep">, </span>
+    
+      <a href="/tags/#gitlab" class="page__taxonomy-item p-category" rel="tag">gitlab</a><span class="sep">, </span>
+    
+      <a href="/tags/#ubuntu" class="page__taxonomy-item p-category" rel="tag">ubuntu</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2018-09-24T00:00:00+00:00">September 24, 2018</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Backup+and+restore+Gitlab+in+docker%20https%3A%2F%2Fwww.copdips.com%2F2018%2F09%2Fbackup-and-restore-gitlab-in-docker.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.copdips.com%2F2018%2F09%2Fbackup-and-restore-gitlab-in-docker.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.copdips.com%2F2018%2F09%2Fbackup-and-restore-gitlab-in-docker.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+
+  <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.copdips.com%2F2018%2F09%2Fbackup-and-restore-gitlab-in-docker.html&title=Backup%20and%20restore%20Gitlab%20in%20docker" class="btn btn--reddit" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Reddit"><i class="fab fa-fw fa-reddit" aria-hidden="true"></i><span> Reddit</span></a>
+</section>
+
+
+      <script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+      <div id="qrcode"></div>
+      <script type="text/javascript">
+        var qrcode = new QRCode('qrcode', {width: 100, height: 100, text: location.href});
+      </script>
+
+      
+  <nav class="pagination">
+    
+      <a href="/2018/09/install-gitlab-runner-on-windows-by-powershell-psremoting.html" class="pagination--pager" title="Install Gitlab Runner on Windows by Powershell PsRemoting
+">Previous</a>
+    
+    
+      <a href="/2018/09/terminate-powershell-script-or-session.html" class="pagination--pager" title="Terminate Powershell script or session
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+      <h4 class="page__comments-title">Leave a comment</h4>
+      <section id="disqus_thread"></section>
+    
+</div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-deploy-static-files-to-azure-web-app.html" rel="permalink">Github actions - deploy static files to azure web app
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/Some-nice-CICD-bash-common-scripts.html" rel="permalink">Some nice cicd bash common scripts
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          less than 1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-bash-shell-pipefail.html" rel="permalink">Github Actions - Bash shell -e -o pipefail
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-08T00:00:00+00:00">November 8, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/10/hashing-files.html" rel="permalink">Hashing files
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-10-21T00:00:00+00:00">October 21, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap">
+<form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term...">
+  </form>
+  <div id="results" class="results"></div>
+</div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="mailto:xiang.zhu@outlook.com" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email</a></li>
+        
+      
+        
+          <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+          <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://uptimerobot.com/dashboard#785564645" rel="nofollow noopener noreferrer"><i class="fas fa-clock" aria-hidden="true"></i> Uptime</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2023 Xiang ZHU. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp;
+<a href="https://mmistakes.github.io/minimal-mistakes/about/" rel="nofollow">Minimal Mistakes</a>
+.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'G-L9KPHRQNQN']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "https://www.copdips.com/2018/09/backup-and-restore-gitlab-in-docker.html";  /* Replace PAGE_URL with your page's canonical URL variable */
+      this.page.identifier = "/2018/09/backup-and-restore-gitlab-in-docker"; /* Replace PAGE_IDENTIFIER with your page's unique identifier variable */
+    };
+    (function() { /* DON'T EDIT BELOW THIS LINE */
+      var d = document, s = d.createElement('script');
+      s.src = 'https://copdips.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+
+  
+
+
+
+
+
+  </body>
+</html>

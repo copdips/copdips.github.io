@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator><link href="https://www.copdips.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://www.copdips.com/" rel="alternate" type="text/html" /><updated>2023-11-18T15:32:05+00:00</updated><id>https://www.copdips.com/feed.xml</id><title type="html">A code to remember</title><subtitle>Python developer</subtitle><author><name>Xiang ZHU</name><email>xiang.zhu@outlook.com</email></author><entry><title type="html">Some nice cicd bash common scripts</title><link href="https://www.copdips.com/2023/11/Some-nice-CICD-bash-common-scripts.html" rel="alternate" type="text/html" title="Some nice cicd bash common scripts" /><published>2023-11-18T00:00:00+00:00</published><updated>2023-11-18T00:00:00+00:00</updated><id>https://www.copdips.com/2023/11/Some-nice-CICD-bash-common-scripts</id><content type="html" xml:base="https://www.copdips.com/2023/11/Some-nice-CICD-bash-common-scripts.html"><![CDATA[<p>During CICD, we often have a large log output, it might be nice to have some common scripts to help us to format the log output, so that we can easily find the information we need.</p>
+
+<p>Recently, when working with Sonar, I found that they have some scripts for such output formatting.</p>
+
+<ul>
+  <li>Common scripts: <a href="https://github.com/SonarSource/sonarqube-quality-gate-action/blob/master/script/common.sh">common.sh</a></li>
+  <li>Source common script: <a href="https://github.com/SonarSource/sonarqube-quality-gate-action/blob/f9fe214a5be5769c40619de2fff2726c36d2d5eb/script/check-quality-gate.sh#L3C9-L3C9"><code class="language-plaintext highlighter-rouge">source "$(dirname "$0")/common.sh"</code></a></li>
+  <li>Also the Bash testing framework Bats:
+    <ul>
+      <li><a href="https://github.com/SonarSource/sonarqube-quality-gate-action/blob/f9fe214a5be5769c40619de2fff2726c36d2d5eb/.github/workflows/run-qa.yml#L17-L28">Installing Bats in CICD</a></li>
+      <li><a href="https://github.com/SonarSource/sonarqube-quality-gate-action/tree/master/test">Testing Bash script: check-quality-gate-test.bats</a></li>
+    </ul>
+  </li>
+</ul>]]></content><author><name>Xiang ZHU</name><email>xiang.zhu@outlook.com</email></author><category term="cicd" /><category term="githubaction" /><category term="azure" /><category term="shell" /></entry><entry><title type="html">Github actions - deploy static files to azure web app</title><link href="https://www.copdips.com/2023/11/github-actions-deploy-static-files-to-azure-web-app.html" rel="alternate" type="text/html" title="Github actions - deploy static files to azure web app" /><published>2023-11-18T00:00:00+00:00</published><updated>2023-11-18T00:00:00+00:00</updated><id>https://www.copdips.com/2023/11/github-actions-deploy-static-files-to-azure-web-app</id><content type="html" xml:base="https://www.copdips.com/2023/11/github-actions-deploy-static-files-to-azure-web-app.html"><![CDATA[<p>Although Azure provides already a <a href="https://learn.microsoft.com/en-us/azure/app-service/deploy-github-actions?tabs=userlevel">GitHub Actions for Azure Web App</a> to deploy static files to Azure Web App, but we can also do it ourselves with a azure cli command.</p>
+
+<p>Suppose the static files are generated in a folder named <code class="language-plaintext highlighter-rouge">site</code>, then the above Azure doc says we can use the following command to deploy it to Azure Web App:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># action actions/checkout should be run before this step</span>
+<span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Set Web App runtime</span>
+  <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+    <span class="s">az webapp config set \</span>
+      <span class="s">--resource-group $ \</span>
+      <span class="s">--name $ \</span>
+      <span class="s">--linux-fx-version "STATICSITE|1.0"</span>
+
+<span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Run Azure webapp deploy action using Azure Credentials</span>
+  <span class="na">uses</span><span class="pi">:</span> <span class="s">azure/webapps-deploy@v2</span>
+  <span class="na">with</span><span class="pi">:</span>
+    <span class="na">app-name</span><span class="pi">:</span> <span class="s">$</span>
+    <span class="na">package</span><span class="pi">:</span> <span class="s">site</span>
+</code></pre></div></div>
+
+<p class="notice--info">We manually set the web app runtime to <code class="language-plaintext highlighter-rouge">STATICSITE|1.0</code> as users might created the web app with other runtime (<code class="language-plaintext highlighter-rouge">STATICSITE|1.0</code> is not selectable during the standard Web App resource creation except they chose specifically the <a href="https://devblogs.microsoft.com/devops/comparing-azure-static-web-apps-vs-azure-webapps-vs-azure-blob-storage-static-sites/">Static Web App</a> resource), as we’re pushing static files, we should set the runtime to <code class="language-plaintext highlighter-rouge">STATICSITE|1.0</code>.</p>
+
+<p class="notice--warning">The <a href="https://learn.microsoft.com/en-us/azure/app-service/deploy-github-actions?tabs=userlevel">Azure doc</a> uses azure/webapps-deploy@<code class="language-plaintext highlighter-rouge">v2</code> instead of latest azure/webapps-deploy@<code class="language-plaintext highlighter-rouge">v3</code>, after some tests, <code class="language-plaintext highlighter-rouge">v3</code> version has some bug on reboot as post deployment step. See <a href="https://github.com/Azure/webapps-deploy/issues/379">this issue</a> for more details.</p>
+
+<p>The above github action could be replaced with:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># action actions/checkout should be run before this step</span>
+<span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Run Azure Cli using Azure Credentials</span>
+  <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+    <span class="s">cd site &amp;&amp; zip -r ../site.zip * &amp;&amp; cd ..</span>
+
+    <span class="s">az webapp config set \</span>
+      <span class="s">--resource-group $ \</span>
+      <span class="s">--name $ \</span>
+      <span class="s">--linux-fx-version "STATICSITE|1.0"</span>
+
+    <span class="s">az webapp deployment source config-zip \</span>
+      <span class="s">--resource-group $ \</span>
+      <span class="s">--name $ \</span>
+      <span class="s">--src site.zip</span>
+</code></pre></div></div>
+
+<p class="notice--info">When using <code class="language-plaintext highlighter-rouge">az webapp deploy --src-path site.zip --type zip</code> instead of <code class="language-plaintext highlighter-rouge">az webapp deployment source config-zip</code>, we get the exact same reboot error as azure/webapps-deploy@<code class="language-plaintext highlighter-rouge">v3</code>. However <code class="language-plaintext highlighter-rouge">v3</code> action updates the web app with the new version despite the reboot error, but <code class="language-plaintext highlighter-rouge">az webapp deploy</code> does not update the web app with the new version.</p>]]></content><author><name>Xiang ZHU</name><email>xiang.zhu@outlook.com</email></author><category term="cicd" /><category term="githubaction" /><category term="azure" /></entry><entry><title type="html">Github Actions - Bash shell -e -o pipefail</title><link href="https://www.copdips.com/2023/11/github-actions-bash-shell-pipefail.html" rel="alternate" type="text/html" title="Github Actions - Bash shell -e -o pipefail" /><published>2023-11-08T00:00:00+00:00</published><updated>2023-11-08T00:00:00+00:00</updated><id>https://www.copdips.com/2023/11/github-actions-bash-shell-pipefail</id><content type="html" xml:base="https://www.copdips.com/2023/11/github-actions-bash-shell-pipefail.html"><![CDATA[<p>Bash shell in Github actions by default is run with <code class="language-plaintext highlighter-rouge">-e -o pipefail</code> option. The full command used by Github actions is :</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>shell: /usr/bin/bash <span class="nt">--noprofile</span> <span class="nt">--norc</span> <span class="nt">-e</span> <span class="nt">-o</span> pipefail <span class="o">{</span>0<span class="o">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">-o pipefail</code> means that if any command in a pipeline fails, that return code will be used as the return code of the whole pipeline. And due to <code class="language-plaintext highlighter-rouge">-e</code> option, this makes the shell exit immediately if a command within the script exits with a non-zero status (i.e., fails). This is a good thing, but it can be a problem if you want to ignore the return code of a command in a pipeline. And especially in Github Actions output, you cannot see the error message of the command that failed. Github Actions just shows a generic error message: “<strong>Error: Process completed with exit code 1.</strong>”, which makes it hard to debug.</p>
+
+<p>For example, following command:</p>
+
+<ul>
+  <li>will <strong>success</strong> even <code class="language-plaintext highlighter-rouge">grep</code> does not find anything in a standard bash shell (your local VM for example)</li>
+  <li>but will <strong>fail</strong> in Github actions bash shell with the error message “<strong>Error: Process completed with exit code 1.</strong>”.</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="s2">"hello world"</span> | <span class="nb">grep</span> <span class="s2">"foo"</span> | <span class="nb">wc</span> <span class="nt">-l</span>
+</code></pre></div></div>
+
+<p>If you do not care about the grep result, to bypass this, you can use <code class="language-plaintext highlighter-rouge">|| true</code> at the end of the <code class="language-plaintext highlighter-rouge">grep</code> command. This will make sure that the return code of the grep command is always 0.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="s2">"hello world"</span> | <span class="o">{</span> <span class="nb">grep</span> <span class="s2">"foo"</span> <span class="o">||</span> <span class="nb">true</span> <span class="p">;</span> <span class="o">}</span> | <span class="nb">wc</span> <span class="nt">-l</span>
+</code></pre></div></div>
+
+<p>To verify current bash shell options, you can use <code class="language-plaintext highlighter-rouge">set -o</code> command:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">set</span> <span class="nt">-o</span>
+<span class="c"># or</span>
+<span class="nv">$ </span><span class="nb">set</span> <span class="nt">-o</span> | <span class="nb">grep</span> <span class="nt">-E</span> <span class="s2">"errexit|pipefail"</span>
+errexit         off
+pipefail        off
+</code></pre></div></div>]]></content><author><name>Xiang ZHU</name><email>xiang.zhu@outlook.com</email></author><category term="cicd" /><category term="githubaction" /><category term="shell" /></entry><entry><title type="html">Hashing files</title><link href="https://www.copdips.com/2023/10/hashing-files.html" rel="alternate" type="text/html" title="Hashing files" /><published>2023-10-21T00:00:00+00:00</published><updated>2023-10-21T00:00:00+00:00</updated><id>https://www.copdips.com/2023/10/hashing-files</id><content type="html" xml:base="https://www.copdips.com/2023/10/hashing-files.html"><![CDATA[<p>During CI/CD processes, and particularly during CI, we frequently hash dependency files to create cache keys (referred to as <code class="language-plaintext highlighter-rouge">key</code> input in Github Action <a href="https://github.com/actions/cache">actions/cache</a> and <code class="language-plaintext highlighter-rouge">key</code> parameter in Azure pipelines <a href="https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/cache-v2?view=azure-pipelines">Cache@2 task</a>). However, the default hash functions come with certain limitations like <a href="https://github.com/orgs/community/discussions/25761#discussioncomment-6508758">this comment</a>. To address this, we can use the following pure Bash shell command to manually generate the hash value.</p>
+
+<p>For Github Actions, we can use following snippet:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># github actions example</span>
+<span class="na">inputs</span><span class="pi">:</span>
+  <span class="na">req-files</span><span class="pi">:</span>
+    <span class="na">description</span><span class="pi">:</span> <span class="pi">&gt;</span>
+      <span class="s">requirements files separated by comma or space, glob pattern is allowed.</span>
+      <span class="s">e.g. "requirements/*.txt, requirements.txt"</span>
+    <span class="na">required</span><span class="pi">:</span> <span class="kc">true</span>
+<span class="na">runs</span><span class="pi">:</span>
+  <span class="na">using</span><span class="pi">:</span> <span class="s2">"</span><span class="s">composite"</span>
+  <span class="na">steps</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Compute hash key</span>
+      <span class="na">shell</span><span class="pi">:</span> <span class="s">bash</span>
+      <span class="na">env</span><span class="pi">:</span>
+        <span class="na">REQ_FILES</span><span class="pi">:</span> <span class="s">${{ inputs.req-files }}</span>
+      <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+        <span class="s">files=$(echo "$REQ_FILES" | tr "," " " | while read pattern ; do ls $pattern; done)</span>
+        <span class="s">files_sep_by_space=""</span>
+        <span class="s">for file in $files; do</span>
+            <span class="s">files_sep_by_space="$files_sep_by_space $(ls $file | tr '\n' ' ')"</span>
+        <span class="s">done</span>
+        <span class="s">files_sep_by_space=$(echo $files_sep_by_space | tr ' ' '\n' | sort | uniq | tr '\n' ' ')</span>
+        <span class="s">files_hash=$(cat $files_sep_by_space | md5sum | awk '{print $1}')</span>
+        <span class="s">echo "files_hash: $files_hash"</span>
+</code></pre></div></div>
+
+<p>For Azure pipelines, the process is nearly identical to the above Github Action example. The only difference is that we first need to convert the  <code class="language-plaintext highlighter-rouge">reqFiles</code> parameter from an object to a string. But if you set the parameter type to <code class="language-plaintext highlighter-rouge">string</code> (as in the Github Action), the process becomes identical.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># azure pipelines example</span>
+<span class="na">parameters</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">reqFiles</span>
+    <span class="na">displayName</span><span class="pi">:</span> <span class="pi">&gt;</span>
+      <span class="s">requirements files, glob pattern is allowed.</span>
+      <span class="s">e.g.:</span>
+      <span class="s">- requirements/*.txt</span>
+      <span class="s">- requirements.txt</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">object</span>
+  <span class="na">steps</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">script</span><span class="pi">:</span> <span class="pi">|</span>
+        <span class="s">req_files_pattern_string=$(echo "$REQ_FILES_JSON" | jq  '. | join(",")' -r)</span>
+        <span class="s">files=$(echo $req_files_pattern_string | tr "," " " | while read pattern ; do ls $pattern; done)</span>
+        <span class="s">files_sep_by_space=""</span>
+        <span class="s">for file in $files; do</span>
+            <span class="s">files_sep_by_space="$files_sep_by_space $(ls $file | tr '\n' ' ')"</span>
+        <span class="s">done</span>
+        <span class="s">files_sep_by_space=$(echo $files_sep_by_space | tr ' ' '\n' | sort | uniq | tr '\n' ' ')</span>
+        <span class="s">files_hash=$(cat $files_sep_by_space | md5sum | awk '{print $1}')</span>
+        <span class="s">echo "files_hash: $files_hash"</span>
+      <span class="na">displayName</span><span class="pi">:</span> <span class="s">Compute hash key</span>
+      <span class="na">env</span><span class="pi">:</span>
+        <span class="na">REQ_FILES_JSON</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${{</span><span class="nv"> </span><span class="s">convertToJson(parameters.reqFiles)</span><span class="nv"> </span><span class="s">}}"</span>
+</code></pre></div></div>
+
+<p class="notice--info">When creating the cache key, we also need to include os version, the one provided by Github action and Azure pipelines environment vars are not precise enough, they do not give patch version number. We can generate the <strong>full os version</strong> by the following command <code class="language-plaintext highlighter-rouge">cat /etc/os-release | grep -i "version=" | cut -c9- | tr -d '"' | tr ' ' '_'</code></p>]]></content><author><name>Xiang ZHU</name><email>xiang.zhu@outlook.com</email></author><category term="cicd" /><category term="githubaction" /><category term="azure" /><category term="shell" /><category term="cache" /></entry><entry><title type="html">Github Actions - copdips/get-azure-keyvault-secrets-action</title><link href="https://www.copdips.com/2023/10/github-actions-get-azure-keyvault-secrets-action.html" rel="alternate" type="text/html" title="Github Actions - copdips/get-azure-keyvault-secrets-action" /><published>2023-10-16T00:00:00+00:00</published><updated>2023-10-16T00:00:00+00:00</updated><id>https://www.copdips.com/2023/10/github-actions-get-azure-keyvault-secrets-action</id><content type="html" xml:base="https://www.copdips.com/2023/10/github-actions-get-azure-keyvault-secrets-action.html"><![CDATA[<p>Recently, I began a new project that requires migrating some process from Azure Pipelines to Github Actions. One of the tasks involves retrieving secrets from Azure Key Vault.</p>
+
+<p>In Azure Pipelines, we have an official task called <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-key-vault?view=azure-devops">AzureKeyVault@2</a> designed for this purpose. However, its official counterpart in Github Actions, <a href="https://github.com/Azure/get-keyvault-secrets">Azure/get-keyvault-secrets@v1</a>, has been deprecated. The recommended alternative is <a href="https://github.com/Azure/get-keyvault-secrets#deprecation-notice">Azure CLI</a>. While Azure CLI is a suitable option, it operates in a bash shell without multithreading. If numerous secrets need to be fetched, this can be time-consuming.</p>
+
+<p>Over the past weekend, I decided to write my own action using Python, leveraging <code class="language-plaintext highlighter-rouge">asyncio</code>. I avoided any additional third party Python modules like <code class="language-plaintext highlighter-rouge">requests</code>, <code class="language-plaintext highlighter-rouge">aiohttp</code>, or <code class="language-plaintext highlighter-rouge">httpx</code>, so no pip install needed.</p>
+
+<p>As anticipated, the pure Python solution is notably faster than using the Azure CLI, and even surpasses the speed of the Azure Pipelines task <code class="language-plaintext highlighter-rouge">AzureKeyVault@2</code>. In my tests, it was able to retrieve the all the secrets from an Azure Key Vault within seconds.</p>
+
+<p>The source code is at: <a href="https://github.com/copdips/get-azure-keyvault-secrets-action">copdips/get-azure-keyvault-secrets-action</a></p>
+
+<p>And hereunder is the usage:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># in the calling workflow, user should first login to Azure</span>
+<span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">Azure/login@v1</span>
+  <span class="na">with</span><span class="pi">:</span>
+    <span class="c1"># creds: ${{secrets.AZURE_CREDENTIALS}} is not recommended due to json secrets security concerns.</span>
+    <span class="na">creds</span><span class="pi">:</span> <span class="s1">'</span><span class="s">{"clientId":"${{</span><span class="nv"> </span><span class="s">secrets.CLIENT_ID</span><span class="nv"> </span><span class="s">}}","clientSecret":"${{</span><span class="nv"> </span><span class="s">secrets.CLIENT_SECRET</span><span class="nv"> </span><span class="s">}}","subscriptionId":"${{</span><span class="nv"> </span><span class="s">secrets.SUBSCRIPTION_ID</span><span class="nv"> </span><span class="s">}}","tenantId":"${{</span><span class="nv"> </span><span class="s">secrets.TENANT_ID</span><span class="nv"> </span><span class="s">}}"}'</span>
+
+<span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Get Azure KeyVault secrets</span>
+  <span class="na">id</span><span class="pi">:</span> <span class="s">get-azure-keyvault-secrets</span>
+  <span class="na">uses</span><span class="pi">:</span> <span class="s">copdips/get-azure-keyvault-secrets-action@v1</span>
+  <span class="na">with</span><span class="pi">:</span>
+    <span class="na">keyvault</span><span class="pi">:</span> <span class="pi">{</span><span class="nv">your_azure_keyvault_name</span><span class="pi">}</span>
+
+<span class="c1"># Suppose there's a secret named client-secret in the Azure Key Vault,</span>
+<span class="c1"># so an env var named CLIENT_SECRET should be created by the action.</span>
+<span class="c1"># You won't see the secret value in the workflow log as it's masked by Github automatically.</span>
+<span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Use secrets from env var</span>
+  <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+    <span class="s">echo $CLIENT_SECRET</span>
+    <span class="s">echo ${{ env.CLIENT_SECRET }}</span>
+
+<span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Use secrets from output</span>
+  <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+    <span class="s">echo $JSON_SECRETS | jq .CLIENT_SECRET -r</span>
+  <span class="na">env</span><span class="pi">:</span>
+    <span class="na">JSON_SECRETS</span><span class="pi">:</span> <span class="s">${{ steps.get-azure-keyvault-secrets.outputs.json }}</span>
+</code></pre></div></div>]]></content><author><name>Xiang ZHU</name><email>xiang.zhu@outlook.com</email></author><category term="cicd" /><category term="githubaction" /><category term="python" /><category term="async" /><category term="azure" /><category term="vault" /></entry><entry><title type="html">Databricks Python pip authentication</title><link href="https://www.copdips.com/2023/09/databricks-python-pip-authentication.html" rel="alternate" type="text/html" title="Databricks Python pip authentication" /><published>2023-09-22T00:00:00+00:00</published><updated>2023-09-22T00:00:00+00:00</updated><id>https://www.copdips.com/2023/09/databricks-python-pip-authentication</id><content type="html" xml:base="https://www.copdips.com/2023/09/databricks-python-pip-authentication.html"><![CDATA[<p>Before the Databricks Unit Catalog’s release, we used init scripts to generate the <code class="language-plaintext highlighter-rouge">pip.conf</code> file during cluster startup, allowing each cluster its unique auth token. But with init scripts no longer available in the Unit Catalog’s <strong>shared mode</strong>, an alternative approach is required.</p>
+
+<p>A workaround involves placing a prepared <code class="language-plaintext highlighter-rouge">pip.conf</code> in the Databricks workspace and setting the <code class="language-plaintext highlighter-rouge">PIP_CONFIG_FILE</code> environment variable to point to this file. This method, however, presents security concerns: the <code class="language-plaintext highlighter-rouge">pip.conf</code> file, containing the auth token, becomes accessible to the entire workspace, potentially exposing it to all users and clusters. See <a href="https://github.com/databrickslabs/dbx/issues/739#issuecomment-1730308586">here</a> to check this workaround.</p>
+
+<p>In contrast, the Unit Catalog’s <strong>single mode</strong> retains init script availability. Here, the pip auth token is stored securely in a vault and accessed via the Databricks secret scope. Upon cluster startup, the init script fetches the token from the vault, generating the <code class="language-plaintext highlighter-rouge">pip.conf</code> file. This approach is considerably more secure than the shared mode alternative.</p>]]></content><author><name>Xiang ZHU</name><email>xiang.zhu@outlook.com</email></author><category term="databricks" /><category term="python" /><category term="pip" /><category term="auth" /></entry><entry><title type="html">Github Actions - Python</title><link href="https://www.copdips.com/2023/09/github-actions-python.html" rel="alternate" type="text/html" title="Github Actions - Python" /><published>2023-09-22T00:00:00+00:00</published><updated>2023-09-22T00:00:00+00:00</updated><id>https://www.copdips.com/2023/09/github-actions-python</id><content type="html" xml:base="https://www.copdips.com/2023/09/github-actions-python.html"><![CDATA[<h2 id="setting-up-pip-authentication">Setting up pip authentication</h2>
+
+<h3 id="pip_index_url-vs-pip_extra_index_url">PIP_INDEX_URL vs PIP_EXTRA_INDEX_URL</h3>
+
+<p>In most cases, when setting up private Python package artifacts (like Azure DevOps Artifacts, JFrog Artifactory, etc.) are configured to mirror the public PyPi. In such scenarios, we only need to use <code class="language-plaintext highlighter-rouge">PIP_INDEX_URL</code> to point to these  private artifacts.</p>
+
+<p>However, some people might use <code class="language-plaintext highlighter-rouge">PIP_INDEX_URL</code> point to the public PyPi, and <code class="language-plaintext highlighter-rouge">PIP_EXTRA_INDEX_URL</code> to point to the private artifacts. This approach is not recommended, as it results in the public PyPi searched first, followed by the private artifacts. This poses a security risk where a malicious actor can publish a package with the same name as your private one on the public PyPi.</p>
+
+<h3 id="auth-for-azure-devops-artifacts">Auth for Azure DevOps Artifacts</h3>
+
+<h4 id="auth-by-azure-spn-crendentials">Auth by Azure SPN crendentials</h4>
+
+<p>In March 2023, there was a great news that Azure Service Principal was been <a href="https://learn.microsoft.com/en-us/azure/devops/release-notes/2023/sprint-219-update#service-principal-and-managed-identity-support-in-azure-devops-public-preview">introduced in Azure DevOps</a>, eliminating the use of service account.</p>
+
+<ol>
+  <li>Create a service principal in Azure Active Directory.</li>
+  <li>Add the service principal to the Azure DevOps Artifacts feed with <code class="language-plaintext highlighter-rouge">Contributor</code> role. Package publishing (twine upload) needs <code class="language-plaintext highlighter-rouge">Contributor</code> role, but package installation (pip install) only needs <code class="language-plaintext highlighter-rouge">Reader</code> role.</li>
+  <li>
+    <p>Add SPN credentials to Github Secrets with name <code class="language-plaintext highlighter-rouge">AZURE_CREDENTIALS</code>, and value in JSON format:</p>
+
+    <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w"> </span><span class="p">{</span><span class="w">
+   </span><span class="nl">"clientId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"xxxxx"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"clientSecret"</span><span class="p">:</span><span class="w"> </span><span class="s2">"xxxxx"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"subscriptionId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"xxxxx"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"tenantId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"xxxxx"</span><span class="w">
+ </span><span class="p">}</span><span class="w">
+</span></code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Create env var <code class="language-plaintext highlighter-rouge">PIP_INDEX_URL</code> in the workflow, and set it to the Azure DevOps Artifacts feed URL.</p>
+
+    <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/checkout@v4</span>
+
+
+ <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Setup Python</span>
+   <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/setup-python@v4</span>
+   <span class="na">with</span><span class="pi">:</span>
+     <span class="na">python-version</span><span class="pi">:</span> <span class="s">${{ matrix.python-version }}</span>
+     <span class="c1"># see below post of a faster Python cache:</span>
+     <span class="c1"># https://copdips.com/2023/09/github-actions-cache.html#pip-cache-dir-vs-pip-install-dir</span>
+     <span class="na">cache</span><span class="pi">:</span> <span class="s">pip</span>
+     <span class="na">cache-dependency-path</span><span class="pi">:</span> <span class="s">requirements/*.txt</span>
+
+ <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Azure Login</span>
+   <span class="na">uses</span><span class="pi">:</span> <span class="s">azure/login@v1</span>
+   <span class="na">with</span><span class="pi">:</span>
+     <span class="na">creds</span><span class="pi">:</span> <span class="s">${{ secrets.AZURE_CREDENTIALS }}</span>
+
+ <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Setup Python package feed</span>
+   <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+     <span class="s">access_token=$(az account get-access-token | jq .accessToken -r)</span>
+
+     <span class="s"># setup pip auth</span>
+     <span class="s">echo "PIP_INDEX_URL=https://:$access_token@pkgs.dev.azure.com/{azdo_org_name}/_packaging/{azdo_artifacts_feed_name}/pypi/simple/" &gt;&gt; $GITHUB_ENV</span>
+
+     <span class="s"># setup twine auth</span>
+     <span class="s">cat &gt; ~/.pypirc &lt;&lt;EOF</span>
+     <span class="s">[distutils]</span>
+     <span class="s">index-servers={azdo_artifacts_feed_name}</span>
+     <span class="s">[{azdo_artifacts_feed_name}]</span>
+     <span class="s">repository=https://pkgs.dev.azure.com/{azdo_org_name}/_packaging/{azdo_artifacts_feed_name}/pypi/upload</span>
+     <span class="s">username=build</span>
+     <span class="s">password=$access_token</span>
+     <span class="s">EOF</span>
+
+     <span class="s"># setup access token for action pypa/gh-action-pypi-publish</span>
+     <span class="s">echo "ACCESS_TOKEN=$access_token" &gt;&gt; $GITHUB_ENV</span>
+
+ <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Install dependencies</span>
+   <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+     <span class="s">pip install -U pip</span>
+     <span class="s">pip install -r requirements/requirements.txt</span>
+
+ <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Build Python package</span>
+   <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+     <span class="s"># need to install wheel in advance</span>
+     <span class="s">python setup.py sdist bdist_wheel</span>
+     <span class="s"># modern Python uses `python -m build` instead</span>
+
+ <span class="c1"># alternative Python package build and check</span>
+ <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Build and Check Package</span>
+   <span class="na">uses</span><span class="pi">:</span> <span class="s">hynek/build-and-inspect-python-package@v1.5</span>
+
+ <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Publish Python package by twine</span>
+   <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+     <span class="s"># need to install twine in advance</span>
+     <span class="s">twine upload -r {azdo_artifacts_feed_name} dist/*.whl</span>
+
+ <span class="c1"># alternative Python package publish</span>
+ <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Publish Python package by action</span>
+   <span class="c1"># does not need to install twine in advance</span>
+   <span class="na">uses</span><span class="pi">:</span> <span class="s">pypa/gh-action-pypi-publish@release/v1</span>
+   <span class="na">with</span><span class="pi">:</span>
+     <span class="na">repository-url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">https://pkgs.dev.azure.com/{azdo_org_name}/_packaging/{azdo_artifacts_feed_name}/pypi/upload"</span>
+     <span class="na">password</span><span class="pi">:</span> <span class="s">${{ env.ACCESS_TOKEN }}</span>
+
+ <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Cleanup secret envs</span>
+   <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+     <span class="s">echo "PIP_INDEX_URL=" &gt;&gt; $GITHUB_ENV</span>
+     <span class="s">echo "ACCESS_TOKEN=" &gt;&gt; $GITHUB_ENV</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h4 id="auth-by-azure-openid-connect-oidc">Auth by Azure OpenID Connect (OIDC)</h4>
+
+<p>We can also <a href="https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-azure">setup OpenID Connect (OIDC) between Github Action and Azure</a>. It’s practical because we do not need to worry about Azure SPN secret rotation. However, a drawback is that when setting up OIDC, we must add a <a href="https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-cli%2Clinux#add-federated-credentials">filter</a> (<code class="language-plaintext highlighter-rouge">subject</code> field in the <code class="language-plaintext highlighter-rouge">credential.json</code>). This could be a branch name, tag name, pull request, or environment name, we can not use wildcards in the filter, so we have to set up OIDC for each branch, tag, pull request or environment as needed. This is not very practical. For AWS, there’s no such limitation.</p>
+
+<p>To use Azure OIDC with Github Action, we need to add the following to the workflow:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">...</span>
+<span class="na">permissions</span><span class="pi">:</span>
+  <span class="na">id-token</span><span class="pi">:</span> <span class="s">write</span>
+  <span class="na">contents</span><span class="pi">:</span> <span class="s">read</span>
+
+<span class="na">jobs</span><span class="pi">:</span>
+  <span class="na">a_job</span><span class="pi">:</span>
+    <span class="s">...</span>
+    <span class="s">steps</span><span class="err">:</span>
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Azure login by OIDC</span>
+        <span class="na">uses</span><span class="pi">:</span> <span class="s">azure/login@v1</span>
+        <span class="na">with</span><span class="pi">:</span>
+          <span class="c1"># Official doc puts these 3 fields in secrets, but it's not necessary,</span>
+          <span class="c1"># as `subject` field in the credential.json prevents other repos from</span>
+          <span class="c1"># using the same credential. And these are not sensitive info neither.</span>
+          <span class="na">tenant-id</span><span class="pi">:</span> <span class="s">${{ vars.AZURE_TENANT_ID }}</span>
+          <span class="na">subscription-id</span><span class="pi">:</span> <span class="s">${{ vars.AZURE_SUBSCRIPTION_ID }}</span>
+          <span class="na">client-id</span><span class="pi">:</span> <span class="s">${{ vars.AZURE_CLIENT_ID }}</span>
+</code></pre></div></div>]]></content><author><name>Xiang ZHU</name><email>xiang.zhu@outlook.com</email></author><category term="cicd" /><category term="githubaction" /><category term="python" /><category term="pip" /><category term="auth" /><category term="azure" /></entry><entry><title type="html">Github Actions - Workflows</title><link href="https://www.copdips.com/2023/09/github-actions-workflows.html" rel="alternate" type="text/html" title="Github Actions - Workflows" /><published>2023-09-21T00:00:00+00:00</published><updated>2023-09-21T00:00:00+00:00</updated><id>https://www.copdips.com/2023/09/github-actions-workflows</id><content type="html" xml:base="https://www.copdips.com/2023/09/github-actions-workflows.html"><![CDATA[<h2 id="reusable-workflows">Reusable workflows</h2>
+
+<h3 id="re-run-a-reusable-workflow">Re-run a reusable workflow</h3>
+
+<p><a href="https://docs.github.com/en/actions/managing-workflow-runs/re-running-workflows-and-jobs#re-running-workflows-and-jobs-with-reusable-workflows">If reusable workflow is not referenced by SHA</a>, for example a branch name, when re-run a workflow, it will not use the latest version of the workflow in that branch, but the same commit SHA of the first attempt. Which means, if you use the git amend push to overwrite the old commit history, the workflow re-run will fail as it cannot find the specific SHA version of the workflow.</p>
+
+<p>In contrary, if an action is referenced by branch name, it will always use the latest version of the action in that branch upon re-run.</p>
+
+<h2 id="cancelling-a-workflow">Cancelling a workflow</h2>
+
+<p>To cancel the current workflow run inside the run itself:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">cancelling</span>
+  <span class="na">uses</span><span class="pi">:</span> <span class="s">andymckay/cancel-action@0.3</span>
+</code></pre></div></div>
+
+<p>We can use <code class="language-plaintext highlighter-rouge">if: cancelled()</code> or <code class="language-plaintext highlighter-rouge">if: always()</code> to bypass the workflow cancel signal.</p>]]></content><author><name>Xiang ZHU</name><email>xiang.zhu@outlook.com</email></author><category term="cicd" /><category term="githubaction" /></entry><entry><title type="html">Github Actions - Error handling</title><link href="https://www.copdips.com/2023/09/github-actions-error-handling.html" rel="alternate" type="text/html" title="Github Actions - Error handling" /><published>2023-09-20T00:00:00+00:00</published><updated>2023-09-20T00:00:00+00:00</updated><id>https://www.copdips.com/2023/09/github-actions-error-handling</id><content type="html" xml:base="https://www.copdips.com/2023/09/github-actions-error-handling.html"><![CDATA[<h2 id="continue-on-error-vs-fail-fast">continue-on-error vs fail-fast</h2>
+
+<p>The <a href="https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs#handling-failures">doc</a> explains that <code class="language-plaintext highlighter-rouge">continue-on-error</code> applies to a <a href="https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idcontinue-on-error">single job</a> or <a href="https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepscontinue-on-error">single step</a> which defines whether a job or step can continue on its error, while <code class="language-plaintext highlighter-rouge">fail-fast</code> applies to the entire matrix which means if the failure of a job in the matrix can stop other running jobs in the matrix. For example:</p>
+
+<ul>
+  <li>if <code class="language-plaintext highlighter-rouge">fail-fast</code> is set to <code class="language-plaintext highlighter-rouge">true</code>, the entire matrix will stop running when one job fails. But if the failed job has <code class="language-plaintext highlighter-rouge">continue-on-error</code> set to <code class="language-plaintext highlighter-rouge">true</code>, the matrix will continue running, as the failed job is not considered as a failure.</li>
+  <li>if <code class="language-plaintext highlighter-rouge">fail-fast</code> is set to <code class="language-plaintext highlighter-rouge">false</code>, all the jobs triggered by the matrix are considered independent, so the failed job will not affect other jobs.</li>
+</ul>
+
+<p class="notice--info">When setting <code class="language-plaintext highlighter-rouge">continue-on-error</code> at <a href="https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idcontinue-on-error">job level</a> only, and no set at <a href="https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepscontinue-on-error">step level</a>, if one of the steps fails, the remaining steps wont be executed, the job will get a red failure badge in the Github Actions UI, but the job status will be considered as success.</p>
+
+<h2 id="status-check-functions">Status check functions</h2>
+
+<p>We can also use <a href="https://docs.github.com/en/actions/learn-github-actions/expressions#status-check-functions">status check functions</a> <code class="language-plaintext highlighter-rouge">if ${{ success() }}, if: ${{ always() }}, if: ${{ cancelled() }}, if: ${{ failure() }}</code> to check the previous step (<strong>or job</strong>) status.</p>
+
+<p>In <code class="language-plaintext highlighter-rouge">if</code> expression, we can skip the double curly brackets <code class="language-plaintext highlighter-rouge">${{}}</code>, for example: <code class="language-plaintext highlighter-rouge">if: success()</code> instead of <code class="language-plaintext highlighter-rouge">if: ${{ success() }}</code></p>]]></content><author><name>Xiang ZHU</name><email>xiang.zhu@outlook.com</email></author><category term="cicd" /><category term="githubaction" /></entry><entry><title type="html">Github Actions - Cache</title><link href="https://www.copdips.com/2023/09/github-actions-cache.html" rel="alternate" type="text/html" title="Github Actions - Cache" /><published>2023-09-19T00:00:00+00:00</published><updated>2023-09-19T00:00:00+00:00</updated><id>https://www.copdips.com/2023/09/github-actions-cache</id><content type="html" xml:base="https://www.copdips.com/2023/09/github-actions-cache.html"><![CDATA[<h2 id="life-span">Life span</h2>
+
+<p>Github Actions cache has a life span of <a href="https://github.com/actions/toolkit/tree/main/packages/cache#actionscache">7 days</a>, and the total size of all caches in a repository is limited to 10 GB.</p>
+
+<h2 id="standard-cache">Standard Cache</h2>
+
+<p>Cache key should be as specific as possible, so that the post cache restore installation can be reduced or skipped.</p>
+
+<p>For Python pip install, we could use the following cache key:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Get pip cache dir</span>
+  <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+    <span class="s">os_version=$(cat /etc/os-release | grep -i "version=" | cut -c9- | tr -d '"' | tr ' ' '_')</span>
+    <span class="s">github_workflow_full_path="${GITHUB_WORKFLOW_REF%@*}"</span>
+    <span class="s">python_full_version=$(python -c 'import platform; print(platform.python_version())')</span>
+    <span class="s">node_major_version=$(node --version | cut -d'.' -f1 | tr -d 'v')</span>
+    <span class="s">echo "os_version=$os_version" &gt;&gt; $GITHUB_ENV</span>
+    <span class="s">echo "github_workflow_full_path=$github_workflow_full_path" &gt;&gt; $GITHUB_ENV</span>
+    <span class="s">echo "python_full_version=$python_full_version" &gt;&gt; $GITHUB_ENV</span>
+    <span class="s">echo "PIP_CACHE_DIR=$(pip cache dir)" &gt;&gt; $GITHUB_ENV</span>
+
+<span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">cache pip</span>
+  <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/cache@v3</span>
+  <span class="na">with</span><span class="pi">:</span>
+    <span class="c1"># path: ${{ env.PIP_CACHE_DIR }}</span>
+    <span class="na">path</span><span class="pi">:</span> <span class="s">${{ env.pythonLocation }}</span>
+    <span class="na">key</span><span class="pi">:</span> <span class="s">${{ env.github_workflow_full_path}}-${{ env.os_version }}-${{ env.python_full_version }}-${{ env.node_major_version}}-${{ hashFiles('requirements/*.txt') }}</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">cache</code> action repository provides also some <a href="https://github.com/actions/cache/blob/main/examples.md#python---pip">Python caching examples</a>.</p>
+
+<h3 id="pip-cache-dir-vs-pip-install-dir">pip cache dir vs pip install dir</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">path</code> parameter in <code class="language-plaintext highlighter-rouge">actions/cache@v3</code> could be:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">${{ env.PIP_CACHE_DIR }}</code> if you only want to cache the pip cache dir, so you can skip the Python package download step, but you still need to install the packages.</li>
+  <li><code class="language-plaintext highlighter-rouge">${{ env.pythonLocation }}</code> if you want to cache the whole python installation dir, this is useful when you want to cache the <code class="language-plaintext highlighter-rouge">site-packages</code> dir, so that the <code class="language-plaintext highlighter-rouge">pip install</code> step can be reduced or skipped, this is also why we must use the <code class="language-plaintext highlighter-rouge">${{ env.os_version }}</code>, <code class="language-plaintext highlighter-rouge">${{ env.python_full_version }}</code> in the cache key. In most of cases, this is the best choice.</li>
+</ul>
+
+<h3 id="hashfiles">hashFiles</h3>
+
+<p>In <a href="https://learn.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops">Azure Pipelines</a>, there’s similar thing as <a href="https://docs.github.com/en/actions/learn-github-actions/expressions#hashfiles">hashFiles()</a> function, it should be in the form of glob pattern, like <code class="language-plaintext highlighter-rouge">requirements/*.txt</code>, but without double quotes, otherwise treated as a static string.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Azure Pipelines</span>
+<span class="pi">-</span> <span class="na">task</span><span class="pi">:</span> <span class="s">Cache@2</span>
+  <span class="na">inputs</span><span class="pi">:</span>
+    <span class="na">key</span><span class="pi">:</span> <span class="s1">'</span><span class="s">python</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">"$(pythonFullVersion)"</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">"$(osVersion)"</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">"$(System.TeamProject)"</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">"$(Build.DefinitionName)"</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">"$(Agent.JobName)"</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">requirements/*.txt'</span>
+    <span class="na">path</span><span class="pi">:</span> <span class="s">...</span>
+  <span class="na">displayName</span><span class="pi">:</span> <span class="s">...</span>
+</code></pre></div></div>
+
+<p>Otherwise, we can also achieve the same result by some pure bash commands:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># suppose parameters.requirementsFilePathList is a list of file paths</span>
+<span class="pi">-</span> <span class="na">script</span><span class="pi">:</span> <span class="pi">|</span>
+    <span class="s">echo REQUIREMENTS_FILE_PATH_LIST_STRING: $REQUIREMENTS_FILE_PATH_LIST_STRING</span>
+    <span class="s">all_files_in_one_line=$(echo $REQUIREMENTS_FILE_PATH_LIST_STRING | jq  '. | join(" ")' -r)</span>
+    <span class="s">echo all_files_in_one_line: $all_files_in_one_line</span>
+    <span class="s">all_files_md5sum=$(cat $all_files_in_one_line | md5sum | awk '{print $1}')</span>
+    <span class="s">echo all_files_md5sum: $all_files_md5sum</span>
+    <span class="s">echo "##vso[task.setvariable variable=pythonRequirementsFilesHash;]$all_files_md5sum"</span>
+  <span class="na">displayName</span><span class="pi">:</span> <span class="s">Set pythonRequirementsFilesHash</span>
+  <span class="na">env</span><span class="pi">:</span>
+    <span class="na">REQUIREMENTS_FILE_PATH_LIST_STRING</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${{</span><span class="nv"> </span><span class="s">convertToJson(parameters.requirementsFilePathList)</span><span class="nv"> </span><span class="s">}}"</span>
+</code></pre></div></div>
+
+<h2 id="cache-with-actionssetup-python">Cache with actions/setup-python</h2>
+
+<p>The action <a href="https://github.com/actions/setup-python#caching-packages-dependencies">actions/setup-python</a> has built-in functionality for caching and restoring dependencies with <code class="language-plaintext highlighter-rouge">cache</code> key. This cache method can only cache the pip cache dir to reduce the Python packages download time like <code class="language-plaintext highlighter-rouge">path: ${{ env.PIP_CACHE_DIR }}</code> in above <a href="#standard-cache">example</a>, but still need to install the packages, which is <a href="#pip-cache-dir-vs-pip-install-dir">much slower than caching the package installation location</a>. As the time of writing, the cache source dir (which is the pip cache dir) is generated by the action itself, and cannot be customized.</p>
+
+<p>The cache key is something like: <code class="language-plaintext highlighter-rouge">setup-python-Linux-22.04-Ubuntu-python-3.10.13-pip-308f89683977de8773e433ddf87c874b6bd931347b779ef0ab18f37ecc4fa914</code> (copied from workflow run log), which is generated as per this <a href="https://github.com/actions/setup-python/issues/732">answer</a>.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">steps</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/checkout@v4</span>
+<span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/setup-python@v4</span>
+  <span class="na">with</span><span class="pi">:</span>
+    <span class="na">python-version</span><span class="pi">:</span> <span class="s1">'</span><span class="s">3.10'</span>
+    <span class="na">cache</span><span class="pi">:</span> <span class="s1">'</span><span class="s">pip'</span> <span class="c1"># caching pip dependencies, could be pip, pipenv, or poetry</span>
+    <span class="na">cache-dependency-path</span><span class="pi">:</span> <span class="s">requirements/*.txt</span>
+<span class="pi">-</span> <span class="na">run</span><span class="pi">:</span> <span class="s">pip install -r requirements.txt</span>
+</code></pre></div></div>
+
+<p>If <code class="language-plaintext highlighter-rouge">cache-dependency-path</code> is not specified, and if the cache type is <code class="language-plaintext highlighter-rouge">pip</code>, it will try to <a href="https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python#caching-dependencies">find all the requirements.txt files</a> in the repo and hash them to generate the cache key. For cache type with <code class="language-plaintext highlighter-rouge">pipenv</code> or <code class="language-plaintext highlighter-rouge">poetry</code>, I didn’t test them.</p>]]></content><author><name>Xiang ZHU</name><email>xiang.zhu@outlook.com</email></author><category term="cicd" /><category term="githubaction" /><category term="cache" /><category term="azure" /></entry></feed>

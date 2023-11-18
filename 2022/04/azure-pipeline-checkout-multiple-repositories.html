@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+--><html lang="en" class="no-js">
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Azure Pipeline Checkout Multiple Repositories - A code to remember</title>
+<meta name="description" content="Python developer">
+
+
+  <meta name="author" content="Xiang ZHU">
+  
+  <meta property="article:author" content="Xiang ZHU">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="A code to remember">
+<meta property="og:title" content="Azure Pipeline Checkout Multiple Repositories">
+<meta property="og:url" content="https://www.copdips.com/2022/04/azure-pipeline-checkout-multiple-repositories.html">
+
+
+  <meta property="og:description" content="Python developer">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2022-04-03T00:00:00+00:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="https://www.copdips.com/2022/04/azure-pipeline-checkout-multiple-repositories.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "Xiang ZHU",
+      "url": "https://www.copdips.com/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="A code to remember Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          A code to remember
+          
+        </a>
+        <ul class="visible-links">
+<li class="masthead__menu-item">
+              <a href="/">Home</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/tags/">Tags</a>
+            </li>
+<li class="masthead__menu-item">
+              <a href="/year-archive/">Year Archive</a>
+            </li>
+</ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<!-- back to top button -->
+<!-- https://github.com/mmistakes/minimal-mistakes/issues/1731#issuecomment-628997645 -->
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>addBackToTop({
+  diameter: 56,
+  backgroundColor: '#F16334',
+  textColor: '#fff'
+})</script>
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="https://www.copdips.com/">
+        <img src="/image/avatar/zhuxiang-smile.jpg" alt="Xiang ZHU" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://www.copdips.com/" itemprop="url">Xiang ZHU</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Python DevOps</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Paris</span>
+        </li>
+      
+
+      
+        
+          
+            <li><a href="https://www.copdips.com" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fas fa-fw fa-link" aria-hidden="true"></i><span class="label">Website</span></a></li>
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">LinkedIn</span></a></li>
+          
+        
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:xiang.zhu@outlook.com" rel="me" class="u-email">
+            <meta itemprop="email" content="xiang.zhu@outlook.com">
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+
+      <!-- 
+<script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+<div id="qrcode"></div>
+<script type="text/javascript">
+  var qrcode = new QRCode('qrcode', {width: 10, height: 10, text: location.href});
+</script>
+ -->
+    </ul>
+  </div>
+</div>
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Azure Pipeline Checkout Multiple Repositories">
+    <meta itemprop="description" content="">
+    <meta itemprop="datePublished" content="2022-04-03T00:00:00+00:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://www.copdips.com/2022/04/azure-pipeline-checkout-multiple-repositories.html" class="u-url" itemprop="url">Azure Pipeline Checkout Multiple Repositories
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2022-04-03T00:00:00+00:00">April 3, 2022</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          13 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title">
+<i class="fas fa-file-alt"></i> On this page</h4></header>
+              <ul class="toc__menu">
+<li><a href="#default-pipeline-workspace-structure">Default Pipeline workspace structure</a></li>
+<li>
+<a href="#with-self-checkout-and-external-repository-checkout">With self checkout and external repository checkout</a><ul>
+<li><a href="#declare-repository-resources">Declare repository resources</a></li>
+<li><a href="#checkout-self-to-its-repository-name">Checkout self to its repository name</a></li>
+<li><a href="#checkout-another-repository-to-its-repository-name">Checkout another repository to its repository name</a></li>
+<li><a href="#move-self-to-systemdefaultworkingdirectory">Move self to System.DefaultWorkingDirectory</a></li>
+</ul>
+</li>
+<li>
+<a href="#single-self-checkout-with-default-path">Single self checkout with default path</a><ul>
+<li><a href="#before-checkout">Before checkout</a></li>
+<li><a href="#after-checkout">After checkout</a></li>
+</ul>
+</li>
+<li>
+<a href="#single-self-checkout-with-custom-path">Single self checkout with custom path</a><ul>
+<li><a href="#before-checkout-1">Before checkout</a></li>
+<li><a href="#after-checkout-1">After checkout</a></li>
+</ul>
+</li>
+<li>
+<a href="#no-self-checkout-but-single-external-checkout-with-default-path">No self checkout but single external checkout with default path</a><ul>
+<li><a href="#before-checkout-2">Before checkout</a></li>
+<li><a href="#after-checkout-2">After checkout</a></li>
+</ul>
+</li>
+<li>
+<a href="#no-self-checkout-but-single-external-checkout-with-custom-path">No self checkout but single external checkout with custom path</a><ul>
+<li><a href="#before-checkout-3">Before checkout</a></li>
+<li><a href="#after-checkout-3">After checkout</a></li>
+</ul>
+</li>
+<li>
+<a href="#no-self-checkout-but-multiple-external-checkout">No self checkout but multiple external checkout</a><ul>
+<li><a href="#before-checkout-4">Before checkout</a></li>
+<li><a href="#after-checkout-4">After checkout</a></li>
+</ul>
+</li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p>This post will talk about some Azure pipeline predefined variables’ values in a multiple repositories checkout situation. The official doc is <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/repos/multi-repo-checkout?view=azure-devops">here</a>.</p>
+
+<p class="notice--info">The examples given in this post is using Azure DevOps repositories and Azure pipeline Ubuntu agent.</p>
+
+<h2 id="default-pipeline-workspace-structure">Default Pipeline workspace structure</h2>
+
+<p>When a pipeline starts, something is created inside the folder defined in the predefined variable <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#pipeline-variables-devops-services"><code class="language-plaintext highlighter-rouge">$(Pipeline.Workspace)</code></a>, this variable has the same value as <code class="language-plaintext highlighter-rouge">$(Agent.BuildDirectory)</code>, For example, when using the default Azure pipeline Ubuntu agent, the value is <code class="language-plaintext highlighter-rouge">/home/vsts/work/1</code>.</p>
+
+<p>At the very beginning of a pipeline run, you should the folder constructed like below:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">pwd</span>
+/home/vsts/work/1/s
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1
+total 24
+drwxr-xr-x 2 vsts docker 4096 Apr  3 12:52 b
+drwxr-xr-x 2 vsts docker 4096 Apr  3 12:52 a
+drwxr-xr-x 2 vsts docker 4096 Apr  3 12:52 TestResults
+drwxr-xr-x 6 vsts docker 4096 Apr  3 12:52 <span class="nb">.</span>
+drwxr-xr-x 4 vsts docker 4096 Apr  3 12:52 s
+drwxr-xr-x 7 vsts root   4096 Apr  3 12:52 ..
+</code></pre></div></div>
+
+<ul>
+  <li>Folder <code class="language-plaintext highlighter-rouge">/home/vsts/work/1</code> for <code class="language-plaintext highlighter-rouge">Pipeline.Workspace</code>, <code class="language-plaintext highlighter-rouge">Agent.BuildDirectory</code>.</li>
+  <li>Folder <code class="language-plaintext highlighter-rouge">/home/vsts/work/1/a</code> for <code class="language-plaintext highlighter-rouge">Build.ArtifactStagingDirectory</code>, <code class="language-plaintext highlighter-rouge">Build.StagingDirectory</code>.</li>
+  <li>Folder <code class="language-plaintext highlighter-rouge">/home/vsts/work/1/b</code> for <code class="language-plaintext highlighter-rouge">Build.BinariesDirectory</code>.</li>
+  <li>Folder <code class="language-plaintext highlighter-rouge">//home/vsts/work/1s</code> for <code class="language-plaintext highlighter-rouge">System.DefaultWorkingDirectory</code> or sometimes for <code class="language-plaintext highlighter-rouge">Build.SourcesDirectory</code>, <code class="language-plaintext highlighter-rouge">Build.Repository.LocalPath</code>.</li>
+  <li>Folder <code class="language-plaintext highlighter-rouge">/home/vsts/work/1/TestResults</code> for <code class="language-plaintext highlighter-rouge">Common.TestResultsDirectory</code>
+</li>
+</ul>
+
+<p class="notice--warning">The value of <code class="language-plaintext highlighter-rouge">Build.SourcesDirectory</code>, <code class="language-plaintext highlighter-rouge">Build.Repository.LocalPath</code> could change <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&,tabs=yaml#build-variables-devops-services">upon checkout policies</a>, so pay attention when using these two variables.</p>
+
+<p class="notice--warning"><code class="language-plaintext highlighter-rouge">System.DefaultWorkingDirectory</code> is very important too because its value will <strong>never change</strong> in whatever situation, and this is the default working directory when running the script task, we can confirm it by checking the result of the above <code class="language-plaintext highlighter-rouge">pwd</code> command.</p>
+
+<p>I will show these variables’ value within different steps of 5 different pipelines:</p>
+
+<ol>
+  <li>With self checkout and external repository checkout (most common)</li>
+  <li>Single self checkout with default path</li>
+  <li>Single self checkout with custom path</li>
+  <li>No self checkout but single external checkout with default path</li>
+  <li>No self checkout but single external checkout with custom path</li>
+  <li>No self checkout but multiple external checkout</li>
+</ol>
+
+<h2 id="with-self-checkout-and-external-repository-checkout">With self checkout and external repository checkout</h2>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">resources</span><span class="pi">:</span>
+  <span class="na">repositories</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">repository</span><span class="pi">:</span> <span class="s">another_repo</span>
+      <span class="na">type</span><span class="pi">:</span> <span class="s">git</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">AzureDevOpsProjectName/another_repo</span>
+
+<span class="na">steps</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">checkout</span><span class="pi">:</span> <span class="s">self</span>
+    <span class="na">persistCredentials</span><span class="pi">:</span> <span class="kc">true</span>  <span class="c1"># persists cred to perform some git remote commands like git push --tags</span>
+    <span class="na">path</span><span class="pi">:</span> <span class="s">$(Build.Repository.Name)</span>
+
+  <span class="pi">-</span> <span class="na">checkout</span><span class="pi">:</span> <span class="s">another_repo</span>
+    <span class="na">path</span><span class="pi">:</span> <span class="s">another_repo</span>
+
+  <span class="pi">-</span> <span class="na">script</span><span class="pi">:</span> <span class="pi">|</span>
+      <span class="s">cp "$BUILD_REPOSITORY_LOCALPATH/." "$SYSTEM_DEFAULTWORKINGDIRECTORY" -r</span>
+    <span class="na">displayName</span><span class="pi">:</span> <span class="s">Copy $(Build.Repository.Name) content to default workding directroy</span>
+</code></pre></div></div>
+
+<h3 id="declare-repository-resources">Declare repository resources</h3>
+
+<p>Suppose the self (primary) repository name is <code class="language-plaintext highlighter-rouge">cicd</code>, and in the pipeline file, we declare a repository resource to the repository found at <code class="language-plaintext highlighter-rouge">AzureDevOpsProjectName/another_repo</code>.</p>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">resources</span><span class="pi">:</span>
+  <span class="na">repositories</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">repository</span><span class="pi">:</span> <span class="s">another_repo</span>
+      <span class="na">type</span><span class="pi">:</span> <span class="s">git</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">AzureDevOpsProjectName/another_repo</span>
+</code></pre></div></div>
+
+<p>From the very beginning of the pipeline line, the <code class="language-plaintext highlighter-rouge">another_repo</code> repository and the <code class="language-plaintext highlighter-rouge">self</code> repository will be automatically checked out at <code class="language-plaintext highlighter-rouge">/home/vsts/work/1/s</code></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1
+total 24
+drwxr-xr-x 2 vsts docker 4096 Apr  3 12:52 b
+drwxr-xr-x 2 vsts docker 4096 Apr  3 12:52 a
+drwxr-xr-x 2 vsts docker 4096 Apr  3 12:52 TestResults
+drwxr-xr-x 6 vsts docker 4096 Apr  3 12:52 <span class="nb">.</span>
+drwxr-xr-x 4 vsts docker 4096 Apr  3 12:52 s
+drwxr-xr-x 7 vsts root   4096 Apr  3 12:52 ..
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1/s
+total 16
+drwxr-xr-x 6 vsts docker 4096 Apr  3 12:52 ..
+drwxr-xr-x 2 vsts docker 4096 Apr  3 12:52 cicd
+drwxr-xr-x 2 vsts docker 4096 Apr  3 12:52 another_repo
+drwxr-xr-x 4 vsts docker 4096 Apr  3 12:52 <span class="nb">.</span>
+
+</code></pre></div></div>
+
+<p>At this point, the following variables having following values:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Predefined variable name</th>
+      <th>Value</th>
+      <th>When</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Pipeline.Workspace</td>
+      <td>/home/vsts/work/1</td>
+      <td>Beginning of the pipeline</td>
+    </tr>
+    <tr>
+      <td>Agent.BuildDirectory</td>
+      <td>/home/vsts/work/1</td>
+      <td>Beginning of the pipeline</td>
+    </tr>
+    <tr>
+      <td>Build.ArtifactStagingDirectory</td>
+      <td>/home/vsts/work/1/a</td>
+      <td>Beginning of the pipeline</td>
+    </tr>
+    <tr>
+      <td>Build.StagingDirectory</td>
+      <td>/home/vsts/work/1/a</td>
+      <td>Beginning of the pipeline</td>
+    </tr>
+    <tr>
+      <td>Build.BinariesDirectory</td>
+      <td>/home/vsts/work/1/b</td>
+      <td>Beginning of the pipeline</td>
+    </tr>
+    <tr>
+      <td>System.DefaultWorkingDirectory</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>Beginning of the pipeline</td>
+    </tr>
+    <tr>
+      <td>Build.SourcesDirectory</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>Beginning of the pipeline</td>
+    </tr>
+    <tr>
+      <td>Build.Repository.LocalPath</td>
+      <td><strong>/home/vsts/work/1/s/cicd</strong></td>
+      <td>Beginning of the pipeline</td>
+    </tr>
+    <tr>
+      <td>Common.TestResultsDirectory</td>
+      <td>/home/vsts/work/1/TestResults</td>
+      <td>Beginning of the pipeline</td>
+    </tr>
+    <tr>
+      <td>PWD</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>Beginning of the pipeline</td>
+    </tr>
+  </tbody>
+</table>
+
+<p class="notice--warning">We see both the self repository (cicd) and the external repository (another_repo) is saved to <code class="language-plaintext highlighter-rouge">/home/vsts/work/1/s</code>, this is because during the compiling time, the pipeline found that we will checkout both the repositories, but if there wouldn’t have been the checkout out of the external repository, the <code class="language-plaintext highlighter-rouge">/home/vsts/work/1/s</code> directory will be empty at this step.</p>
+
+<h3 id="checkout-self-to-its-repository-name">Checkout self to its repository name</h3>
+
+<pre><code class="language-ymal">- checkout: self
+  persistCredentials: true
+  path: $(Build.Repository.Name)
+</code></pre>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">pwd</span>
+/home/vsts/work/1/s
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1
+total 28
+drwxr-xr-x 2 vsts docker 4096 Apr  1 08:51 b
+drwxr-xr-x 2 vsts docker 4096 Apr  1 08:51 a
+drwxr-xr-x 2 vsts docker 4096 Apr  1 08:51 TestResults
+drwxr-xr-x 7 vsts root   4096 Apr  1 08:51 ..
+drwxr-xr-x 3 vsts docker 4096 Apr  1 08:51 s
+drwxr-xr-x 7 vsts docker 4096 Apr  1 08:51 <span class="nb">.</span>
+drwxr-xr-x 4 vsts docker 4096 Apr  1 08:51 cicd
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1/s
+total 12
+drwxr-xr-x 2 vsts docker 4096 Apr  1 08:51 another_repo
+drwxr-xr-x 3 vsts docker 4096 Apr  1 08:51 <span class="nb">.</span>
+drwxr-xr-x 7 vsts docker 4096 Apr  1 08:51 ..
+</code></pre></div></div>
+
+<p>At this point, the following variables having following values:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Predefined variable name</th>
+      <th>Value</th>
+      <th>When</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Pipeline.Workspace</td>
+      <td>/home/vsts/work/1</td>
+      <td>After checking out self to its repo name</td>
+    </tr>
+    <tr>
+      <td>Agent.BuildDirectory</td>
+      <td>/home/vsts/work/1</td>
+      <td>After checking out self to its repo name</td>
+    </tr>
+    <tr>
+      <td>Build.ArtifactStagingDirectory</td>
+      <td>/home/vsts/work/1/a</td>
+      <td>After checking out self to its repo name</td>
+    </tr>
+    <tr>
+      <td>Build.StagingDirectory</td>
+      <td>/home/vsts/work/1/a</td>
+      <td>After checking out self to its repo name</td>
+    </tr>
+    <tr>
+      <td>Build.BinariesDirectory</td>
+      <td>/home/vsts/work/1/b</td>
+      <td>After checking out self to its repo name</td>
+    </tr>
+    <tr>
+      <td>System.DefaultWorkingDirectory</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>After checking out self to its repo name</td>
+    </tr>
+    <tr>
+      <td>Build.SourcesDirectory</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>After checking out self to its repo name</td>
+    </tr>
+    <tr>
+      <td>Build.Repository.LocalPath</td>
+      <td><strong>/home/vsts/work/1/cicd</strong></td>
+      <td>After checking out self to its repo name</td>
+    </tr>
+    <tr>
+      <td>Common.TestResultsDirectory</td>
+      <td>/home/vsts/work/1/TestResults</td>
+      <td>After checking out self to its repo name</td>
+    </tr>
+    <tr>
+      <td>PWD</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>After checking out self to its repo name</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="checkout-another-repository-to-its-repository-name">Checkout another repository to its repository name</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- checkout: another_repo
+  path: another_repo
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">pwd</span>
+/home/vsts/work/1/s
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1
+total 32
+drwxr-xr-x 2 vsts docker 4096 Apr  3 12:52 b
+drwxr-xr-x 2 vsts docker 4096 Apr  3 12:52 a
+drwxr-xr-x 2 vsts docker 4096 Apr  3 12:52 TestResults
+drwxr-xr-x 7 vsts root   4096 Apr  3 12:52 ..
+drwxr-xr-x 4 vsts docker 4096 Apr  3 12:52 cicd
+drwxr-xr-x 2 vsts docker 4096 Apr  3 12:52 s
+drwxr-xr-x 8 vsts docker 4096 Apr  3 12:52 <span class="nb">.</span>
+drwxr-xr-x 4 vsts docker 4096 Apr  3 12:52 another_repo
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1/s
+total 8
+drwxr-xr-x 2 vsts docker 4096 Apr  3 12:52 <span class="nb">.</span>
+drwxr-xr-x 8 vsts docker 4096 Apr  3 12:52 ..
+</code></pre></div></div>
+
+<p class="notice--warning">At this point, nothing exists anymore in the <code class="language-plaintext highlighter-rouge">/home/vsts/work/1/s</code> folder, remember there was the folder <code class="language-plaintext highlighter-rouge">another_repo</code> in the previous step. The checkout step moved <code class="language-plaintext highlighter-rouge">/home/vsts/work/1/s/another_repo</code> to <code class="language-plaintext highlighter-rouge">/home/vsts/work/1/another_repo</code>.</p>
+
+<p>At this point, the following variables having following values:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Predefined variable name</th>
+      <th>Value</th>
+      <th>When</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Pipeline.Workspace</td>
+      <td>/home/vsts/work/1</td>
+      <td>After checking out another_repo to its repo name</td>
+    </tr>
+    <tr>
+      <td>Agent.BuildDirectory</td>
+      <td>/home/vsts/work/1</td>
+      <td>After checking out another_repo to its repo name</td>
+    </tr>
+    <tr>
+      <td>Build.ArtifactStagingDirectory</td>
+      <td>/home/vsts/work/1/a</td>
+      <td>After checking out another_repo to its repo name</td>
+    </tr>
+    <tr>
+      <td>Build.StagingDirectory</td>
+      <td>/home/vsts/work/1/a</td>
+      <td>After checking out another_repo to its repo name</td>
+    </tr>
+    <tr>
+      <td>Build.BinariesDirectory</td>
+      <td>/home/vsts/work/1/b</td>
+      <td>After checking out another_repo to its repo name</td>
+    </tr>
+    <tr>
+      <td>System.DefaultWorkingDirectory</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>After checking out another_repo to its repo name</td>
+    </tr>
+    <tr>
+      <td>Build.SourcesDirectory</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>After checking out another_repo to its repo name</td>
+    </tr>
+    <tr>
+      <td>Build.Repository.LocalPath</td>
+      <td><strong>/home/vsts/work/1/cicd</strong></td>
+      <td>After checking out another_repo to its repo name</td>
+    </tr>
+    <tr>
+      <td>Common.TestResultsDirectory</td>
+      <td>/home/vsts/work/1/TestResults</td>
+      <td>After checking out another_repo to its repo name</td>
+    </tr>
+    <tr>
+      <td>PWD</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>After checking out another_repo to its repo name</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="move-self-to-systemdefaultworkingdirectory">Move self to System.DefaultWorkingDirectory</h3>
+
+<p>Once we have multi-checkout repositories in a pipeline, the source code of the self (primary) repository won’t be saved in <code class="language-plaintext highlighter-rouge">/home/vsts/work/1/s</code>, where is pointed by the <code class="language-plaintext highlighter-rouge">System.DefaultWorkingDirectory</code> variable, but <code class="language-plaintext highlighter-rouge">System.DefaultWorkingDirectory</code> is the default working directory of the script task, we can add <code class="language-plaintext highlighter-rouge">workingDirectory:</code> parameter to the script task to change the path, but if we have many script tasks, and even they’re declared in some shared templates, it would be difficult to change it. So we need to manually move the source repository content back to <code class="language-plaintext highlighter-rouge">/home/vsts/work/1/s</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- script: |
+    <span class="nb">cp</span> <span class="s2">"</span><span class="nv">$BUILD_REPOSITORY_LOCALPATH</span><span class="s2">/."</span> <span class="s2">"</span><span class="nv">$SYSTEM_DEFAULTWORKINGDIRECTORY</span><span class="s2">"</span> <span class="nt">-r</span>
+  displayName: Copy <span class="si">$(</span>Build.Repository.Name<span class="si">)</span> content to default workding directroy
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">pwd</span>
+/home/vsts/work/1/s
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1
+total 32
+drwxr-xr-x 2 vsts docker 4096 Apr  1 08:51 b
+drwxr-xr-x 2 vsts docker 4096 Apr  1 08:51 a
+drwxr-xr-x 2 vsts docker 4096 Apr  1 08:51 TestResults
+drwxr-xr-x 7 vsts root   4096 Apr  1 08:51 ..
+drwxr-xr-x 4 vsts docker 4096 Apr  1 08:51 cicd
+drwxr-xr-x 4 vsts docker 4096 Apr  1 08:51 s
+drwxr-xr-x 8 vsts docker 4096 Apr  1 08:51 <span class="nb">.</span>
+drwxr-xr-x 4 vsts docker 4096 Apr  1 08:51 another_repo
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1/s
+total 20
+<span class="nt">-rw-r--r--</span> 1 vsts docker    0 Apr  1 08:51 repo_cicd.md
+<span class="nt">-rw-r--r--</span> 1 vsts docker  985 Apr  1 08:51 README.md
+drwxr-xr-x 8 vsts docker 4096 Apr  1 08:51 .git
+drwxr-xr-x 3 vsts docker 4096 Apr  1 08:51 .azure-pipelines
+drwxr-xr-x 4 vsts docker 4096 Apr  1 08:51 <span class="nb">.</span>
+drwxr-xr-x 8 vsts docker 4096 Apr  1 08:51 ..
+
+<span class="nb">ls</span> <span class="nt">-lart</span>
+total 20
+<span class="nt">-rw-r--r--</span> 1 vsts docker    0 Apr  1 08:51 repo_cicd.md
+<span class="nt">-rw-r--r--</span> 1 vsts docker  985 Apr  1 08:51 README.md
+drwxr-xr-x 8 vsts docker 4096 Apr  1 08:51 .git
+drwxr-xr-x 3 vsts docker 4096 Apr  1 08:51 .azure-pipelines
+drwxr-xr-x 4 vsts docker 4096 Apr  1 08:51 <span class="nb">.</span>
+drwxr-xr-x 8 vsts docker 4096 Apr  1 08:51 ..
+</code></pre></div></div>
+
+<h2 id="single-self-checkout-with-default-path">Single self checkout with default path</h2>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">resources</span><span class="pi">:</span>
+  <span class="na">repositories</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">repository</span><span class="pi">:</span> <span class="s">another_repo</span>
+      <span class="na">type</span><span class="pi">:</span> <span class="s">git</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">AzureDevOpsProjectName/another_repo</span>
+
+<span class="na">steps</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">checkout</span><span class="pi">:</span> <span class="s">self</span>
+    <span class="na">persistCredentials</span><span class="pi">:</span> <span class="kc">true</span>
+</code></pre></div></div>
+
+<h3 id="before-checkout">Before checkout</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">pwd</span>
+/home/vsts/work/1/s
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1
+total 24
+drwxr-xr-x 2 vsts docker 4096 Apr  3 21:14 s
+drwxr-xr-x 2 vsts docker 4096 Apr  3 21:14 b
+drwxr-xr-x 2 vsts docker 4096 Apr  3 21:14 a
+drwxr-xr-x 2 vsts docker 4096 Apr  3 21:14 TestResults
+drwxr-xr-x 6 vsts docker 4096 Apr  3 21:14 <span class="nb">.</span>
+drwxr-xr-x 7 vsts root   4096 Apr  3 21:14 ..
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1/s
+total 8
+drwxr-xr-x 6 vsts docker 4096 Apr  3 21:14 ..
+drwxr-xr-x 2 vsts docker 4096 Apr  3 21:14 <span class="nb">.</span>
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Predefined variable name</th>
+      <th>Value</th>
+      <th>When</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>System.DefaultWorkingDirectory</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>before checkout</td>
+    </tr>
+    <tr>
+      <td>Build.SourcesDirectory</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>before checkout</td>
+    </tr>
+    <tr>
+      <td>Build.Repository.LocalPath</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>before checkout</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="after-checkout">After checkout</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">pwd</span>
+/home/vsts/work/1/s
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1
+total 24
+drwxr-xr-x 2 vsts docker 4096 Apr  3 21:14 b
+drwxr-xr-x 2 vsts docker 4096 Apr  3 21:14 a
+drwxr-xr-x 2 vsts docker 4096 Apr  3 21:14 TestResults
+drwxr-xr-x 7 vsts root   4096 Apr  3 21:14 ..
+drwxr-xr-x 6 vsts docker 4096 Apr  3 21:14 <span class="nb">.</span>
+drwxr-xr-x 4 vsts docker 4096 Apr  3 21:14 s
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1/s
+total 20
+drwxr-xr-x 6 vsts docker 4096 Apr  3 21:14 ..
+<span class="nt">-rw-r--r--</span> 1 vsts docker    0 Apr  3 21:14 repo_cicd.md
+<span class="nt">-rw-r--r--</span> 1 vsts docker  985 Apr  3 21:14 README.md
+drwxr-xr-x 3 vsts docker 4096 Apr  3 21:14 .azure-pipelines
+drwxr-xr-x 4 vsts docker 4096 Apr  3 21:14 <span class="nb">.</span>
+drwxr-xr-x 8 vsts docker 4096 Apr  3 21:14 .git
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Predefined variable name</th>
+      <th>Value</th>
+      <th>When</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>System.DefaultWorkingDirectory</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>after checkout</td>
+    </tr>
+    <tr>
+      <td>Build.SourcesDirectory</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>after checkout</td>
+    </tr>
+    <tr>
+      <td>Build.Repository.LocalPath</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>after checkout</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="single-self-checkout-with-custom-path">Single self checkout with custom path</h2>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">resources</span><span class="pi">:</span>
+  <span class="na">repositories</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">repository</span><span class="pi">:</span> <span class="s">another_repo</span>
+      <span class="na">type</span><span class="pi">:</span> <span class="s">git</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">AzureDevOpsProjectName/another_repo</span>
+
+<span class="na">steps</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">checkout</span><span class="pi">:</span> <span class="s">self</span>
+    <span class="na">persistCredentials</span><span class="pi">:</span> <span class="kc">true</span>
+    <span class="na">path</span><span class="pi">:</span> <span class="s">$(Build.Repository.Name)</span>
+</code></pre></div></div>
+
+<h3 id="before-checkout-1">Before checkout</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">pwd</span>
+/home/vsts/work/1/s
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1
+total 24
+drwxr-xr-x 2 vsts docker 4096 Apr  3 21:10 s
+drwxr-xr-x 2 vsts docker 4096 Apr  3 21:10 b
+drwxr-xr-x 2 vsts docker 4096 Apr  3 21:10 a
+drwxr-xr-x 2 vsts docker 4096 Apr  3 21:10 TestResults
+drwxr-xr-x 6 vsts docker 4096 Apr  3 21:10 <span class="nb">.</span>
+drwxr-xr-x 7 vsts root   4096 Apr  3 21:10 ..
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1/s
+total 8
+drwxr-xr-x 6 vsts docker 4096 Apr  3 21:10 ..
+drwxr-xr-x 2 vsts docker 4096 Apr  3 21:10 <span class="nb">.</span>
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Predefined variable name</th>
+      <th>Value</th>
+      <th>When</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>System.DefaultWorkingDirectory</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>before checkout</td>
+    </tr>
+    <tr>
+      <td>Build.SourcesDirectory</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>before checkout</td>
+    </tr>
+    <tr>
+      <td>Build.Repository.LocalPath</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>before checkout</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="after-checkout-1">After checkout</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">pwd</span>
+/home/vsts/work/1/cicd
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1
+total 24
+drwxr-xr-x 2 vsts docker 4096 Apr  3 21:10 b
+drwxr-xr-x 2 vsts docker 4096 Apr  3 21:10 a
+drwxr-xr-x 2 vsts docker 4096 Apr  3 21:10 TestResults
+drwxr-xr-x 7 vsts root   4096 Apr  3 21:10 ..
+drwxr-xr-x 6 vsts docker 4096 Apr  3 21:10 <span class="nb">.</span>
+drwxr-xr-x 4 vsts docker 4096 Apr  3 21:10 cicd
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1/s
+<span class="nb">ls</span>: cannot access <span class="s1">'/home/vsts/work/1/s'</span>: No such file or directory
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Predefined variable name</th>
+      <th>Value</th>
+      <th>When</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>System.DefaultWorkingDirectory</td>
+      <td>/home/vsts/work/1/cicd</td>
+      <td>after checkout</td>
+    </tr>
+    <tr>
+      <td>Build.SourcesDirectory</td>
+      <td>/home/vsts/work/1/cicd</td>
+      <td>after checkout</td>
+    </tr>
+    <tr>
+      <td>Build.Repository.LocalPath</td>
+      <td>/home/vsts/work/1/cicd</td>
+      <td>after checkout</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="no-self-checkout-but-single-external-checkout-with-default-path">No self checkout but single external checkout with default path</h2>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">resources</span><span class="pi">:</span>
+  <span class="na">repositories</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">repository</span><span class="pi">:</span> <span class="s">another_repo</span>
+      <span class="na">type</span><span class="pi">:</span> <span class="s">git</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">AzureDevOpsProjectName/another_repo</span>
+
+<span class="na">steps</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">checkout</span><span class="pi">:</span> <span class="s">another_repo</span>
+</code></pre></div></div>
+
+<h3 id="before-checkout-2">Before checkout</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">pwd</span>
+/home/vsts/work/1/s
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1
+total 24
+drwxr-xr-x 2 vsts docker 4096 Apr  3 21:25 s
+drwxr-xr-x 2 vsts docker 4096 Apr  3 21:25 b
+drwxr-xr-x 2 vsts docker 4096 Apr  3 21:25 a
+drwxr-xr-x 2 vsts docker 4096 Apr  3 21:25 TestResults
+drwxr-xr-x 6 vsts docker 4096 Apr  3 21:25 <span class="nb">.</span>
+drwxr-xr-x 7 vsts root   4096 Apr  3 21:25 ..
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1/s
+total 8
+drwxr-xr-x 6 vsts docker 4096 Apr  3 21:25 ..
+drwxr-xr-x 2 vsts docker 4096 Apr  3 21:25 <span class="nb">.</span>
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Predefined variable name</th>
+      <th>Value</th>
+      <th>When</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>System.DefaultWorkingDirectory</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>before checkout</td>
+    </tr>
+    <tr>
+      <td>Build.SourcesDirectory</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>before checkout</td>
+    </tr>
+    <tr>
+      <td>Build.Repository.LocalPath</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>before checkout</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="after-checkout-2">After checkout</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">pwd</span>
+/home/vsts/work/1/s
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1
+total 24
+drwxr-xr-x 2 vsts docker 4096 Apr  3 21:25 b
+drwxr-xr-x 2 vsts docker 4096 Apr  3 21:25 a
+drwxr-xr-x 2 vsts docker 4096 Apr  3 21:25 TestResults
+drwxr-xr-x 7 vsts root   4096 Apr  3 21:25 ..
+drwxr-xr-x 6 vsts docker 4096 Apr  3 21:25 <span class="nb">.</span>
+drwxr-xr-x 4 vsts docker 4096 Apr  3 21:25 s
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1/s
+total 40
+drwxr-xr-x 6 vsts docker 4096 Apr  3 21:25 ..
+<span class="nt">-rw-r--r--</span> 1 vsts docker  947 Apr  3 21:25 README.md
+drwxr-xr-x 8 vsts docker 4096 Apr  3 21:25 .git
+drwxr-xr-x 5 vsts docker 4096 Apr  3 21:25 repo_another_repo
+drwxr-xr-x 4 vsts docker 4096 Apr  3 21:25 <span class="nb">.</span>
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Predefined variable name</th>
+      <th>Value</th>
+      <th>When</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>System.DefaultWorkingDirectory</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>after checkout</td>
+    </tr>
+    <tr>
+      <td>Build.SourcesDirectory</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>after checkout</td>
+    </tr>
+    <tr>
+      <td>Build.Repository.LocalPath</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>after checkout</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="no-self-checkout-but-single-external-checkout-with-custom-path">No self checkout but single external checkout with custom path</h2>
+
+<p>Please see following pipeline example, we define an external repository called <code class="language-plaintext highlighter-rouge">another_repo</code>, but we don’t checkout the self repository, and we only checkout this external repository.</p>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">resources</span><span class="pi">:</span>
+  <span class="na">repositories</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">repository</span><span class="pi">:</span> <span class="s">another_repo</span>
+      <span class="na">type</span><span class="pi">:</span> <span class="s">git</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">AzureDevOpsProjectName/another_repo</span>
+
+<span class="na">steps</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">checkout</span><span class="pi">:</span> <span class="s">another_repo</span>
+    <span class="na">path</span><span class="pi">:</span> <span class="s">another_repo</span>
+</code></pre></div></div>
+
+<h3 id="before-checkout-3">Before checkout</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">pwd</span>
+/home/vsts/work/1/s
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1
+total 24
+drwxr-xr-x 2 vsts docker 4096 Apr  3 20:52 s
+drwxr-xr-x 2 vsts docker 4096 Apr  3 20:52 b
+drwxr-xr-x 2 vsts docker 4096 Apr  3 20:52 a
+drwxr-xr-x 2 vsts docker 4096 Apr  3 20:52 TestResults
+drwxr-xr-x 6 vsts docker 4096 Apr  3 20:52 <span class="nb">.</span>
+drwxr-xr-x 7 vsts root   4096 Apr  3 20:52 ..
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1/s
+total 8
+drwxr-xr-x 6 vsts docker 4096 Apr  3 20:52 ..
+drwxr-xr-x 2 vsts docker 4096 Apr  3 20:52 <span class="nb">.</span>
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Predefined variable name</th>
+      <th>Value</th>
+      <th>When</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>System.DefaultWorkingDirectory</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>before checkout</td>
+    </tr>
+    <tr>
+      <td>Build.SourcesDirectory</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>before checkout</td>
+    </tr>
+    <tr>
+      <td>Build.Repository.LocalPath</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>before checkout</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="after-checkout-3">After checkout</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">pwd</span>
+/home/vsts/work/1/another_repo
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1
+total 24
+drwxr-xr-x 2 vsts docker 4096 Apr  3 20:52 b
+drwxr-xr-x 2 vsts docker 4096 Apr  3 20:52 a
+drwxr-xr-x 2 vsts docker 4096 Apr  3 20:52 TestResults
+drwxr-xr-x 7 vsts root   4096 Apr  3 20:52 ..
+drwxr-xr-x 6 vsts docker 4096 Apr  3 20:53 <span class="nb">.</span>
+drwxr-xr-x 4 vsts docker 4096 Apr  3 20:53 another_repo
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1/s
+<span class="nb">ls</span>: cannot access <span class="s1">'/home/vsts/work/1/s'</span>: No such file or directory
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Predefined variable name</th>
+      <th>Value</th>
+      <th>When</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>System.DefaultWorkingDirectory</td>
+      <td>/home/vsts/work/1/another_repo</td>
+      <td>after checkout</td>
+    </tr>
+    <tr>
+      <td>Build.SourcesDirectory</td>
+      <td>/home/vsts/work/1/another_repo</td>
+      <td>after checkout</td>
+    </tr>
+    <tr>
+      <td>Build.Repository.LocalPath</td>
+      <td>/home/vsts/work/1/another_repo</td>
+      <td>after checkout</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="no-self-checkout-but-multiple-external-checkout">No self checkout but multiple external checkout</h2>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">resources</span><span class="pi">:</span>
+  <span class="na">repositories</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">repository</span><span class="pi">:</span> <span class="s">another_repo1</span>
+      <span class="na">type</span><span class="pi">:</span> <span class="s">git</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">AzureDevOpsProjectName/another_repo1</span>
+    <span class="pi">-</span> <span class="na">repository</span><span class="pi">:</span> <span class="s">another_repo2</span>
+      <span class="na">type</span><span class="pi">:</span> <span class="s">git</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">AzureDevOpsProjectName/another_repo2</span>
+
+<span class="na">steps</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">checkout</span><span class="pi">:</span> <span class="s">another_repo1</span>
+    <span class="na">path</span><span class="pi">:</span> <span class="s">another_repo1</span>
+  <span class="pi">-</span> <span class="na">checkout</span><span class="pi">:</span> <span class="s">another_repo2</span>
+    <span class="na">path</span><span class="pi">:</span> <span class="s">another_repo2</span>
+</code></pre></div></div>
+
+<h3 id="before-checkout-4">Before checkout</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">pwd</span>
+/home/vsts/work/1/s
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1
+total 24
+drwxr-xr-x 5 vsts docker 4096 Apr  3 20:59 s
+drwxr-xr-x 2 vsts docker 4096 Apr  3 20:59 b
+drwxr-xr-x 2 vsts docker 4096 Apr  3 20:59 a
+drwxr-xr-x 2 vsts docker 4096 Apr  3 20:59 TestResults
+drwxr-xr-x 6 vsts docker 4096 Apr  3 20:59 <span class="nb">.</span>
+drwxr-xr-x 7 vsts root   4096 Apr  3 20:59 ..
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1/s
+total 20
+drwxr-xr-x 2 vsts docker 4096 Apr  3 20:59 cicd
+drwxr-xr-x 2 vsts docker 4096 Apr  3 20:59 another_repo1
+drwxr-xr-x 2 vsts docker 4096 Apr  3 20:59 another_repo2
+drwxr-xr-x 6 vsts docker 4096 Apr  3 20:59 ..
+drwxr-xr-x 5 vsts docker 4096 Apr  3 20:59 <span class="nb">.</span>
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Predefined variable name</th>
+      <th>Value</th>
+      <th>When</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>System.DefaultWorkingDirectory</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>before checkout</td>
+    </tr>
+    <tr>
+      <td>Build.SourcesDirectory</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>before checkout</td>
+    </tr>
+    <tr>
+      <td>Build.Repository.LocalPath</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>before checkout</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="after-checkout-4">After checkout</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">pwd</span>
+/home/vsts/work/1/s
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1
+total 32
+drwxr-xr-x 2 vsts docker 4096 Apr  3 20:59 b
+drwxr-xr-x 2 vsts docker 4096 Apr  3 20:59 a
+drwxr-xr-x 2 vsts docker 4096 Apr  3 20:59 TestResults
+drwxr-xr-x 7 vsts root   4096 Apr  3 20:59 ..
+drwxr-xr-x 4 vsts docker 4096 Apr  3 20:59 another_repo1
+drwxr-xr-x 3 vsts docker 4096 Apr  3 20:59 s
+drwxr-xr-x 8 vsts docker 4096 Apr  3 20:59 <span class="nb">.</span>
+drwxr-xr-x 4 vsts docker 4096 Apr  3 20:59 another_repo2
+
+<span class="nb">ls</span> <span class="nt">-lart</span> /home/vsts/work/1/s
+total 12
+drwxr-xr-x 2 vsts docker 4096 Apr  3 20:59 cicd
+drwxr-xr-x 3 vsts docker 4096 Apr  3 20:59 <span class="nb">.</span>
+drwxr-xr-x 8 vsts docker 4096 Apr  3 20:59 ..
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Predefined variable name</th>
+      <th>Value</th>
+      <th>When</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>System.DefaultWorkingDirectory</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>before checkout</td>
+    </tr>
+    <tr>
+      <td>Build.SourcesDirectory</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>before checkout</td>
+    </tr>
+    <tr>
+      <td>Build.Repository.LocalPath</td>
+      <td>/home/vsts/work/1/s</td>
+      <td>before checkout</td>
+    </tr>
+  </tbody>
+</table>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#azure" class="page__taxonomy-item p-category" rel="tag">azure</a><span class="sep">, </span>
+    
+      <a href="/tags/#cicd" class="page__taxonomy-item p-category" rel="tag">cicd</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2022-04-03T00:00:00+00:00">April 3, 2022</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">Share on</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Azure+Pipeline+Checkout+Multiple+Repositories%20https%3A%2F%2Fwww.copdips.com%2F2022%2F04%2Fazure-pipeline-checkout-multiple-repositories.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.copdips.com%2F2022%2F04%2Fazure-pipeline-checkout-multiple-repositories.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fwww.copdips.com%2F2022%2F04%2Fazure-pipeline-checkout-multiple-repositories.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+
+  <a href="https://www.reddit.com/submit?url=https%3A%2F%2Fwww.copdips.com%2F2022%2F04%2Fazure-pipeline-checkout-multiple-repositories.html&title=Azure%20Pipeline%20Checkout%20Multiple%20Repositories" class="btn btn--reddit" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Reddit"><i class="fab fa-fw fa-reddit" aria-hidden="true"></i><span> Reddit</span></a>
+</section>
+
+
+      <script type="text/javascript" src="/assets/js/qrcode/qrcode.min.js"></script>
+      <div id="qrcode"></div>
+      <script type="text/javascript">
+        var qrcode = new QRCode('qrcode', {width: 100, height: 100, text: location.href});
+      </script>
+
+      
+  <nav class="pagination">
+    
+      <a href="/2022/03/manage-azure-databricks-service-principal.html" class="pagination--pager" title="Manage Azure Databricks Service Principal
+">Previous</a>
+    
+    
+      <a href="/2022/06/using-databricks-connect-inside-a-container.html" class="pagination--pager" title="Using Databricks Connect inside a container
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+      <div class="page__comments">
+  
+  
+      <h4 class="page__comments-title">Leave a comment</h4>
+      <section id="disqus_thread"></section>
+    
+</div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-deploy-static-files-to-azure-web-app.html" rel="permalink">Github actions - deploy static files to azure web app
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/Some-nice-CICD-bash-common-scripts.html" rel="permalink">Some nice cicd bash common scripts
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-18T00:00:00+00:00">November 18, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          less than 1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/11/github-actions-bash-shell-pipefail.html" rel="permalink">Github Actions - Bash shell -e -o pipefail
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-11-08T00:00:00+00:00">November 8, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/2023/10/hashing-files.html" rel="permalink">Hashing files
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2023-10-21T00:00:00+00:00">October 21, 2023</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          2 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap">
+<form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term...">
+  </form>
+  <div id="results" class="results"></div>
+</div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="mailto:xiang.zhu@outlook.com" rel="nofollow noopener noreferrer"><i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i> Email</a></li>
+        
+      
+        
+          <li><a href="https://github.com/copdips" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+          <li><a href="https://www.linkedin.com/in/xiang-zhu-13769311/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://uptimerobot.com/dashboard#785564645" rel="nofollow noopener noreferrer"><i class="fas fa-clock" aria-hidden="true"></i> Uptime</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">© 2023 Xiang ZHU. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp;
+<a href="https://mmistakes.github.io/minimal-mistakes/about/" rel="nofollow">Minimal Mistakes</a>
+.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'G-L9KPHRQNQN']);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+    
+  <script>
+    var disqus_config = function () {
+      this.page.url = "https://www.copdips.com/2022/04/azure-pipeline-checkout-multiple-repositories.html";  /* Replace PAGE_URL with your page's canonical URL variable */
+      this.page.identifier = "/2022/04/azure-pipeline-checkout-multiple-repositories"; /* Replace PAGE_IDENTIFIER with your page's unique identifier variable */
+    };
+    (function() { /* DON'T EDIT BELOW THIS LINE */
+      var d = document, s = d.createElement('script');
+      s.src = 'https://copdips.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+
+  
+
+
+
+
+
+  </body>
+</html>
