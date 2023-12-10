@@ -1,0 +1,166 @@
+---
+repo_name: copdips/copdips.github.io
+repo_url: https://github.com/copdips/copdips.github.io
+site_author: Xiang ZHU
+site_name: A code to remember
+site_url: https://copdips.com
+use_directory_urls: false
+
+# Additional configuration
+extra:
+  analytics:
+    property: G-L9KPHRQNQN
+    provider: google
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/copdips
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/xiang-zhu-13769311/
+extra_css:
+  - stylesheets/extra.css
+extra_javascript:
+  - https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js
+  - javascripts/tablesort.js
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.magiclink
+  - pymdownx.mark
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - class: mermaid
+          name: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format ""
+  - pymdownx.tilde
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - toc:
+      permalink: '#'
+
+plugins:
+  # - meta  # ! insider only, and must put before blog plugin
+  - blog:
+      blog_dir: .
+      post_url_date_format: yyyy/MM
+      categories_allowed:
+        - api
+        - ast
+        - async
+        - auth
+        - azure
+        - backup
+        - cache
+        - certificate
+        - cicd
+        - container
+        - databricks
+        - datetime
+        - docker
+        - elastic
+        - encoding
+        - file
+        - flask
+        - git
+        - github
+        - gitlab
+        - jekyll
+        - linter
+        - linux
+        - markdown
+        - migration
+        - multithreading
+        - network
+        - package
+        - pandas
+        - pip
+        - powershell
+        - proxy
+        - python
+        - redis
+        - scheduling
+        - shell
+        - sonar
+        - spark
+        - sqlalchemy
+        - storage
+        - ubuntu
+        - unittest
+        - vault
+        - vmware
+        - vscode
+        - web
+  - rss:
+      categories:
+        - categories
+        - tags
+      date_from_meta:
+        as_creation: date
+      match_path: blog/posts/.*
+  - search:
+      separator: '[\s\u200b\-_,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+  - autorefs
+  - tags
+  # - git-revision-date-localized:
+  #     enable_creation_date: true
+  #     type: timeago
+  #     fallback_to_build_date: true
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [..]
+  - mkdocs-video
+  - glightbox
+  - minify:
+      minify_html: true
+
+theme:
+  custom_dir: docs/overrides
+  favicon: assets/favicon.ico
+  features:
+    - content.action.edit
+    - content.action.view
+    - content.code.annotate
+    - content.code.copy
+    - header.autohide
+    - navigation.expand
+    - navigation.footer
+    - navigation.indexes
+    - navigation.sections
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+  font:
+    code: Roboto Mono
+    text: Roboto
+  icon:
+    logo: logo
+  logo: assets/favicon.ico
+  logo_bottom: assets/favicon.ico
+  name: material
+  palette:
+    - accent: indigo
+      primary: indigo
+      scheme: default
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - accent: indigo
+      primary: black
+      scheme: slate
+      toggle:
+        icon: material/brightness-7
+        name: Switch to light mode

@@ -1,0 +1,82 @@
+name: Build and Deploy
+run-name: ${{ github.workflow }} - ${{ github.event.head_commit.message }}
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow}}
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: 3.x
+
+permissions:
+  contents: write
+  id-token: write
+  pages: write
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          sparse-checkout: |
+            docs
+
+      - name: Set up Python runtime
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+
+      - name: Set up build cache
+        uses: actions/cache/restore@v3
+        with:
+          key: mkdocs-material-${{ hashfiles('.cache/**') }}
+          path: .cache
+          restore-keys: |
+            mkdocs-material-
+
+      - name: Install dependencies
+        run: sudo apt-get install pngquant
+
+      - name: Install Python dependencies
+        run: |
+          pip install -U pip
+          pip install -r requirements.txt
+          pip install mkdocs-material[recommended,git,imaging]
+
+      - name: Build documentation
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          mkdocs build --clean
+          mkdocs --version
+
+      # - name: Adjust permissions
+      #   run: |
+      #     chmod -c -R +rX site/ | while read line; do
+      #       echo "::warning title=Invalid file permissions automatically fixed::$line"
+      #     done
+
+      - name: Upload to GitHub Pages
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v2
+
+      - name: Save build cache
+        uses: actions/cache/save@v3
+        with:
+          key: mkdocs-material-${{ hashfiles('.cache/**') }}
+          path: .cache

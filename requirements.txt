@@ -1,0 +1,12 @@
+mkdocs
+mkdocs-material
+mkdocs-material-extensions
+mkdocstrings
+mkdocstrings-python
+mkdocs-git-revision-date-localized-plugin
+mkdocs-video
+mkdocs-glightbox
+mkdocs-redirects
+mkdocs-rss-plugin
+mkdocs-minify-plugin
+mkdocs-material[imaging]

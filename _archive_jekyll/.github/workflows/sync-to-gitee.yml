@@ -1,14 +1,9 @@
 name: Sync to gitee
-run-name: ${{ github.workflow }} - ${{ github.event.head_commit.message }}
 
 on:
   push:
     branches:
       - main
-
-concurrency:
-  group: ${{ github.workflow}}
-  cancel-in-progress: true
 
 jobs:
   sync_to_gitee:
