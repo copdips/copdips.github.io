@@ -31,7 +31,7 @@ Suppose the static files are generated in a folder named `site`, then the above 
   with:
     app-name: ${{ inputs.mkdocs-azure-app-name }}
     package: site
-````
+```
 
 !!! note
 

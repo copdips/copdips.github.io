@@ -36,7 +36,7 @@ Suppose the static files are generated in a folder named `site`, then the above 
   with:
     app-name: ${{ inputs.mkdocs-azure-app-name }}
     package: site
-````
+```
 
 We manually set the web app runtime to `STATICSITE|1.0` as users might created the web app with other runtime (`STATICSITE|1.0` is not selectable during the standard Web App resource creation except they chose specifically the [Static Web App](https://devblogs.microsoft.com/devops/comparing-azure-static-web-apps-vs-azure-webapps-vs-azure-blob-storage-static-sites/) resource), as we're pushing static files, we should set the runtime to `STATICSITE|1.0`.
 {: .notice--info}

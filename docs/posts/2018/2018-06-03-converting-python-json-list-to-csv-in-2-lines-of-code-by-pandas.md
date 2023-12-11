@@ -16,7 +16,7 @@ description: One of the fastest way to convert Python json dict list to csv file
 Converting a Powershell object list to a csv file is quiet easy, for example :
 ```powershell
 6.0.2> gps | select name,id,path | ConvertTo-Csv | Out-File .\gps.csv ; ii .\gps.csv
-````
+```
 I'll show you in this post the Python way to convert a dict list to a csv file.
 
 <!-- more -->
