@@ -30,20 +30,37 @@ jobs:
             docs
 
       - name: Set up Python runtime
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
           cache-dependency-path: |
             requirements.txt
 
-      - name: Set up build cache
-        uses: actions/cache/restore@v3
+      - name: Get pip cache dir
+        run: |
+          os_version=$(cat /etc/os-release | grep -i "version=" | cut -c9- | tr -d '"' | tr ' ' '_')
+          github_workflow_full_path="${GITHUB_WORKFLOW_REF%@*}"
+          python_full_version=$(python -c 'import platform; print(platform.python_version())')
+          node_major_version=$(node --version | cut -d'.' -f1 | tr -d 'v')
+          echo "os_version=$os_version" >> $GITHUB_ENV
+          echo "github_workflow_full_path=$github_workflow_full_path" >> $GITHUB_ENV
+          echo "python_full_version=$python_full_version" >> $GITHUB_ENV
+          echo "PIP_CACHE_DIR=$(pip cache dir)" >> $GITHUB_ENV
+
+      - name: cache pip
+        uses: actions/cache@v3
         with:
-          key: mkdocs-material-${{ hashfiles('.cache/**') }}
-          path: .cache
-          restore-keys: |
-            mkdocs-material-
+          path: ${{ env.pythonLocation }}
+          key: ${{ env.github_workflow_full_path}}-${{ env.os_version }}-${{ env.python_full_version }}-${{ env.node_major_version}}-${{ hashFiles('requirements.txt') }}
+
+      # - name: Set up build cache
+      #   uses: actions/cache/restore@v3
+      #   with:
+      #     key: mkdocs-material-${{ hashfiles('.cache/**') }}
+      #     path: .cache
+      #     restore-keys: |
+      #       mkdocs-material-
 
       - name: Install dependencies
         run: sudo apt-get install pngquant
@@ -51,14 +68,12 @@ jobs:
       - name: Install Python dependencies
         run: |
           pip install -U pip
-          pip install -r requirements.txt
+          pip install -U -r requirements.txt
           pip install mkdocs-material[recommended,git,imaging]
 
       - name: Build documentation
-        # env:
-        #   GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          mkdocs build --clean
+          mkdocs build -s
           mkdocs --version
 
       # - name: Adjust permissions
@@ -75,8 +90,8 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v2
 
-      - name: Save build cache
-        uses: actions/cache/save@v3
-        with:
-          key: mkdocs-material-${{ hashfiles('.cache/**') }}
-          path: .cache
+      # - name: Save build cache
+      #   uses: actions/cache/save@v3
+      #   with:
+      #     key: mkdocs-material-${{ hashfiles('.cache/**') }}
+      #     path: .cache
