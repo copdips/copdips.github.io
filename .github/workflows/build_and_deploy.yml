@@ -1,5 +1,5 @@
 name: Build and Deploy
-run-name: ${{ github.workflow }} - ${{ github.event.head_commit.message }}
+run-name: "🚀[${{ github.workflow }}] - ${{ github.event.head_commit.message }}"
 
 on:
   push:
@@ -55,8 +55,8 @@ jobs:
           pip install mkdocs-material[recommended,git,imaging]
 
       - name: Build documentation
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        # env:
+        #   GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           mkdocs build --clean
           mkdocs --version

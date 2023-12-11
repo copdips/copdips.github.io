@@ -1,5 +1,5 @@
-name: Sync to gitee
-run-name: ${{ github.workflow }} - ${{ github.event.head_commit.message }}
+name: Gitee Sync
+run-name: "🎭🔃♾️[${{ github.workflow }}] - ${{ github.event.head_commit.message }}"
 
 on:
   push:
