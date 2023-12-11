@@ -5,7 +5,21 @@
 /* inline code */
 .md-typeset p > code {
   background-color: #c9c6c6;
-  color: #0d0d0d;
+  color: #000000;
+}
+[data-md-color-scheme="slate"] .md-typeset p > code {
+  background-color: #525252;
+  color: #c9c6c6;
+}
+@media (prefers-color-scheme: dark) {
+  .md-typeset p > code {
+    background-color: #c9c6c6;
+    color: #000000;
+  }
+  [data-md-color-scheme="slate"] .md-typeset p > code {
+    background-color: #525252;
+    color: #c9c6c6;
+  }
 }
 
 /* https://blog.ktz.me/making-mkdocs-tables-look-like-github-markdown-tables/ */

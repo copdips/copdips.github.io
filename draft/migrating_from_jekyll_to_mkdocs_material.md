@@ -17,3 +17,9 @@ Use VSCode replace
 ## View Source
 
 URL bound to `master` branch, not `main` branch.
+
+## GH Pages deploy source
+
+From `gh-pages` branch to github action.
+
+## Add excerpt to all posts
