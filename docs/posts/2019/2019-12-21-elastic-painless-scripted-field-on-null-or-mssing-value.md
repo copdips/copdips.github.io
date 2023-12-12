@@ -14,6 +14,8 @@ description: How to use painless scripted field to working on objects which migh
 
 This post shows how to use elastic painless language in scripted field to work on documents' keys which might not exist in some documents.
 
+<!-- more -->
+
 ## Parsing analyzed field in Painless
 
 Suppose we have following 2 documents in elastic:
@@ -46,4 +48,3 @@ The script should be:
 !!! warning
 
     The fields calculated by the scripted field is not searchable.
-

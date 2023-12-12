@@ -17,6 +17,8 @@ description: Using Databricks Connect inside a container with VSCode remote cont
 
 # Using Databricks Connect inside a container
 
+<!-- more -->
+
 ## Why use Databricks Connect
 
 From the very beginning of the Databricks Connect [official doc](https://docs.databricks.com/dev-tools/databricks-connect.html), it says already that Databricks Connect has some [limitations](https://docs.databricks.com/dev-tools/databricks-connect.html#limitations) and is more or less deprecated in favor of [dbx](https://docs.databricks.com/dev-tools/dbx.html). But for some usages like local IDE live debug, Databricks Connect is still a very good tool where as dbx cannot do it at all. At the time of writing, dbx is mainly a Databricks jobs' API wrapper to deploy and run Databricks jobs.

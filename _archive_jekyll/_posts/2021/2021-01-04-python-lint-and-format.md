@@ -570,7 +570,7 @@ repos:
 Be aware that especially in a local environment, we often use venv, in such case, it would be better to use above system level lint executables instead of below public ones, the checks will be more accurate.
 {: .notice--warning}
 
-```yml
+```yaml
 # example of using online linters
 # Installation:
 # pip install pre-commit

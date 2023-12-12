@@ -12,7 +12,10 @@ description: ''
 ---
 
 # Azure pipeline predefined variables
-The [official doc](https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables) gives an explanation of all the predefined variables, but it lacks of some concret examples. Hereunder some examples for my preferred variables.
+
+The [official doc](https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables) gives an explanation of all the predefined variables, but it lacks of some concrete examples. Hereunder some examples for my preferred variables.
+
+<!-- more -->
 
 ## Access the predefined variables
 

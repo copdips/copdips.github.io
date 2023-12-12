@@ -113,6 +113,7 @@ event_type_list = []
 ## https://pubs.vmware.com/vsphere-6-5/topic/com.vmware.wssdk.smssdk.doc/vim.event.EventFilterSpec.html
 
 ## event_type_list = ['VmRelocatedEvent', 'DrsVmMigratedEvent', 'VmMigratedEvent']
+
 filter_spec = vim.event.EventFilterSpec(eventTypeId=event_type_list, time=time_filter)
 
 si = SmartConnectNoSSL(host=host, user=user, pwd=password, port=port)

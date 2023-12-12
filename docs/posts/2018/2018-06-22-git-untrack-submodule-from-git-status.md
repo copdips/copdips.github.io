@@ -7,17 +7,20 @@ comments: true
 date:
   created: 2018-06-22
 description: submodule folders cannot be added into .gitignore file to untrack them
-  from git status, we will use ignore=dirty to ignore it
+  from git status, we will use ignore=dirty to ignore it.
 ---
 
 # Git untrack submodule from git status
 
 When we have submodules in a git repo, even if we add the submodules' folders into the `.gitignore` file, these submodules folders are still tracked from the `git status` output.
 
+<!-- more -->
+
 ## Method 1: .gitmodules file
 
-There're several methods to ignore it, one of them is in `.gitmodules` file, add following line `ignore = dirty` under each submodule, example :
-```s
+There're several methods to ignore it, one of them is in `.gitmodules` file, add following line `ignore = dirty` under each submodule, example:
+
+```ini
 [submodule "bundle/fugitive"]
     path = bundle/fugitive
     url = git://github.com/tpope/vim-fugitive.git

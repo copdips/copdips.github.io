@@ -12,6 +12,8 @@ description: Make python requests retry easily to use
 
 # Python Requests With Retry
 
+<!-- more -->
+
 There're several solutions to retry a HTTP request with [Requests](https://requests.readthedocs.io/en/master/) module, some of them are:
 
 1. Native Requests' retry based on urllib3's [HTTPAdapter](https://2.python-requests.org/en/master/api/#requests.adapters.HTTPAdapter).

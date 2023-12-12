@@ -12,6 +12,8 @@ description: ''
 
 # Python Asyncio Study notes
 
+<!-- more -->
+
 ## concurrent.futures
 
 The [concurrent.futures](https://docs.python.org/3.9/library/concurrent.futures.html) is a high-level abstraction for the `threading` and `multiprocessing` modules.

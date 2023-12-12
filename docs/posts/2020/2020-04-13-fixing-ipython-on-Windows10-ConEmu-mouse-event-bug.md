@@ -12,6 +12,10 @@ description: 'This post is for manually fixing an ipython Windows ConEmu only bu
 
 # Fixing an ipython Windows ConEmu only bug on 'MouseEventType.MOUSE_DOWN'
 
+This post is for manually fixing an ipython Windows ConEmu only bug (from prompt_toolkit): Exception ''MouseEventType.MOUSE_DOWN'' is not a valid MouseEventType.
+
+<!-- more -->
+
 ## Problem
 
 Previously I updated the python version, the ipython version and maybe ConEmu on my Windows 10 (I don't remember which one exactly), I got an error when I wanted to copy some text from ipython repl in ConEmu console by the right mouse click:

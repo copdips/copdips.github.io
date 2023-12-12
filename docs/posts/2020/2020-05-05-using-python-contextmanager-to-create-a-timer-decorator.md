@@ -11,6 +11,8 @@ description: Using Python contextmanager to create a timer decorator
 
 # Using Python Contextmanager To Create A Timer Decorator
 
+<!-- more -->
+
 This [stackoverflow post](https://stackoverflow.com/a/30024601/5095636) has already given an example on how to use contextmanager to create a timer decorator:
 
 ```python

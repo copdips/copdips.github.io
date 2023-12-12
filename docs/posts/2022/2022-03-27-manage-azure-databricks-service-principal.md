@@ -16,6 +16,8 @@ Most of Databricks management can be done from the GUI or [CLI](https://docs.dat
 
 This post is to add some tips that not covered by the official API docs.
 
+<!-- more -->
+
 ## Patch Service Principal
 
 The official docs gives op `add`, `remove`, in fact, if you want to for example, update the `displayName` field of a SP, the op should be `add`:

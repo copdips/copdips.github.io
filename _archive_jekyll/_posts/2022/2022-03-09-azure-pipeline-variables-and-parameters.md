@@ -23,7 +23,7 @@ gallery:
 
 When we set variables [from a script](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#set-a-job-scoped-variable-from-a-script), the new variable is only available from the next step, not the step where the variable is defined.
 
-```yml
+```yaml
 variables:
   sauce: orange
 steps:
@@ -50,7 +50,7 @@ from the next step, sauce: crushed tomatoes
 
 Parameter can have object type like dict in Python, but not the case for variable. The workaround is to assign a raw json string to variable, and using tools like [jq](https://stedolan.github.io/jq/) to handle it during runtime. The json string variable must follow some special format, the double quotes must be escaped, and the whole string must be enclosed by the single quote.
 
-```yml
+```yaml
 aJsonVar: '{ \"dev\": \"foo\", \"prd\": \"bar\" }'
 ```
 
@@ -83,7 +83,7 @@ steps:
 
 ### Boolean parameter
 
-```yml
+```yaml
 parameters:
 - name: myBoolean
   type: boolean

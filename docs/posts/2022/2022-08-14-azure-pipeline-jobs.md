@@ -12,6 +12,8 @@ description: ''
 
 # Azure pipeline jobs
 
+<!-- more -->
+
 ## Traditional jobs vs deployment jobs
 
 - [traditional jobs](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/phases?view=azure-devops&tabs=yaml) run in parallel,
@@ -93,4 +95,3 @@ stages:
 !!! note
 
     Here is the doc for [defining variables](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops).
-

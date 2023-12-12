@@ -13,6 +13,8 @@ description: Some commands to lint and format Python files
 
 # Python Lint And Format
 
+<!-- more -->
+
 ## Azure SDK Python Guidelines
 
 [https://azure.github.io/azure-sdk/python_implementation.html](https://azure.github.io/azure-sdk/python_implementation.html)
@@ -105,7 +107,7 @@ To show all the inline ignored flake8 alerts: `flake8 --disable-noqa || true`
 
 There's a very nice flake8 plugin called [**flake8-cognitive-complexity**](https://github.com/Melevir/flake8-cognitive-complexity) which checks the [Cognitive Complexity](https://blog.sonarsource.com/cognitive-complexity-because-testability-understandability) in addition to the Cyclomatic Complexity provided by flake8 out of the box. We dont need to add extra parameter to use the Cognitive Complexity in flake8, it's set to `--max-cognitive-complexity=7` by default once the plugin is installed. By the way, Sonar sets the Cognitive Complexity threshold to 15 by default.
 
-To fix `imported but not used` error in `__init__.py` file, could by [__all__ attribute](https://stackoverflow.com/a/31079085/5095636) (the most elegant) or by [--per-file-ignores](https://flake8.pycqa.org/en/latest/user/options.html#cmdoption-flake8-per-file-ignores).
+To fix `imported but not used` error in `__init__.py` file, could by [`__all__`](https://stackoverflow.com/a/31079085/5095636) attribute (the most elegant) or by [--per-file-ignores](https://flake8.pycqa.org/en/latest/user/options.html#cmdoption-flake8-per-file-ignores).
 
 ### bandit
 
@@ -206,9 +208,7 @@ mypy . --exclude venv[//] # exclude venv folder under the root
 
 !!! warning
 
-    When using mypy, it would be better to use mypy against to [all files in the project](https://github.com/python/mypy/issues/13916), but ont some of them,
-
-
+    When using mypy, it would be better to use mypy against to [all files in the project](https://github.com/python/mypy/issues/13916), but not some of them.
 
 ### ignore lint error in one line
 
@@ -248,8 +248,6 @@ from y import c  # noqa: E402
 
     Could be replaced by [ruff](https://github.com/charliermarsh/ruff).
 
-
-
 ```bash
 isort . --profile=black --virtual-env=venv --recursive --check-only
 isort . --profile=black --virtual-env=venv --recursive
@@ -259,8 +257,6 @@ isort [a_file_path]
 !!! warning
 
     Be very careful with isort, it's not uncompromising, especially for some codes that dynamically import some modules inside a function instead of from the beginning of a file. People use often this to avoid circular import problem. Always run the tests after the isort.
-
-
 
 ### black
 
@@ -335,8 +331,6 @@ All the the major tools (setuptools, pip-tools, poetry) support this new standar
 !!! warning
 
     We cannot officially [declare flake8 config in pyproject.toml](https://github.com/PyCQA/flake8/issues/234).
-
-
 
 Hereunder an example of its content for the lint part.
 
@@ -537,19 +531,13 @@ pre-commit init-templatedir ~/.git-template
 
     Although each lint has its own config to exclude some files from checking, pre-commit also has the key [exclude](https://pre-commit.com/#hooks-exclude) with list value or [regex](https://pre-commit.com/#regular-expressions) to exclude file from sending to linter.
 
-
-
 !!! note
 
     `language: system` means using the executables from the same environment of current Python interpreter.
 
-
-
 !!! warning
 
     When using mypy in pre-commit, it would be better run `pre-commit run --all-files`, mypy [doesn't work well with only diff files](https://github.com/python/mypy/issues/13916) sent by `pre-commit run --from-ref origin/${pullrequest_target_branch_name} --to-ref HEAD`.
-
-
 
 ```yaml
 
@@ -638,9 +626,7 @@ repos:
 
     Be aware that especially in a local environment, we often use venv, in such case, it would be better to use above system level lint executables instead of below public ones, the checks will be more accurate.
 
-
-
-```yml
+```yaml
 
 ## example of using online linters
 
@@ -741,8 +727,6 @@ pre-commit installed at .git/hooks/pre-merge-commit
 
     You could also run `pre-commit install --hook-type pre-push` to register pre-push hooks.
 
-
-
 ### Run against all the files
 
 > "it's usually a good idea to run the hooks against all of the files when adding new hooks (usually pre-commit will only run on the changed files during git hooks)"
@@ -763,8 +747,6 @@ pre-commit run --from-ref origin/${pullrequest_target_branch_name} --to-ref HEAD
 !!! warning
 
     When using mypy, it would be better to use mypy against to [all files in the project](https://github.com/python/mypy/issues/13916), but not the changed one only.
-
-
 
 ### Git commit
 

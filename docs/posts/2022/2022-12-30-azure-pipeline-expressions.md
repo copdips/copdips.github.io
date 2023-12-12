@@ -13,7 +13,9 @@ draft: true
 
 # Azure pipeline expressions
 
-```yml
+<!-- more -->
+
+```yaml
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/process/expressions?view=azure-devops
 # The difference between runtime and compile time expression syntaxes is primarily what context is available. In a compile-time expression (${{ <expression> }}), you have access to parameters and statically defined variables. In a runtime expression ($[ <expression> ]), you have access to more variables but no parameters.
 

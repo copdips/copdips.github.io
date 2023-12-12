@@ -16,12 +16,14 @@ description: ''
 
 In my project, I have several Azure pipelines that share some same variables, instead of declaring them in each pipeline, I would like to refactor it by using some central places to store the shared variables.
 
+<!-- more -->
+
 I can split the variables into 3 groups:
 
 1. organization level variables:
    organization name, tenant id, etc.
 2. project level variables:
-   project name, resouces group name, keyvault name, project support email, etc.
+   project name, resources group name, keyvault name, project support email, etc.
 3. repository level variables:
    module name, repository support email, etc.
 
@@ -35,7 +37,7 @@ By checking following two official docs (in fact in the same doc :-)) : [Variabl
 
 ## organization level variables
 
-```yml
+```yaml
 # file: organizationA/sharedProject/sharedRepository/.azure-pipelines/variables/organization_variables.yml
 
 variables:
@@ -44,7 +46,7 @@ variables:
 
 ## project level variables
 
-```yml
+```yaml
 # file: organizationA/projectA/sharedRepository/.azure-pipelines/variables/project_variables.yml
 
 variables:
@@ -55,7 +57,7 @@ variables:
 
 ## repository level variables
 
-```yml
+```yaml
 # file: organizationA/projectA/repositoryA/.azure-pipelines/variables/repository_variables.yml
 
 variables:
@@ -66,7 +68,7 @@ variables:
 
 ## root cicd file
 
-```yml
+```yaml
 # file: organizationA/projectA/repositoryA/.azure-pipelines/cicd.yml
 
 # repository type = git means Azure DevOps repository as per https://docs.microsoft.com/en-us/azure/devops/pipelines/repos/multi-repo-checkout?view=azure-devops#specify-multiple-repositories
@@ -99,4 +101,3 @@ steps:
 !!! note
 
     Note: We cannot put the `resources` part elsewhere, it must be declared in the [root pipeline file](https://developercommunity.visualstudio.com/t/unexpected-value-resources-in-yaml-template/728151#TPIN-N782729). Otherwise, the pipeline might throw the `Unexpected value 'resources'` error. There's some black magic that the variables templates defined in other repositories (for e.g. `project_variables.yml`) recognize well the `sharedProject_sharedRepository` repository resource defined in the repository hosting the `cicd.yml` file.
-

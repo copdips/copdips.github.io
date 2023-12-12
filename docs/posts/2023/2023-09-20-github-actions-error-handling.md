@@ -12,6 +12,8 @@ description: ''
 
 # Github Actions : Error handling
 
+<!-- more -->
+
 ## continue-on-error vs fail-fast
 
 The [doc](https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs#handling-failures) explains that `continue-on-error` applies to a [single job](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idcontinue-on-error) or [single step](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepscontinue-on-error) which defines whether a job or step can continue on its error, while `fail-fast` applies to the entire matrix which means if the failure of a job in the matrix can stop other running jobs in the matrix. For example:

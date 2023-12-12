@@ -19,6 +19,8 @@ Azure pipeline has two kinds of conditions:
 
 In both syntax, we have use parameters and variables, but there's a big difference between them which makes DevOps frustrated.
 
+<!-- more -->
+
 ## Conditions with keyword ${{if elseif else}}
 
 With `${{if elseif else}}` condition, the using parameters and variables' values are calculated during the `compilation/parsing/loading time`, which means:

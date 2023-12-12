@@ -15,6 +15,8 @@ description: ''
 
 Although Azure provides already a [GitHub Actions for Azure Web App](https://learn.microsoft.com/en-us/azure/app-service/deploy-github-actions?tabs=userlevel) to deploy static files to Azure Web App, but we can also do it ourselves with a azure cli command.
 
+<!-- more -->
+
 Suppose the static files are generated in a folder named `site`, then the above Azure doc says we can use the following command to deploy it to Azure Web App:
 
 ```yaml

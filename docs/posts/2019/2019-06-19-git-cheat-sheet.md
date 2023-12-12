@@ -16,9 +16,6 @@ This is not a complete Git cheat sheet for everyone, this is just a personal che
 
 <!-- more -->
 
->
->
-
 ## Alias
 
 User level alias

@@ -11,6 +11,10 @@ description: Setting up WSL (Windows Subsystem for Linux)
 
 # Setting up WSL
 
+Setting up WSL (Windows Subsystem for Linux)
+
+<!-- more -->
+
 ## Cleaning up manually the WSL instance
 
 For any reason you failed to install WSL from Microsoft store, you might need to clean up manually the downloaded WSL instance, the default location is at: `$env:LOCALAPPDATA\Packages`

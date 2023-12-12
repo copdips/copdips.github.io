@@ -40,7 +40,7 @@ By checking following two official docs (in fact in the same doc :-)) : [Variabl
 
 ## organization level variables
 
-```yml
+```yaml
 # file: organizationA/sharedProject/sharedRepository/.azure-pipelines/variables/organization_variables.yml
 
 variables:
@@ -49,7 +49,7 @@ variables:
 
 ## project level variables
 
-```yml
+```yaml
 # file: organizationA/projectA/sharedRepository/.azure-pipelines/variables/project_variables.yml
 
 variables:
@@ -60,7 +60,7 @@ variables:
 
 ## repository level variables
 
-```yml
+```yaml
 # file: organizationA/projectA/repositoryA/.azure-pipelines/variables/repository_variables.yml
 
 variables:
@@ -71,7 +71,7 @@ variables:
 
 ## root cicd file
 
-```yml
+```yaml
 # file: organizationA/projectA/repositoryA/.azure-pipelines/cicd.yml
 
 # repository type = git means Azure DevOps repository as per https://docs.microsoft.com/en-us/azure/devops/pipelines/repos/multi-repo-checkout?view=azure-devops#specify-multiple-repositories

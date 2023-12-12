@@ -12,6 +12,8 @@ description: ''
 
 # Github Actions: Workflows
 
+<!-- more -->
+
 ## Reusable workflows
 
 ### Re-run a reusable workflow

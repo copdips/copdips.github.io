@@ -25,6 +25,7 @@ This post will follow the [official doc for updating docker version of Gitlab](h
 If you installed the [Gitlab with docker compose](https://docs.gitlab.com/omnibus/docker/README.html#install-gitlab-using-docker-compose), please follow [this official procedure](https://docs.gitlab.com/omnibus/docker/README.html#update-gitlab-using-docker-compose).
 
 And hereunder some docs for the non docker version update if you are interested:
+
 1. [Official global Gitlab update doc](https://docs.gitlab.com/ee/update/)
 2. [Official doc for upgrading without downtime](https://docs.gitlab.com/ee/update/#upgrading-without-downtime)
 3. [Official doc for updating Gitlab installed from source](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update)
@@ -70,16 +71,19 @@ Exactly the same procedure as [the official one](https://docs.gitlab.com/omnibus
     ```
 
 2. Stop the running container called gitlab:
+
     ```bash
     docker stop gitlab
     ```
 
 3. Remove existing container:
+
     ```bash
     docker rm gitlab
     ```
 
 4. Create the container once again with [previously specified options](https://copdips.com/2018/09/install-gitlab-ce-in-docker-on-ubuntu.html#install-gitlab-ce-in-dockers):
+
     ```bash
     docker run --detach \
     --hostname gitlab.copdips.local \

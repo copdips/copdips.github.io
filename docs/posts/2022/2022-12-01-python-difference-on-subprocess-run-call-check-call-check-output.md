@@ -12,6 +12,8 @@ description: ''
 
 # Python difference on subprocess run(), call(), check_call(), check_output()
 
+<!-- more -->
+
 ## Difference on subprocess run(), call(), check_call(), check_output()
 
 Since Python 3.5, the [official doc](https://docs.python.org/3.5/library/subprocess.html#older-high-level-api) explains that:

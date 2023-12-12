@@ -14,6 +14,8 @@ description: ''
 
 # Github Actions: Cache
 
+<!-- more -->
+
 ## Life span
 
 Github Actions cache has a life span of [7 days](https://github.com/actions/toolkit/tree/main/packages/cache#actionscache), and the total size of all caches in a repository is limited to 10 GB.

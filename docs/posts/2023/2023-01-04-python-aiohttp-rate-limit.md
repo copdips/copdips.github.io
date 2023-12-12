@@ -12,7 +12,10 @@ description: ''
 ---
 
 # Python aiohttp rate limit
+
 HTTP rate limit is often the max requests in a limited time period, and sometimes could also be the max concurrent requests.
+
+<!-- more -->
 
 ## Max requests in a limited time period
 

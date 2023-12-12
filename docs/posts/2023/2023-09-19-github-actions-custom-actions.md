@@ -13,6 +13,8 @@ description: ''
 
 # Github Actions: Custom Actions
 
+<!-- more -->
+
 ## Actions checkout location in workflow
 
 Actions are automatically checked out by Github Action from the beginning of a workflow run, the checkout path could be found by: env var [$GITHUB_ACTION_PATH](https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables), github context [${{ github.action_path }}](https://docs.github.com/en/actions/learn-github-actions/contexts#github-context). This is very useful when you need to [reference some files or scripts](https://stackoverflow.com/a/73839061/5095636) saved in the same repository as the actions.

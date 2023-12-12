@@ -15,6 +15,8 @@ description: ''
 
 [Sonarcloud Github Action](https://github.com/SonarSource/sonarcloud-github-action) doesn't work by default with Python pytest `coverage.xml` file, hereunder a working example.
 
+<!-- more -->
+
 ## file `.github/workflows/ci.yml`
 
 ```yaml

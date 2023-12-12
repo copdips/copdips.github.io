@@ -19,6 +19,8 @@ This post can be an extend to my previous [post on variables and templates reuse
 
 In fact, in addition to the variables and templates, I also need to reuse some non native Azure pipeline yaml files, for example some Python scripts defined in the shared template. If we use the same technic shown by the previous blog, the pipeline will throw error saying that it cannot find the Python script. This is because we need to checkout the remote repository at first before using the native pipeline yaml files.
 
+<!-- more -->
+
 ## Checkout repository from another project
 
 By default, each pipeline run has a temproray token of the [project build service account](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/access-tokens?view=azure-devops&tabs=yaml#scoped-build-identities), this account name should be in the format of: `[Project name] Build Service ([Organization name])`, we want to use this token to checkout the remote repository.
@@ -57,4 +59,3 @@ You need to take additional steps to grant access. Let us say that your pipeline
 !!! note
 
     In fact, the default `Readers` group has also this permission, but it's not straightforward to figure out that we must need this permission in addition to the `Read` permission at the repository level.
-

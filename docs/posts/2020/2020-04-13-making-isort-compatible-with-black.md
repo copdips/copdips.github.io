@@ -14,13 +14,13 @@ description: Making isort compatible with black
 
 # Making isort compatible with black
 
-!!! note
-
-    Update 2020-12-06, thanks to [Christian Jauvin's comment](https://www.copdips.com/2020/04/making-isort-compatible-with-black.html#comment-5178374085), since isort v5, it has introduced `--profile=black` option, so the life is much easier now:)
+<!-- more -->
 
 Both [isort](https://github.com/timothycrosley/isort) and [black](https://github.com/psf/black) are a must have in my python life, but with their default settings, I will get different imports formats.
 
-<!-- more -->
+!!! note
+
+    Update 2020-12-06, thanks to [Christian Jauvin's comment](https://www.copdips.com/2020/04/making-isort-compatible-with-black.html#comment-5178374085), since isort v5, it has introduced `--profile=black` option, so the life is much easier now.
 
 ## multi_line_output, include_trailing_comma and line_length
 

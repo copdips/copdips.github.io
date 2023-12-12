@@ -82,7 +82,7 @@ All the global configurations are set here, this is your starting point
 2. Create a shortname on : <https://disqus.com/admin/create/>
 3. Edit file `_config.yml`
 
-```yml
+```yaml
 comments:
   provider               : "disqus" # false (default), "disqus", "discourse", "facebook", "google-plus", "staticman", "staticman_v2" "custom"
   disqus:
@@ -90,7 +90,8 @@ comments:
 ```
 
 If you want to enable comment system by default on all the blog posts, set `comments` in defaults part of _config.yml to `true` :
-```yml
+
+```yaml
 # Defaults
 defaults:
   # _posts
@@ -119,7 +120,8 @@ Add `last_modified_at:` in the post headers.
 ### Per page layout
 
 On the top of the post, you can add your [YAML Front Matter](https://jekyllrb.com/docs/frontmatter/):
-```yml
+
+```yaml
 ---
 layout: single
 title: "Setting Up Powershell Gallery And Nuget Gallery" # title shown in home page
@@ -153,7 +155,7 @@ The homepage is defined by :  `_layouts\home.html`, and it uses `_includes\archi
 
 To customize the navigation bar on top of the blog: `_data\navigation.yml`, for example, I added the `Home` menu :
 
-```yml
+```yaml
 # main links
 main:
   # - title: "Quick-Start Guide"
@@ -172,18 +174,20 @@ main:
 
 The `Search` menu in the navigation bar is set by the `search` option in the global `_config.yml` file, the default value is false which disables the Search menu :
 
-```yml
+```yaml
 search                   : true # true, false (default)
 ```
 
 ### Add notice (Primary, Info, Success, Warning, Danger)
 
 Append a new line under the text bloc, and insert the notice tag there :
-- <https://mmistakes.github.io/minimal-mistakes/docs/utility-classes/#notices>
+
+- https://mmistakes.github.io/minimal-mistakes/docs/utility-classes/#notices
 
 Other external notice methods :
-- <https://idratherbewriting.com/documentation-theme-jekyll/mydoc_alerts.html>
-- <https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/#colorful-sections>
+
+- https://idratherbewriting.com/documentation-theme-jekyll/mydoc_alerts.html
+- https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/#colorful-sections
 
 ### Larger width
 
@@ -229,7 +233,7 @@ The default post URL is `https://yourdomain/post-name`
 
 If you want to custom it, edit `permalink` in the `_config.xml` file, I'm using the following format :
 
-```yml
+```yaml
 permalink: /:year/:month/:title.html
 ```
 

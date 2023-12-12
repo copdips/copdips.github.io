@@ -11,6 +11,10 @@ description: Flattening a nested dict/json with list as some keys' value.
 
 # Flattening nested dict in Python
 
+Flattening a nested dict/json with list as some keys' value.
+
+<!-- more -->
+
 ## Problem
 
 Given a nested dict with list as some keys' value, we want to flatten the dict to a list.

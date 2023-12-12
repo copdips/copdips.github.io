@@ -65,7 +65,7 @@ I will show these variables' value within different steps of 5 different pipelin
 
 ## With self checkout and external repository checkout
 
-```yml
+```yaml
 resources:
   repositories:
     - repository: another_repo
@@ -89,7 +89,7 @@ steps:
 
 Suppose the self (primary) repository name is `cicd`, and in the pipeline file, we declare a repository resource to the repository found at `AzureDevOpsProjectName/another_repo`.
 
-```yml
+```yaml
 resources:
   repositories:
     - repository: another_repo
@@ -272,7 +272,7 @@ drwxr-xr-x 8 vsts docker 4096 Apr  1 08:51 ..
 
 ## Single self checkout with default path
 
-```yml
+```yaml
 resources:
   repositories:
     - repository: another_repo
@@ -344,7 +344,7 @@ drwxr-xr-x 8 vsts docker 4096 Apr  3 21:14 .git
 
 ## Single self checkout with custom path
 
-```yml
+```yaml
 resources:
   repositories:
     - repository: another_repo
@@ -411,7 +411,7 @@ ls: cannot access '/home/vsts/work/1/s': No such file or directory
 
 ## No self checkout but single external checkout with default path
 
-```yml
+```yaml
 resources:
   repositories:
     - repository: another_repo
@@ -483,7 +483,7 @@ drwxr-xr-x 4 vsts docker 4096 Apr  3 21:25 .
 
 Please see following pipeline example, we define an external repository called `another_repo`, but we don't checkout the self repository, and we only checkout this external repository.
 
-```yml
+```yaml
 resources:
   repositories:
     - repository: another_repo
@@ -549,7 +549,7 @@ ls: cannot access '/home/vsts/work/1/s': No such file or directory
 
 ## No self checkout but multiple external checkout
 
-```yml
+```yaml
 resources:
   repositories:
     - repository: another_repo1

@@ -12,6 +12,8 @@ description: ''
 
 # Adding data files to Python package with setup.py
 
+<!-- more -->
+
 ## setup.py vs pyproject.toml
 
 `pyproject.toml` is the new Python project metadata specification standard since [PEP 621](https://peps.python.org/pep-0621/). As per [PEP 517](https://www.python.org/dev/peps/pep-0517/), and as per one of the comments of this [StackOverflow thread](https://stackoverflow.com/a/62983901/5095636), in some rare cases, we might have a chicken and egg problem when using `setup.py` if it needs to import something from the package it's building. The only thing that `pyproject.toml` cannot achieve for the moment is the installation in [editable mode](https://packaging.python.org/en/latest/guides/distributing-packages-using-setuptools/#working-in-development-mode), where we must use `setup.py`. Another advantage of `setup.py` is that we can compute some variables dynamically during the build time as it's a Python file.

@@ -51,7 +51,7 @@ TOTAL                                       113     21    81%
 
 In my example [.gitlab-ci.yml](https://copdips.com/2018/10/using-gitlab-integrated-cicd-for-python-project-on-windows.html#gitlab-ci-yml-file-content), the coverage is configured as:
 
-```yml
+```yaml
 coverage: '/^TOTAL.*\s+(\d+\%)$/'
 ```
 
@@ -75,7 +75,7 @@ I cloned the project [flask_log_request_id](https://github.com/Workable/flask-lo
 
     I'm still working on this CICD `.gitlab-ci.yml` file, the example given here will be updated as long as I add new things inside.
 
-```yml
+```yaml
 stages:
     - venv
     - test

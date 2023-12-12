@@ -19,6 +19,8 @@ Bash shell in Github actions by default is run with `-e -o pipefail` option. The
 shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
 ```
 
+<!-- more -->
+
 `-o pipefail` means that if any command in a pipeline fails, that return code will be used as the return code of the whole pipeline. And due to `-e` option, this makes the shell exit immediately if a command within the script exits with a non-zero status (i.e., fails). This is a good thing, but it can be a problem if you want to ignore the return code of a command in a pipeline. And especially in Github Actions output, you cannot see the error message of the command that failed. Github Actions just shows a generic error message: "**Error: Process completed with exit code 1.**", which makes it hard to debug.
 
 For example, following command:

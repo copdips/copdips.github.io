@@ -230,11 +230,13 @@ root@gitlab:/# gitlab-ctl reconfigure
 ## By openssl for both Linux and Windows
 
 For Linux :
+
 ```bash
 openssl s_client -connect gitlab.copdips.local:443 < /dev/null 2>/dev/null | openssl x509 -text -in /dev/stdin -noout
 ```
 
 For Windows with OpenSSL installed:
+
 ```powershell
 $null | openssl s_client -connect gitlab.copdips.local:443 | openssl x509 -text -noout
 ```

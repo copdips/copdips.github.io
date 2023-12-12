@@ -15,6 +15,8 @@ It might be a common case that you have multiple github.com accounts (personal a
 
 To achieve this, you could follow this [tutorial](https://vanthanhtran245.github.io/use-multiple-ssh-key-for-different-git-accounts/):
 
+<!-- more -->
+
 1. Generate ssh keys for each github.com account. For e.g. `~/.ssh/id_rsa` and `~/.ssh/id_rsa_pro`.
 2. Create a `~/.ssh/config` file to specify which ssh key to use for which github account.
 

@@ -21,3 +21,5 @@ As per above link, or this [email](https://mail.python.org/pipermail/python-list
 the environment variable `PYTHONIOENCODING=UTF-8`.
 * You can override all I/O to use UTF-8 by setting `PYTHONUTF8=1`, or by passing the
 command-line option `-X utf8`.
+
+<!-- more -->

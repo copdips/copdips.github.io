@@ -29,6 +29,7 @@ Gitlab hosts everything about the code including the docs and the pipeline data,
 ## Backup prerequisites
 
 ## Tar version
+
 The [official doc](https://docs.gitlab.com/ee/raketasks/backup_restore.html#requirements) says that the backup and restore tasks use tar with minimum `version 1.3`. Check the tar version by `tar --version`. The default tar version installed by Gitlab with docker (Gitlab-CE v10.8.3) is v1.28, after the test, the backup and restore both work well with tar in version v1.28. After the test, I find that the default tar v1.28 is also good.
 
 ## VM snapshot

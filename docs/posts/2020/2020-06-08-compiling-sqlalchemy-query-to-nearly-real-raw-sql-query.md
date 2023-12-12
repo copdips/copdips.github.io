@@ -13,6 +13,8 @@ description: Compiling SQLAlchemy query to nearly real raw sql query
 
 # Compiling SQLAlchemy query to nearly real raw sql query
 
+<!-- more -->
+
 ## Some useful links
 
 1. [https://stackoverflow.com/questions/5631078/sqlalchemy-print-the-actual-query](https://stackoverflow.com/questions/5631078/sqlalchemy-print-the-actual-query)

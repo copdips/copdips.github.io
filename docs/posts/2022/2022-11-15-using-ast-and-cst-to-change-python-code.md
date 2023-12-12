@@ -12,6 +12,8 @@ description: ''
 
 # Using ast and cst to change Python code
 
+<!-- more -->
+
 ## Difference between AST and CST
 
 A brief comparison could be found in the [libcst doc](https://libcst.readthedocs.io/en/latest/why_libcst.html). Generally speaking, CST could keep the original source code format including the comments.

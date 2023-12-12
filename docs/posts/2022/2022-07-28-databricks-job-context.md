@@ -29,6 +29,8 @@ Run below command in a Databricks job (task precisely):
 dbutils.notebook.entry_point.getDbutils().notebook().getContext().toJson()
 ```
 
+<!-- more -->
+
 We will get following json:
 
 ```json

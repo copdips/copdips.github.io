@@ -17,6 +17,8 @@ The example given by this post is **for Azure Pipeline with the latest Ubuntu ag
 
 As it's a Linux pipeline agent, the pipeline task [AzureFileCopy](https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-file-copy?view=azure-devops) can not be used, it's written in Powershell, we should use the [AzureCLI](https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-cli?view=azure-devops) task instead.
 
+<!-- more -->
+
 ## Working example
 
 Suppose we have following use case:

@@ -35,4 +35,3 @@ $PSDefaultParameterValues["invoke-webrequest:proxy"] = 'http://username:password
 !!! warning
 
     When giving the password as a plain text in a string, always use the single quotes to create the string, as some special characters ($, `, etc.) in the password might be evaluated by the string created by the double quotes. Otherwise pass the password as a variable into a double quoted string to convert it to a plain text. On Linux bash, we can see the same thing.
-

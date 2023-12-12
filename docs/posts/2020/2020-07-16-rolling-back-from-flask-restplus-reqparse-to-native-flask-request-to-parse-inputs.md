@@ -15,6 +15,8 @@ description: flask-restplus (flask-restx) reqparse is deprecated, migration to n
 
 flask-restplus' (or flask-restx) [reqparse module is deprecated](https://flask-restx.readthedocs.io/en/latest/parsing.html), so I decided to use the native flask request object to parse the incoming inputs.
 
+<!-- more -->
+
 After the try, I noticed some points to take care of. Before listing these points, I will show you how to use native flask request to parse the inputs.
 
 !!! note

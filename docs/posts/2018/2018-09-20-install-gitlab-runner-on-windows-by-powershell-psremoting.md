@@ -36,6 +36,7 @@ Invoke-WebRequest @paramIwr
 ## Install Gitlab runner on Windows
 
 Some official docs:
+
 1. [Install gitlab runner on windows](https://docs.gitlab.com/runner/install/windows.html).
 2. [Gitlab-runner installation related commands](https://docs.gitlab.com/runner/commands/#gitlab-runner-install)
 

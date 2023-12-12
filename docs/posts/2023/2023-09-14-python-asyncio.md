@@ -16,6 +16,8 @@ description: ''
 
     This is not a Python asyncio tutorial. Just some personal quick tips here, and could be updated from time to time.
 
+<!-- more -->
+
 ## greenlet vs gevent
 
 - greenlet needs manual event switch.

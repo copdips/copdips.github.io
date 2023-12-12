@@ -29,9 +29,9 @@ FOLDER_FOR_COV=module1_folder module2_folder
 COVERAGE_THRESHOLD=80
 
 test:
-	$(PYTHON) -m pytest tests/unit/ -v -s -n auto --cov ${FOLDER_FOR_COV} \
-		--cov-report=html \
-		--cov-report=term-missing:skip-covered \
+    $(PYTHON) -m pytest tests/unit/ -v -s -n auto --cov ${FOLDER_FOR_COV} \
+        --cov-report=html \
+        --cov-report=term-missing:skip-covered \
         --cov-fail-under=$(COVERAGE_THERSHOLD)
 ```
 
@@ -149,9 +149,9 @@ You can use the -k command line option to specify an expression which implements
 You can use `and`, `or`, and `not`.
 
 ```bash
-$ pytest -k "send_http" -v
-$ pytest -k "not send_http" -v
-$ pytest -k "send_http or quick" -v
+pytest -k "send_http" -v
+pytest -k "not send_http" -v
+pytest -k "send_http or quick" -v
 ```
 
 ## @pytest.mark.xfail(strict=True, reason="")
@@ -252,6 +252,7 @@ We used to use side_effect to force a mock object to raise an exception. But we 
 >>> mock()
 6
 ```
+
 ## mock any class with Mock
 
 ```python
@@ -377,10 +378,10 @@ def test_raise_exception(mock_env_missing):
     with pytest.raises(OSError):
         _ = get_os_user_lower()
 ```
+
 ### monkeypatch with parametrize
 
 As said above monkeypatch is a fixture, so we can use [pytest-lazy-fixture](https://github.com/tvorog/pytest-lazy-fixture) to parametrize the fixtures. I cannot remember where is the link, in fact on one page from pytest official doc, it says that pytest cannot do it for the moment, that's why `pytest-lazy-fixture` is introduced here.
-###
 
 It is worth saying that following monkeypatch on env won't work:
 
@@ -427,6 +428,7 @@ monkeypatch.setitem(app.DEFAULT_CONFIG, "user", "test_user")
 monkeypatch.setitem(app.DEFAULT_CONFIG, "database", "test_db")
 monkeypatch.delitem(app.DEFAULT_CONFIG, "name", raising=False)
 ```
+
 ### Modifying sys.path
 
 ```python

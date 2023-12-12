@@ -20,6 +20,8 @@ Recently, I began a new project that requires migrating some process from Azure 
 
 In Azure Pipelines, we have an official task called [AzureKeyVault@2](https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-key-vault?view=azure-devops) designed for this purpose. However, its official counterpart in Github Actions, [Azure/get-keyvault-secrets@v1](https://github.com/Azure/get-keyvault-secrets), has been deprecated. The recommended alternative is [Azure CLI](https://github.com/Azure/get-keyvault-secrets#deprecation-notice). While Azure CLI is a suitable option, it operates in a bash shell without multithreading. If numerous secrets need to be fetched, this can be time-consuming.
 
+<!-- more -->
+
 Over the past weekend, I decided to write my own action using Python, leveraging `asyncio`. I avoided any additional third party Python modules like `requests`, `aiohttp`, or `httpx`, so no pip install needed.
 
 As anticipated, the pure Python solution is notably faster than using the Azure CLI, and even surpasses the speed of the Azure Pipelines task `AzureKeyVault@2`. In my tests, it was able to retrieve the all the secrets from an Azure Key Vault within seconds.

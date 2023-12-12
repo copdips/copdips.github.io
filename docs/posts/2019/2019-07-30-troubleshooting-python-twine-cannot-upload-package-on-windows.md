@@ -15,6 +15,8 @@ description: Python twine uses ~/.pypirc as its default config file, but for som
 
 Python has several tools to upload packages to PyPi or some private Artifactory locations. The mostly used one should be [twine](https://twine.readthedocs.io/en/latest/). Although twine is not a Python originate tool, but it's officially [recommended by Python.org](https://packaging.python.org/tutorials/packaging-projects/#uploading-the-distribution-archives).
 
+<!-- more -->
+
 ## Building the package
 
 Just a quick callback on how to build the pacakge. We need to create a file named [setup.py](https://docs.python.org/3.7/distutils/setupscript.html) at the root of the app. Use another file named [MANIFEST.IN](https://docs.python.org/3/distutils/sourcedist.html#specifying-the-files-to-distribute) to include the non-code files to the package. Don't forget to set [`include_package_data=True`](https://python-packaging.readthedocs.io/en/latest/non-code-files.html) in `setup.py`

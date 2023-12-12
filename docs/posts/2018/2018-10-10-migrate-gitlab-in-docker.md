@@ -117,6 +117,7 @@ changed ownership of '/var/opt/gitlab/backups/1538845523_2018_10_06_11.3.1_gitla
 For docker version of Gitlab, the migration is just a [standard restoration procedure](https://copdips.com/2018/09/backup-and-restore-gitlab-in-docker.html#restore-gitlab).
 
 ## Stop unicorn and sidekiq
+
 ```bash
 # From gitlab docker container
 

@@ -12,6 +12,8 @@ description: ''
 
 # Azure pipeline System.AccessToken in shared pipeline
 
+<!-- more -->
+
 ## Var $(System.AccessToken)
 
 [System.AccessToken](https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#systemaccesstoken) is a special variable that carries the security token used by the running build. If you check the doc of [job authorization scope](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/access-tokens?view=azure-devops&tabs=yaml#job-authorization-scope), you might think the var `$(System.AccessToken)` has by default the access to all the repositories in the same project where hosts the calling Azure pipeline. But unfortunately, it's only partially right.
@@ -49,4 +51,3 @@ When we re-run `PipelineOne`, this time the pipeline will be in pending for aski
 !!! note
 
     The repositories resource **does not accept variables** in the `repository` and `name` values which makes the pipeline authoring a little bit sticky. We must write letter by letter the project name and repository name in string, so we need to declare as many repositories resources as the repositories in the same project on which we want to apply the `PipelineOne`.
-

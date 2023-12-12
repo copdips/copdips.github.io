@@ -15,6 +15,8 @@ description: ''
 
 This blog [Calling Azure REST API via curl](https://mauridb.medium.com/calling-azure-rest-api-via-curl-eb10a06127) is pretty good. Just two more things.
 
+<!-- more -->
+
 ## Auth token in curl
 
 We can use `curl -X GET -u :$token` instead of `curl -X GET -H "Authorization: Bearer $token"`

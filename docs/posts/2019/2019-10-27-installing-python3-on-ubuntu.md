@@ -15,6 +15,8 @@ description: Install Python3 on Ubuntu by using official source.
 
 Most of tutorials on the Internet about installing Python3.6 on Ubuntu are by [using 3rd party PPA repositories](http://ubuntuhandbook.org/index.php/2017/07/install-python-3-6-1-in-ubuntu-16-04-lts/). If for any reason, you cannot use them, hereunder a quick tutorial for installing it from the Python official source, you should in advance download the source to the Ubuntu.
 
+<!-- more -->
+
 ## Installing Python3.6 on Ubuntu 16.04
 
 ### Disabling IPv6

@@ -12,6 +12,8 @@ description: ''
 
 # Github Actions: Variables
 
+<!-- more -->
+
 ## Variables upon Git events
 
 Suppose we create a new branch named `new_branch`, and create a pull request (with id `123`) from the new branch `new_branch` to the `main` branch.

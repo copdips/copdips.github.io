@@ -16,6 +16,8 @@ description: ''
 
 # Github Actions: Python
 
+<!-- more -->
+
 ## Setting up pip authentication
 
 ### PIP_INDEX_URL vs PIP_EXTRA_INDEX_URL

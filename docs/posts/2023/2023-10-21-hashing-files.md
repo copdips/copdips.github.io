@@ -17,6 +17,8 @@ description: ''
 
 During CI/CD processes, and particularly during CI, we frequently hash dependency files to create cache keys (referred to as `key` input in Github Action [actions/cache](https://github.com/actions/cache) and `key` parameter in Azure pipelines [Cache@2 task](https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/cache-v2?view=azure-pipelines)). However, the default hash functions come with certain limitations like [this comment](https://github.com/orgs/community/discussions/25761#discussioncomment-6508758). To address this, we can use the following pure Bash shell command to manually generate the hash value.
 
+<!-- more -->
+
 For Github Actions, we can use following snippet:
 
 ```yaml

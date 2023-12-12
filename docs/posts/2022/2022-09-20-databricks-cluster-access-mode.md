@@ -13,6 +13,8 @@ description: ''
 
 # Databricks cluster access mode
 
+<!-- more -->
+
 ## What is cluster access mode
 
 Just a copy from [Azure Databricks official doc](https://learn.microsoft.com/en-us/azure/databricks/data-governance/unity-catalog/compute#--what-is-cluster-access-mode):
