@@ -37,6 +37,11 @@ jobs:
           cache-dependency-path: |
             requirements.txt
 
+      - name: Debug
+        run: |
+          env | sort -f
+          ls -lart
+
       - name: Get pip cache dir
         run: |
           os_version=$(cat /etc/os-release | grep -i "version=" | cut -c9- | tr -d '"' | tr ' ' '_')

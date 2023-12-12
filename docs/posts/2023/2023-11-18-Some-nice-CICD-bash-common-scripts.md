@@ -18,6 +18,8 @@ During CICD, we often have a large log output, it might be nice to have some com
 
 Recently, when working with Sonar, I found that they have some scripts for such output formatting.
 
+<!-- more -->
+
 - Common scripts: [common.sh](https://github.com/SonarSource/sonarqube-quality-gate-action/blob/master/script/common.sh)
 - Source common script: [`source "$(dirname "$0")/common.sh"`](https://github.com/SonarSource/sonarqube-quality-gate-action/blob/f9fe214a5be5769c40619de2fff2726c36d2d5eb/script/check-quality-gate.sh#L3C9-L3C9)
 - Also the Bash testing framework Bats:
