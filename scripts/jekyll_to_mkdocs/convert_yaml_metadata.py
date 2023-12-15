@@ -7,7 +7,7 @@ import yaml
 AUTHORS = ["copdips"]  # Global variable for authors
 
 
-def convert_jekyll_to_mkdocs(jekyll_file):
+def convert_metadata_from_jekyll_to_mkdocs(jekyll_file):
     with open(jekyll_file, "r", encoding="utf-8") as file:
         content = file.read()
 
@@ -66,11 +66,11 @@ def main():
         for filename in files:
             if filename.endswith(".md"):
                 jekyll_file = os.path.join(root, filename)
-                new_content = convert_jekyll_to_mkdocs(jekyll_file)
+                new_content = convert_metadata_from_jekyll_to_mkdocs(jekyll_file)
 
                 if new_content:
                     # Fixing the path for new_root
-                    new_root = root.replace("./_posts", "./new_posts")
+                    new_root = root.replace("./_posts", "./docs/posts")
                     os.makedirs(new_root, exist_ok=True)
                     with open(
                         os.path.join(new_root, filename), "w", encoding="utf-8"

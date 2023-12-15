@@ -83,6 +83,7 @@ plugins:
         - linux
         - markdown
         - migration
+        - mkdocs
         - multithreading
         - network
         - package

@@ -63,7 +63,7 @@ def adjust_headers(markdown_file):
 
 
 def main():
-    for root, dirs, files in os.walk("./new_posts"):
+    for root, dirs, files in os.walk("./docs/posts"):
         for filename in files:
             if filename.endswith(".md"):
                 markdown_file = os.path.join(root, filename)
