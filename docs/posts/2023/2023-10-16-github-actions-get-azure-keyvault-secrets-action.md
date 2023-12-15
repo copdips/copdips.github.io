@@ -30,7 +30,7 @@ The source code is at: [copdips/get-azure-keyvault-secrets-action](https://githu
 
 And hereunder is the usage:
 
-```yaml
+```yaml+jinja
 # in the calling workflow, user should first login to Azure
 - uses: Azure/login@v1
   with:

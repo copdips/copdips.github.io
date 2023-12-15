@@ -26,6 +26,7 @@ extra_css:
   - stylesheets/extra.css
 extra_javascript:
   - https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js
+  - https://unpkg.com/mermaid@10.6.1/dist/mermaid.min.js
   - javascripts/tablesort.js
 
 markdown_extensions:
@@ -44,7 +45,13 @@ markdown_extensions:
       custom_fences:
         - class: mermaid
           name: mermaid
-          format: !!python/name:pymdownx.superfences.fence_code_format ""
+          format: !!python/name:pymdownx.superfences.fence_code_format
+        - name: md-render
+          class: md-render
+          format: !!python/name:tools.pymdownx_md_render.md_sub_render
+        - name: csv
+          class: csv
+          format: !!python/name:tools.pymdownx_md_render.md_csv_render
   - pymdownx.tilde
   - pymdownx.tabbed:
       alternate_style: true

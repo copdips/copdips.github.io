@@ -19,7 +19,7 @@ description: ''
 
 ## file `.github/workflows/ci.yml`
 
-```yaml
+```yaml+jinja
 # file: .github/workflows/ci.yml
 
 # irrelevant part is removed

@@ -1,3 +1,4 @@
+csv2md
 mkdocs
 mkdocs-material
 mkdocs-material-extensions

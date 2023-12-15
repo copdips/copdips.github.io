@@ -19,7 +19,7 @@ Although Azure provides already a [GitHub Actions for Azure Web App](https://lea
 
 Suppose the static files are generated in a folder named `site`, then the above Azure doc says we can use the following command to deploy it to Azure Web App:
 
-```yaml
+```yaml+jinja
 # action actions/checkout should be run before this step
 - name: Set Web App runtime
   run: |
@@ -45,7 +45,7 @@ Suppose the static files are generated in a folder named `site`, then the above 
 
 The above github action could be replaced with:
 
-```yaml
+```yaml+jinja
 # action actions/checkout should be run before this step
 - name: Run Azure Cli using Azure Credentials
   run: |

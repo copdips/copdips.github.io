@@ -47,7 +47,7 @@ In March 2023, there was a great news that Azure Service Principal was been [int
 
 4. Create env var `PIP_INDEX_URL` in the workflow, and set it to the Azure DevOps Artifacts feed URL.
 
-    ```yaml
+    ```yaml+jinja
     - uses: actions/checkout@v4
 
 
@@ -125,7 +125,7 @@ We can also [setup OpenID Connect (OIDC) between Github Action and Azure](https:
 
 To use Azure OIDC with Github Action, we need to add the following to the workflow:
 
-```yaml
+```yaml+jinja
 ...
 permissions:
   id-token: write

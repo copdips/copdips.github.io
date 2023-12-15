@@ -21,7 +21,7 @@ During CI/CD processes, and particularly during CI, we frequently hash dependenc
 
 For Github Actions, we can use following snippet:
 
-```yaml
+```yaml+jinja
 # github actions example
 inputs:
   req-files:
@@ -49,7 +49,7 @@ runs:
 
 For Azure pipelines, the process is nearly identical to the above Github Action example. The only difference is that we first need to convert the  `reqFiles` parameter from an object to a string. But if you set the parameter type to `string` (as in the Github Action), the process becomes identical.
 
-```yaml
+```yaml+jinja
 # azure pipelines example
 parameters:
   - name: reqFiles

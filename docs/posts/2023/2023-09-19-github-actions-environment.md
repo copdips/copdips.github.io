@@ -32,7 +32,7 @@ jobs:
 
 For advanced usage with dynamic value should be like this:
 
-```yaml
+```yaml+jinja
 # call reusable workflow set_target_env.yml to set the target_env
 jobs:
   set_target_env:

@@ -26,7 +26,7 @@ Cache key should be as specific as possible, so that the post cache restore inst
 
 For Python pip install, we could use the following cache key:
 
-```yaml
+```yaml+jinja
 - name: Get pip cache dir
   run: |
     os_version=$(cat /etc/os-release | grep -i "version=" | cut -c9- | tr -d '"' | tr ' ' '_')
@@ -59,7 +59,7 @@ The `path` parameter in `actions/cache@v3` could be:
 
 In [Azure Pipelines](https://learn.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops), there's similar thing as [hashFiles()](https://docs.github.com/en/actions/learn-github-actions/expressions#hashfiles) function, it should be in the form of glob pattern, like `requirements/*.txt`, but without double quotes, otherwise treated as a static string.
 
-```yaml
+```yaml+jinja
 # Azure Pipelines
 - task: Cache@2
   inputs:
@@ -70,7 +70,7 @@ In [Azure Pipelines](https://learn.microsoft.com/en-us/azure/devops/pipelines/re
 
 Otherwise, we can also achieve the same result by some pure bash commands:
 
-```yaml
+```yaml+jinja
 # suppose parameters.requirementsFilePathList is a list of file paths
 - script: |
     echo REQUIREMENTS_FILE_PATH_LIST_STRING: $REQUIREMENTS_FILE_PATH_LIST_STRING

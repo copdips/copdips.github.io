@@ -60,7 +60,7 @@ For string parameter with an empty string `""` as default value, in bash script 
 
 `-n` in Linux returns true (0) if exists, and not empty.
 
-```yaml
+```yaml+jinja
 parameters:
   - name: paramName
     type: string
@@ -101,7 +101,7 @@ Parameter has a type of [`object`](https://docs.microsoft.com/en-us/azure/devops
 
 We can [loop through parameters](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/runtime-parameters?view=azure-devops&tabs=script#loop-through-parameters) with:
 
-```yaml
+```yaml+jinja
 steps:
 - ${{ each parameter in parameters }}:
   - script: echo ${{ parameter.Key }}
@@ -111,7 +111,7 @@ steps:
 The above example provided by the official doc loops through the parameters script by script.
 In the pipeline, we will see as many tasks as the number of parameters which looks a bit heavy, hereunder how to iterate all the parameters in a single script.
 
-```yaml
+```yaml+jinja
 # suppose the blow pipeline is defined in a template which takes the parameter with name `parameters`, so we can reuse it in any other pipelines.
 parameters:
   - name: parameters

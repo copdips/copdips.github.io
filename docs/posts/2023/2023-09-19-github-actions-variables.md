@@ -64,7 +64,7 @@ Same approach applies to other languages:
 
 When setting a JSON variable in string as `$GITHUB_OUTPUT`, and using it in a subsequent step, we should use the Github actions expressions syntax. However, the method of using this syntax can vary based on its context. Consider the following example on a Github Ubuntu runner with a bash shell:
 
-```yaml
+```yaml+jinja
 - name: Write json outputs
   id: write-json-outputs
   run: |
@@ -142,7 +142,7 @@ Show json outputs
 
 From the output we can see that there're two ways to have a valid json string in the show step:
 
-```yaml
+```yaml+jinja
 - name: Show json outputs
   run: |
     json_quotes_backslash_escaped="${{ steps.write-json-outputs.outputs.json_quotes_backslash_escaped }}"
@@ -191,7 +191,7 @@ Creating a JSON string in GITHUB_OUTPUT without escaping backslashes, like `json
 
 When creating a secret, we should not create a JSON secret. For e.g. the Github action `Azure/Login` provides [an example how to pass creds inputs with a JSON secret](https://github.com/Azure/login#sample-workflow-that-uses-azure-login-action-to-run-az-cli):
 
-```yaml
+```yaml+jinja
 - uses: azure/login@v1
   with:
     creds: ${{ secrets.AZURE_CREDENTIALS }}
@@ -201,7 +201,7 @@ This works but the drawback is that as the curly brackets are stored in the JSON
 
 A better usage of Azure/Login is also provided in its documentation [here](https://github.com/Azure/login#configure-deployment-credentials):
 
-```yaml
+```yaml+jinja
 - uses: Azure/login@v1
     with:
       creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
@@ -211,7 +211,7 @@ A better usage of Azure/Login is also provided in its documentation [here](https
 
 ### Parsing variables with object type
 
-```yaml
+```yaml+jinja
 - run: |
     echo "github.event: ${{ github.event }}"
     echo "github.event toJson: $GITHUB_EVENT"
@@ -236,7 +236,7 @@ github.event toJson: {
 
 Check with `if`:
 
-```yaml
+```yaml+jinja
 on:
   workflow_dispatch:
     inputs:
@@ -285,7 +285,7 @@ jobs:
 
 You can make an environment variable available to any subsequent steps in a workflow job by defining or updating the environment variable and writing this to the [GITHUB_ENV](https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable) environment file.
 
-```yaml
+```yaml+jinja
 - run: echo "var_1=value1" >> $GITHUB_ENV
 - run: echo "var_1: $var1"
 ```
