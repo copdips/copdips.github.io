@@ -4,7 +4,7 @@
 
 /* inline code */
 .md-typeset p > code {
-  background-color: #c9c6c6;
+  background-color: #e6e6e6;
   color: #000000;
 }
 [data-md-color-scheme="slate"] .md-typeset p > code {

@@ -3,6 +3,8 @@ authors:
 - copdips
 categories:
 - web
+- migration
+- jekyll
 - mkdocs
 comments: true
 date:
@@ -105,9 +107,9 @@ Mkdocs Material computes post url slug by keeping hyphen `-`, while Jekyll disca
 I used the VSCode find/replace feature with following regex:
 
 ```yaml
-Source: `^(#[^#].*?) - (.*?)`
-Replace: `$1: $2`
-Files to include: `./docs/posts`
+Source: "^(#[^#].*?) - (.*?)"
+Replace: "$1: $2"
+Files to include: "./docs/posts"
 ```
 
 ### Ending with `.html`

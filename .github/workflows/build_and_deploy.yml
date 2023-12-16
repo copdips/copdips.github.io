@@ -77,7 +77,7 @@ jobs:
 
       - name: Build documentation
         run: |
-          mkdocs
+          mkdocs --version
           # https://github.com/facelessuser/pymdown-extensions/issues/2240#issuecomment-1819117598
           python -m mkdocs build -s
 
