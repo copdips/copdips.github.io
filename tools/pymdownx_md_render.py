@@ -3,7 +3,7 @@ import markdown
 import yaml
 import re
 from collections import OrderedDict
-from csv2md.table import Table
+import pandas as pd
 
 
 def yaml_load(stream, loader=yaml.Loader):
@@ -58,7 +58,6 @@ def get_frontmatter(text):
 def md_sub_render(src="", language="", class_name=None, options=None, md="", **kwargs):
     """Formatter wrapper."""
     try:
-        import ipdb; ipdb.set_trace()
         fm, text = get_frontmatter(src)
         md = markdown.markdown(
             text,
@@ -72,34 +71,32 @@ def md_sub_render(src="", language="", class_name=None, options=None, md="", **k
         print(traceback.format_exc())
         raise
 
+
 def md_csv_render(src="", language="", class_name=None, options=None, md="", **kwargs):
     """Formatter wrapper."""
     try:
+        df = pd.read_csv(src)
+        return df.to_html()
 
-        with open(src) as f:
-            table = Table.parse_csv(f)
+        # with open(src) as f:
+        #     table = Table.parse_csv(f)
 
-        text = table.markdown()
+        # text = table.markdown()
 
-        # Specify the file path for the markdown file
-        md_file_path = src.replace('.csv', '.md')
+        # # Specify the file path for the markdown file
+        # md_file_path = src.replace('.csv', '.md')
 
-        # Open the markdown file in write mode and write the content of 'new' to it
+        # # Open the markdown file in write mode and write the content of 'new' to it
         # with open(md_file_path, 'w') as md_file:
         #     md_file.write(text)
-        with open("docs/cicd/databricks/onboarding_checklist.md", 'w') as md_file:
-            md_file.write(text)
 
-
-        fm = {}
-        md = markdown.markdown(
-            text,
-            extensions=fm.get("extensions", []),
-            extension_configs=fm.get("extension_configs", {}),
-        )
-        return md
-        return f'\n--8<-- "{md_file_path}"\n'
-        return text
+        # fm = {}
+        # md = markdown.markdown(
+        #     text,
+        #     extensions=fm.get("extensions", []),
+        #     extension_configs=fm.get("extension_configs", {}),
+        # )
+        # return md
     except Exception:
         import traceback
 
