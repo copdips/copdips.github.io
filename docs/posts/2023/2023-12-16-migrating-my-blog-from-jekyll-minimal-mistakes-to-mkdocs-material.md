@@ -16,6 +16,8 @@ description: ''
 
 After using [Jekyll Minimal Mistakes](https://mmistakes.github.io/minimal-mistakes/) for years, I decided to migrate [my blog](https://copdips.com) to [MkDocs Material](https://squidfunk.github.io/mkdocs-material/), as it's written in Python and I'm more familiar with it.
 
+<!-- more -->
+
 I am very grateful to the [MkDocs Material](https://squidfunk.github.io/mkdocs-material/) maintainers for giving me [some valuable tips](https://github.com/squidfunk/mkdocs-material/discussions/6430#discussioncomment-7753446) for the migration kickoff.
 
 ## Create blog folder
