@@ -28,6 +28,7 @@ jobs:
           fetch-depth: 0
           sparse-checkout: |
             docs
+            tools
 
       - name: Set up Python runtime
         uses: actions/setup-python@v5
