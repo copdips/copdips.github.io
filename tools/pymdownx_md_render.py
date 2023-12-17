@@ -3,7 +3,7 @@ import markdown
 import yaml
 import re
 from collections import OrderedDict
-import pandas as pd
+from csv2md.table import Table
 
 
 def yaml_load(stream, loader=yaml.Loader):
@@ -72,31 +72,16 @@ def md_sub_render(src="", language="", class_name=None, options=None, md="", **k
         raise
 
 
-def md_csv_render(src="", language="", class_name=None, options=None, md="", **kwargs):
+def md_csv_path_render(
+    src="", language="", class_name=None, options=None, md="", **kwargs
+):
     """Formatter wrapper."""
     try:
-        df = pd.read_csv(src)
-        return df.to_html()
+        with open(src, encoding="utf-8") as f:
+            table = Table.parse_csv(f)
+        md_table = table.markdown()
+        return markdown.markdown(md_table, extensions=["tables"])
 
-        # with open(src) as f:
-        #     table = Table.parse_csv(f)
-
-        # text = table.markdown()
-
-        # # Specify the file path for the markdown file
-        # md_file_path = src.replace('.csv', '.md')
-
-        # # Open the markdown file in write mode and write the content of 'new' to it
-        # with open(md_file_path, 'w') as md_file:
-        #     md_file.write(text)
-
-        # fm = {}
-        # md = markdown.markdown(
-        #     text,
-        #     extensions=fm.get("extensions", []),
-        #     extension_configs=fm.get("extension_configs", {}),
-        # )
-        # return md
     except Exception:
         import traceback
 

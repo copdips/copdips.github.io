@@ -5,6 +5,8 @@ site_author: Xiang ZHU
 site_name: A code to remember
 site_url: https://copdips.com
 use_directory_urls: false
+watch:
+  - tools
 
 # Use main branch for code actions, default to master branch
 # https://squidfunk.github.io/mkdocs-material/setup/adding-a-git-repository/?h=content+action#code-actions
@@ -49,9 +51,9 @@ markdown_extensions:
         - name: md-render
           class: md-render
           format: !!python/name:tools.pymdownx_md_render.md_sub_render
-        - name: csv
-          class: csv
-          format: !!python/name:tools.pymdownx_md_render.md_csv_render
+        - name: csv-path
+          class: csv-path
+          format: !!python/name:tools.pymdownx_md_render.md_csv_path_render
   - pymdownx.tilde
   - pymdownx.tabbed:
       alternate_style: true

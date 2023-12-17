@@ -7,4 +7,3 @@ mkdocstrings
 mkdocstrings-python
 mkdocs-video
 mkdocs-glightbox
-pandas
