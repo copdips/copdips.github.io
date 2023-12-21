@@ -8,6 +8,7 @@ categories:
 comments: true
 date:
   created: 2022-09-20
+  updated: 2023-12-21
 description: ''
 ---
 
@@ -19,11 +20,12 @@ description: ''
 
 Just a copy from [Azure Databricks official doc](https://learn.microsoft.com/en-us/azure/databricks/data-governance/unity-catalog/compute#--what-is-cluster-access-mode):
 
-!!! note
+!!! note "Please ignore the `Notes` column in the below table."
 
-    [Amazon Databricks official doc](https://docs.databricks.com/clusters/cluster-ui-preview.html#what-is-cluster-access-mode) has less info on access mode.
+    [Amazon Databricks official doc](https://docs.databricks.com/clusters/cluster-ui-preview.html#what-is-cluster-access-mode) has less info (there's no `Notes` column ) on access mode.
+    **Update 2023-12-18**, Just realized that Azure doc has been updated, now it's the same as Amazon doc, no more below `Notes` column. I think this is because the init scripts, libraries, and credential passthrough, etc. are supported now.
 
-| Access Mode           | Visible to user                          | UC Support | Supported Languages   | Notes                                                                                                                        |
+| Access Mode           | Visible to user                          | UC Support | Supported Languages   | Notes                                                                                                                         |
 | --------------------- | ---------------------------------------- | ---------- | --------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | `Single User`         | Always                                   | Yes        | Python, SQL, Scala, R | Can be assigned to and used by a single user only. Dynamic views are not supported. Credential passthrough is not supported. |
 | `Shared`              | Always (Premium plan required)           | Yes        | Python, SQL           | Init scripts, third-party libraries, and JARS are not supported. Credential passthrough is not supported.                    |
@@ -36,9 +38,9 @@ Just a copy from [Azure Databricks official doc](https://learn.microsoft.com/en-
 
 This post will talk about `Shared` and `No Isolation Shared` access modes.
 
-!!! note
+!!! note "Please ensure to test on your own runtime."
 
-    All the below examples were tested on a cluster with Databricks runtime v10.4 LTS (Scala 2.12 Spark 3.2.1).
+    All the below examples were tested on a cluster with Databricks runtime v10.4 LTS (Scala 2.12 Spark 3.2.1). Since we now have a much newer Databricks runtime, so the results might differ.
 
 ## `Shared` access mode
 

@@ -10,7 +10,7 @@ categories:
 comments: true
 date:
   created: 2022-06-08
-  updated: 2022-10-15
+  updated: 2023-12-21
 description: Using Databricks Connect inside a container with VSCode remote containers
   with spark, jre, python, databricks-connect pre-installed.
 ---
@@ -23,9 +23,13 @@ description: Using Databricks Connect inside a container with VSCode remote cont
 
 From the very beginning of the Databricks Connect [official doc](https://docs.databricks.com/dev-tools/databricks-connect.html), it says already that Databricks Connect has some [limitations](https://docs.databricks.com/dev-tools/databricks-connect.html#limitations) and is more or less deprecated in favor of [dbx](https://docs.databricks.com/dev-tools/dbx.html). But for some usages like local IDE live debug, Databricks Connect is still a very good tool where as dbx cannot do it at all. At the time of writing, dbx is mainly a Databricks jobs' API wrapper to deploy and run Databricks jobs.
 
-!!! note
+!!! note "2022-10-15: Spark Connect in favor or Databricks Connect"
 
-    Note 2022-10-15, recently a Databricks [blog](https://www.databricks.com/blog/2022/07/07/introducing-spark-connect-the-power-of-apache-spark-everywhere.html) introduced the project [Spark Connect](https://issues.apache.org/jira/browse/SPARK-39375) which aims to do very similar thing as Databricks Connect. This project is still in development, and is a part of Apache Spark, not Databricks specific.
+    Recently a Databricks [blog](https://www.databricks.com/blog/2022/07/07/introducing-spark-connect-the-power-of-apache-spark-everywhere.html) introduced the project [Spark Connect](https://issues.apache.org/jira/browse/SPARK-39375) which aims to do very similar thing as Databricks Connect. This project is still in development, and is a part of Apache Spark, not Databricks specific.
+
+!!! note "2023-12-21: Databricks Connect in favor of Spark Connect"
+
+    It seems that Spark Connect is [still in development](https://issues.apache.org/jira/browse/SPARK-39375), and Databricks Connect is now again the official way to run Spark locally. However, it requires [Databricks runtime 13.0 or above](https://docs.databricks.com/en/dev-tools/databricks-connect/python/index.html).
 
 A very important point to be taken into account is that if we plan to deploy production ready Databricks workflows, it's recommended to use `dbx`. currently it's not official supported by Databricks (version number starts with 0), but it's good enough to use, I've already used it since several months. And as it's a deployment tool, even if it bugs, it will be much less dangerous for production.
 
