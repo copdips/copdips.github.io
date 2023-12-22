@@ -115,12 +115,13 @@ plugins:
         - vscode
         - web
   - rss:
+      # image: https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Feed-icon.svg/128px-Feed-icon.svg.png
       categories:
         - categories
         - tags
       date_from_meta:
-        as_creation: date
-      match_path: blog/posts/.*
+        as_creation: date.created
+      match_path: posts/.*
       comments_path: "#__comments"
   - search:
       separator: '[\s\u200b\-_,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
