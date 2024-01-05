@@ -93,6 +93,7 @@ Register-PSRepository -Name PSGallery -SourceLocation https://www.powershellgall
 ```
 
 Test :
+
 ```powershell
 > Get-PSRepository
 

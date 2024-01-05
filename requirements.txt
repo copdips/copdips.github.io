@@ -7,3 +7,4 @@ mkdocstrings
 mkdocstrings-python
 mkdocs-video
 mkdocs-glightbox
+mkdocs-rss-plugin
