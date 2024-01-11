@@ -8,7 +8,6 @@ categories:
 comments: true
 date:
   created: 2019-05-14
-  updated: 2021-03-21
 description: Using Python SQLAlchemy session in multithreading by using contextmanager
   or scope_session.
 ---

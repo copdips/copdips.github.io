@@ -7,7 +7,6 @@ categories:
 comments: true
 date:
   created: 2019-09-14
-  updated: 2019-12-31
 description: Test-NetConnection is too slow if the remote port is not opened due to
   its timeout setting. Use System.Net.Sockets.TcpClient instead.
 ---

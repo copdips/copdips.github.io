@@ -8,7 +8,6 @@ categories:
 comments: true
 date:
   created: 2020-04-13
-  updated: 2021-03-28
 description: Making isort compatible with black
 ---
 

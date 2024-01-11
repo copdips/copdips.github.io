@@ -9,7 +9,6 @@ categories:
 comments: true
 date:
   created: 2023-09-22
-  updated: 2023-12-21
 description: ''
 ---
 

@@ -7,7 +7,6 @@ categories:
 comments: true
 date:
   created: 2021-01-04
-  updated: 2023-06-10
 description: Some commands to lint and format Python files
 ---
 

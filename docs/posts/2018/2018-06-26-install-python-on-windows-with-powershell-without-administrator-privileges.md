@@ -8,7 +8,6 @@ categories:
 comments: true
 date:
   created: 2018-06-26
-  updated: 2019-12-30
 description: To fast deploy Python on Windows OS and without administrator privileges,
   we can use Powershell Install-Package to archive it.
 ---

@@ -7,7 +7,6 @@ categories:
 comments: true
 date:
   created: 2018-05-19
-  updated: 2022-08-14
 description: Preview Jekyll blog locally on Windows with the Minimal Mistakes theme.
 ---
 

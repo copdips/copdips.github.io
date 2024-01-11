@@ -6,7 +6,6 @@ categories:
 comments: true
 date:
   created: 2022-12-01
-  updated: 2022-12-02
 description: ''
 ---
 

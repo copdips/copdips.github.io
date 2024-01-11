@@ -7,7 +7,6 @@ categories:
 comments: true
 date:
   created: 2018-05-26
-  updated: 2019-12-31
 description: Select-String with color, make Select-String of Powershell to highlight
   the search pattern like grep in Unix.
 ---

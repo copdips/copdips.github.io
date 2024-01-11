@@ -7,7 +7,6 @@ categories:
 comments: true
 date:
   created: 2019-10-27
-  updated: 2021-03-17
 description: Install Python3 on Ubuntu by using official source.
 ---
 

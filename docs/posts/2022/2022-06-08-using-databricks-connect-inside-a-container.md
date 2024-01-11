@@ -10,7 +10,6 @@ categories:
 comments: true
 date:
   created: 2022-06-08
-  updated: 2023-12-21
 description: Using Databricks Connect inside a container with VSCode remote containers
   with spark, jre, python, databricks-connect pre-installed.
 ---

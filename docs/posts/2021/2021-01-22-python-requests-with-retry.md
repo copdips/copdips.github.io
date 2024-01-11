@@ -6,7 +6,6 @@ categories:
 comments: true
 date:
   created: 2021-01-22
-  updated: 2021-03-20
 description: Make python requests retry easily to use
 ---
 
