@@ -58,6 +58,9 @@ markdown_extensions:
   - pymdownx.tilde
   - pymdownx.tabbed:
       alternate_style: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
   - tables
   - toc:
       permalink: '#'
@@ -153,6 +156,7 @@ theme:
     - content.action.view
     - content.code.annotate
     - content.code.copy
+    - content.tabs.link
     - header.autohide
     - navigation.expand
     - navigation.footer
