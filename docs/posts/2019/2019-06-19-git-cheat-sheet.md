@@ -6,7 +6,6 @@ categories:
 comments: true
 date:
   created: 2019-06-19
-  updated: 2023-06-02
 description: Some personal often forgotten git commands.
 ---
 
@@ -44,10 +43,10 @@ git config --global alias.rod pull --rebase origin dev
 ## ~/.bashrc
 
 ```bash
-alias gitpush='git ci -am $GIT_BRANCH ; git push origin $GIT_BRANCH'
+alias gitpush='git ci -am "$GIT_MESSAGE" ; git push origin $GIT_BRANCH'
 alias gitamendpush='git add . ; git amend ; git push origin $GIT_BRANCH -f'
-alias gitrebasemain='git cm ; git rom ; git fetch origin --prune ; git br -d $GIT_BRANCH'
-alias gitrebasedev='git cd ; git rod ; git fetch origin --prune ; git br -d $GIT_BRANCH'
+alias gitrebasemain='git cm ; git rom ; git fetch origin --prune ; if [[ $GIT_BRANCH != "main" ]]; then git br -d $GIT_BRANCH; fi'
+alias gitrebasedev='git cd ; git rod ; git fetch origin --prune ; if [[ $GIT_BRANCH != "dev" ]] ; then git br -d $GIT_BRANCH ; fi'
 ```
 
 ## Restore
