@@ -258,27 +258,47 @@ print(time.time() - start)
 2.0026962757110596
 ```
 
-## wait vs gather
+## wait vs gather vs TaskGroup
 
 - [`wait`](https://docs.python.org/3/library/asyncio-task.html#asyncio.wait) is a low-level api, [`gather`](https://docs.python.org/3/library/asyncio-task.html#asyncio.gather) is a high-level api.
 - `wait` has more options than `gather`:
-  - `async def wait(fs, *, loop=None, timeout=None, return_when=ALL_COMPLETED):`
-  - `def gather(*coros_or_futures, loop=None, return_exceptions=False):`
+    - `async def wait(fs, *, loop=None, timeout=None, return_when=ALL_COMPLETED):`
+    - `def gather(*coros_or_futures, loop=None, return_exceptions=False):`
 - `wait` accepts lists of coroutines/Futures (`asyncio.wait(tasks)`), `gather` accepts each element a coroutine/Futures (`asyncio.gather(*tasks)`).
 - `wait` returns two `futures` in a tuple: `(done, pending)`, it's a coroutine `async def`. To get the `wait` results: `[d.result() for d in done]`, `gather` returns the results directly, it's a standard `def`.
 - `gather` can group tasks, and can also cancel groups of tasks:
+- [`TaskGroup`](https://docs.python.org/3/library/asyncio-task.html#asyncio.TaskGroup): Added in [Python 3.11](https://docs.python.org/3/whatsnew/3.11.html#asyncio), an asynchronous context manager holding a group of tasks that will wait for all of them upon exit. For new code this is ===recommended over using create_task() and gather() directly===. (Contributed by Yury Selivanov and others in gh-90908.)
 
-  ```python
-  async def main():
-    group1 = asyncio.gather(f1(), f1())
-    group2 = asyncio.gather(f2(), f2())
-    group1.cancel()
-    # if return_exceptions=False, `asyncio.exceptions.CancelledError` will be raised,
-    # if return_exceptions=True, the exception will be returned in the results.
-    # return_exceptions default value is False
-    all_groups = await asyncio.gather(group1, group2, return_exceptions=True)
-    print(all_groups)
-  ```
+    ```python title="gather"
+    async def main():
+        group1 = asyncio.gather(f1(), f1())
+        group2 = asyncio.gather(f2(), f2())
+        group1.cancel()
+        # if return_exceptions=False, `asyncio.exceptions.CancelledError` will be raised,
+        # if return_exceptions=True, the exception will be returned in the results.
+        # return_exceptions default value is False
+        all_groups = await asyncio.gather(group1, group2, return_exceptions=True)
+        print(all_groups)
+    ```
+
+    ```python title="TaskGroup since Python 3.11"
+    async def main():
+        async with asyncio.TaskGroup() as tg:
+            task1 = tg.create_task(some_coro(...))
+            task2 = tg.create_task(another_coro(...))
+        print(f"Both tasks have completed now: {task1.result()}, {task2.result()}")
+    ```
+
+    ```python title="TaskGroup is recommended over create_task() and gather()"
+    # create_task() and gather() :
+    tasks = [asyncio.create_task(task(i)) for i in range(10)]
+    await asyncio.gather(*tasks)
+
+    # TaskGroup
+    async with asyncio.TaskGroup() as group:
+        for i in range(10):
+            _ = group.create_task(task(i))
+    ```
 
 - If the `wait` task is cancelled, it simply throws an CancelledError and the waited tasks remain intact. Need to call `task.cancel()` to cancel the remaining tasks. If `gather` is cancelled, all submitted awaitables (that have not completed yet) are also cancelled. <https://stackoverflow.com/a/64370162>
 
