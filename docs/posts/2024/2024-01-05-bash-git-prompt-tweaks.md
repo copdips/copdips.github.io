@@ -17,7 +17,7 @@ Some tweaks I made to [bash-git-prompt](https://github.com/magicmonty/bash-git-p
 
 <!-- more -->
 
-## Python venv path within bash git prompt
+## Python venv path within bash-git-prompt
 
 bash-git-prompt displays the current Python venv folder name within the prompt, among other things. I would like it to display the full path of the current Python venv if the venv is not located in the current folder. This will help prevent me from using the wrong venv when I switch between projects.
 
@@ -28,11 +28,13 @@ function gp_add_virtualenv_to_prompt {
   local ACCUMULATED_VENV_PROMPT=""
   local VENV=""
   if [[ -n "${VIRTUAL_ENV-}" && -z "${VIRTUAL_ENV_DISABLE_PROMPT+x}" ]]; then
++    PYTHON_VERSION=$(python --version | cut -d' ' -f2 | cut -d'.' -f1-2)
 +    if [[ $VIRTUAL_ENV == "$(pwd)/.venv" ]]; then
 +      VENV=$(basename "${VIRTUAL_ENV}")
 +    else
 +      VENV=$VIRTUAL_ENV
 +    fi
++    VENV="$VENV $PYTHON_VERSION"
     ACCUMULATED_VENV_PROMPT="${ACCUMULATED_VENV_PROMPT}${GIT_PROMPT_VIRTUALENV//_VIRTUALENV_/${VENV}}"
   fi
   if [[ -n "${NODE_VIRTUAL_ENV-}" && -z "${NODE_VIRTUAL_ENV_DISABLE_PROMPT+x}" ]]; then
