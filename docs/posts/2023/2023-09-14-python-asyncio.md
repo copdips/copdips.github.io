@@ -290,11 +290,11 @@ print(time.time() - start)
     ```
 
     ```python title="TaskGroup is recommended over create_task() and gather()"
-    # create_task() and gather() :
+    # create_task() and gather() example:
     tasks = [asyncio.create_task(task(i)) for i in range(10)]
     await asyncio.gather(*tasks)
 
-    # TaskGroup
+    # TaskGroup example:
     async with asyncio.TaskGroup() as group:
         for i in range(10):
             _ = group.create_task(task(i))
