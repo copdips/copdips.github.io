@@ -6,7 +6,7 @@ categories:
 - package
 comments: true
 date:
-  created: 2024-01-05
+  created: 2024-01-15
 description: Simple demo to using Flit for managing Python package
 ---
 
