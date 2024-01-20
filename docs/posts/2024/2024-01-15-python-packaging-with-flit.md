@@ -23,14 +23,16 @@ file `pyproject.toml`:
 
 The flit-core github repo has already a good [demo](https://github.com/pypa/flit/blob/main/pyproject.toml) of pyproject.toml, and I just need to change a few lines:
 
-```toml title="pyproject.toml"
+```toml title="pyproject.toml" linenums="1" hl_lines="6-9 30-31 34-36"
 [build-system]
 requires = ["flit-core >= 3.9,<4"]
 build-backend = "flit_core.buildapi"
 
 [project]
 # https://flit.pypa.io/en/stable/pyproject_toml.html#module-section
-name = "package_name_shown_in_pypi"  # will be converted to kebab-case automatically
+# project name will be converted to kebab-case automatically
+# when publishing to pypi.
+name = "package_name_shown_in_pypi"
 dynamic = ["version", "description"]
 authors = [
     { name = "my name", email = "my email" },
@@ -60,7 +62,7 @@ name = "python_module_folder_name"  # name used by import in Python
 include = ["VERSION"]
 ```
 
-Flit reads the [variable `__version__`](https://flit.pypa.io/en/stable/#usage) from the module file `python_module_folder_name/__init__.py` to get the version number. The above example uses a file `VERSION` to store the version number, and the `__init__.py` file reads the version number from the `VERSION` file. As `VERSION` is more convenient to edit, I prefer this way.
+Flit reads the [variable `__version__`](https://flit.pypa.io/en/stable/#usage) from the module file `python_module_folder_name/__init__.py` to get the version number. The above example uses a file `VERSION` to store the version number, and the `__init__.py` file reads the version number from the `VERSION` file. As a flat `VERSION` is more convenient to edit, I prefer this way.
 
 So the `python_module_folder_name/__init__.py` file could look like:
 
@@ -71,7 +73,7 @@ from pathlib import Path
 DEFAULT_VERSION = "0.0.0"
 
 try:
-    version_file_path = Path(__file__).resolve().parent.parent / "VERSION"
+    version_file_path = Path(__file__).resolve().parents[1] / "VERSION"
     __version__ = version_file_path.read_text().strip()
 except FileNotFoundError:
     __version__ = DEFAULT_VERSION
