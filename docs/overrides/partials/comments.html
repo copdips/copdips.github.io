@@ -1,29 +1,34 @@
 {% if page.meta.comments %}
-<h2 id="__comments">{{ lang.t("meta.comments") }}</h2>
+<h2 id="__comments">
+  <span class="twemoji" style="margin-right: 10px;">
+    {% include ".icons/octicons/comment-discussion-24.svg" %}
+  </span>
+  {{ lang.t("meta.comments") }}
+</h2>
 <div id="disqus_thread"></div>
 <script>
-  var disqus_config = function() {
-    this.page.url = "{{ page.canonical_url }}"
+  var disqus_config = function () {
+    this.page.url = "{{ page.canonical_url }}";
     this.page.identifier =
-      "{{ page.canonical_url | replace(config.site_url, '') }}" // (1)!
-  }
+      "{{ page.canonical_url | replace(config.site_url, '') }}"; // (1)!
+  };
 
   /* Set up for the first time */
   if (typeof DISQUS === "undefined") {
-    var script = document.createElement("script")
-    script.async = true
-    script.src = "https://{{ config.extra.disqus }}.disqus.com/embed.js"
-    script.setAttribute("data-timestamp", Date.now())
+    var script = document.createElement("script");
+    script.async = true;
+    script.src = "https://{{ config.extra.disqus }}.disqus.com/embed.js";
+    script.setAttribute("data-timestamp", Date.now());
 
     /* Inject script tag */
-    document.body.appendChild(script)
+    document.body.appendChild(script);
 
-  /* Set up on navigation (instant loading) */
+    /* Set up on navigation (instant loading) */
   } else {
     DISQUS.reset({
       reload: true,
-      config: disqus_config
-    })
+      config: disqus_config,
+    });
   }
 </script>
 {% endif %}
