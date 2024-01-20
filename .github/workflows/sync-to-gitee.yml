@@ -10,15 +10,26 @@ concurrency:
   group: ${{ github.workflow}}
   cancel-in-progress: true
 
+env:
+  GITEE_REPOSITORY: copdips/copdips.github.io
 jobs:
   sync_to_gitee:
     runs-on: ubuntu-latest
     steps:
-      # - uses: actions/checkout@v2
 
-      - name: sync-gitee-mirror
-        uses: abersheeran/sync-gitee-mirror@v1-beta
+      # - name: sync-gitee-mirror
+      #   uses: abersheeran/sync-gitee-mirror@v1-beta
+      #   # https://github.com/abersheeran/sync-gitee-mirror
+      #   with:
+      #     repository: ${{ env.GITEE_REPOSITORY }}
+      #     username: ${{ vars.GITEE_USERNAME }}
+      #     password: ${{ secrets.GITEE_PAT }}
+
+      - uses: actions/checkout@v4
         with:
-          repository: copdips/copdips.github.io
-          username: ${{ secrets.GITEE_USERNAME }}
-          password: ${{ secrets.GITEE_PAT }}
+          fetch-depth: 0
+      - run: |
+          remote_repo="https://${{ vars.GITEE_USERNAME }}:${{ secrets.GITEE_PAT }}@gitee.com/${{ env.GITEE_REPOSITORY }}.git"
+          git remote add gitee "${remote_repo}"
+          branch=$(git branch --show-current)
+          git push gitee $branch -f
