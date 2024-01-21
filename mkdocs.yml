@@ -21,8 +21,9 @@ extra:
   #   3. https://github.com/squidfunk/mkdocs-material/commit/f9e94184620806ceff55b6a8c2df0292b39369e4
   disqus: copdips
   analytics:
-    property: G-L9KPHRQNQN
     provider: google
+    property: UA-118578681-1
+    # property: G-L9KPHRQNQN
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/copdips
