@@ -55,7 +55,7 @@ jobs:
           echo "PIP_CACHE_DIR=$(pip cache dir)" >> $GITHUB_ENV
 
       - name: cache pip
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ env.pythonLocation }}
           key: ${{ env.github_workflow_full_path}}-${{ env.os_version }}-${{ env.python_full_version }}-${{ env.node_major_version}}-${{ hashFiles('requirements.txt') }}
