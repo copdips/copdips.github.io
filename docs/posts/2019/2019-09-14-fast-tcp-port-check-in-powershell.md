@@ -11,7 +11,7 @@ description: Test-NetConnection is too slow if the remote port is not opened due
   its timeout setting. Use System.Net.Sockets.TcpClient instead.
 ---
 
-# A fast way to check TCP port in Powershell
+# Fast TCP port check in Powershell
 
 The [Test-NetConnection](https://docs.microsoft.com/en-us/powershell/module/nettcpip/test-netconnection) cmdlet is great and verbose but too slow if the remote port to check is not opened. This is due to its timeout setting and cannot be modified. In this port, I will show you a custom function that leverages the power of  [System.Net.Sockets.TcpClient](https://docs.microsoft.com/dotnet/api/system.net.sockets.tcpclient) to accelerate the port test.
 

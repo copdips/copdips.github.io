@@ -81,7 +81,6 @@ From the [EventHistoryCollector doc](https://pubs.vmware.com/vsphere-6-5/topic/c
 >
 >     HistoryCollector
 
-
 A quick search on [HistoryCollector](https://pubs.vmware.com/vsphere-6-5/topic/com.vmware.wssdk.smssdk.doc/vim.HistoryCollector.html), we find it has a method `RewindCollector()`:
 
 >RewindCollector(rewind)
@@ -101,16 +100,20 @@ from datetime import datetime, timedelta
 from pyVim.connect import SmartConnectNoSSL
 from pyVmomi import vim
 
-
 time_filter = vim.event.EventFilterSpec.ByTime()
 now = datetime.now()
 time_filter.beginTime = now - timedelta(hours=1)
 time_filter.endTime = now
 event_type_list = []
-# If you want to also filter on certain events, uncomment the below event_type_list.
-# The EventFilterSpec full params details:
+
+# If you want to also filter on certain events, uncomment the below event_type_list
+
+# The EventFilterSpec full params details
+
 # https://pubs.vmware.com/vsphere-6-5/topic/com.vmware.wssdk.smssdk.doc/vim.event.EventFilterSpec.html
+
 # event_type_list = ['VmRelocatedEvent', 'DrsVmMigratedEvent', 'VmMigratedEvent']
+
 filter_spec = vim.event.EventFilterSpec(eventTypeId=event_type_list, time=time_filter)
 
 si = SmartConnectNoSSL(host=host, user=user, pwd=password, port=port)
@@ -120,13 +123,16 @@ page_size = 1000 # The default and also the max event number per page till vSphe
 events = []
 
 while True:
-  # If there's a huge number of events in the expected time range, this while loop will take a while.
+
+# If there's a huge number of events in the expected time range, this while loop will take a while
+
   events_in_page = event_collector.ReadNextEvents(page_size)
   num_event_in_page = len(events_in_page)
   if num_event_in_page == 0:
     break
   events.extend(events_in_page) # or do other things on the collected events
-# Please note that the events collected are not ordered by the event creation time, you might find the first event in the third page for example.
+
+# Please note that the events collected are not ordered by the event creation time, you might find the first event in the third page for example
 
 print(
     "Got totally {} events in the given time range from {} to {}.".format(

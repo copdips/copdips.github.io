@@ -11,6 +11,7 @@ date:
 description: As like [pypi](https://pypi.org/) for Python, [npm](https://www.npmjs.com/)
   for Node.js, we also have [Powershell Gallery](https://www.powershellgallery.com/)
   and Nuget Gallery for Powershell.
+slug: setting-up-powershell-gallery-and-nuget-gallery-for-powershell
 ---
 
 # Setting Up Powershell gallery And Nuget gallery

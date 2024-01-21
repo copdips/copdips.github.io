@@ -8,6 +8,7 @@ date:
   created: 2018-05-16
 description: Use Powershell stop-parsing (`--%`) to treat the remaining characters
   in the line as a literal.
+slug: powershell-stop-parsing
 ---
 
 # Powershell stop-parsing (`--%`)
@@ -98,6 +99,7 @@ For example, to parse a DateTime to a sortable string :
 ```
 
 So I added the stop-parsing symbol `--%` just after ssh-keygen.exe, and my ssh keys are managed to be created :
+
 ```powershell
 [RemoteServer]: PS> ssh-keygen.exe --% -q -t rsa -b 4096 -N '' -C 'xiang.zhu@outlook.com' -f C:\Users\administrator\.ssh\id_rsa
 ssh-keygen.exe : Saving key "C:\\Users\\administrator\\.ssh\\id_rsa" failed: No such file or directory

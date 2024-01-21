@@ -8,7 +8,8 @@ comments: true
 date:
   created: 2018-07-25
 description: pyVmomi event manager returns only the last 1000 events. But EventHistoryCollector
-  object's ReadNextEvents()method can collect all the events.
+  object's ReadNextEvents()method can collect all the events.q
+slug: use-pyvmomi-EventHistoryCollector-to-get-all-the-vcenter-events
 ---
 
 # Use pyVmomi EventHistoryCollector to get all the vCenter events

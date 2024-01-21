@@ -8,6 +8,7 @@ date:
   created: 2019-12-29
 description: Github can host package releases, I will show you how to use Powershell
   to retrieve the latest release download url.
+slug: Using-Powershell-to-retrieve-latest-package-url-from-github-releases
 ---
 
 # Using Powershell To Retrieve Latest Package Url From Github Releases
@@ -48,4 +49,3 @@ https://github.com/PowerShell/PowerShell/releases/download/v6.2.3/PowerShell-6.2
 !!! note
 
     The powershell pre-release doesn't have a static url, so I cannot retrieve the latest [v7.0.0-rc.1](https://github.com/PowerShell/PowerShell/releases/tag/v7.0.0-rc.1) download url.
-
