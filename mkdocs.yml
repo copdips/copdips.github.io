@@ -91,6 +91,7 @@ plugins:
         - datetime
         - docker
         - elastic
+        - email
         - encoding
         - file
         - flask
