@@ -12,6 +12,8 @@ date:
 
 Outlook.com has an overwhelming number emails and deleting them using rules is challenging. Notably, the online filter of Outlook.com can only loads a maximum of 1000 emails. Therefor I have to use scripts (like VBA scripts) to delete them. Below is the script that selects all the unread emails before a given date and deletes them.
 
+<!-- more -->
+
 1. Connect to your Outlook.com account in MS Office outlook desktop client.
 2. Go to account settings,locate the account name, open it, and set it to download all the emails for the past.
 3. Press `Alt+F11` to open the VBA editor, and create a new module, and paste the following code into it.
