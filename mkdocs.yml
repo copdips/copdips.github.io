@@ -89,6 +89,7 @@ plugins:
         - container
         - databricks
         - datetime
+        - debug
         - docker
         - elastic
         - email
