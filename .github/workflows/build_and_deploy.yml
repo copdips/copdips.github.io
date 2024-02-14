@@ -21,6 +21,8 @@ permissions:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+    environment: copdips.com
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
