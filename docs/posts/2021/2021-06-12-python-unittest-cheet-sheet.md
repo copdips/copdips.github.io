@@ -45,7 +45,7 @@ This will invoke the Python debugger on every failure (or KeyboardInterrupt).
 
 [breakpoint](https://docs.pytest.org/en/stable/how-to/failures.html#using-the-builtin-breakpoint-function):
 
->>> Python 3.7 introduces a builtin breakpoint() function. Pytest supports the use of breakpoint() with the following behaviours:
+>>> Python 3.7 introduces a builtin breakpoint() function. Pytest supports the use of breakpoint() with the following behaviors:
 >>>
 >>>   * When `breakpoint()` is called and `PYTHONBREAKPOINT` is set to the default value, pytest will use the custom internal PDB trace UI instead of the system default Pdb.
 >>>   * When tests are complete, the system will default back to the system Pdb trace UI.
@@ -154,7 +154,7 @@ To allow specific hosts: `pytest --disable-socket --allow-hosts=127.0.0.1,8.8.8.
 
 !!! warning
 
-    Pay extra attention to this [cavet](https://github.com/miketheman/pytest-socket#frequently-asked-questions). If you create another fixture that creates a socket usage that has a "higher" instantiation order, such as at the module/class/session, then the higher order fixture will be resolved first, and won't be disabled during the tests.
+    Pay extra attention to this [caveat](https://github.com/miketheman/pytest-socket#frequently-asked-questions). If you create another fixture that creates a socket usage that has a "higher" instantiation order, such as at the module/class/session, then the higher order fixture will be resolved first, and won't be disabled during the tests.
 
 ## @pytest.mark
 
@@ -164,9 +164,9 @@ We can use `@pytest.mark.foo` decorator to add a marker (label) on any test, and
 This method is often used by the pytest extensions to for example enable or disable the extension on some specific tests. Like [@pytest.mark.enable_socket for the pytest-socket extension](https://github.com/miketheman/pytest-socket#usage)
 
 Some people also use markers to categorize the tests, like `@pytest.mark.unit` for unit tests, and `@pytest.mark.integration` for integration tests, etc.
-Personally, I dont like this because it forces to add the markers on every tests, it will be a very heavy work, and once you forget to add the markers, your tests wont be runned, and you will never discover it. The common usage (maybe I'm wrong) that I saw on github is just to put different categories' tests in different folders.
+Personally, I don't like this because it forces to add the markers on every tests, it will be a very heavy work, and once you forget to add the markers, your tests wont be run, and you will never discover it. The common usage (maybe I'm wrong) that I saw on github is just to put different categories' tests in different folders.
 
-We can also [marking the whole classs or modules](https://docs.pytest.org/en/stable/example/markers.html#marking-whole-classes-or-modules).
+We can also [marking the whole class or modules](https://docs.pytest.org/en/stable/example/markers.html#marking-whole-classes-or-modules).
 
 ## pytest -k expr
 
@@ -204,7 +204,7 @@ def test_function():
 
 [https://docs.pytest.org/en/stable/example/parametrize.html](https://docs.pytest.org/en/stable/example/parametrize.html)
 
-I put `@pytest.mark.parametrize` out of `@pytest.mark` because they're really different. In fact, I discovered pytest from this functionnality.
+I put `@pytest.mark.parametrize` out of `@pytest.mark` because they're really different. In fact, I discovered pytest from this functionality.
 
 ```python
 @pytest.mark.parametrize(
@@ -343,7 +343,7 @@ def test_foo():
 
 ```python
 # replace function bar of module x by another function fake_bar with monkeypatch
-# we cannot assert the mocked function, but we dont need to give the x module in full string format.
+# we cannot assert the mocked function, but we don't need to give the x module in full string format.
 
 def foo(arg1, arg2):
     r = bar(arg1)
@@ -475,7 +475,7 @@ monkeypatch.chdir(path)
 
 [https://github.com/pytest-dev/pytest-xdist](https://github.com/pytest-dev/pytest-xdist)
 
-Especially useful when your tests are unit tests for exmaple, which dont have dependencies from one  with each other, and don't share any changing data, which means your tests should be stateless.
+Especially useful when your tests are unit tests for example, which don't have dependencies from one  with each other, and don't share any changing data, which means your tests should be stateless.
 
 ```bash
 # run on 4 CPUs
@@ -499,7 +499,7 @@ pytest -n auto
 
 [https://docs.python.org/3/library/unittest.mock.html#autospeccing](https://docs.python.org/3/library/unittest.mock.html#autospeccing)
 
-mock.patch returns a mock object, a mock object can have whatever atrributes and methods.
+mock.patch returns a mock object, a mock object can have whatever attributes and methods.
 
 `mock.asssert_called_once_with(4, 5, 6)` doesn't fail as shown as follows:
 
@@ -568,7 +568,7 @@ AttributeError: Mock object has no attribute 'data'
 
 !!! warning
 
-    autospec works well on methods and static attributes, but a serious problem is that it is common for instance attributes to be created in the __init__() method and not to exist on the class at all. autospec can’t know about any dynamically created attributes and restricts the api to visible attributes. This is why autospeccing is not the patch default behaviour. Search the above phrase in the [python official doc](https://docs.python.org/3/library/unittest.mock.html#autospeccing) to get more details and solutions.
+    autospec works well on methods and static attributes, but a serious problem is that it is common for instance attributes to be created in the __init__() method and not to exist on the class at all. autospec can't know about any dynamically created attributes and restricts the api to visible attributes. This is why autospeccing is not the patch default behavior. Search the above phrase in the [python official doc](https://docs.python.org/3/library/unittest.mock.html#autospeccing) to get more details and solutions.
 
 ## unittest.mock.ANY
 
