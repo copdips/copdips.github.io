@@ -35,15 +35,28 @@ test:
         --cov-fail-under=$(COVERAGE_THERSHOLD)
 ```
 
-## pytest \-\-pdb
+## pytest --pdb
 
-[https://docs.pytest.org/en/stable/usage.html#dropping-to-pdb-python-debugger-on-failures](https://docs.pytest.org/en/stable/usage.html#dropping-to-pdb-python-debugger-on-failures)
+<https://docs.pytest.org/en/stable/how-to/failures.html#using-python-library-pdb-with-pytest>
 
 This will invoke the Python debugger on every failure (or KeyboardInterrupt).
 
-## pytest \-\-pdb \-\-pdbcls=IPython.terminal.debugger:TerminalPdb
+`pytest -x --pdb`: drop to PDB on first failure, then end test session
 
-[https://docs.pytest.org/en/stable/usage.html#using-the-builtin-breakpoint-function](https://docs.pytest.org/en/stable/usage.html#using-the-builtin-breakpoint-function)
+[breakpoint](https://docs.pytest.org/en/stable/how-to/failures.html#using-the-builtin-breakpoint-function):
+
+>>> Python 3.7 introduces a builtin breakpoint() function. Pytest supports the use of breakpoint() with the following behaviours:
+>>>
+>>>   * When `breakpoint()` is called and `PYTHONBREAKPOINT` is set to the default value, pytest will use the custom internal PDB trace UI instead of the system default Pdb.
+>>>   * When tests are complete, the system will default back to the system Pdb trace UI.
+>>>   * With `--pdb` passed to pytest, the custom internal Pdb trace UI is used with both `breakpoint()` and failed tests/unhandled exceptions.
+>>>   * `--pdbcls` can be used to specify a custom debugger class.
+
+## pytest --pdb --pdbcls=IPython.terminal.debugger:TerminalPdb
+
+<https://docs.pytest.org/en/stable/how-to/failures.html#using-python-library-pdb-with-pytest>
+
+Use ipdb instead of pdb.
 
 ```bash
 $ pytest --help | grep -i ipython
@@ -52,11 +65,28 @@ $ pytest --help | grep -i ipython
 
 `--pdbcls=IPython.terminal.debugger:Pdb` also opens a ipython session, [but without tab completion (readline)](https://ipython.readthedocs.io/en/latest/api/generated/IPython.core.debugger.html#IPython.core.debugger.Pdb).
 
-This will use ipdb instead of pdb. Can also be set by default in `pytest.ini`:
+Set in `pytest.ini`:
 
 ```bash
 [pytest]
-addopts = --pdbcls=IPython.terminal.debugger:Pdb
+addopts = --pdbcls=IPython.terminal.debugger:TerminalPdb
+```
+
+Set in `pyproject.toml`:
+
+```toml title="file pyproject.toml"
+[tool.pytest.ini_options]
+testpaths = ["tests/unit"]
+addopts = """
+    -v -s
+    --junitxml=junit/test-results.xml
+    --cov <app_folder_name>
+    --cov-report=html
+    --cov-report=xml
+    --cov-report=term-missing:skip-covered
+    --cov-fail-under=0
+    --pdbcls=IPython.terminal.debugger:TerminalPdb
+    """
 ```
 
 PS: an alternatif: `pdbpp` (successor of `pytest-ipdb`) at: https://github.com/pdbpp/pdbpp
