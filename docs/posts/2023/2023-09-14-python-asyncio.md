@@ -241,7 +241,12 @@ asyncio.run(main())
 import asyncio
 import time
 
+
 coroutines = [
+    # Without asyncio.create_task(), the coroutines are not scheduled,
+    # there's even no event loop.
+    # If use asyncio.create_task(), the coroutines are scheduled,
+    # and run concurrently right now, but must be run in a running event loop.
     asyncio.sleep(2),
     asyncio.sleep(2)
 ]
@@ -249,7 +254,7 @@ coroutines = [
 start = time.time()
 
 # asyncio.run() creates an event loop,
-# then asyncio.wait() wraps the coroutines into tasks.
+# then asyncio.wait() wraps the coroutines into tasks, and start them.
 asyncio.run(asyncio.wait(coroutines))
 
 print(time.time() - start)
@@ -258,7 +263,7 @@ print(time.time() - start)
 2.0026962757110596
 ```
 
-## wait vs gather vs TaskGroup
+## wait vs gather vs as_completed vs TaskGroup
 
 - [`wait`](https://docs.python.org/3/library/asyncio-task.html#asyncio.wait) is a low-level api, [`gather`](https://docs.python.org/3/library/asyncio-task.html#asyncio.gather) is a high-level api.
 - `wait` has more options than `gather`:
@@ -266,7 +271,8 @@ print(time.time() - start)
     - `def gather(*coros_or_futures, loop=None, return_exceptions=False):`
 - `wait` accepts lists of coroutines/Futures (`asyncio.wait(tasks)`), `gather` accepts each element a coroutine/Futures (`asyncio.gather(*tasks)`).
 - `wait` returns two `futures` in a tuple: `(done, pending)`, it's a coroutine `async def`. To get the `wait` results: `[d.result() for d in done]`, `gather` returns the results directly, it's a standard `def`.
-- `gather` can group tasks, and can also cancel groups of tasks:
+- `gather` can group tasks, and can also cancel groups of tasks.
+- `as_completed` returns an traditional iterator (not async inter), and is used to iterate over the tasks as they are completed. It's a generator, and returns the results **in the order they are completed**.
 - [`TaskGroup`](https://docs.python.org/3/library/asyncio-task.html#asyncio.TaskGroup): Added in [Python 3.11](https://docs.python.org/3/whatsnew/3.11.html#asyncio), an asynchronous context manager holding a group of tasks that will wait for all of them upon exit. For new code this is ===recommended over using create_task() and gather() directly===. (Contributed by Yury Selivanov and others in gh-90908.)
 
     ```python title="gather"
