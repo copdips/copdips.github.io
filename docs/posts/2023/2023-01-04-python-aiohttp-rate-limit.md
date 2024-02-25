@@ -31,6 +31,8 @@ async with rate_limit:
 
 ## Max concurrent requests
 
+### aiohttp.TCPConnector(limit=MAX_CONCURRENT)
+
 Official doc: [Limiting connection pool size](https://docs.aiohttp.org/en/stable/client_advanced.html#limiting-connection-pool-size)
 
 ```python
@@ -52,6 +54,49 @@ if __name__ == "__main__":
 !!! warning
 
     The object `connector` from `connector = aiohttp.TCPConnector(limit=MAX_CONCURRENT)` must be created within an async function.
+
+### asyncio.Semaphore
+
+Using `aiohttp.TCPConnector(limit=MAX_CONCURRENT)` with multiple endpoints might not be ideal. This is because it sets a global limit on concurrent requests for the entire session. If only one endpoint has a max concurrent requests limitation, applying this setting will unnecessarily restrict requests to other endpoints as well.
+
+Instead, consider using `asyncio.Semaphore` for individual calls. This offers greater flexibility as you can control the concurrent requests limit for each specific endpoint call independently.
+
+```python
+import asyncio
+
+import aiohttp
+
+MAX_CONCURRENT = 2
+
+
+async def call_endpoint1(session, semaphore):
+    async with semaphore:
+        print("call_endpoint1")
+        await asyncio.sleep(1)
+
+
+async def call_endpoint2(session):
+    print("call_endpoint2")
+    await asyncio.sleep(1)
+
+
+async def main():
+    semaphore_endpoint1 = asyncio.Semaphore(MAX_CONCURRENT)
+
+    async with aiohttp.ClientSession() as session:
+        tasks = [
+            *[
+                asyncio.create_task(call_endpoint1(session, semaphore_endpoint1))
+                for _ in range(5)
+            ],
+            *[asyncio.create_task(call_endpoint2(session)) for _ in range(5)],
+        ]
+        await asyncio.gather(*tasks)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
 
 ## Example
 
