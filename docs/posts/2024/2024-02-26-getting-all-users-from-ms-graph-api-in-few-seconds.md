@@ -18,6 +18,8 @@ MS Graph API's endpoint for retrieving users, [GET /users](https://learn.microso
 
 While MS Graph API provides generous [throttling limits](https://learn.microsoft.com/en-us/graph/throttling-limits), we should find a way to parallelize the queries. This post explores sharding as a strategy to retrieve all users in a matter of seconds. The idea is to get all users by dividing users based on the first character of the `userPrincipalName` field.For instance, shard 1 would encompass users whose `userPrincipalName` starts with `a`, shard 2 would handle users starting with `b`, and so forth.
 
+<!-- more -->
+
 ## How to find the sharding field
 
 The user object in MS Graph API has many fields, including `userPrincipalName`. But how I found the `userPrincipalName` is the sharding field?
