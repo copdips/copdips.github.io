@@ -22,11 +22,14 @@ HTTP rate limit is often the max requests in a limited time period, and sometime
 from aiolimiter import AsyncLimiter
 
 RATE_LIMIT_IN_SECOND = 20
-# 1.0 for time period during 1 second
-rate_limit = AsyncLimiter(RATE_LIMIT_IN_SECOND, 1.0)
+# 1.0 for time period during 1 second, default is 60 seconds
+rate_limiter = AsyncLimiter(RATE_LIMIT_IN_SECOND, 1.0)
 
-async with rate_limit:
-    await my_aiohttp_request()
+async def do_something():
+    async with rate_limiter:
+        # do something here
+tasks = [do_something() for _ in range(10)]
+await asyncio.gather(*tasks)
 ```
 
 ## Max concurrent requests
