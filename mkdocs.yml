@@ -103,6 +103,7 @@ plugins:
         - linter
         - linux
         - markdown
+        - messaging
         - migration
         - mkdocs
         - multithreading
