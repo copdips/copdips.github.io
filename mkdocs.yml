@@ -114,6 +114,7 @@ plugins:
         - powershell
         - proxy
         - python
+        - quart
         - redis
         - scheduling
         - shell
