@@ -170,6 +170,29 @@ git restore --staged <file>
 git reset
 ```
 
+## Change commit timestamp
+
+```bash
+git rebase -i origin/main
+# set 'e' to commits you want to change timestamp
+# :x! to save and exit
+
+# git will stop at the first commit marked with 'e'
+git commit --amend --no-edit --date=now
+# or to specify a date:
+git commit --amend --no-edit --date="Wed Jun 19 14:00:00 2019 +0800"
+
+# below will set the current timezone timestamps automatically
+git commit --amend --no-edit --date="20240101 02:02:02"
+# or to edit other fields:
+git commit --amend
+# :x! to save and exit
+
+git rebase --continue
+# git will stop at the next commit marked with 'e'
+# continue with the same command above, till there's no more commit marked with 'e'
+```
+
 ## Authentication
 
 ### With bearer token
