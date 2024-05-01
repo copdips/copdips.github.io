@@ -94,3 +94,8 @@ a.md-nav__link:hover {
   border-radius: 7px;
   padding: 1px 2px;
 }
+
+.md-typeset a:hover {
+  background-color: #dfe7f5;
+  color:hotpink;
+}

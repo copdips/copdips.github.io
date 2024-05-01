@@ -14,11 +14,11 @@ endif
 
 build:
 	@echo "${BOLD}${YELLOW}mkdocs build:${NORMAL}"
-	python -m mkdocs build -s
+	${PYTHON} -m mkdocs build -s
 
 serve:
 	@echo "${BOLD}${YELLOW}mkdocs serve:${NORMAL}"
-	python -m mkdocs build -s && python -m mkdocs serve
+	${PYTHON} -m mkdocs build -s && ${PYTHON} -m mkdocs serve
 
 update-venv:
 	@echo "${BOLD}${YELLOW}update venv:${NORMAL}"
