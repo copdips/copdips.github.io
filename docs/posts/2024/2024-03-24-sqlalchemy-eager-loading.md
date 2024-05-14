@@ -11,7 +11,7 @@ date:
 
 # Sqlalchemy eager loading
 
-This posts describes the differences on `selectinload`, `joinedload`, `subqueryload`, these 3 popular eager loading techniques in [Sqlalchemy](https://docs.sqlalchemy.org/en/20/orm/queryguide/relationships.html) (so as to [SQLModel](https://sqlmodel.tiangolo.com/))
+This posts describes the differences on `selectinload`, `joinedload`, `subqueryload`, these [3 popular eager loading techniques in Sqlalchemy](https://docs.sqlalchemy.org/en/20/orm/queryguide/relationships.html) (so as to [SQLModel](https://sqlmodel.tiangolo.com/))
 
 <!-- more -->
 
