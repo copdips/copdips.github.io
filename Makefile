@@ -20,6 +20,8 @@ serve:
 	@echo "${BOLD}${YELLOW}mkdocs serve:${NORMAL}"
 	${PYTHON} -m mkdocs build -s && ${PYTHON} -m mkdocs serve
 
+run: serve
+
 update-venv:
 	@echo "${BOLD}${YELLOW}update venv:${NORMAL}"
 	pip install -U pip
