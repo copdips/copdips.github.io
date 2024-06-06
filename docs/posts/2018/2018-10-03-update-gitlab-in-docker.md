@@ -63,11 +63,10 @@ Exactly the same procedure as [the official one](https://docs.gitlab.com/omnibus
 
 1. Pull the new image:
 
-   To pull other version, change the `lastest` by the tag name which can be found from the [docker hub](https://hub.docker.com/r/gitlab/gitlab-ce/tags/).
+    To pull other version, change the `lastest` by the tag name which can be found from the [docker hub](https://hub.docker.com/r/gitlab/gitlab-ce/tags/).
 
     ```bash
     docker pull gitlab/gitlab-ce:latest
-
     ```
 
 2. Stop the running container called gitlab:
