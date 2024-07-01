@@ -4,9 +4,11 @@ authors:
 categories:
 - python
 - async
+- multiprocessing
 comments: true
 date:
   created: 2023-09-14
+  updated: 2024-07-01
 description: ''
 ---
 
@@ -424,3 +426,65 @@ def run_in_executor(self, executor, func, *args):
 When setting env var [PYTHONASYNCIODEBUG](https://docs.python.org/3/using/cmdline.html#envvar-PYTHONASYNCIODEBUG) to any non-empty string, you can enable [asyncio debug mode](https://docs.python.org/3/library/asyncio-dev.html#debug-mode), which provides additional output for debugging purpose.
 
 For example, when using aiohttp's `ClientSession` without `async with` context manager, it's important to manually call `await session.close()` to avoid unclosed session errors. Of you forget to do so, you'll typically receive a simple error message without much details. However, with asyncio debug mode enabled, the error message will include a [traceback](https://github.com/aio-libs/aiohttp/blob/e5e521e2aa1923223abd680bb431dc21c2c9c863/aiohttp/client.py#L335-L337) that pinpoints the unclosed session creation point, greatly simplifying the troubleshooting.
+
+## asyncio inside multiprocessing
+
+```python
+import asyncio
+import concurrent.futures
+import logging
+from functools import partial
+
+
+async def single_async_func(sleep_time: float, logger: logging.Logger):
+    await asyncio.sleep(sleep_time)
+    logger.info(f"Slept for {sleep_time} seconds")
+
+
+async def async_func_entrypoint(sleep_time: float, logger: logging.Logger):
+    tasks = [
+        asyncio.create_task(single_async_func(sleep_time, logger)) for _ in range(3)
+    ]
+    errors: list[Exception] = []
+    for completed_task in asyncio.as_completed(tasks):
+        try:
+            _ = await completed_task
+        except Exception as ex:
+            # we collect all the errors raised by each async task instead of
+            # letting them to raise up to async_wrapper,
+            # this will allow other tasks to continue.
+            errors.append(ex)
+            logger.exception(f"Error: {ex}")
+    return errors
+
+
+def async_wrapper(
+    sleep_time: float,
+    logger: logging.Logger,
+):
+    try:
+        return asyncio.run(async_func_entrypoint(sleep_time=sleep_time, logger=logger))
+    except Exception as ex:
+        msg = f"Error: {ex}"
+        logger.exception(msg)
+        return 0
+    finally:
+        # ! MUST flush logs if OpenTelemetry like logs are used
+        for handler in logger.handlers:
+            handler.flush()
+
+
+def main():
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger(__name__)
+    sleep_times = list(range(10))
+    # https://docs.python.org/3/library/concurrent.futures.html#processpoolexecutor-example
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        func = partial(async_wrapper, logger=logger)
+        for sleep_time, ret in zip(sleep_times, executor.map(func, sleep_times)):
+            logger.info(f"sleep_time: {sleep_time}, got return: {ret}")
+
+
+if __name__ == "__main__":
+    main()
+```

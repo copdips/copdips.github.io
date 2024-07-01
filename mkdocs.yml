@@ -106,6 +106,7 @@ plugins:
         - messaging
         - migration
         - mkdocs
+        - multiprocessing
         - multithreading
         - network
         - package
