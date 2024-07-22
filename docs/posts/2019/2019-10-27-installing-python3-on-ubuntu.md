@@ -7,6 +7,7 @@ categories:
 comments: true
 date:
   created: 2019-10-27
+  updated: 2024-07-22
 description: Install Python3 on Ubuntu by using official source.
 ---
 
@@ -45,15 +46,15 @@ cd ~/src/
 wget https://www.sqlite.org/2021/sqlite-autoconf-3400100.tar.gz
 tar xvf sqlite-autoconf-3400100.tar.gz
 cd sqlite-autoconf-3400100/
-./configure --prefix=/usr/local
+./configure --prefix=$HOME/opt
 make -j $(nproc)
 sudo make install
 make clean
-ll /usr/local/bin/sqlite*
-ll /usr/local/lib/*sqlite*
-
+ll $HOME/opt/bin/sqlite*
+ll $HOME/opt/lib/*sqlite*
+$HOME/opt
 # let below Python compilation to use the newly installed sqlite3 lib
-export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$HOME/opt/lib:$LD_LIBRARY_PATH
 
 # install python3.10.10 from source
 cd ~/src/
