@@ -7,6 +7,7 @@ categories:
 comments: true
 date:
   created: 2019-10-27
+  updated: 2024-07-23
 description: Install Python3 on Ubuntu by using official source.
 ---
 
@@ -29,22 +30,36 @@ net.ipv6.conf.all.disable_ipv6=1
 net.ipv6.conf.default.disable_ipv6=1
 ```
 
-## Installing Python3.10.10 with sqlite3 on Ubuntu 20.04 in WSL
+## Installing Python3.11.9 with sqlite3 on Ubuntu 24.04 in WSL
 
-!!! note "Same procedure applied to other Python versions too."
+!!! note "Similar procedure applied to other Python versions too."
 
-```bash
-# install build packages
+```bash title="install build packages"
 sudo apt update
 # without `libssl-dev` package, pip install will throw TLS/SSL error.
-sudo apt install -y build-essential zlib1g-dev libssl-dev libffi-dev
+sudo apt install -y \
+  build-essential \
+  zlib1g-dev \
+  libssl-dev \
+  libffi-dev \
+  libbz2-dev \
+  liblzma-dev \
+  libncurses-dev \
+  libreadline-dev \
+  libsqlite3-dev \
+  tk-dev \
+  libgdbm-dev \
+  libgdbm-compat-dev \
+  libnsl-dev
+```
 
+```bash title="if install sqlite3 from source"
 # install sqlite3 from source, if you need a specific sqlite3 version in Python, you must install it before compiling Python, because the compilation needs the lib libsqlite3.so
 mkdir ~/src
 cd ~/src/
-wget https://www.sqlite.org/2021/sqlite-autoconf-3400100.tar.gz
-tar xvf sqlite-autoconf-3400100.tar.gz
-cd sqlite-autoconf-3400100/
+wget https://www.sqlite.org/2024/sqlite-autoconf-3460000.tar.gz
+tar xvf sqlite-autoconf-3460000.tar.gz
+cd sqlite-autoconf-3460000/
 ./configure --prefix=/usr/local
 make -j $(nproc)
 sudo make install
@@ -54,18 +69,20 @@ ll /usr/local/lib/*sqlite*
 
 # let below Python compilation to use the newly installed sqlite3 lib
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+```
 
-# install python3.10.10 from source
+```bash title="install Python from source"
 cd ~/src/
-wget https://www.python.org/ftp/python/3.10.10/Python-3.10.10.tgz
-tar xvf Python-3.10.10.tgz
-cd Python-3.10.10/
+wget https://www.python.org/ftp/python/3.11.9/Python-3.11.9.tgz
+tar xvf Python-3.11.9.tgz
+cd Python-3.11.9/
 
 # ubuntu 20.04 has gcc v9 (v8+ are OK), so you can add the flag --enable-optimizations to ./configure
 # to gain an extra runtime speed, otherwise you might encounter `Could not import runpy module` error
 # --with-bz2 is for pandas, otherwise modulenotfounderror: no module named '_bz2' pandas
+# ! --with-bz2 is not necessary for newer Python versions, at least for Python 3.11.9
 version=$(basename "$(pwd)" | cut -d'-' -f2 | cut -d'.' -f1-2)
-sudo ./configure --prefix=$HOME/opt/python$version --with-bz2 --enable-optimizations
+sudo ./configure --prefix=$HOME/opt/python$version  --enable-loadable-sqlite-extensions --enable-optimizations
 make -j $(nproc)
 sudo make install
 make clean
