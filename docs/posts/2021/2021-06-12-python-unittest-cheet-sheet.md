@@ -16,23 +16,65 @@ Python unittest and Pytest is a big deal, this post just gives some small & quic
 
 <!-- more -->
 
+## check if is in pytest mode
+
+```python
+# https://github.com/ETretyakov/hero-app/blob/7fd5955599e2d0149b1b2a09026337ee67f2c007/app/core/db.py#L1-L11
+from sys import modules
+...
+
+db_connection_str = settings.db_async_connection_str
+if "pytest" in modules:
+    db_connection_str = settings.db_async_test_connection_str
+```
+
+## config in pyproject.toml
+
+```toml title="file pyproject.toml"
+[tool.pytest.ini_options]
+testpaths = ["tests/unit"]
+# https://pytest-asyncio.readthedocs.io/en/latest/concepts.html#auto-mode
+asyncio_mode = "auto"
+addopts = """
+    -v -s
+    --junitxml=junit/test-results.xml
+    --cov app
+    --cov-report=html
+    --cov-report=xml
+    --cov-report=term-missing:skip-covered
+    --cov-fail-under=70
+    """
+# env is enabled by pytest-env
+env = ["TESTING=yes"]
+```
+
+## asyncio support
+
+- <https://github.com/ETretyakov/hero-app/blob/master/app/conftest.py>
+- <https://github.com/ThomasAitken/demo-fastapi-async-sqlalchemy/blob/main/backend/app/conftest.py>
+- <https://github.com/copdips/fastapi-demo/blob/main/tests/integration/conftest.py>
+
 ## pytest in Makefile
 
-```Makefile
+```Makefile title="pytest conf are defined in pyproject.toml"
 # Makefile
 # https://github.com/databrickslabs/dbx/blob/main/Makefile
 
 SHELL=/bin/bash
 VENV_NAME := $(shell [ -d venv ] && echo venv || echo .venv)
-PYTHON=${VENV_NAME}/bin/python
-FOLDER_FOR_COV=module1_folder module2_folder
-COVERAGE_THRESHOLD=80
+VENV_DIR=${VENV_NAME}
+PYTHON=$(shell if [ -d $(VENV_DIR) ]; then echo $(VENV_DIR)/bin/python; else echo python; fi)
 
-test:
-    $(PYTHON) -m pytest tests/unit/ -v -s -n auto --cov ${FOLDER_FOR_COV} \
-        --cov-report=html \
-        --cov-report=term-missing:skip-covered \
-        --cov-fail-under=$(COVERAGE_THERSHOLD)
+test-integration:
+    @echo "${BOLD}${YELLOW}Running integration tests:${NORMAL}"
+    # ! --dist=loadfile to let Tests are grouped by their containing file.
+    # Groups are distributed to available workers as whole units.
+    # This guarantees that all tests in a file run in the same worker.
+    # https://pytest-xdist.readthedocs.io/en/stable/distribution.html#running-tests-across-multiple-cpus
+    $(PYTHON) -m pytest tests/integration -n auto --dist=loadfile
+
+test: test-integration
+    $(PYTHON) -m pytest tests/unit -n auto
 ```
 
 ## pytest --pdb
@@ -47,10 +89,10 @@ This will invoke the Python debugger on every failure (or KeyboardInterrupt).
 
 >>> Python 3.7 introduces a builtin breakpoint() function. Pytest supports the use of breakpoint() with the following behaviors:
 >>>
->>>   * When `breakpoint()` is called and `PYTHONBREAKPOINT` is set to the default value, pytest will use the custom internal PDB trace UI instead of the system default Pdb.
->>>   * When tests are complete, the system will default back to the system Pdb trace UI.
->>>   * With `--pdb` passed to pytest, the custom internal Pdb trace UI is used with both `breakpoint()` and failed tests/unhandled exceptions.
->>>   * `--pdbcls` can be used to specify a custom debugger class.
+>>> - When `breakpoint()` is called and `PYTHONBREAKPOINT` is set to the default value, pytest will use the custom internal PDB trace UI instead of the system default Pdb.
+>>> - When tests are complete, the system will default back to the system Pdb trace UI.
+>>> - With `--pdb` passed to pytest, the custom internal Pdb trace UI is used with both `breakpoint()` and failed tests/unhandled exceptions.
+>>> - `--pdbcls` can be used to specify a custom debugger class.
 
 ## pytest --pdb --pdbcls=IPython.terminal.debugger:TerminalPdb
 
