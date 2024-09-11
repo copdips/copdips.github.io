@@ -87,6 +87,7 @@ plugins:
         - certificate
         - cicd
         - container
+        - database
         - databricks
         - datetime
         - debug
@@ -111,6 +112,7 @@ plugins:
         - network
         - package
         - pandas
+        - performance
         - pip
         - powershell
         - proxy
