@@ -20,6 +20,8 @@ SECRET=xxx
 
 Hereunder a quick bash script to generate a `.env` file from a list of Azure KeyVault secrets, same logic can be applied to other secret managers.
 
+<!-- more -->
+
 ```bash
 #!/bin/bash
 set -e

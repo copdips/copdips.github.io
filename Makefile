@@ -25,4 +25,4 @@ run: serve
 update-venv:
 	@echo "${BOLD}${YELLOW}update venv:${NORMAL}"
 	pip install -U pip
-	pip install -U -r requirements.txt
+	uv pip install -U -r requirements.txt
