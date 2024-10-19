@@ -75,8 +75,7 @@ jobs:
 
       - name: Install Python dependencies
         run: |
-          pip install -U pip
-          pip install -U -r requirements.txt
+          make ci-install
 
       - name: Build documentation
         run: |
