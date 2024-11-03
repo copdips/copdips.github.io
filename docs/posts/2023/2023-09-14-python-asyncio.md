@@ -8,7 +8,7 @@ categories:
 comments: true
 date:
   created: 2023-09-14
-  updated: 2024-07-01
+  updated: 2024-10-26
 description: ''
 ---
 
@@ -23,6 +23,18 @@ description: ''
 ## Asyncio Cheat Sheet from SuperFastPython
 
 https://marvelous-writer-6152.ck.page/d29b7d8dfb
+
+## concurrent.futures
+
+The [concurrent.futures](https://docs.python.org/3.9/library/concurrent.futures.html) is a high-level abstraction for the `threading` and `multiprocessing` modules.
+
+```mermaid
+graph LR
+  concurrent.futures --->| on top of | threading
+  concurrent.futures --->| on top of | multiprocessing
+  threading --->| on top of | \_thread
+  click concurrent.futures "https://docs.python.org/3.9/library/concurrent.futures.html" _blank
+```
 
 ## greenlet vs gevent
 
@@ -54,12 +66,14 @@ From Python 3.5, `await` deprecates `yield from`
 - `get_running_loop` raises error if there's no running loop.
 - `get_event_loop` return running loop if exists, otherwise create one and return it.
 
-## Awaitable vs Future vs Task vs Coroutine
+## Awaitable vs Future vs Task vs coroutine
 
 - [`Awaitable`](https://docs.python.org/3/library/asyncio-task.html#awaitables) is an object can be used in an `await` expression. There are three main types of awaitable objects: `coroutines`, `Tasks`, and `Futures`.
-- [`Coroutine`](https://docs.python.org/3/library/asyncio-task.html#coroutine) is declared with the `async/await` syntax is the preferred way of writing asyncio applications. Coroutines can await on `Future` objects until they either have a result or an exception set, or until they are cancelled. Python coroutines are awaitables and therefore can be awaited from other coroutines
+- [`coroutine`](https://docs.python.org/3/library/asyncio-task.html#coroutine) is declared with the `async/await` syntax is the preferred way of writing asyncio applications. Coroutines can await on `Future` objects until they either have a result or an exception set, or until they are cancelled. Python coroutines are awaitables and therefore can be awaited from other coroutines
 - [`Future`](https://docs.python.org/3/library/asyncio-future.html#asyncio.Future) is an awaitable object. A Future represents an eventual result of an asynchronous operation. Not thread-safe.
 - [`Task`](https://docs.python.org/3/library/asyncio-task.html#asyncio.Task) is subclass of `Future` that runs a Python coroutine. Not thread-safe. Tasks are used to schedule coroutines concurrently. When a coroutine is wrapped into a Task with functions like `asyncio.create_task()` the coroutine is automatically scheduled to run soon
+
+> <https://docs.python.org/3/library/asyncio-task.html#task-object>: Tasks are used to run coroutines in event loops. If a coroutine awaits on a Future, the Task suspends the execution of the coroutine and waits for the completion of the Future. When the Future is done, the execution of the wrapped coroutine resumes. Event loops use cooperative scheduling: an event loop runs one Task at a time. While a Task awaits for the completion of a Future, the event loop runs other Tasks, callbacks, or performs IO operations.
 
 ## ensure_future vs create_task
 
@@ -274,7 +288,16 @@ print(time.time() - start)
 - `wait` accepts lists of coroutines/Futures (`asyncio.wait(tasks)`), `gather` accepts each element a coroutine/Futures (`asyncio.gather(*tasks)`).
 - `wait` returns two `futures` in a tuple: `(done, pending)`, it's a coroutine `async def`. To get the `wait` results: `[d.result() for d in done]`, `gather` returns the results directly, it's a standard `def`.
 - `gather` can group tasks, and can also cancel groups of tasks.
-- `as_completed` returns an traditional iterator (not async inter), and is used to iterate over the tasks as they are completed. It's a generator, and returns the results **in the order they are completed**.
+- `as_completed` returns an traditional iterator (not async inter for Python prior to 3.13, see below note), and is used to iterate over the tasks as they are completed. It's a generator, and returns the results **in the order they are completed**.
+
+    !!! note "New in Python3.13: as_completed works with async for instead of for"
+        Since [Python3.13](https://docs.python.org/3.13/library/asyncio-task.html#asyncio.as_completed), `async for` should be used with `as_completed` instead of `for`.
+        And it returns the completed task in `Task` object instead of `coroutine` object.
+
+        So now, we can use `completed_task.get_name()`, `completed_task.result()`, `completed_task.exception()` directly.
+
+        Check this [StackOverflow answer](https://stackoverflow.com/a/79125969/5095636) for more details.
+
 - [`TaskGroup`](https://docs.python.org/3/library/asyncio-task.html#asyncio.TaskGroup): Added in [Python 3.11](https://docs.python.org/3/whatsnew/3.11.html#asyncio), an asynchronous context manager holding a group of tasks that will wait for all of them upon exit. For new code this is ===recommended over using create_task() and gather() directly===. (Contributed by Yury Selivanov and others in gh-90908.)
 
     ```python title="gather"
