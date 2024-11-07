@@ -178,33 +178,33 @@ exclude = []
 
 - running pyright locally:
 
-  ```bash
-  ## scan pathes specified in pyproject.toml include, exclude
-  pyright
+    ```bash
+    ## scan pathes specified in pyproject.toml include, exclude
+    pyright
 
-  ## scan current folder and subfolders in spite of pyproject.toml include, exclude
-  pyright .
-  ```
+    ## scan current folder and subfolders in spite of pyproject.toml include, exclude
+    pyright .
+    ```
 
 - running pyright in pre-commit:
 
-  ```yaml title=".pre-commit-config.yaml"
-  - repo: https://github.com/RobertCraigie/pyright-python
-    rev: v1.1.388
-    hooks:
-      - id: pyright
-  ```
+    ```yaml title=".pre-commit-config.yaml"
+    - repo: https://github.com/RobertCraigie/pyright-python
+      rev: v1.1.388
+      hooks:
+        - id: pyright
+    ```
 
 - running pyright in Github Action:
 
-  ```yaml title="github action"
-  - name: Run lint
-    run: |
-      # in case pre-commit has set up a pyright hook, we should not use it in CI.
-      SKIP=pyright pre-commit run --all-files
+    ```yaml title="github action"
+    - name: Run lint
+      run: |
+        # in case pre-commit has set up a pyright hook, we should not use it in CI.
+        SKIP=pyright pre-commit run --all-files
 
-  - uses: jakebailey/pyright-action@v2
-  ```
+    - uses: jakebailey/pyright-action@v2
+    ```
 
 - running pyright in other CI Solutions:
   <https://github.com/microsoft/pyright/blob/main/docs/ci-integration.md>
@@ -304,6 +304,23 @@ Using black with other tools: [https://black.readthedocs.io/en/stable/guides/usi
 ## Coverage
 
 For Open Source, [Codecov](https://about.codecov.io/for/open-source/) and [SonarQube](https://www.sonarsource.com/plans-and-pricing/sonarcloud/) are both free, and have both Github Actions. SonarQube is also a powerful static linting tool.
+
+### SonarQube
+
+- CI based config
+    <https://docs.sonarsource.com/sonarcloud/advanced-setup/ci-based-analysis/sonarscanner-cli/>
+
+    ```config title="sonar-project.properties"
+    sonar.sources=src
+    sonar.tests=tests
+    sonar.python.version=3.11 3.12
+    sonar.python.coverage.reportPaths=coverage.xml
+    sonar.qualitygate.ignoreSmallChanges=false
+    ```
+
+- Automatic analysis
+    Triggered on each push
+    <https://docs.sonarsource.com/sonarcloud/advanced-setup/automatic-analysis>
 
 ## VSCode
 
@@ -640,7 +657,7 @@ repos:
         always_run: true
 ```
 
-```yaml "mypy instead of pyright in .pre-commit-config.yaml"
+```yaml title="mypy instead of pyright in .pre-commit-config.yaml"
 repos:
   - repo: local
     hooks:
