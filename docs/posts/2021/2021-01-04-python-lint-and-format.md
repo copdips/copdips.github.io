@@ -7,6 +7,7 @@ categories:
 comments: true
 date:
   created: 2021-01-04
+  updated: 2023-11-07
 description: Some commands to lint and format Python files
 ---
 
@@ -20,27 +21,36 @@ description: Some commands to lint and format Python files
 
 ## Lint
 
-Update 2023-05-21: Replaced flake8, pylint, and isort by [ruff](https://github.com/charliermarsh/ruff). When replacing pylint, should [add check by mypy](https://beta.ruff.rs/docs/faq/#how-does-ruff-compare-to-pylint).
-Update 2023-11-07: Bandit could be replaced by ruff too with the support of flake-bandit.
-!!! note
+- Update 2023-05-21: Replaced flake8, pylint, black and isort by [ruff](https://github.com/charliermarsh/ruff). When replacing pylint, should [add check by mypy](https://beta.ruff.rs/docs/faq/#how-does-ruff-compare-to-pylint).
+- Update 2023-11-07: Bandit could be replaced by ruff too with the support of flake-bandit.
 
-    The nearly only thing that ruff can not do for the moment is the [type checking](https://docs.astral.sh/ruff/faq/#how-does-ruff-compare-to-mypy-or-pyright-or-pyre).
+!!! note
+    The only thing ruff can't do at the moment is [type checking](https://docs.astral.sh/ruff/faq/#how-does-ruff-compare-to-mypy-or-pyright-or-pyre).
 
 ### ruff
 
+Fast, just blazing fast.
+
 ```bash
-ruff .
-ruff check .  # check is the default command so can be ignore
+# lint
+ruff check
+
+# format
+ruff format
 
 # show ignored ruff alerts
-ruff . --ignore-noqa --exit-zero
+ruff check --ignore-noqa --exit-zero
 ```
+
+!!! note "try also `uv pip install`"
+    For `pip install` users, try [uv pip install](https://github.com/astral-sh/uv) from the same author of ruff.
+
+    A highly opinionated and subjective perspective, but finally, we have a real competitor (or even a replacement) of `pip install`. If you have a private PyPi index, all you need to setup is `export UV_DEFAULT_INDEX=$PIP_INDEX_URL`; otherwise, just add `uv` before `pip install` command.
 
 ### pylint
 
-!!! note
-
-    Could be replaced by [ruff](https://github.com/charliermarsh/ruff).
+!!! warning
+    Replaced by [ruff](#ruff).
 
 As pylint has too many options, it's recommended to use the pylint config file:
 
@@ -83,9 +93,8 @@ Use [dummy variable](https://pylint.pycqa.org/en/latest/user_guide/configuration
 
 ### flake8
 
-!!! note
-
-    Could be replaced by [ruff](https://github.com/charliermarsh/ruff).
+!!! warning
+    Replaced by [ruff](#ruff).
 
 ```bash
 # ignore W503 because of black format. BTW, flake8 also has W504 which is in contrary to W503.
@@ -110,9 +119,8 @@ To fix `imported but not used` error in `__init__.py` file, could by [`__all__`]
 
 ### bandit
 
-!!! note
-
-    Update 2023-11-07: [ruff](https://docs.astral.sh/ruff/rules/#flake8-bandit-s) supports flake-bandit, so we can use ruff instead of bandit now, vscode also supports to [switch to flakes-bandit](https://github.com/microsoft/vscode-python/wiki/Migration-to-Python-Tools-Extensions#alternatives-for-deprecated-settings--).
+!!! warning
+    Replaced by [ruff](#ruff).
 
 The bandit config file format is not well documented, I passed a lot of time to test the config.
 
@@ -168,16 +176,38 @@ include = []
 exclude = []
 ```
 
-running pyright:
+- running pyright locally:
 
-```bash
+  ```bash
+  ## scan pathes specified in pyproject.toml include, exclude
+  pyright
 
-## scan pathes specified in pyproject.toml include, exclude
-pyright
+  ## scan current folder and subfolders in spite of pyproject.toml include, exclude
+  pyright .
+  ```
 
-## scan current folder and subfolders in spite of pyproject.toml include, exclude
-pyright .
-```
+- running pyright in pre-commit:
+
+  ```yaml title=".pre-commit-config.yaml"
+  - repo: https://github.com/RobertCraigie/pyright-python
+    rev: v1.1.388
+    hooks:
+      - id: pyright
+  ```
+
+- running pyright in Github Action:
+
+  ```yaml title="github action"
+  - name: Run lint
+    run: |
+      # in case pre-commit has set up a pyright hook, we should not use it in CI.
+      SKIP=pyright pre-commit run --all-files
+
+  - uses: jakebailey/pyright-action@v2
+  ```
+
+- running pyright in other CI Solutions:
+  <https://github.com/microsoft/pyright/blob/main/docs/ci-integration.md>
 
 ### mypy
 
@@ -211,6 +241,9 @@ mypy . --exclude venv[//] # exclude venv folder under the root
 
 ### ignore lint error in one line
 
+!!! warning
+    All linters could be replaced by [ruff](#ruff), only typing checkers like mypy and pyright are not supported by ruff.
+
 |      linter      |                                   ignore in one line                                   |
 | ---------------- | -------------------------------------------------------------------------------------- |
 | ruff             | (2 spaces)# noqa: {errorIdentifier}                                                    |
@@ -243,9 +276,8 @@ from y import c  # noqa: E402
 
 ### isort
 
-!!! note
-
-    Could be replaced by [ruff](https://github.com/charliermarsh/ruff).
+!!! warning
+    Replaced by [ruff](#ruff).
 
 ```bash
 isort . --profile=black --virtual-env=venv --recursive --check-only
@@ -254,10 +286,12 @@ isort [a_file_path]
 ```
 
 !!! warning
-
     Be very careful with isort, it's not uncompromising, especially for some codes that dynamically import some modules inside a function instead of from the beginning of a file. People use often this to avoid circular import problem. Always run the tests after the isort.
 
 ### black
+
+!!! warning
+    Replaced by [ruff](#ruff).
 
 ```bash
 black . --check
@@ -266,6 +300,10 @@ black [a_file_path]
 ```
 
 Using black with other tools: [https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html](https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html)
+
+## Coverage
+
+For Open Source, [Codecov](https://about.codecov.io/for/open-source/) and [SonarQube](https://www.sonarsource.com/plans-and-pricing/sonarcloud/) are both free, and have both Github Actions. SonarQube is also a powerful static linting tool.
 
 ## VSCode
 
@@ -331,148 +369,139 @@ All the the major tools (setuptools, pip-tools, poetry) support this new standar
 
     We cannot officially [declare flake8 config in pyproject.toml](https://github.com/PyCQA/flake8/issues/234).
 
-Hereunder an example of its content for the lint part.
+Hereunder an example of `pyproject.toml` file in my [fastapi-demo](https://github.com/copdips/fastapi-demo/blob/main/pyproject.toml) repo.
 
-```toml
+```toml title="pyproject.toml"
 [tool.ruff]
 fix = true
 show-fixes = true
-select = [
-    "ALL",
-    # "E",  # pycodestyle errors
-    # "W",  # pycodestyle warnings
-    # "F",  # pyflakes
-    # "I",  # isort
-    # "C",  # flake8-comprehensions
-    # "B",  # flake8-bugbear
-]
-ignore = [
+lint.select = ["ALL"]
+lint.ignore = [
     # https://beta.ruff.rs/docs/rules/
-    "D",  # pydocstyle
-    "E501",  # line too long, handled by black
-    "B008",  # do not perform function calls in argument defaults
-    "ANN",  # flake8-annotations
-    # "C901",  # too complex
-    # "PTH123", # pathlib-open - this would force pathlib usage anytime open or with open was used.
+    "D",      # pydocstyle
+    "E501",   # line too long, handled by black
+    "B008",   # do not perform function calls in argument defaults
+    "ANN",    # flake8-annotations
+    "PTH123", # pathlib-open - this would force pathlib usage anytime open or with open was used.
+    "FA102",  # Missing `from __future__ import annotations`, but uses PEP 604 union.
+    "ERA001", # Found commented-out code
+    "TD",     # flake8-todo
+    "FIX002", # Line contains TODO, consider resolving the issue
+    "COM812", # missing-trailing-comma
+    "ISC001", # single-line-implicit-string-concatenation
 ]
-
-[tool.ruff.isort]
-
-## Combine multiple `from foo import bar as baz` statements with the same source
-
-## (`foo`) into a single statement.
-combine-as-imports = true
-
-## Imports of the form `from foo import bar as baz` show one `import bar as baz`
-
-## per line. Useful for __init__.py files that just re-export symbols.
-force-wrap-aliases = true
-
-[tool.ruff.per-file-ignores]
-
-## Don't format docstrings in alembic migrations.
-"**/alembic/versions/*.py" = ["D"]
+[tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = [
+    # at least this three should be fine in tests:
     "S101", # asserts allowed in tests...
-    "ARG", # Unused function args -> fixtures nevertheless are functionally relevant...
-    "FBT", # Don't care about booleans as positional arguments in tests, e.g. via @pytest.mark.parametrize()
+    # "ARG", # Unused function args -> fixtures nevertheless are functionally relevant...
+    # "FBT", # Don't care about booleans as positional arguments in tests, e.g. via @pytest.mark.parametrize()
 ]
-[tool.ruff.pep8-naming]
+"tools/**/*.py" = ["ALL"]
+"migrations/**/*.py" = ["ALL"]
+"_local_test/**/*.py" = ["ALL"]
+[tool.ruff.lint.isort]
+combine-as-imports = true
+force-wrap-aliases = true
+[tool.ruff.lint.pylint]
+max-args = 8
+[tool.ruff.lint.pep8-naming]
 classmethod-decorators = ["pydantic.validator"]
 
 [tool.pyright]
 reportUnnecessaryTypeIgnoreComment = true
-
-## mypy not used in favor of pyright
-
-## [tool.mypy]
-
-## incremental = true
-
-## ignore_missing_imports = true
-
-## warn_return_any = true
-
-## warn_unused_configs = true
-
-## # disallow_untyped_defs = true
-
-## exclude = [
-
-##     "^.venv/",
-
-##     "^build/",
-
-##     "^_local_test/",
-## ]
-
-[tool.bandit]
-exclude_dirs = [".venv", "_local_test"]
-skips = ["B101"]
-## tests = ["B201", "B301"]
-
-## replaced by ruff with mypy
-
-## [tool.pylint.main]
-
-## # ! type to use pyspark-stubs
-
-## # extension-pkg-allow-list = ["pyspark"]
-
-## # ignored-modules = ["pyspark"]
-
-## jobs = 0
-
-## # [tool.pylint.typecheck]
-
-## # # ! type to use pyspark-stubs
-
-## # generated-members = ["pyspark.sql.functions"]
-
-## [tool.pylint.variables]
-
-## # List of additional names supposed to be defined in builtins. Remember that
-
-## # you should avoid defining new builtins when possible.
-
-## # additional-builtins = ["spark"]
-
-## [tool.pylint."messages control"]
-
-## disable = [
-
-##     "missing-class-docstring",
-
-##     "missing-module-docstring",
-
-##     "missing-function-docstring",
-
-##     "logging-fstring-interpolation",
-
-## ]
-
-## [tool.pylint.miscellaneous]
-
-## notes = ["FIXME"]
-
-## [tool.pylint.format]
-
-## max-line-length = 88
-
-## expected-line-ending-format = "LF"
-## ignore-long-lines = "^\\s*(# )?<?https?://\\S+>?$"
+exclude = ["_local_test", "tools", "migrations", ".venv"]
+# include = ["app"]
+venvPath = "."
+venv = ".venv"
 
 [tool.pytest.ini_options]
-testpaths=["tests/unit"]
-addopts="""
+# testpaths = ["tests/unit"]  # no unit test yet
+testpaths = ["tests/integration"]
+# https://pytest-asyncio.readthedocs.io/en/latest/concepts.html#auto-mode
+asyncio_mode = "auto"
+addopts = """
     -v -s
-    --junitxml=junit/test-results.xml
+    --junitxml=junit.xml
     --cov app
     --cov-report=html
     --cov-report=xml
     --cov-report=term-missing:skip-covered
-    --cov-fail-under=95
+    --cov-fail-under=70
     """
+# env is enabled by pytest-env
+env = ["TESTING=yes"]
+
+[tool.mypy]
+plugins = ["pydantic.mypy"]
+exclude = ["^.venv/", "^build/", "^_local_test/"]
+follow_imports = "silent"
+warn_redundant_casts = true
+warn_unused_ignores = true
+disallow_any_generics = true
+check_untyped_defs = true
+no_implicit_reexport = true
+
+# for strict mypy: (this is the tricky one :-))
+disallow_untyped_defs = false
+
+[tool.pydantic-mypy]
+# https://docs.pydantic.dev/2.6/integrations/mypy/
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+
+
+[project]
+name = "fastapi-demo"
+dynamic = ["version", "dependencies", "optional-dependencies"]
+authors = [{ name = "Xiang ZHU", email = "xiang.zhu@outlook.com" }]
+description = "fastapi-demo"
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+classifiers = [
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.urls]
+repository = "https://github.com/copdips/fastapi-demo"
+documentation = "https://github.com/copdips/fastapi-demo"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+version = { file = ["VERSION"] }
+
+[tool.setuptools.dynamic.dependencies]
+file = ["requirements/base.txt"]
+
+[tool.setuptools.dynamic.optional-dependencies]
+dev = { file = ["requirements/dev.txt"] }
+docs = { file = ["requirements/docs.txt"] }
+
+[tool.coverage.run]
+relative_files = true
+
+```
+
+```toml title="pyproject.toml with mypy config instead of pyright one"
+...
+[tool.mypy]
+incremental = true
+ignore_missing_imports = true
+warn_return_any = true
+warn_unused_configs = true
+# disallow_untyped_defs = true
+exclude = [
+    "^.venv/",
+    "^build/",
+    "^_local_test/",
+]
+...
 ```
 
 ## Git pre-commit
@@ -538,16 +567,17 @@ pre-commit init-templatedir ~/.git-template
 
     When using mypy in pre-commit, it would be better run `pre-commit run --all-files`, mypy [doesn't work well with only diff files](https://github.com/python/mypy/issues/13916) sent by `pre-commit run --from-ref origin/${pullrequest_target_branch_name} --to-ref HEAD`.
 
-```yaml
+Hereunder an example of `.pre-commit-config.yaml` file in my [fastapi-demo](https://github.com/copdips/fastapi-demo/blob/main/.pre-commit-config.yaml) repo.
 
+```yaml title=".pre-commit-config.yaml"
 ## Installation:
+# pip install pre-commit
+# pre-commit install
+# pre-commit autoupdate
 
-## pip install pre-commit
-
-## pre-commit install
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.3.0
+    rev: v5.0.0
     hooks:
       - id: check-json
         exclude: devcontainer.json
@@ -561,105 +591,16 @@ repos:
       - id: mixed-line-ending
         args: ["--fix=lf"]
       - id: check-added-large-files
-      - id: no-commit-to-branch
+      # - id: no-commit-to-branch
   - repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.3.1
+    rev: v1.5.5
     hooks:
       - id: forbid-crlf
       - id: remove-crlf
       - id: forbid-tabs
       - id: remove-tabs
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.0.0-alpha.1
-    hooks:
-      - id: prettier
-  - repo: https://github.com/pre-commit/pygrep-hooks
-    rev: v1.9.0
-    hooks:
-      - id: python-check-blanket-type-ignore
-      - id: python-check-mock-methods
-      - id: python-no-log-warn
-      - id: python-use-type-annotations
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v3.1.0
-    hooks:
-      - id: pyupgrade
-  - repo: local
-    hooks:
-      - id: bandit
-        name: bandit
-        entry: bandit
-        language: system
-        types: [python]
-        args:
-          - -c
-          - pyproject.toml
-      - id: ruff
-        name: ruff
-        entry: ruff
-        language: system
-        types: [python]
-        args:
-          - "."
-      - id: black
-        name: black
-        entry: black
-        language: system
-        types: [python]
-      - id: pyright
-        name: pyright
-        language: system
-        entry: pyright
-        types: [python]
-      - id: pytest
-        name: pytest
-        types: [python]
-        entry: pytest
-        language: system
-        pass_filenames: false
-        always_run: true
-
-```
-
-!!! warning
-
-    Be aware that especially in a local environment, we often use venv, in such case, it would be better to use above system level lint executables instead of below public ones, the checks will be more accurate.
-
-```yaml
-
-## example of using online linters
-
-## Installation:
-
-## pip install pre-commit
-
-## pre-commit install
-repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
-    hooks:
-      - id: check-json
-        exclude: devcontainer.json
-      - id: check-yaml
-      - id: check-toml
-      - id: end-of-file-fixer
-      - id: trailing-whitespace
-      - id: debug-statements
-      - id: requirements-txt-fixer
-      - id: detect-private-key
-      - id: mixed-line-ending
-        args: ["--fix=lf"]
-      - id: check-added-large-files
-      - id: no-commit-to-branch
-  - repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.5.1
-    hooks:
-      - id: forbid-crlf
-      - id: remove-crlf
-      - id: forbid-tabs
-      - id: remove-tabs
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.0.0-alpha.9-for-vscode
+    rev: v4.0.0-alpha.8
     hooks:
       - id: prettier
         exclude: ".md"
@@ -670,43 +611,47 @@ repos:
       - id: python-check-mock-methods
       - id: python-no-log-warn
       - id: python-use-type-annotations
+  - repo: https://github.com/RobertCraigie/pyright-python
+    rev: v1.1.388
+    hooks:
+      - id: pyright
   - repo: local
     hooks:
-      - id: bandit
-        name: bandit
-        entry: bandit
-        language: system
-        types: [python]
-        args:
-          - -c
-          - pyproject.toml
       - id: ruff
         name: ruff
-        entry: ruff
+        entry: ruff check --force-exclude
         language: system
-        types: [python]
-        args:
-          - --fix
-      - id: black
-        name: black
-        entry: black
+        types: [python, pyi]
+        args: []
+        require_serial: true
+      - id: ruff-format
+        name: ruff-format
+        entry: ruff format --force-exclude
         language: system
-        types: [python]
-      - id: mypy
-        name: mypy
-        language: system
-        entry: mypy
-        types: [python]
-        args:
-          # - --strict
-          - --show-error-codes
+        types: [python, pyi]
+        args: []
+        require_serial: true
       - id: pytest
         name: pytest
-        types: [python]
+        # types: [python]
         entry: pytest
         language: system
         pass_filenames: false
         always_run: true
+```
+
+```yaml "mypy instead of pyright in .pre-commit-config.yaml"
+repos:
+  - repo: local
+    hooks:
+    - id: mypy
+      name: mypy
+      language: system
+      entry: mypy
+      types: [python]
+      args:
+        # - --strict
+        - --show-error-codes
 ```
 
 ### Install the git hook scripts
@@ -732,6 +677,8 @@ pre-commit installed at .git/hooks/pre-merge-commit
 
 ```bash
 pre-commit run --all-files
+# or
+pre-commit run -a
 ```
 
 ### Run for changed files only in CI
