@@ -26,11 +26,9 @@ build:
 	@echo "${BOLD}${YELLOW}mkdocs build:${NORMAL}"
 	${PYTHON} -m mkdocs build -s
 
-serve:
+run:
 	@echo "${BOLD}${YELLOW}mkdocs serve:${NORMAL}"
-	${PYTHON} -m mkdocs build -s && ${PYTHON} -m mkdocs serve
-
-run: serve
+	${PYTHON} -m mkdocs serve --dirty
 
 update-venv:
 	@echo "${BOLD}${YELLOW}update venv:${NORMAL}"

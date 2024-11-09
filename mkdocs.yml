@@ -154,8 +154,7 @@ plugins:
           paths: [..]
   - mkdocs-video
   - glightbox
-  - minify:
-      minify_html: true
+  - minify_html
   - git-committers:
       enabled: !ENV [CI, false]
       repository: copdips/copdips.github.io

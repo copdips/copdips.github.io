@@ -8,3 +8,6 @@ mkdocstrings-python
 mkdocs-video
 mkdocs-glightbox
 mkdocs-rss-plugin
+# use minify-html instead of minify to boost build speed
+# https://github.com/mkdocs/mkdocs/issues/3695#issuecomment-2094395638
+mkdocs-minify-html-plugin

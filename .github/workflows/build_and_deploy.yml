@@ -25,6 +25,7 @@ jobs:
 
     steps:
       - name: Checkout repository
+        # https://squidfunk.github.io/mkdocs-material/blog/2023/09/22/using-git-sparse-checkout-for-faster-documentation-builds/
         uses: actions/checkout@v4
         with:
           fetch-depth: 0

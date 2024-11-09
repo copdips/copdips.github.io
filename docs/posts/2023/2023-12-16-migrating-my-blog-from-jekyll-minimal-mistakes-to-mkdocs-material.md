@@ -9,6 +9,7 @@ categories:
 comments: true
 date:
   created: 2023-12-16
+  updated: 2024-11-10
 description: ''
 ---
 
@@ -135,3 +136,9 @@ Code action view Source is bound to `master` branch by default, not `main` branc
 Jekyll uses `gh-pages` branch to publish blog, but I used GitHub actions within Mkdocs, so I didn't need to use `gh-pages` branch. To use GitHub actions, I went to my repository at https://github.com/copdips/copdips.github.io/, entered `Settings` -> `Pages`, and set Github Actions as `Source`.
 
 My GitHub Actions for blog publishing can be found [here](https://github.com/copdips/copdips.github.io/blob/main/.github/workflows/build_and_deploy.yml).
+
+## Performance
+
+When previewing the blog locally, add the `--dirty` flag like `python -m mkdocs serve --dirty` to build only the changed files, which can speed up the build process. Using `python -m` is helpful when, for example, [custom pymdownx scripts](../2023/2023-12-17-rendering-csv-as-markdown-table-in-mkdocs-material.md) are required.
+
+For a deeper understanding of the build time, we can use [this tips](https://github.com/mkdocs/mkdocs/issues/3695#issuecomment-2094373134).
