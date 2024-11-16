@@ -69,22 +69,21 @@ by the param grid.
     def my_decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            print("Something is happening before the function is called.")
+            print("Before the function is called.")
             result = func(*args, **kwargs)
-            print("Something is happening after the function is called.")
+            print("After the function is called.")
             return result
         return wrapper
 
     @my_decorator
     def say_hello():
-        """This function says hello."""
         print("Hello!")
 
     say_hello()
 
     """output:
-    Something is happening before the function is called.
+    Before the function is called.
     Hello!
-    Something is happening after the function is called.
+    After the function is called.
     """
     ```
