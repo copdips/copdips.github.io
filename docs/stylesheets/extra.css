@@ -4,16 +4,16 @@
 
 /* inline code */
 .md-typeset p > code {
-  background-color: #e6e6e6;
+  background-color: #ececef;
   color: #000000;
 }
 [data-md-color-scheme="slate"] .md-typeset p > code {
-  background-color: #525252b5;
+  background-color: #525252;
   color: #c9c6c6;
 }
 @media (prefers-color-scheme: dark) {
   .md-typeset p > code {
-    background-color: #dbd7d7;
+    background-color: #ececef;
     color: #000000;
   }
   [data-md-color-scheme="slate"] .md-typeset p > code {
