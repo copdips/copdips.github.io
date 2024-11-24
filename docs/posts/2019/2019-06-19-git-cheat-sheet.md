@@ -6,6 +6,7 @@ categories:
 comments: true
 date:
   created: 2019-06-19
+  updated: 2024-11-24
 description: Some personal often forgotten git commands.
 ---
 
@@ -261,7 +262,7 @@ You may need to use `git config --system` to set the config at system level.
 Usually, in an enterprise environment, we need to use a proxy to connect to the Internet resources.
 And from Powershell, we can ask Powershell to [inherit the IE proxy settings](https://copdips.com/2018/05/setting-up-powershell-gallery-and-nuget-gallery-for-powershell.html#configure-proxy-in-powershell).
 
-With this proxy setting in Powershell, we should be able to use `git clone` to connect to the external www.github.com or to the internally hosted for example https://github.your_enterprise.local/
+With this proxy setting in Powershell, we should be able to use `git clone` to connect to the external <www.github.com> or to the internally hosted for example https://github.your_enterprise.local/
 
 But trust me, some enterprises' proxy settings (often for those who use a [.pac](https://en.wikipedia.org/wiki/Proxy_auto-config) file) are so complicated that Powershell cannot use the proxy the same way as IE.
 
@@ -298,4 +299,10 @@ $ cd old-repository.git
 $ git push --mirror https://github.com/exampleuser/new-repository.git
 $ cd -
 $ rm -rf old-repository.git
+```
+
+## Ignoring pre-commit hook
+
+```bash
+git commit --no-verify
 ```
