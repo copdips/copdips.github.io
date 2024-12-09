@@ -31,7 +31,7 @@ If you're running Jekyll v3.7+ and self-hosting you can quickly install the them
 
 ### Gem-based method
 
-With Gem-based themes, directories such as the `assets`, `_layouts`, `_includes`, and `_sass` are stored in the theme’s gem, hidden from your immediate view. This allows for easier installation and updating as you don't have to manage any of the theme files. 
+With Gem-based themes, directories such as the `assets`, `_layouts`, `_includes`, and `_sass` are stored in the theme's gem, hidden from your immediate view. This allows for easier installation and updating as you don't have to manage any of the theme files.
 
 To install as a Gem-based theme:
 
@@ -166,7 +166,7 @@ Edit `_config.yml`. Then:
 
 If you're migrating a site already using Minimal Mistakes and haven't customized any of the theme files things upgrading will be easier for you.
 
-Start by removing the following folders and any files within them: 
+Start by removing the following folders and any files within them:
 
 ```terminal
 ├── _includes
@@ -180,7 +180,7 @@ Start by removing the following folders and any files within them:
 
 You won't need these anymore as they're bundled with the theme gem --- unless you intend to [override them](https://jekyllrb.com/docs/themes/#overriding-theme-defaults).
 
-**Note:** When clearing out the `assets` folder be sure to leave any files you've added and need. This includes images, CSS, or JavaScript that aren't already [bundled in the theme](https://github.com/mmistakes/minimal-mistakes/tree/master/assets). 
+**Note:** When clearing out the `assets` folder be sure to leave any files you've added and need. This includes images, CSS, or JavaScript that aren't already [bundled in the theme](https://github.com/mmistakes/minimal-mistakes/tree/master/assets).
 {: .notice--warning}
 
 From `v4.5.0` onwards, the default language files are read-in automatically via the [`jekyll-data`](https://github.com/ashmaroli/jekyll-data) plugin if it's installed. For sites hosted with GitHub Pages, you still need to copy the [`_data/ui-text.yml`][ui-text.yml] file because the `jekyll-data` plugin [is unsupported on GitHub Pages](https://docs.github.com/en/github/working-with-github-pages/about-github-pages-and-jekyll#plugins).
@@ -193,7 +193,7 @@ Replace `gem "github-pages` or `gem "jekyll"` with `gem "jekyll", "~> 3.5"`. You
 
 [^update-jekyll]: You could also run `bundle update jekyll` to update Jekyll.
 
-Add the Minimal Mistakes theme gem: 
+Add the Minimal Mistakes theme gem:
 
 ```ruby
 gem "minimal-mistakes-jekyll"

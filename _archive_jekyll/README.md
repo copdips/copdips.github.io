@@ -82,7 +82,7 @@ There are three ways to install: as a [gem-based theme](https://jekyllrb.com/doc
 
 ### Gem-based method
 
-With Gem-based themes, directories such as the `assets`, `_layouts`, `_includes`, and `_sass` are stored in the theme’s gem, hidden from your immediate view. Yet all of the necessary directories will be read and processed during Jekyll’s build process.
+With Gem-based themes, directories such as the `assets`, `_layouts`, `_includes`, and `_sass` are stored in the theme's gem, hidden from your immediate view. Yet all of the necessary directories will be read and processed during Jekyll's build process.
 
 This allows for easier installation and updating as you don't have to manage any of the theme files. To install:
 

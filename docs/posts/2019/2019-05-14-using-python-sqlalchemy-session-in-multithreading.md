@@ -102,7 +102,7 @@ if __name__ == "__main__":
 
 [https://docs.sqlalchemy.org/en/13/orm/contextual.html#contextual-thread-local-sessions](https://docs.sqlalchemy.org/en/13/orm/contextual.html#contextual-thread-local-sessions)
 
-> The scoped_session object is a very popular and useful object used by many SQLAlchemy applications. However, it is important to note that it presents only one approach to the issue of Session management. If you’re new to SQLAlchemy, and especially if the term “thread-local variable” seems strange to you, we recommend that if possible you familiarize first with an off-the-shelf integration system such as Flask-SQLAlchemy or zope.sqlalchemy.
+> The scoped_session object is a very popular and useful object used by many SQLAlchemy applications. However, it is important to note that it presents only one approach to the issue of Session management. If you're new to SQLAlchemy, and especially if the term "thread-local variable" seems strange to you, we recommend that if possible you familiarize first with an off-the-shelf integration system such as Flask-SQLAlchemy or zope.sqlalchemy.
 
 ```python
 from multiprocessing.dummy import Pool as ThreadPool

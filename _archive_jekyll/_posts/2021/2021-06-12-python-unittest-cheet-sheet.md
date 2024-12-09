@@ -151,7 +151,7 @@ $ pytest -k "send_http or quick" -v
 
 [https://docs.pytest.org/en/reorganize-docs/new-docs/user/xfail.html#strict-parameter](https://docs.pytest.org/en/reorganize-docs/new-docs/user/xfail.html#strict-parameter)
 
-> Having the xfail marker will still run the test but won’t report a traceback once it fails. Instead terminal reporting will list it in the “expected to fail” (`XFAIL`) section. If the test doesn’t fail it will be reported as “unexpectedly passing” (`XPASS`). set strict=True to ensure `XPASS` (unexpectedly passing) causes the tests to be recorded as a failure.
+> Having the xfail marker will still run the test but won't report a traceback once it fails. Instead terminal reporting will list it in the "expected to fail" (`XFAIL`) section. If the test doesn't fail it will be reported as "unexpectedly passing" (`XPASS`). set strict=True to ensure `XPASS` (unexpectedly passing) causes the tests to be recorded as a failure.
 
 ```python
 
@@ -183,7 +183,7 @@ def test_sum(a, b, expected):
 
 [https://docs.pytest.org/en/stable/example/parametrize.html#apply-indirect-on-particular-arguments](https://docs.pytest.org/en/stable/example/parametrize.html#apply-indirect-on-particular-arguments)
 
-> Very often parametrization uses more than one argument name. There is opportunity to apply indirect parameter on particular arguments. It can be done by passing list or tuple of arguments’ names to indirect. In the example below there is a function test_indirect which uses two fixtures: x and y. Here we give to indirect the list, which contains the name of the fixture x. The indirect parameter will be applied to this argument only, and the value a will be passed to respective fixture function.
+> Very often parametrization uses more than one argument name. There is opportunity to apply indirect parameter on particular arguments. It can be done by passing list or tuple of arguments' names to indirect. In the example below there is a function test_indirect which uses two fixtures: x and y. Here we give to indirect the list, which contains the name of the fixture x. The indirect parameter will be applied to this argument only, and the value a will be passed to respective fixture function.
 
 if `indirect=True`, both `x` and `y` fixtures will be used, if only `indirect=["x"]`, then only the fixture `x` will be used, and `y` will be considered as a standard var name.
 
@@ -518,7 +518,7 @@ AttributeError: Mock object has no attribute 'data'
 <NonCallableMagicMock name='mock.Request()' spec='Request' id='...'>
 ```
 
-autospec works well on methods and static attributes, but a serious problem is that it is common for instance attributes to be created in the __init__() method and not to exist on the class at all. autospec can’t know about any dynamically created attributes and restricts the api to visible attributes. This is why autospeccing is not the patch default behaviour. Search the above phrase in the [python official doc](https://docs.python.org/3/library/unittest.mock.html#autospeccing) to get more details and solutions.
+autospec works well on methods and static attributes, but a serious problem is that it is common for instance attributes to be created in the **init**() method and not to exist on the class at all. autospec can't know about any dynamically created attributes and restricts the api to visible attributes. This is why autospeccing is not the patch default behaviour. Search the above phrase in the [python official doc](https://docs.python.org/3/library/unittest.mock.html#autospeccing) to get more details and solutions.
 {: .notice--warning}
 
 ## unittest.mock.ANY

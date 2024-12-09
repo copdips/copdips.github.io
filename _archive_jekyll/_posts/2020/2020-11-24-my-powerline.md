@@ -65,7 +65,7 @@ mv 10-powerline-symbols.conf ~/.config/fontconfig/conf.d/
 
 - [https://powerline.readthedocs.io/en/latest/usage/other.html#vim-statusline](https://powerline.readthedocs.io/en/latest/usage/other.html#vim-statusline)
 
-If Python support is absent then Vim needs to be compiled with it. To do this use `--enable-pythoninterp` `./configure` flag (Python 3 uses `--enable-python3interp` flag instead). Note that this also requires the related Python headers to be installed. Please consult distribution’s documentation for details on how to compile and install packages.
+If Python support is absent then Vim needs to be compiled with it. To do this use `--enable-pythoninterp` `./configure` flag (Python 3 uses `--enable-python3interp` flag instead). Note that this also requires the related Python headers to be installed. Please consult distribution's documentation for details on how to compile and install packages.
 
 
 Check VIM with python support:
