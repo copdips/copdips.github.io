@@ -10,9 +10,9 @@ date:
 description: ''
 ---
 
-# Python Unittest Cheet Sheet
+# Python Unittest Cheat Sheet
 
-Python unittest and Pytest is a big deal, this post just gives some small & quick examples on how to use Python unittest framwork, especially with Pytest framework. This post is not finished yet.
+Python unittest and Pytest is a big deal, this post just gives some small & quick examples on how to use Python unittest framework, especially with Pytest framework. This post is not finished yet.
 
 <!-- more -->
 
@@ -53,6 +53,7 @@ env = ["TESTING=yes"]
 - <https://github.com/ETretyakov/hero-app/blob/master/app/conftest.py>
 - <https://github.com/ThomasAitken/demo-fastapi-async-sqlalchemy/blob/main/backend/app/conftest.py>
 - <https://github.com/copdips/fastapi-demo/blob/main/tests/integration/conftest.py>
+- <https://github.com/copdips/fastapi-demo/blob/b0142df65ffe2d2f72a1414ca27f0ca9aaeeff4d/pyproject.toml#L48>
 
 ## pytest in Makefile
 
@@ -143,7 +144,7 @@ Another way to using ipdb in debugger is to set `export PYTHONBREAKPOINT=ipdb.se
 
 ## jupyter notebook #%% Debug Cell (VSCode only)
 
-Aadd the `#%%` marker on a line, you will see a `Debug Cell` code lens. Should install the module jupyter at first.
+Add the `#%%` marker on a line, you will see a `Debug Cell` code lens. Should install the module jupyter at first.
 
 !!! warning
 
@@ -171,7 +172,6 @@ AssertionError('assert result == "ok"',)
 >>> sys.last_type
 <class 'AssertionError'>
 
-<!-- more -->
 
 ```
 
@@ -180,8 +180,6 @@ AssertionError('assert result == "ok"',)
 [https://docs.pytest.org/en/stable/usage.html#dropping-to-pdb-python-debugger-at-the-start-of-a-test](https://docs.pytest.org/en/stable/usage.html#dropping-to-pdb-python-debugger-at-the-start-of-a-test)
 
 allows one to drop into the PDB prompt immediately at the start of each test via a command line option.
-
-<!-- more -->
 
 ## pytest \-\-disable-socket
 
@@ -202,7 +200,10 @@ To allow specific hosts: `pytest --disable-socket --allow-hosts=127.0.0.1,8.8.8.
 
 [https://docs.pytest.org/en/stable/example/markers.html](https://docs.pytest.org/en/stable/example/markers.html)
 
-We can use `@pytest.mark.foo` decorator to add a marker (label) on any test, and use `pytest -m foo` to run the tests only with mark name is `foo`.
+Firstly but **optionally**, we could [register the markers](https://docs.pytest.org/en/stable/how-to/mark.html#registering-marks)
+
+Than, we can use `@pytest.mark.foo` decorator to add a `foo` marker (label) on any test, and use `pytest -m foo` to run the tests only with mark name is `foo`, and `pytest -m "not foo"` to run the tests without mark name is `foo`.
+
 This method is often used by the pytest extensions to for example enable or disable the extension on some specific tests. Like [@pytest.mark.enable_socket for the pytest-socket extension](https://github.com/miketheman/pytest-socket#usage)
 
 Some people also use markers to categorize the tests, like `@pytest.mark.unit` for unit tests, and `@pytest.mark.integration` for integration tests, etc.
@@ -210,13 +211,14 @@ Personally, I don't like this because it forces to add the markers on every test
 
 We can also [marking the whole class or modules](https://docs.pytest.org/en/stable/example/markers.html#marking-whole-classes-or-modules).
 
+To run the tests with multiple markers, use `pytest -m "foo or bar"`.
+To run the tests not with multiple markers, use `pytest -m "not foo and not bar"`.
+
 ## pytest -k expr
 
 [https://docs.pytest.org/en/stable/example/markers.html#using-k-expr-to-select-tests-based-on-their-name](https://docs.pytest.org/en/stable/example/markers.html#using-k-expr-to-select-tests-based-on-their-name)
 
-You can use the -k command line option to specify an expression which implements a substring match on the test names `or class names or file names` instead of the exact match on markers that -m provides. This makes it easy to select tests based on their names.
-
-<!-- more -->
+You can use the `-k` command line option to specify an expression which implements a substring match on the `test names` or `class names` or `file names` instead of the exact match on markers that -m provides. This makes it easy to select tests based on their names.
 
 You can use `and`, `or`, and `not`.
 
@@ -226,11 +228,47 @@ pytest -k "not send_http" -v
 pytest -k "send_http or quick" -v
 ```
 
+## Failfast
+
+<https://docs.pytest.org/en/stable/how-to/failures.html#stopping-after-the-first-or-n-failures>
+
+`--exitfirst` / `-x` can now be overridden by a following `--maxfail=N` and is just a synonym for `--maxfail=1`.
+
+```bash
+$ pytest --help | grep -E '\--tb|maxfail'
+  --tb=style            Traceback print mode (auto/long/short/line/native/no)
+  --maxfail=num         Exit after first num failures or errors
+
+$ pytest --maxfail=1 --tb=short
+```
+
+[Modifying Python traceback printing](https://docs.pytest.org/en/stable/how-to/output.html#modifying-python-traceback-printing) with `--tb`:
+
+```bash
+pytest --showlocals     # show local variables in tracebacks
+pytest -l               # show local variables (shortcut)
+pytest --no-showlocals  # hide local variables (if addopts enables them)
+
+pytest --capture=fd  # default, capture at the file descriptor level
+pytest --capture=sys # capture at the sys level
+pytest --capture=no  # don't capture
+pytest -s            # don't capture (shortcut)
+pytest --capture=tee-sys # capture to logs but also output to sys level streams
+
+pytest --tb=auto    # (default) 'long' tracebacks for the first and last
+                     # entry, but 'short' style for the other entries
+pytest --tb=long    # exhaustive, informative traceback formatting
+pytest --tb=short   # shorter traceback format
+pytest --tb=line    # only one line per failure
+pytest --tb=native  # Python standard library formatting
+pytest --tb=no      # no traceback at all
+```
+
 ## @pytest.mark.xfail(strict=True, reason="")
 
 [https://docs.pytest.org/en/reorganize-docs/new-docs/user/xfail.html#strict-parameter](https://docs.pytest.org/en/reorganize-docs/new-docs/user/xfail.html#strict-parameter)
 
-Having the xfail marker will still run the test but won’t report a traceback once it fails. Instead terminal reporting will list it in the “expected to fail” (`XFAIL`) section. If the test doesn’t fail it will be reported as “unexpectedly passing” (`XPASS`). set strict=True to ensure `XPASS` (unexpectedly passing) causes the tests to be recorded as a failure.
+Having the `xfail` marker will still run the test but won't report a traceback once it fails. Instead terminal reporting will list it in the "expected to fail" (`XFAIL`) section. If the test doesn't fail it will be reported as "unexpectedly passing" (`XPASS`). set strict=True to ensure `XPASS` (unexpectedly passing) causes the tests to be recorded as a failure.
 
 ```python
 
@@ -238,7 +276,6 @@ Having the xfail marker will still run the test but won’t report a traceback o
 def test_function():
     ...
 
-<!-- more -->
 
 ```
 
@@ -265,9 +302,7 @@ def test_sum(a, b, expected):
 
 [https://docs.pytest.org/en/stable/example/parametrize.html#apply-indirect-on-particular-arguments](https://docs.pytest.org/en/stable/example/parametrize.html#apply-indirect-on-particular-arguments)
 
-Very often parametrization uses more than one argument name. There is opportunity to apply indirect parameter on particular arguments. It can be done by passing list or tuple of arguments’ names to indirect. In the example below there is a function test_indirect which uses two fixtures: x and y. Here we give to indirect the list, which contains the name of the fixture x. The indirect parameter will be applied to this argument only, and the value a will be passed to respective fixture function.
-
-<!-- more -->
+Very often parametrization uses more than one argument name. There is opportunity to apply indirect parameter on particular arguments. It can be done by passing list or tuple of arguments' names to indirect. In the example below there is a function test_indirect which uses two fixtures: x and y. Here we give to indirect the list, which contains the name of the fixture x. The indirect parameter will be applied to this argument only, and the value a will be passed to respective fixture function.
 
 if `indirect=True`, both `x` and `y` fixtures will be used, if only `indirect=["x"]`, then only the fixture `x` will be used, and `y` will be considered as a standard var name.
 
@@ -536,6 +571,15 @@ pytest -n auto
 !!! note
 
     There's another module [pytest-parallel](https://github.com/browsertron/pytest-parallel), the author says his module can run the tests in concurrency, and very efficient in integration tests, which tests might be stateful or sequential. I haven't tested yet, so cannot say anything here.
+
+## Ensure each pytest-xdist worker has its own database connection
+
+Based on `worker_id` fixture, possible values are: `gw0`, `gw1`, etc., and `master` if no parallel fixture: https://breadcrumbscollector.tech/posts/running-tests-in-parallel-with-pytest/#worker_id-fixture
+
+## Showing the tests durations
+
+- Sowing the durations of all the tests: `pytest --durations=0`
+- Showing the slowest 10 tests: `pytest --durations=10`
 
 ## speccing
 
