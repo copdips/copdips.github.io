@@ -568,8 +568,10 @@ pip install pytest-xdist[psutil]
 pytest -n auto
 ```
 
-!!! note
+!!! warning "pytest-xdist is not compatible with -s/--capture=no"
+    Due to how `pytest-xdist` is implemented, the `-s/--capture=no` option does not work. a possible workaround is to [creating one log file for each worker](https://pytest-xdist.readthedocs.io/en/latest/how-to.html#creating-one-log-file-for-each-worker), and an example from this [StackOverflow answer](https://stackoverflow.com/a/76261063).
 
+!!! note
     There's another module [pytest-parallel](https://github.com/browsertron/pytest-parallel), the author says his module can run the tests in concurrency, and very efficient in integration tests, which tests might be stateful or sequential. I haven't tested yet, so cannot say anything here.
 
 ## Ensure each pytest-xdist worker has its own database connection

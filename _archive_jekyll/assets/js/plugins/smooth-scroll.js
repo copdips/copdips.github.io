@@ -127,7 +127,7 @@
 		var firstCodeUnit = string.charCodeAt(0);
 		while (++index < length) {
 			codeUnit = string.charCodeAt(index);
-			// Note: there’s no need to special-case astral symbols, surrogate
+			// Note: there's no need to special-case astral symbols, surrogate
 			// pairs, or lone surrogates.
 
 			// If the character is NULL (U+0000), then throw an
