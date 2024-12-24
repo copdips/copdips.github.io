@@ -677,3 +677,21 @@ AttributeError: Mock object has no attribute 'data'
 >>> m(object())
 >>> m.mock_calls == [call(1), call(1, 2), ANY]
 ```
+
+## Appending coverage from multiple test runs
+
+pytest with pytest-cov plugin installed provides the `--cov-append` option to append coverage data from multiple test runs.
+
+```bash
+$ pytest -h | grep append
+  --cov-append          Do not delete coverage but append to current. Default:
+                        False
+```
+
+Under the hood, pytest-cov uses the `coverage` module, and the `coverage` module provides the `combine` method to [combine multiple coverage data files](https://github.com/pytest-dev/pytest-cov/blob/4732d50f2322a6e0ea480a6c400fbc96f78283bb/src/pytest_cov/engine.py#L264-L280).
+
+```bash
+# https://coverage.readthedocs.io/en/latest/cmd.html#combining-data-files-coverage-combine
+
+coverage combine
+```
