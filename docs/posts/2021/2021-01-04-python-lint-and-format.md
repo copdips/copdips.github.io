@@ -239,6 +239,31 @@ mypy . --exclude venv[//] # exclude venv folder under the root
 
     When using mypy, it would be better to use mypy against to [all files in the project](https://github.com/python/mypy/issues/13916), but not some of them.
 
+#### Auto discover missing stub files
+
+```bash
+# search available stubs, and ask for installation,
+# that can be used to declared the stub packages into requirements files.
+mypy --install-types  .
+
+# for local quick test, we might not care about the requirements files.
+mypy --install-types --non-interactive .
+```
+
+### pylyzer
+
+A fast, feature-rich static code analyzer (type checker) & language server for Python written in Rust. A possible mypy, pyright replacement in the future, currently it's still in the [early stage](https://github.com/mtshiba/pylyzer/issues/59#issuecomment-1851284715).
+
+pylyzer [converts Python ASTs to Erg ASTs](https://github.com/mtshiba/pylyzer#how-it-works) and passes them to Erg's type checker. It then displays the results with appropriate modifications.
+
+```bash
+# check single file
+pylyzer single_python_file.py
+
+# check entire package
+pylyzer
+```
+
 ### ignore lint error in one line
 
 !!! warning
