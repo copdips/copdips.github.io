@@ -7,6 +7,7 @@ categories:
 comments: true
 date:
   created: 2021-06-12
+  updated: 2024-12-27
 description: ''
 ---
 
@@ -695,3 +696,84 @@ Under the hood, pytest-cov uses the `coverage` module, and the `coverage` module
 
 coverage combine
 ```
+
+## Fixture teardown
+
+### Teardown by yield (recommended)
+
+[yield](https://docs.pytest.org/en/stable/how-to/fixtures.html#yield-fixtures-recommended)
+
+!!! warning "Need to handle errors for yield fixture"
+    If a yield fixture raises an exception before yielding, pytest won't try to run the teardown code after that yield fixture's yield statement.
+    But, for every fixture that has already run successfully for that test, pytest will still attempt to tear them down as it normally would.
+
+### Teardown by addfinalizer
+
+[request.addfinalizer()](https://docs.pytest.org/en/stable/how-to/fixtures.html#adding-finalizers-directly)
+
+```python
+@pytest.fixture(scope="class")
+def receiving_user(request):
+    monkeypatch = pytest.MonkeyPatch()
+    monkeypatch.setattr("module_foo.attribute_bar", True)
+    request.addfinalizer(monkeypatch.undo)
+```
+
+!!! note "Use a Custom Monkeypatch Fixture for scopes other than function"
+    By default, [monkeypatch](https://docs.pytest.org/en/stable/how-to/monkeypatch.html#how-to-monkeypatch-mock-modules-and-environments)
+    in pytest is a fixture and scoped to functions,
+    and pytest automatically handles teardown without manual intervention.
+    However, when working with class scope or any other scope beyond functions, you must implement
+    a custom `monkeypatch` fixture by [pytest.MonkeyPatch()](https://docs.pytest.org/en/stable/reference/reference.html#pytest.MonkeyPatch)
+    and add the `request.addfinalizer(monkeypatch.undo)` as demonstrated in the example above.
+
+### Fixture teardown order
+
+For yield fixtures, the first teardown code to run is from the [right-most fixture](https://docs.pytest.org/en/stable/how-to/fixtures.html#note-on-finalizer-order), i.e. the last test parameter.
+
+```python title="file: demo_pytest.py"
+import pytest
+
+
+@pytest.fixture
+def fix_w_yield1():
+    print("\nbefore_yield_1")
+    yield
+    print("after_yield_1")
+
+
+@pytest.fixture
+def fix_w_yield2():
+    print("before_yield_2")
+    yield
+    print("after_yield_2")
+
+
+def test_bar(fix_w_yield1, fix_w_yield2):
+    print("\ntest_bar\n")
+```
+
+```bash title="pytest output"
+$ pytest demo_pytest.py
+============= test session starts ===========================
+platform linux -- Python 3.10.15, pytest-7.4.4, pluggy-1.5.0
+rootdir: /home/xiang/git/demo
+plugins: xdist-3.6.1, cov-3.0.0
+collected 1 item
+
+demo_pytest.py
+before_yield_1
+before_yield_2
+
+test_bar
+
+.after_yield_2
+after_yield_1
+
+============== 1 passed in 0.01s ===========================
+```
+
+### Safe teardowns
+
+[Each atomic operation should be in a separate fixture](https://docs.pytest.org/en/stable/how-to/fixtures.html#safe-fixture-structure) and separating it from other.
+But not a big fixutre with many teardown operations after `yield`.
