@@ -48,4 +48,4 @@ Do not use: `export PYTHONBREAKPOINT='IPython.core.debugger.set_trace'`, it open
       ],
     ```
 
-**Use IPython as debugger prompt**: [Python unittest](../2021/2021-06-12-python-unittest-cheet-sheet.md#pytest-pdb-pdbclsipythonterminaldebuggerterminalpdb).
+**Use IPython as debugger prompt**: [Python unittest](../2021/2021-06-12-python-unittest-cheat-sheet.md#pytest---pdb---pdbclsipythonterminaldebuggerterminalpdb).
