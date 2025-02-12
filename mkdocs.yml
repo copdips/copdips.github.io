@@ -157,8 +157,8 @@ plugins:
   - glightbox
   - minify_html
   - git-committers:
-      # enabled: !ENV [CI, false]
-      enabled: false
+      enabled: !ENV [CI, false]
+      token: ${{ secrets.GH_TOKEN_FOR_GIT_COMMITTERS }}
       repository: copdips/copdips.github.io
       branch: main
 
