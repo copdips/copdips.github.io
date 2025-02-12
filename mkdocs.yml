@@ -160,8 +160,6 @@ plugins:
       enabled: !ENV [CI, false]
       repository: copdips/copdips.github.io
       branch: main
-      exclude:
-        - _archive_jekyll/**
 
 theme:
   custom_dir: docs/overrides
