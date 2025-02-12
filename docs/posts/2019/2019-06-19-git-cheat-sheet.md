@@ -23,6 +23,7 @@ User level alias
 Edit `~/.gitconfig`
 
 ```ini
+git config --global alias.amend commit --amend -C HEAD
 git config --global alias.st status
 git config --global alias.lga log --graph --decorate --oneline --all
 git config --global alias.co checkout
@@ -67,7 +68,7 @@ git branch [branch_name] [commit_hash_that_preceded_the_delete_commit]
 
 ## Undo
 
-```mermaid!
+```mermaid
 flowchart LR
     A(Working directory) -->|"git add"| B(Staging area)
     B -->|"git commit"| C(Commit)
