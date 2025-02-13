@@ -161,3 +161,4 @@ cython_debug/
 
 .vscode/
 site/
+!.cache/plugin/git-committers/page-authors.json
