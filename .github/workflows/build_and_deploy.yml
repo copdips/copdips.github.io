@@ -85,6 +85,8 @@ jobs:
           mkdocs --version
           # https://github.com/facelessuser/pymdown-extensions/issues/2240#issuecomment-1819117598
           python -m mkdocs build -s
+        env:
+          MKDOCS_GIT_COMMITTERS_APIKEY: ${{ secrets.GH_TOKEN_FOR_GIT_COMMITTERS }}
 
       # - name: Adjust permissions
       #   run: |
