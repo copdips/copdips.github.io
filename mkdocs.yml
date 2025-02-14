@@ -160,6 +160,7 @@ plugins:
       enabled: !ENV [CI, false]
       repository: copdips/copdips.github.io
       branch: main
+      token: ${{ secrets.GH_TOKEN_FOR_GIT_COMMITTERS }}
 
 theme:
   custom_dir: docs/overrides
