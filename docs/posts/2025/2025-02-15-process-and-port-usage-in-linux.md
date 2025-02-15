@@ -108,6 +108,19 @@ $ pstree -ps $(pgrep -n uvicorn)
 systemd(1)───init-systemd(Ub(2)───SessionLeader(464)───Relay(466)(465)───sh(466)───sh(467)───sh(472)───node(476)───node(579)───bash(30994)───make(57499)───uvicorn(57506)─┬─python3(57507)
                                                                                                                                                                           ├─python3(57508)───{python3}(57509)
                                                                                                                                                                           └─{uvicorn}(57510)
+
+$ pstree -pas $(pgrep uvicorn)
+systemd,1
+  └─init-systemd(Ub,2
+      └─SessionLeader,422
+          └─Relay(424),423
+              └─bash,424
+                  └─make,27286 run-sqlalchemy-v1
+                      └─uvicorn,27293 /home/xiang/git/fastapi-demo/.venv/bin/uvicorn app_sqlalchemy_v1.main:app --reload
+                          ├─python3,27294 -c from multiprocessing.resource_tracker import main;main(4)
+                          ├─python3,27295 -c from multiprocessing.spawn import spawn_main; spawn_main(tracker_fd=5, pipe_handle=7) --multiprocessing-fork
+                          │   └─{python3},27296
+                          └─{uvicorn},27297
 ```
 
 ### ps
