@@ -7,7 +7,7 @@ categories:
 comments: true
 date:
   created: 2021-01-04
-  updated: 2023-11-07
+  updated: 2025-02-22
 description: Some commands to lint and format Python files
 ---
 
@@ -453,9 +453,17 @@ classmethod-decorators = ["pydantic.validator"]
 [tool.pyright]
 reportUnnecessaryTypeIgnoreComment = true
 exclude = ["_local_test", "tools", "migrations", ".venv"]
-# include = ["app"]
-venvPath = "."
-venv = ".venv"
+include = ["app"]
+
+# ! setting venv = ".venv" makes Do To Definition (F12) not working in VSCode,
+# https://github.com/microsoft/pylance-release/issues/6015
+# and for these reason, we cannot use repo: https://github.com/RobertCraigie/pyright-python in pre-commit as suggested here:
+# https://github.com/RobertCraigie/pyright-python#pre-commit
+# instead of we must pip install pyright in a venv, and use the local repo in .pre-commit-config.yaml.
+# and in CICD, we should run `pyright --help` before running pre-commit in CICD, as suggested here:
+# https://github.com/RobertCraigie/pyright-python/issues/200#issuecomment-1872977443
+# venvPath = "."
+# venv = ".venv"
 
 [tool.pytest.ini_options]
 # testpaths = ["tests/unit"]  # no unit test yet
