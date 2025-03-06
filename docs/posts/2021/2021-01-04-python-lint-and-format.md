@@ -661,10 +661,6 @@ repos:
       - id: python-check-mock-methods
       - id: python-no-log-warn
       - id: python-use-type-annotations
-  - repo: https://github.com/RobertCraigie/pyright-python
-    rev: v1.1.388
-    hooks:
-      - id: pyright
   - repo: local
     hooks:
       - id: ruff
@@ -681,6 +677,12 @@ repos:
         types: [python, pyi]
         args: []
         require_serial: true
+      - id: pyright
+        name: pyright
+        entry: pyright
+        language: system
+        types: [python, pyi]
+        args: []
       - id: pytest
         name: pytest
         # types: [python]
@@ -707,6 +709,11 @@ repos:
 ### Install the git hook scripts
 
 ```bash
+# for gitlint, we install the commit-msg hook type:
+# https://jorisroovers.com/gitlint/latest/commit_hooks/#pre-commit
+$ pre-commit install --hook-type commit-msg
+pre-commit installed at .git/hooks/commit-msg
+
 $ pre-commit install
 pre-commit installed at .git/hooks/pre-commit
 
