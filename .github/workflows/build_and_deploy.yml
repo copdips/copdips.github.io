@@ -80,6 +80,21 @@ jobs:
         run: |
           make ci-install
 
+      - name: Remove future-dated markdown files
+        run: |
+          set -x
+          current_date=$(date +%Y-%m-%d)
+          echo "Current date: $current_date"
+          find ./docs/posts -type f -name "*.md" | while read file; do
+            filename=$(basename "$file")
+            filedate=$(echo "$filename" | grep -oP '^\d{4}-\d{2}-\d{2}')
+
+            if [ -n "$filedate" ] && [ "$(date -d "$filedate" +%s)" -gt "$(date -d "$current_date" +%s)" ]; then
+              echo "Deleting future-dated file: $file (date: $filedate > $current_date)"
+              rm "$file"
+            fi
+          done
+
       - name: Build documentation
         run: |
           mkdocs --version
