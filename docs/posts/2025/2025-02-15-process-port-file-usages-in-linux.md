@@ -9,7 +9,6 @@ categories:
 comments: true
 date:
   created: 2025-02-15
-published: true
 ---
 
 # Process, port, and file usages in Linux
@@ -20,7 +19,7 @@ Use `lsof`, `fuser`, `ss`, `pgrep`, `pstree`, `ps`, `htop`, etc. to find process
 
 ## Finding process by port
 
-### lsof
+### lsof by port
 
 ```bash
 lsof -i:8080
@@ -176,6 +175,21 @@ xiang      77068  0.0  0.0   4092  2012 pts/18   S+   00:37   0:00              
 
 Enter into `htop`, press `/` or `F3` to search for a process name, or press `F4` to filter by the process name, then `F9` to kill the process name.
 
+## Finding files by process
+
+### lsof by PID
+
+```bash
+# List all open files
+lsof
+
+# List files opened by a specific process ID
+lsof -p 1234
+
+# List files opened in a specific directory
+lsof +D /var/log/
+```
+
 ## Finding lines in input
 
 ```bash
@@ -202,17 +216,4 @@ timeout 5 bash -c 'echo > /dev/tcp/127.0.0.1/8000' && echo "Port is open" || ech
 
 ```bash
 nc -zv 127.0.0.1 8000
-```
-
-## Finding files by process
-
-```bash
-# List all open files
-lsof
-
-# List files opened by a specific process ID
-lsof -p 1234
-
-# List files opened in a specific directory
-lsof +D /var/log/
 ```
