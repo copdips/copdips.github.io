@@ -126,6 +126,7 @@ plugins:
         - sonar
         - spark
         - sqlalchemy
+        - ssh
         - storage
         - ubuntu
         - unittest

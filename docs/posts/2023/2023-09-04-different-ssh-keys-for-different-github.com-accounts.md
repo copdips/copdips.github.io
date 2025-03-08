@@ -3,6 +3,7 @@ authors:
 - copdips
 categories:
 - git
+- ssh
 comments: true
 date:
   created: 2023-09-04
