@@ -82,7 +82,7 @@ jobs:
 
       - name: Remove future-dated markdown files
         run: |
-          set -x
+          # set -x
           current_date=$(date +%Y-%m-%d)
           echo "Current date: $current_date"
           find ./docs/posts -type f -name "*.md" | while read file; do
