@@ -2,13 +2,17 @@
 authors:
 - copdips
 categories:
+- debug
+- file
 - linux
 - shell
 - network
+- process
 - web
 comments: true
 date:
   created: 2025-02-15
+  updated: 2025-03-09
 ---
 
 # Process, port, and file usages in Linux
@@ -174,6 +178,21 @@ xiang      77068  0.0  0.0   4092  2012 pts/18   S+   00:37   0:00              
 ### htop
 
 Enter into `htop`, press `/` or `F3` to search for a process name, or press `F4` to filter by the process name, then `F9` to kill the process name.
+
+## Finding working directory by process
+
+```bash
+ls -l /proc/$(pgrep -n uvicorn)/cwd
+
+# or
+readlink /proc/$(pgrep -n uvicorn)/cwd
+
+# or
+pwdx $(pgrep -n uvicorn)
+
+# or
+lsof -p $(pgrep -n uvicorn) | grep cwd
+```
 
 ## Finding files by process
 

@@ -117,6 +117,7 @@ plugins:
         - performance
         - pip
         - powershell
+        - process
         - proxy
         - python
         - quart
