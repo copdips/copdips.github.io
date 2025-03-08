@@ -18,6 +18,8 @@ Use `spark.jars` to add local ODBC/JDBC drivers to PySpark, and use `spark.jars.
 
 For `spark-shell`: https://docs.snowflake.com/en/user-guide/spark-connector-install#installing-additional-packages-if-needed
 
+<!-- more -->
+
 ```python linenums="1" hl_lines="5 9"
 from pyspark.sql import SparkSession
 
