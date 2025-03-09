@@ -30,6 +30,57 @@ https://stackoverflow.com/questions/34322471/sqlalchemy-engine-connection-and-se
 - https://community.snowflake.com/s/article/Snowflake-OAuth-Support-Guide
 - https://community.snowflake.com/s/article/Create-External-OAuth-Token-Using-Azure-AD-For-The-OAuth-Client-Itself
 
+## mapped_column vs column property
+
+- <https://docs.sqlalchemy.org/en/20/orm/declarative_tables.html#declarative-table-with-mapped-column>
+- <https://stackoverflow.com/a/76499049/5095636>
+
+```python title="Column from sqlalchemy directly"
+from sqlalchemy import Column
+```
+
+```python title="mapped_column, Mapped from sqlalchemy.orm"
+from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import mapped_column
+```
+
+The [mapped_column()](https://docs.sqlalchemy.org/en/20/orm/mapping_api.html#sqlalchemy.orm.mapped_column) can have type annotations within a special SQLAlchemy type called [Mapped](https://docs.sqlalchemy.org/en/20/orm/internals.html#sqlalchemy.orm.Mapped).
+For e.g.:
+
+- `fullname: Mapped[str]` is compiled to SQL: `fullname VARCHAR NOT NULL`
+- `fullname: Mapped[Optional[str]]` is compiled to SQL: `fullname VARCHAR`
+
+[Default type map](https://docs.sqlalchemy.org/en/20/orm/declarative_tables.html#mapped-column-derives-the-datatype-and-nullability-from-the-mapped-annotation) ():
+
+```python
+from typing import Any
+from typing import Dict
+from typing import Type
+
+import datetime
+import decimal
+import uuid
+
+from sqlalchemy import types
+
+# default type mapping, deriving the type for mapped_column()
+# from a Mapped[] annotation
+type_map: Dict[Type[Any], TypeEngine[Any]] = {
+    bool: types.Boolean(),
+    bytes: types.LargeBinary(),
+    datetime.date: types.Date(),
+    datetime.datetime: types.DateTime(),
+    datetime.time: types.Time(),
+    datetime.timedelta: types.Interval(),
+    decimal.Decimal: types.Numeric(),
+    float: types.Float(),
+    int: types.Integer(),
+    str: types.String(),
+    uuid.UUID: types.Uuid(),
+}
+```
+
 ## Refreshing volatile authentication tokens
 
 Use the [event lister to refresh volatile authentication credentials](https://docs.sqlalchemy.org/en/14/core/engines.html#generating-dynamic-authentication-tokens).
