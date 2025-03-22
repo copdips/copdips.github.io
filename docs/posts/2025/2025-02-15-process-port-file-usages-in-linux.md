@@ -25,6 +25,9 @@ Use `lsof`, `fuser`, `ss`, `pgrep`, `pstree`, `ps`, `htop`, etc. to find process
 
 ### lsof by port
 
+!!! warning
+    `lsof` might not find the port used by the process running in a container.
+
 ```bash
 lsof -i:8080
 lsof -i :8080
