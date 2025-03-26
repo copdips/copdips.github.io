@@ -8,6 +8,7 @@ categories:
 comments: true
 date:
   created: 2025-03-09
+  updated: 2025-03-26
 ---
 
 # Using Pageant with VSCode Remote SSH
@@ -23,21 +24,25 @@ While Putty and Pageant are widely used tools for SSH connections, you can also 
 5. Run `puttygen`, open *Conversions* -> *Import key*, and load your OpenSSH format private key (the one without the `.pub` extension) created in the previous step. This file is typically located in the `%userprofile%\.ssh` folder. Export it to `ppk` format by clicking the *Save private key* button. This conversion is necessary because Pageant only accepts keys in `ppk` format. Save it as `%userprofile%\.ssh\id_ed25519.ppk`.
 6. Launch a terminal (cmd, PowerShell, or Windows Terminal) and execute the following command:
 
-    ```cmd
-    pageant.exe --openssh-config %USERPROFILE%\.ssh\pageant.conf %USERPROFILE%\.ssh\id_ed25519.ppk
+    ```powershell title="From Windows Powershell"
+    # if in Windows command line, replace $env:USERPROFILE with %USERPROFILE%
+    pageant.exe --openssh-config $env:USERPROFILE\.ssh\pageant.conf $env:USERPROFILE\.ssh\id_ed25519.ppk
     ```
 
     Note: Adjust the path to your PPK file if it's stored in a different location.
 
     Upon successful execution, the Pageant icon will appear in your system tray. If you can't see the icon, you may need to configure Windows to show all system tray icons - follow this [guide](https://www.geeksforgeeks.org/show-all-icons-in-system-tray-on-windows/) for instructions. To verify that your key is properly loaded, right-click the Pageant icon and select *View Keys* - you should see `id_ed25519.ppk` listed.
 
-7. Edit your SSH config file located at `%USERPROFILE%\.ssh\config`. Insert `include "pageant.conf"` as the first line. If you have any `IdentityFile your_private_ssh_file_path` lines in your config, remove them since Pageant will now manage your SSH keys.
+7. Edit your SSH config file located at `%USERPROFILE%\.ssh\config` (or `$env:USERPROFILE\.ssh\config` in Powershell). Insert `include "pageant.conf"` as the first line. If you have any `IdentityFile your_private_ssh_file_path` lines in your config, remove them since Pageant will now manage your SSH keys.
 
     ```conf title="A simple example for %USERPROFILE%\.ssh\config"
     include "pageant.conf"
 
     Host *
         User your_username
+        # Specifies whether the connection to the authentication agent will be
+        # forwarded to the remote machine.
+        ForwardAgent yes
     ```
 
 8. Open VSCode, click *View* -> *Command Palette* -> *Remote-SSH: Connect to Host*, and enter `user@hostname`. You should now be able to connect to your remote SSH machine.
