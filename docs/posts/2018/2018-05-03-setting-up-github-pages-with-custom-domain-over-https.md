@@ -4,11 +4,12 @@ authors:
 categories:
 - github
 - web
+- certificate
 comments: true
 date:
   created: 2018-05-03
-description: With Github pages, we can create our blogs in our own domain over HTTPS
-  completely free. Of course you should pay for your domain name at the Registrar.
+  updated: 2025-03-31
+description: With Github pages, we can create our blogs in our own domain over HTTPS completely free. Of course you should pay for your domain name at the Registrar.
 ---
 
 # Setting up Github Pages With custom domain over HTTPS
@@ -37,29 +38,29 @@ Register a custom domain on your preferred domain name registrar
 
    <https://help.github.com/articles/setting-up-a-www-subdomain/>
 
-   - Add a **CNAME** DNS record pointing **www** to **copdips.github.io**
-   - Add a **CNAME** DNS record pointing **blog** to **copdips.github.io**
+   - Add a `CNAME` DNS record pointing `www` to `copdips.github.io`
+   - Add a `CNAME` DNS record pointing `blog` to `copdips.github.io`
 
 1. Add APEX domain
 
    My DNS registrar doesn't support [ALIAS nor ANAME](https://help.github.com/articles/setting-up-an-apex-domain/#configuring-an-alias-or-aname-record-with-your-dns-provider), I should go with the [A records](https://help.github.com/articles/setting-up-an-apex-domain/#configuring-a-records-with-your-dns-provider) :
 
-    - Add a **A** DNS record pointing **@** to **185.199.108.153**
-    - Add a **A** DNS record pointing **@** to **185.199.109.153**
-    - Add a **A** DNS record pointing **@** to **185.199.110.153**
-    - Add a **A** DNS record pointing **@** to **185.199.111.153**
+   - Add a `A` DNS record pointing `@` to `185.199.108.153`
+   - Add a `A` DNS record pointing `@` to `185.199.109.153`
+   - Add a `A` DNS record pointing `@` to `185.199.110.153`
+   - Add a `A` DNS record pointing `@` to `185.199.111.153`
 
 ## Enable custom domain on Github.com
 
 1. Go to github repo
 
-   <https://github.com/githubUserName/githubUserName.github.io>
+    <https://github.com/githubUserName/githubUserName.github.io>
 
 1. Add your custom domain in : Settings -> Options -> GitHub Pages -> Custom domain
-   - If you'll just run a blog on your domain, I suggest to use [`APEX domain`](https://help.github.com/articles/setting-up-an-apex-domain-and-www-subdomain/) name here instead of subdomain, for example: yourdomain.com
-   - This step creates implicitly a file named **CNAME** under the root of your git repo, the content of the file CNAME is just your custom domain.
-   - The commit message is 'Create CNAME'
-1. On the same page, the option `Enable HTTPS` serves to redirect HTTP traffic to HTTPS. The option is grayed out for the moment,  because initially https://yourdomain.github.io is binded with a github's certificate so as to https://youdomain.com. In order to  secure correctly your new site https://youdomain.com, Github needs to ask [LetsEncrypt](https://letsencrypt.org) to issue a new certificate where the [CN](https://en.wikipedia.org/wiki/Certificate_signing_request) is youdomain.com, than when people visit your web site, they will see [a green padlock](https://support.mozilla.org/en-US/kb/how-do-i-tell-if-my-connection-is-secure) in the address bar. The generation of LetsEncryt certificate takes usually  1 or 2 days, be patient, once you see a green lock when you open https://youdomain.com, you can come back here and enable the option `Enable HTTPS`.
+    - If you'll just run a blog on your domain, I suggest to use [`APEX domain`](https://help.github.com/articles/setting-up-an-apex-domain-and-www-subdomain/) name here instead of subdomain, for example: yourdomain.com
+    - This step creates implicitly a file named `CNAME` under the root of your git repo, the content of the file CNAME is just your custom domain.
+    - The commit message is 'Create CNAME'
+1. On the same page, the option `Enable HTTPS` serves to redirect HTTP traffic to HTTPS. The option is grayed out for the moment,  because initially https://yourdomain.github.io is bound with a github's certificate so as to https://yourdomain.com. In order to  secure correctly your new site https://yourdomain.com, Github needs to ask [LetsEncrypt](https://letsencrypt.org) to issue a new certificate where the [CN](https://en.wikipedia.org/wiki/Certificate_signing_request) is `yourdomain.com`, than when people visit your web site, they will see [a green padlock](https://support.mozilla.org/en-US/kb/how-do-i-tell-if-my-connection-is-secure) in the address bar. The generation of LetsEncrypt certificate takes usually  1 or 2 days, be patient, once you see a green lock when you open https://yourdomain.com, you can come back here and enable the option `Enable HTTPS`.
 
 ## Enable HTTPS for custom domain with Cloudflare
 
@@ -97,9 +98,10 @@ If you use subdomain (for ex: www.copdips.com), hereunder the HTTPS tests :
   > With [Cloudflare's HTTPS solution](#enable-https-for-custom-domain-with-cloudflare), there's no such error, as Cloudflare signed a wildcard certificate to *.copdips.com in the SAN.
 
 If you use APEX domain (for ex: copdips.com), hereunder the HTTPS tests :
+
 - typed http://copdips.com, redirected to https://copdips.com
 - typed http://www.copdips.com, redirected to https://copdips.com
 - typed https://copdips.com, redirected https://copdips.com
 - typed https://www.copdips.com, redirected to https://copdips.com
 
-  > With APEX domain, everything is good on HTTPS with native Github solution, you dont need Cloudflare
+  > With APEX domain, everything is good on HTTPS with native Github solution, you don't need Cloudflare
