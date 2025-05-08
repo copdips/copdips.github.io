@@ -8,7 +8,7 @@ categories:
 comments: true
 date:
   created: 2025-03-09
-  updated: 2025-03-26
+  updated: 2025-05-08
 ---
 
 # Using Pageant with VSCode Remote SSH
@@ -22,10 +22,10 @@ While Putty and Pageant are widely used tools for SSH connections, you can also 
 3. Download [Pageant](https://the.earth.li/~sgtatham/putty/latest/w64/pageant.exe) and [PuTTYgen](https://the.earth.li/~sgtatham/putty/latest/w64/puttygen.exe).
 4. Generate an [OpenSSH format SSH key pair](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#generating-a-new-ssh-key) if you don't have one yet. Using a passphrase is highly recommended for security. After this step, you should have two files: `id_ed25519` (private key) and `id_ed25519.pub` (public key).
 5. Run `puttygen`, open *Conversions* -> *Import key*, and load your OpenSSH format private key (the one without the `.pub` extension) created in the previous step. This file is typically located in the `%userprofile%\.ssh` folder. Export it to `ppk` format by clicking the *Save private key* button. This conversion is necessary because Pageant only accepts keys in `ppk` format. Save it as `%userprofile%\.ssh\id_ed25519.ppk`.
-6. Launch a terminal (cmd, PowerShell, or Windows Terminal) and execute the following command:
+6. Launch a PowerShell from  Windows Terminal and execute the following command:
 
     ```powershell title="From Windows Powershell"
-    # if in Windows command line, replace $env:USERPROFILE with %USERPROFILE%
+    # if run in Windows command line (DOS), replace $env:USERPROFILE with %USERPROFILE%
     pageant.exe --openssh-config $env:USERPROFILE\.ssh\pageant.conf $env:USERPROFILE\.ssh\id_ed25519.ppk
     ```
 
@@ -40,6 +40,7 @@ While Putty and Pageant are widely used tools for SSH connections, you can also 
 
     Host *
         User your_username
+
         # Specifies whether the connection to the authentication agent will be
         # forwarded to the remote machine.
         ForwardAgent yes
