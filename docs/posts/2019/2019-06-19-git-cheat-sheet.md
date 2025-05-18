@@ -6,7 +6,7 @@ categories:
 comments: true
 date:
   created: 2019-06-19
-  updated: 2024-11-24
+  updated: 2025-05-18
 description: Some personal often forgotten git commands.
 ---
 
@@ -22,14 +22,14 @@ User level alias
 
 Edit `~/.gitconfig`
 
-```ini
+```bash
 git config --global alias.amend commit --amend -C HEAD
 git config --global alias.st status
-git config --global alias.lga log --graph --decorate --oneline --all
 git config --global alias.co checkout
 git config --global alias.last log -1 HEAD
 git config --global alias.ci commit
 git config --global alias.unstage reset HEAD
+git config --global alias.lga log --graph --decorate --oneline --all
 git config --global alias.ll "log --graph --all --pretty=format:'%C(auto)%h%Creset %an: git config --global %s - %Creset %C(auto)%d%Creset %C(bold black)(%cr)%Creset %C(bold git config --global black)(%ci)%Creset' --no-abbrev-commit"
 git config --global alias.sh show
 git config --global alias.df diff
@@ -88,12 +88,12 @@ git checkout <filename or wildcard>
 
 # discard changes to all files in working directory
 git checkout .
+
 # or
 git checkout *
 ```
 
 !!! note
-
     Untracked files cannot be discarded by checkout.
 
 ### Discard last commit (completely remove)
@@ -104,7 +104,6 @@ git reset --hard HEAD~
 ```
 
 !!! note
-
     We can recover the commit discarded by `--hard` with the `git cherry-pick [commit number]` if we displayed or saved it before. Whatever you can also use `git reflog` to get the commit number too.
 
 ### Unstage from staging area
@@ -120,11 +119,9 @@ git reset
 ```
 
 !!! note
-
     No more need to add `HEAD` like `git reset HEAD <file>` and `git reset HEAD` since git v1.8.2.
 
 !!! warning
-
     Do not use `git rm --cached <filename>` to unstage, it works only for newly created file to remove them from the staging area. But if you specify a existing file, it will delete it from cache, even if it is not staged.
 
 ### Undo commit to working directory
@@ -145,17 +142,12 @@ git reset HEAD~2
 # Undo till a special commit to working directory,
 # the special commit and every commits before are still committed.
 git reset <commit number>
-
-<!-- more -->
-
 ```
 
 !!! note
-
-    `git reset HEAD` will do nothing, as the HEAD is already at the last commit.
+    `git reset HEAD` will do nothing, as the HEAD is already at the last commit.What?
 
 !!! note
-
     `git reset HEAD~1 <file>` will create a delete file index in staging area. Normally we don't need this command.
 
 ### Undo commit to staging area
