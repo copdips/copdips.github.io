@@ -45,11 +45,13 @@ My first try was going the security tab of the remote repository (projectB's Pro
 ### Create read access to the target repository
 
 This method is shown [here](https://docs.microsoft.com/en-us/azure/devops/pipelines/repos/azure-repos-git?view=azure-devops&tabs=yaml#failing-checkout) in the last use case, which is:
+
 - If the scope is project? => Yes
 - Is the repo in the same project as the pipeline? => No
 - Is your pipeline in a public project? => No
 
 You need to take additional steps to grant access. Let us say that your pipeline exists in project A and that your repository exists in project B.
+
 1. Go to the project settings of the project in which the repository exists (B). Select Repos -> Repositories -> specific repository.
 2. Add your-project-name Build Service (your-collection-name) to the list of users, where your-project-name is the name of the project in which your pipeline exists (A).
 3. Give Read access to the account.
