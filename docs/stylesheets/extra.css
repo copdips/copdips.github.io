@@ -118,7 +118,7 @@ a.md-nav__link:hover {
   border-bottom-right-radius: 0; /* 底部右边框半径 */
   margin-bottom: 5px;
   text-align: center; /* 文本居中 */
-  background-color: #edf3ff; /* 背景颜色 */
+  background-color: #c6c7c9; /* 背景颜色 */
 
 }
 [data-md-color-scheme="slate"] .highlight span.filename {
