@@ -6,13 +6,12 @@ categories:
 comments: true
 date:
   created: 2019-06-19
-  updated: 2025-05-18
-description: Some personal often forgotten git commands.
+  updated: 2025-07-09
 ---
 
 # Git Cheat Sheet
 
-This is not a complete Git cheat sheet for everyone, this is just a personal cheat sheet for some often forgotten git commands.
+This is not a complete Git cheat sheet for everyone, this is just a personal cheat sheet.
 
 <!-- more -->
 
@@ -216,6 +215,34 @@ git cherry-pick another_local_branch
 
 ```bash
 get rebase another_local_branch
+```
+
+### get branches contains a commit
+
+```bash
+# local branches
+git branch --contains <commit>
+
+# remote branches
+git branch -r --contains <commit>
+```
+
+### get branches pointing to a commit
+
+```bash
+# local branches
+git branch --points-at <commit>
+
+# remote branches
+git branch -r --points-at <commit>
+
+# get remote branches pointing to HEAD
+# useful in Jenkins run if you want to know which remote branches
+# are pointing to the current commit. (i.e. Jenkins pipeline branch)
+# If multiple remote branches are pointing to the same commit,
+# this command will return all of them,
+# so won't work if you want to get only one remote branch.
+git branch -r --points-at HEAD
 ```
 
 ## Show diff
