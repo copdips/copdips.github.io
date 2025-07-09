@@ -7,7 +7,7 @@ categories:
 comments: true
 date:
   created: 2025-02-01
-  updated: 2025-06-28
+  updated: 2025-07-09
 ---
 
 # Python Type Hints
@@ -25,13 +25,13 @@ Today, type hints are essential for modern Python development. They significantl
 
 ## typing module vs collections module
 
-Since Python 3.9, most of types in `typing` module is [deprecated](https://docs.python.org/3/library/typing.html#deprecated-aliases), and `collections` module is recommended.
+Since Python 3.9, most of types in `typing` module i [deprecated](https://docs.python.org/3/library/typing.html#deprecated-aliases), and `collections` module is recommended.
 
 Some types like: `typing.Any`, `typing.Generic`, `typing.TypeVar`, etc. are still not deprecated.
 
 !!! note "Thanks to subscription support in many collections since Python3.9"
     The `collections` module is now the preferred way to import many types (not all yet), as [they support subscription at runtime](https://mypy.readthedocs.io/en/stable/runtime_troubles.html#using-generic-builtins). [Subscription](https://docs.python.org/3/reference/expressions.html#subscriptions) refers to using square brackets `[]` to indicate the type of elements in a collection. **Subscription at runtime** means we can use `list[int]`, `dict[str, int]`, etc. directly without importing from `typing.List`, `typing.Dict`, etc.
-    ```python title="subscription calls \_\_class_getitem\_\_()"
+    ```python title="subscription calls **class_getitem**()"
     In [1]: list[int]
     Out[1]: list[int]
 
@@ -163,58 +163,57 @@ Some types like: `typing.Any`, `typing.Generic`, `typing.TypeVar`, etc. are stil
 [From Mypy](https://mypy.readthedocs.io/en/stable/kinds_of_types.html#type-aliases): Python 3.12 introduced the `type` statement for defining explicit type aliases. Explicit type aliases are unambiguous and can also improve readability by making the intent clear.
 The definition may contain forward references without having to use string literal escaping, **since it is evaluated lazily**, which improves also the loading performance.
 
-    ```python
-    type AliasType = list[dict[tuple[int, str], set[int]]] | tuple[str, list[str]]
+```python
+type AliasType = list[dict[tuple[int, str], set[int]]] | tuple[str, list[str]]
 
-    # Now we can use AliasType in place of the full name:
+# Now we can use AliasType in place of the full name:
 
-    def f() -> AliasType:
-        ...
-    ```
+def f() -> AliasType:
+    ...
+```
 
 ## Type variable
 
 [From MyPy](https://mypy.readthedocs.io/en/stable/kinds_of_types.html#the-type-of-class-objects): Python 3.12 introduced new syntax to use the `type[C]` and a type variable with an upper bound (see [Type variables with upper bounds](https://mypy.readthedocs.io/en/stable/generics.html#type-variable-upper-bound)).
 
-    ```python title="Python 3.12 syntax"
-    def new_user[U: User](user_class: type[U]) -> U:
-        # Same implementation as before
-    ```
+```python title="Python 3.12 syntax"
+def new_user[U: User](user_class: type[U]) -> U:
+    # Same implementation as before
+```
 
 Here is the example using the legacy syntax (**Python 3.11 and earlier**):
 
-    ```python title="Python 3.11 and earlier syntax"
-    U = TypeVar('U', bound=User)
+```python title="Python 3.11 and earlier syntax"
+U = TypeVar('U', bound=User)
 
-    def new_user(user_class: type[U]) -> U:
-        # Same implementation as before
-    ```
+def new_user(user_class: type[U]) -> U:
+    # Same implementation as before
+```
 
 Now mypy will infer the correct type of the result when we call new_user() with a specific subclass of User:
 
-    ```python
-    beginner = new_user(BasicUser)  # Inferred type is BasicUser
-    beginner.upgrade()  # OK
-
-    ```
+```python
+beginner = new_user(BasicUser)  # Inferred type is BasicUser
+beginner.upgrade()  # OK
+```
 
 ## Annotating \_\_init\_\_ methods
 
 [From MyPy](https://mypy.readthedocs.io/en/stable/class_basics.html#annotating-init-methods): It is allowed to omit the return type declaration on \_\_init\_\_ methods if at least one argument is annotated.
 
-    ```python
-    class C1:
-        # __init__ has no argument is annotated,
-        # so we should add return type declaration
-        def __init__(self) -> None:
-            self.var = 42
+```python
+class C1:
+    # __init__ has no argument is annotated,
+    # so we should add return type declaration
+    def __init__(self) -> None:
+        self.var = 42
 
-    class C2:
-        # __init__ has at least one argument is annotated,
-        # so it's allowed to omit the return type declaration
-        # so in most cases, we don't need to add return type.
-        def __init__(self, arg: int):
-            self.var = arg
+class C2:
+    # __init__ has at least one argument is annotated,
+    # so it's allowed to omit the return type declaration
+    # so in most cases, we don't need to add return type.
+    def __init__(self, arg: int):
+        self.var = arg
 
 ```
 
@@ -228,18 +227,18 @@ Now mypy will infer the correct type of the result when we call new_user() with 
 
 `from __future__ import annotations` **must be the first executable line** in the file. You can only have shebang and comment lines before it.
 
-    ```python hl_lines="1 7"
-    from __future__ import annotations
-    from pydantic import BaseModel
+```python hl_lines="1 7"
+from __future__ import annotations
+from pydantic import BaseModel
 
-    class User(BaseModel):
-        name: str
-        age: int
-        friends: list[User] = []  # Forward reference works
+class User(BaseModel):
+    name: str
+    age: int
+    friends: list[User] = []  # Forward reference works
 
-    # This works in Pydantic v2
-    user = User(name="Alice", age=30, friends=[])
-    ```
+# This works in Pydantic v2
+user = User(name="Alice", age=30, friends=[])
+```
 
 !!! warning "from \_\_future\_\_ import annotation is not fully compatible with Pydantic"
     See this [warning](https://mypy.readthedocs.io/en/stable/runtime_troubles.html#future-annotations-import-pep-563), and see this [github issue](https://github.com/jlowin/fastmcp/issues/905), and [this issue](https://github.com/pydantic/pydantic/issues/2678) for the compatibility issues with Pydantic and postponed evaluation of annotations.
@@ -250,57 +249,57 @@ Now mypy will infer the correct type of the result when we call new_user() with 
 
 [From MyPy](https://mypy.readthedocs.io/en/stable/runtime_troubles.html#import-cycles): If the cycle import is only needed for type annotations:
 
-    ```python title="File foo.py" hl_lines="3-6"
-    from typing import TYPE_CHECKING
+```python title="File foo.py" hl_lines="3-6"
+from typing import TYPE_CHECKING
 
-    if TYPE_CHECKING:
-        import bar
+if TYPE_CHECKING:
+    import bar
 
-    def listify(arg: 'bar.BarClass') -> 'list[bar.BarClass]':
-        return [arg]
-    ```
+def listify(arg: 'bar.BarClass') -> 'list[bar.BarClass]':
+    return [arg]
+```
 
-    ```python title="File bar.py" hl_lines="1"
-    from foo import listify
+```python title="File bar.py" hl_lines="1"
+from foo import listify
 
-    class BarClass:
-        def listifyme(self) -> 'list[BarClass]':
-            return listify(self)
-    ```
+class BarClass:
+    def listifyme(self) -> 'list[BarClass]':
+        return listify(self)
+```
 
 SqlAlchemy also uses [string literal](https://mypy.readthedocs.io/en/stable/runtime_troubles.html#string-literal-types-and-type-comments) for lazy evaluation and [typing.TYPE_CHECKING](https://mypy.readthedocs.io/en/stable/runtime_troubles.html#typing-type-checking) for typing:
 
-    ```python title="File models/parent.py" linenums="1" hl_lines="1 8 19-21"
-    from __future__ import annotations  # (1)!
-    from typing import TYPE_CHECKING, List
-    from sqlalchemy import String, Integer
-    from sqlalchemy.orm import Mapped, mapped_column, relationship
-    from database import Base
+```python title="File models/parent.py" linenums="1" hl_lines="1 8 19-21"
+from __future__ import annotations  # (1)!
+from typing import TYPE_CHECKING, List
+from sqlalchemy import String, Integer
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from database import Base
 
-    if TYPE_CHECKING:
-        from models.child import Child # (2)!
+if TYPE_CHECKING:
+    from models.child import Child # (2)!
 
-    class Parent(Base):
-        __tablename__ = "parent"
+class Parent(Base):
+    __tablename__ = "parent"
 
-        # SQLAlchemy v2 syntax
-        id: Mapped[int] = mapped_column(Integer, primary_key=True)
-        name: Mapped[str] = mapped_column(String(50), nullable=False)
-        email: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
+    # SQLAlchemy v2 syntax
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String(50), nullable=False)
+    email: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
 
-        # One-to-Many (Parent -> Children)
-        # children: Mapped[List[Child]] = relationship(
-                                                        # (3)!
-        children: Mapped[List["Child"]] = relationship(  # (4)!
-            "Child",  # (5)!
-            back_populates="parent",
-            cascade="all, delete-orphan",
-            lazy="selectin"  # one of sqlalchemy 2 lazy loading strategies
-        )
+    # One-to-Many (Parent -> Children)
+    # children: Mapped[List[Child]] = relationship(
+                                                    # (3)!
+    children: Mapped[List["Child"]] = relationship(  # (4)!
+        "Child",  # (5)!
+        back_populates="parent",
+        cascade="all, delete-orphan",
+        lazy="selectin"  # one of sqlalchemy 2 lazy loading strategies
+    )
 
-        def __repr__(self) -> str:
-            return f"<Parent(id={self.id}, name='{self.name}')>"
-    ```
+    def __repr__(self) -> str:
+        return f"<Parent(id={self.id}, name='{self.name}')>"
+```
 
 1. `from __future__ import annotations` (PEP 563) turns every annotation into a string. Should be used with careful.
 
@@ -312,39 +311,39 @@ SqlAlchemy also uses [string literal](https://mypy.readthedocs.io/en/stable/runt
 
 5. SQLAlchemy uses string literals (e.g., `"Child"`) to reference models, allowing for lazy loading and avoiding circular dependencies.
 
-    ```python title="File models/child.py" linenums="1" hl_lines="1 8 24-25"
-    from __future__ import annotations
-    from typing import TYPE_CHECKING, Optional
-    from sqlalchemy import String, Integer, ForeignKey
-    from sqlalchemy.orm import Mapped, mapped_column, relationship
-    from database import Base
+```python title="File models/child.py" linenums="1" hl_lines="1 8 24-25"
+from __future__ import annotations
+from typing import TYPE_CHECKING, Optional
+from sqlalchemy import String, Integer, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from database import Base
 
-    if TYPE_CHECKING:
-        from models.parent import Parent
+if TYPE_CHECKING:
+    from models.parent import Parent
 
-    class Child(Base):
-        __tablename__ = "child"
+class Child(Base):
+    __tablename__ = "child"
 
-        id: Mapped[int] = mapped_column(Integer, primary_key=True)
-        name: Mapped[str] = mapped_column(String(50), nullable=False)
-        age: Mapped[int] = mapped_column(Integer, nullable=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String(50), nullable=False)
+    age: Mapped[int] = mapped_column(Integer, nullable=False)
 
-        parent_id: Mapped[int] = mapped_column(
-            Integer,
-            ForeignKey("parents.id", ondelete="CASCADE"),
-            nullable=False
-        )
+    parent_id: Mapped[int] = mapped_column(
+        Integer,
+        ForeignKey("parents.id", ondelete="CASCADE"),
+        nullable=False
+    )
 
-        # Many-to-One (Child -> Parent)
-        parent: Mapped[Parent] = relationship(
-            "Parent",
-            back_populates="children",
-            lazy="selectin"
-        )
+    # Many-to-One (Child -> Parent)
+    parent: Mapped[Parent] = relationship(
+        "Parent",
+        back_populates="children",
+        lazy="selectin"
+    )
 
-        def __repr__(self) -> str:
-            return f"<Child(id={self.id}, name='{self.name}', parent_id={self.parent_id})>"
-    ```
+    def __repr__(self) -> str:
+        return f"<Child(id={self.id}, name='{self.name}', parent_id={self.parent_id})>"
+```
 
 ## Type hints
 
