@@ -176,6 +176,9 @@ def f() -> AliasType:
 
 [From MyPy](https://mypy.readthedocs.io/en/stable/kinds_of_types.html#the-type-of-class-objects): Python 3.12 introduced new syntax to use the `type[C]` and a type variable with an upper bound (see [Type variables with upper bounds](https://mypy.readthedocs.io/en/stable/generics.html#type-variable-upper-bound)).
 
+In the below example, we define a type variable `U` that is bound to the `User` parent class.
+This allows us to create a function that can return an instance of any subclass of `User`, while still providing type safety. See the [fastapi-demo for concrete example.](https://github.com/copdips/fastapi-demo/blob/d9922c99404f5d6406e2f10b02822d19a6bc3b91/app/services/base.py#L13-L33)
+
 ```python title="Python 3.12 syntax"
 def new_user[U: User](user_class: type[U]) -> U:
     # Same implementation as before
@@ -345,7 +348,132 @@ class Child(Base):
         return f"<Child(id={self.id}, name='{self.name}', parent_id={self.parent_id})>"
 ```
 
-## Type hints
+## Callable and Protocol
+
+[From MyPy](https://mypy.readthedocs.io/en/stable/protocols.html#callback-protocols): We can use [Protocols](https://typing.python.org/en/latest/spec/protocol.html) to define [callable](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable) types with a special [**call**](https://docs.python.org/3/reference/datamodel.html#object.__call__) member:
+
+Callback `protocols` and `Callable` types can be used mostly interchangeably, but protocols are more flexible and can be used to define more complex callable types.
+
+```python title="Callable Protocol"
+from collections.abc import Iterable
+from typing import Optional, Protocol
+
+class Combiner(Protocol):
+    def __call__(self, *vals: bytes, maxlen: int | None = None) -> list[bytes]: ...
+
+def batch_proc(data: Iterable[bytes], cb_results: Combiner) -> bytes:
+    for item in data:
+        ...
+
+def good_cb(*vals: bytes, maxlen: int | None = None) -> list[bytes]:
+    ...
+def bad_cb(*vals: bytes, maxitems: int | None) -> list[bytes]:
+    ...
+
+batch_proc([], good_cb)  # OK
+batch_proc([], bad_cb)   # Error! Argument 2 has incompatible type because of
+                         # different name and kind in the callback
+```
+
+!!! warning "Protocol doesn't like isinstance()"
+    Although the `@runtime_checkable` decorator allows using `isinstance()` to check if an object conforms to a Protocol, this approach [has limitations and performance issues](https://mypy.readthedocs.io/en/stable/protocols.html#using-isinstance-with-protocols). Therefore, it's recommended to use `Protocol` exclusively for static type checking and avoid runtime `isinstance()` checks, at least until Python 3.13.
+
+    ```python
+    from typing import Protocol, runtime_checkable
+
+    @runtime_checkable
+    class Drawable(Protocol):
+        def draw(self) -> None: ...
+
+    class Circle:
+        def draw(self) -> None:
+            print("Drawing a circle")
+
+    # This works but is not recommended
+    circle = Circle()
+    if isinstance(circle, Drawable):  # Avoid this pattern
+        circle.draw()
+
+    # Preferred approach: rely on duck typing
+    def render(obj: Drawable) -> None:
+        obj.draw()  # Type checker ensures obj has draw() method
+
+    render(circle)  # Type-safe without runtime checks
+    ```
+
+## Type narrowing for parameters in multi-type
+
+We know how to define parameters with union types `a: int | str`, but how can we help static type checkers understand which specific type a parameter has within if-else control flow?
+
+Previously, we can simply use `isinstance()` function, Python 3.13 introduced `typing.TypeIs` ([PEP 742](https://peps.python.org/pep-0742/))for this purpose (use [typing_extensions.TypeIs](https://typing-extensions.readthedocs.io/en/latest/index.html#typing_extensions.TypeIs) for Python versions prior to 3.13).
+
+```python title="use isinstance() for type narrowing"
+# https://mypy.readthedocs.io/en/stable/type_narrowing.html#type-narrowing-expressions
+from typing import reveal_type
+
+
+def function(arg: object):
+    if isinstance(arg, int):
+        # Type is narrowed within the ``if`` branch only
+        reveal_type(arg)  # Revealed type: "builtins.int"
+    elif isinstance(arg, str) or isinstance(arg, bool):
+        # Type is narrowed differently within this ``elif`` branch:
+        reveal_type(arg)  # Revealed type: "builtins.str | builtins.bool"
+
+        # Subsequent narrowing operations will narrow the type further
+        if isinstance(arg, bool):
+            reveal_type(arg)  # Revealed type: "builtins.bool"
+
+    # Back outside of the ``if`` statement, the type isn't narrowed:
+    reveal_type(arg)  # Revealed type: "builtins.object"
+```
+
+```python title="use TypeIs with Python 3.13 new syntax"
+# https://mypy.readthedocs.io/en/stable/type_narrowing.html#type-narrowing-expressions
+from typing import TypeIs, reveal_type
+
+def is_str(x: object) -> TypeIs[str]:
+    return isinstance(x, str)
+
+def process(x: int | str) -> None:
+    if is_str(x):
+        reveal_type(x)  # Revealed type is 'str'
+        print(x.upper())  # Valid: x is str
+    else:
+        reveal_type(x)  # Revealed type is 'int'
+        print(x + 1)  # Valid: x is int
+
+In [6]: process(2)
+Runtime type is 'int'
+3
+
+In [7]: process("2")
+Runtime type is 'str'
+```
+
+!!! note "Don't use TypeGuard, it works only in if branch, not else branch. TypeIs works for both if and else branch."
+
+### When to use TypeIs over isinstance()
+
+[PEP 724 says](https://peps.python.org/pep-0742/#when-to-use-typeis): Python code often uses functions like `isinstance()` to distinguish between different possible types of a value. Type checkers understand `isinstance()` and various other checks and use them to narrow the type of a variable. However, sometimes you want to reuse a more complicated check in multiple places, or you use a check that the type checker doesn't understand. In these cases, you can define a `TypeIs` function to perform the check and allow type checkers to use it to narrow the type of a variable.
+
+A TypeIs function takes a single argument and is annotated as returning `TypeIs[T]`, where `T` is the type that you want to narrow to. The function must return `True` if the argument is of type `T`, and `False` otherwise. The function can then be used in if checks, just like you would use `isinstance()`. For example:
+
+```python
+# https://peps.python.org/pep-0742/#when-to-use-typeis
+rom typing import TypeIs, Literal
+
+type Direction = Literal["N", "E", "S", "W"]
+
+def is_direction(x: str) -> TypeIs[Direction]:
+    return x in {"N", "E", "S", "W"}
+
+def maybe_direction(x: str) -> None:
+    if is_direction(x):
+        print(f"{x} is a cardinal direction")
+    else:
+        print(f"{x} is not a cardinal direction")
+```
 
 ## Typing tools
 
@@ -362,24 +490,24 @@ Ref. Pyright in [this post](../2021/2021-01-04-python-lint-and-format.md#pyright
 ### RightTyper
 
 During an internal tech demo at my working, I heard about [RightTyper](https://github.com/RightTyper/RightTyper), a Python tool that generates type annotations for function arguments and return values.
-It’s important to note that RightTyper doesn’t statically parse your Python files to add types; instead, it needs to run your code to detect types on the fly. So, one of the best ways to use RightTyper is with python `-m pytest`, assuming you have good test coverage.
+It's important to note that **RightTyper** doesn't statically parse your Python files to add types; instead, it needs to run your code to detect types on the fly. So, one of the best ways to use **RightTyper** is with python `-m pytest`, assuming you have good test coverage.
 
 ### ty
 
-[ty](https://github.com/astral-sh/ty) represents the next generation of Python type checking tools. Developed by the team behind the popular [ruff](https://docs.astral.sh/ruff/) linter, ty is implemented in Rust for exceptional performance.
+[ty](https://github.com/astral-sh/ty) represents the next generation of Python type checking tools. Developed by the team behind the popular [ruff](https://docs.astral.sh/ruff/) linter, **ty** is implemented in Rust for exceptional performance.
 It functions both as a type checker and language server, offering seamless integration through its dedicated [VSCode extension ty-vscode](https://github.com/astral-sh/ty-vscode).
 
-While Ruff excels at various aspects of Python linting, type checking remains outside its scope.
+While **Ruff** excels at various aspects of Python linting, type checking remains outside its scope.
 ty aims to fill this gap, though it's currently in preview and still evolving toward production readiness.
-The combination of Ruff and ty promises to provide a comprehensive Python code quality toolkit.
+The combination of **Ruff** and **ty** promises to provide a comprehensive Python code quality toolkit.
 
 ### pyrefly
 
 [pyrefly](https://pyrefly.org/) emerges as another promising entrant in the Python type checking landscape.
-Developed by Meta and also written in Rust, pyrefly offers both type checking capabilities and language server functionality.
+Developed by Meta and also written in Rust, **pyrefly** offers both type checking capabilities and language server functionality.
 While still in preview, it demonstrates the growing trend of high-performance Python tooling implemented in Rust.
 
 The tool integrates smoothly with modern development environments through its [VSCode extension refly-vscode](https://marketplace.visualstudio.com/items?itemName=meta.pyrefly), making it accessible to a wide range of developers.
 Its backing by Meta suggests potential for robust development and long-term support.
 
-Just a quick test, pyrefly seems to generate more typing errors than ty.
+Just a quick test, **pyrefly** seems to generate more typing errors than **ty**.
