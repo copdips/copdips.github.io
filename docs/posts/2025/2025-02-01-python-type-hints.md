@@ -144,19 +144,22 @@ Some types like: `typing.Any`, `typing.Generic`, `typing.TypeVar`, etc. are stil
 
 ## Sequence & Collection
 
-- `collections.abc.Sequence` is a type of ordered collection. Sequence does not include `append` and `extend` methods.
-- `collections.abc.Collection` is a type of unordered collection.
+- `collections.abc.Collection` is a type of unordered collection. Collections supports only `__len__`, `__iter__`, `__contains__` operators, and does not support indexing or slicing.
+- `collections.abc.Sequence` is **subclass** of `Collection`, is a type of ordered, indexable collection. Sequence supports `__getitem__()`, `__reversed__` in addition to the methods of `Collection`. Sequences can be sliced and indexed.
 
-| Type                            | Sequence | Collection |
-| ------------------------------- | -------- | ---------- |
-| str                             | Yes      | No         |
-| tuple                           | Yes      | Yes        |
-| list                            | Yes      | Yes        |
-| set                             | No       | Yes        |
-| dict                            | No       | Yes        |
-| order                           | Yes      | No         |
-| indexing (e.g., `seq[0]`)       | Yes      | No         |
-| Membership Checks (`x in data`) | Yes      | Yes        |
+See [Collections Abstract Base Classes](https://docs.python.org/3/library/collections.abc.html#collections-abstract-base-classes) to check all the methods available for each type.
+
+| Type                                              | Sequence | Collection |
+| ------------------------------------------------- | -------- | ---------- |
+| str                                               | ✅       | ✅         |
+| tuple                                             | ✅       | ✅         |
+| list                                              | ✅       | ✅         |
+| range                                             | ✅       | ✅         |
+| set                                               | ❌       | ✅         |
+| dict                                              | ❌       | ✅         |
+| order                                             | ✅       | ❌         |
+| indexing (having `__getitem__()`)(e.g., `seq[0]`) | ✅       | ❌         |
+| Membership Checks (`x in data`)                   | ✅       | ✅         |
 
 ## Type aliases
 
@@ -451,7 +454,7 @@ In [7]: process("2")
 Runtime type is 'str'
 ```
 
-!!! note "Don't use TypeGuard, it works only in if branch, not else branch. TypeIs works for both if and else branch."
+!!! warning "Don't use TypeGuard, it works only in if branch, not else branch. TypeIs works for both if and else branch."
 
 ### When to use TypeIs over isinstance()
 
