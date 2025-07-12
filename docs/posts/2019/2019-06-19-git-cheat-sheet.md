@@ -6,7 +6,7 @@ categories:
 comments: true
 date:
   created: 2019-06-19
-  updated: 2025-07-09
+  updated: 2025-07-12
 ---
 
 # Git Cheat Sheet
@@ -296,7 +296,7 @@ git config --global http.https://github.com.proxy $internet_proxy
 
 ## GUI
 
-GitForWindows ships with a GUI tool, very cool.
+GitForWindows ships with a GUI tool.
 
 ```bash
 # start git gui tool
@@ -321,8 +321,64 @@ $ cd -
 $ rm -rf old-repository.git
 ```
 
+## Finding a string in the git log
+
+```bash
+git log -Spassword
+```
+
+## Finding where a file was added
+
+- all occurrences (added, modified, deleted):
+
+    ```bash
+    git log -- file_name
+    ```
+
+- only added:
+
+    there're also `A`, `M`, `D`, etc. <https://git-scm.com/docs/git-log#Documentation/git-log.txt---diff-filterACDMRTUXB82308203>
+
+    ```bash
+    git log --diff-filter=A -- file_name
+    ```
+
+## Forcing local master to the same as origin/main
+
+<https://superuser.com/a/273199>
+
+```bash
+git checkout -B main origin/main
+```
+
 ## Ignoring pre-commit hook
 
 ```bash
 git commit --no-verify
 ```
+
+## Change user.email for some repos
+
+For all repos under `~/git` that match a certain pattern `repo_pattern` in the git url, change the user email to `new_email`.
+
+```bash
+new_email="my_new_email@copdips.com"
+repo_pattern="company_name"
+cd ~/git
+all_folders=$(ls -d $PWD/*)
+echo $all_folders | tr ' ' '\n' | while read -r folder ; \
+    do \
+        echo ====== $folder ; cd $folder ; \
+        url=$(git remote get-url origin 2>/dev/null) ; \
+        if [[ -n $url ]] ; then \
+            if [[ $url =~ $repo_pattern ]] ; then \
+                echo ~~~need to change email ; git config user.email $new_email ; \
+            fi ; \
+        fi ; \
+        url= ; cd ~/git ; \
+    done
+```
+
+## bash-git-prompt tweaks
+
+[Some tweaks](../2024/2024-01-05-bash-git-prompt-tweaks.md) I made to [bash-git-prompt](https://github.com/magicmonty/bash-git-prompt). dynamic Python venv path, new var `GIT_MESSAGE`, etc.

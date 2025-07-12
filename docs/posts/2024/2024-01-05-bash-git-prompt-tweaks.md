@@ -8,6 +8,7 @@ categories:
 comments: true
 date:
   created: 2024-01-05
+  updated: 2025-07-12
 description: Some personal tweaks in bash-git-prompt
 ---
 
@@ -21,32 +22,28 @@ Some tweaks I made to [bash-git-prompt](https://github.com/magicmonty/bash-git-p
 
 bash-git-prompt displays the current Python venv folder name within the prompt, among other things. I would like it to display the full path of the current Python venv if the venv is not located in the current folder. This will help prevent me from using the wrong venv when I switch between projects.
 
-To achieve this, I have to modify the `gp_add_virtualenv_to_prompt` function in the `~/.bash-git-prompt/gitprompt.sh` script, as I used the [git clone method](https://github.com/magicmonty/bash-git-prompt#via-git-clone) to install bash-git-prompt.
+To achieve this, add following code into `function gp_add_virtualenv_to_prompt` in `~/.bash-git-prompt/gitprompt.sh` to add Python virtual environment name and version to the prompt.
 
-```diff title="if the venv is not .venv inside current folder, display the full path of the venv. Node and Conda venv are not modified as I don't use them."
-function gp_add_virtualenv_to_prompt {
-  local ACCUMULATED_VENV_PROMPT=""
-  local VENV=""
-  if [[ -n "${VIRTUAL_ENV-}" && -z "${VIRTUAL_ENV_DISABLE_PROMPT+x}" ]]; then
-+    PYTHON_VERSION=$(python --version | cut -d' ' -f2 | cut -d'.' -f1-2)
+```diff title="bash_git_prompt_venv.patch" hl_lines="5"
+diff --git a/gitprompt.sh b/gitprompt.sh
+index 978cae7..0f33e0e 100755
+--- a/gitprompt.sh
++++ b/gitprompt.sh
+@@ -649,7 +649,11 @@ function gp_add_virtualenv_to_prompt {
+   local ACCUMULATED_VENV_PROMPT=""
+   local VENV=""
+   if [[ -n "${VIRTUAL_ENV-}" && -z "${VIRTUAL_ENV_DISABLE_PROMPT+x}" ]]; then
+-    VENV=$(basename "${VIRTUAL_ENV}")
 +    if [[ $VIRTUAL_ENV == "$(pwd)/.venv" ]]; then
 +      VENV=$(basename "${VIRTUAL_ENV}")
 +    else
 +      VENV=$VIRTUAL_ENV
 +    fi
++    PYTHON_VERSION=$(python --version | cut -d' ' -f2 | cut -d'.' -f1-2)
 +    VENV="$VENV $PYTHON_VERSION"
-    ACCUMULATED_VENV_PROMPT="${ACCUMULATED_VENV_PROMPT}${GIT_PROMPT_VIRTUALENV//_VIRTUALENV_/${VENV}}"
-  fi
-  if [[ -n "${NODE_VIRTUAL_ENV-}" && -z "${NODE_VIRTUAL_ENV_DISABLE_PROMPT+x}" ]]; then
-    VENV=$(basename "${NODE_VIRTUAL_ENV}")
-    ACCUMULATED_VENV_PROMPT="${ACCUMULATED_VENV_PROMPT}${GIT_PROMPT_VIRTUALENV//_VIRTUALENV_/${VENV}}"
-  fi
-  if [[ -n "${CONDA_DEFAULT_ENV-}" ]]; then
-    VENV=$(basename "${CONDA_DEFAULT_ENV}")
-    ACCUMULATED_VENV_PROMPT="${ACCUMULATED_VENV_PROMPT}${GIT_PROMPT_VIRTUALENV//_VIRTUALENV_/${VENV}}"
-  fi
-  echo "${ACCUMULATED_VENV_PROMPT}"
-}
+     ACCUMULATED_VENV_PROMPT="${ACCUMULATED_VENV_PROMPT}${GIT_PROMPT_VIRTUALENV//_VIRTUALENV_/${VENV}}"
+   fi
+   if [[ -n "${NODE_VIRTUAL_ENV-}" && -z "${NODE_VIRTUAL_ENV_DISABLE_PROMPT+x}" ]]; then
 ```
 
 ## New var GIT_MESSAGE
@@ -59,20 +56,35 @@ alias gitpush='git ci -am "$GIT_MESSAGE" ; git push origin $GIT_BRANCH`
 
 So I can just type `gitpush` to commit and push my changes to the remote repo.
 
-To achieve this, I have to add one line right after `GIT_BRANCH` in the `~/.bash-git-prompt/gitprompt.sh` script.
+To achieve this, declare a function `set_git_message` in `~/.bash-git-prompt/gitprompt.sh` to set the `GIT_MESSAGE` variable based on the current branch name. Then, call `set_git_message` in the `updatePrompt` function in the same file to get called upon each prompt re-computation, for e.g. right after the line `export GIT_BRANCH=$(replaceSymbols "${git_status_fields[@]:0:1}")`.
 
-```diff title="add new var GIT_MESSAGE"
-  export GIT_BRANCH=$(replaceSymbols "${git_status_fields[@]:0:1}")
-+  export GIT_MESSAGE=$( [[ "$GIT_BRANCH" == */* ]] && echo "${GIT_BRANCH%/*}/$(echo ${GIT_BRANCH##*/} | sed 's/-/ /g')" || echo "${GIT_BRANCH//-/ }" )
+```bash title="~/.bash-git-prompt/gitprompt.sh"
+# given GIT_BRANCH :  feature/JIRA-123/some-feature
+# got GIT_MESSAGE : feature/JIRA-123: some feature
+function set_git_message() {
+
+# Check if the string contains a '/'
+
+  if [[ $GIT_BRANCH == */* ]]; then
+      # If it does, get the substring after the last '/'
+      MSG=${GIT_BRANCH##*/}
+      # Get the prefix by removing the message part from the original string
+      PREFIX=${GIT_BRANCH%/$MSG}
+  else
+      # If it doesn't, the whole string is the message
+      PREFIX=""
+      MSG=$GIT_BRANCH
+  fi
+
+# Replace "-" with " " in the message part
+
+  MSG=${MSG//-/ }
+
+# Combine prefix and message into the new variable
+  if [[ -z $PREFIX ]]; then
+      export GIT_MESSAGE="$MSG"
+  else
+      export GIT_MESSAGE="${PREFIX}: ${MSG}"
+  fi
+}
 ```
-
-What this line does is:
-
-- If the branch name contains `/`, `-` in the left part of the last `/` in the branch name will be converted to space.
-- If the branch name does not contain `/`, all `-` in the branch name will be converted to space.
-
-For example:
-
-- branch name `feat/#111/add-new-feature_a` will be converted to message `feat/#111/add new feature_a`.
-- branch name `#111/add-new-feature_a` will be converted to message `#111/add new feature_a`.
-- branch name `add-new-feature_a` will be converted to message `add new feature_a`.
