@@ -19,7 +19,7 @@ extra:
   #   1. https://github.com/squidfunk/mkdocs-material/discussions/2138#discussioncomment-250454
   #   2. https://github.com/squidfunk/mkdocs-material/pull/3329#issuecomment-1013855846
   #   3. https://github.com/squidfunk/mkdocs-material/commit/f9e94184620806ceff55b6a8c2df0292b39369e4
-  disqus: copdips
+  # disqus: copdips
   analytics:
     provider: google
     property: UA-118578681-1
