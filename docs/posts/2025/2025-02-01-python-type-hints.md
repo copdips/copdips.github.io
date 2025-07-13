@@ -478,6 +478,33 @@ def maybe_direction(x: str) -> None:
         print(f"{x} is not a cardinal direction")
 ```
 
+## Stub files
+
+Python [standard library](https://docs.python.org/3/library/index.html) ships its type hints in the [typeshed repo](https://github.com/python/typeshed) with `.pyi` extension.
+
+For third party libraries, you can save stub files along with your code in the same directory, or you can put them in a for e.g. `myproject/stubs` directory, and point it by the env var export `MYPYPATH=~/work/myproject/stubs`.
+
+If a directory contains both a `.py` and a `.pyi` file for the same module, the `.pyi` file takes precedence. This way you can easily add annotations for a module even if you don’t want to modify the source code. This can help you to manually add type hints to third-party libraries that don't have them.
+
+### Generating stub files
+
+Mypy also ships with two tools for making it easier to create and maintain stubs: [Automatic stub generation (stubgen)](https://mypy.readthedocs.io/en/stable/stubgen.html#stubgen) and [Automatic stub testing (stubtest)](https://mypy.readthedocs.io/en/stable/stubtest.html#stubtest).
+
+
+```bash title="use stubgen to generate stub files for package my_pkg_dir"
+# default output dir is: out, use -o to change it
+stubgen my_pkg_dir -o stubs
+```
+
+```bash title="use pyright to generate stub files for package my_pkg_dir"
+# default output dir is: typings
+pyright --createstub my_pkg_dir
+```
+
+A common problem with stub files is that they tend to diverge from the actual implementation. Mypy includes the stubtest tool that can automatically check for discrepancies between the stubs and the implementation at runtime.
+
+
+
 ## Typing tools
 
 ### MyPy
