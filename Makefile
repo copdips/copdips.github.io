@@ -1,8 +1,8 @@
 SHELL=/bin/bash
 VENV_NAME := $(shell [ -d venv ] && echo venv || echo .venv)
-VENV_DIR=${VENV_NAME}
+# VENV_DIR=${VENV_NAME}
+VENV_DIR=.venv
 PYTHON=$(shell if [ -d $(VENV_DIR) ]; then echo $(VENV_DIR)/bin/python; else echo python; fi)
-
 
 ifneq (,$(findstring xterm,${TERM}))
 	BOLD         := $(shell tput -Txterm bold)
@@ -14,13 +14,13 @@ endif
 
 install:
 	@echo "${BOLD}${YELLOW}install:${NORMAL}"
-	pipx install uv
-	pipx upgrade uv
-	@if [ ! -d "$(VENV_DIR)" ]; then \
-		python3.12 -m venv $(VENV_DIR); \
-	fi
-	@. $(VENV_DIR)/bin/activate; \
-	uv pip install -r requirements.txt
+	pipx install uv --force
+# 	@if [ ! -d "$(VENV_DIR)" ]; then \
+# 		python3.12 -m venv $(VENV_DIR); \
+# 	fi
+# 	@. $(VENV_DIR)/bin/activate; \
+	uv sync --frozen --verbose
+	@echo "To activate manually, run: ${BOLD}${YELLOW}source $(VENV_DIR)/bin/activate${NORMAL}"; \
 
 build:
 	@echo "${BOLD}${YELLOW}mkdocs build:${NORMAL}"
@@ -32,12 +32,13 @@ run:
 
 update-venv:
 	@echo "${BOLD}${YELLOW}update venv:${NORMAL}"
-	${PYTHON} -m pip install -U pip
-	uv pip install -Ur requirements.txt
+# 	${PYTHON} -m pip install -U pip
+# 	uv pip install -Ur requirements.txt
+#   uv self update for CI, pipx upgrade uv for local
+	uv self update || pipx upgrade uv
+	uv lock --upgrade
 
 ci-install:
-	${PYTHON} -m pip install -U pip
-	${PYTHON} -m pip install -U uv
-	UV_SYSTEM_PYTHON=true uv pip install -Ur requirements.txt
-	echo -e "\nInstalled packages:"
-	uv pip list
+	@echo "${BOLD}${YELLOW}ci-install:${NORMAL}"
+	uv sync --frozen --verbose
+	uv pip show mkdocs

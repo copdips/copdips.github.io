@@ -10,8 +10,8 @@ concurrency:
   group: ${{ github.workflow}}
   cancel-in-progress: true
 
-env:
-  PYTHON_VERSION: 3.x
+# env:
+#   PYTHON_VERSION: 3.x
 
 permissions:
   contents: write
@@ -36,34 +36,35 @@ jobs:
       - name: Set up Python runtime
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: pip
-          cache-dependency-path: |
-            requirements.txt
+          # python-version: ${{ env.PYTHON_VERSION }}
+          python-version-file: .python-version
+          # cache: pip
+          # cache-dependency-path: |
+          #   requirements.txt
 
       - name: Debug
         run: |
           env | sort -f
           ls -lart
 
-      - name: Get pip cache dir
-        run: |
-          os_version=$(cat /etc/os-release | grep -i "version=" | cut -c9- | tr -d '"' | tr ' ' '_')
-          github_workflow_full_path="${GITHUB_WORKFLOW_REF%@*}"
-          python_full_version=$(python -c 'import platform; print(platform.python_version())')
-          node_major_version=$(node --version | cut -d'.' -f1 | tr -d 'v')
-          echo "os_version=$os_version" >> $GITHUB_ENV
-          echo "github_workflow_full_path=$github_workflow_full_path" >> $GITHUB_ENV
-          echo "python_full_version=$python_full_version" >> $GITHUB_ENV
-          echo "PIP_CACHE_DIR=$(pip cache dir)" >> $GITHUB_ENV
+      # - name: Get pip cache dir
+      #   run: |
+      #     os_version=$(cat /etc/os-release | grep -i "version=" | cut -c9- | tr -d '"' | tr ' ' '_')
+      #     github_workflow_full_path="${GITHUB_WORKFLOW_REF%@*}"
+      #     python_full_version=$(python -c 'import platform; print(platform.python_version())')
+      #     node_major_version=$(node --version | cut -d'.' -f1 | tr -d 'v')
+      #     echo "os_version=$os_version" >> $GITHUB_ENV
+      #     echo "github_workflow_full_path=$github_workflow_full_path" >> $GITHUB_ENV
+      #     echo "python_full_version=$python_full_version" >> $GITHUB_ENV
+      #     echo "PIP_CACHE_DIR=$(pip cache dir)" >> $GITHUB_ENV
 
-      - name: cache pip
-        uses: actions/cache@v4
-        with:
-          path: |
-            ${{ env.pythonLocation }}
-            .cache/plugin/git-committers/
-          key: ${{ env.github_workflow_full_path}}-${{ env.os_version }}-${{ env.python_full_version }}-${{ env.node_major_version}}-${{ hashFiles('requirements.txt') }}
+      # - name: cache pip
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: |
+      #       ${{ env.pythonLocation }}
+      #       .cache/plugin/git-committers/
+      #     key: ${{ env.github_workflow_full_path}}-${{ env.os_version }}-${{ env.python_full_version }}-${{ env.node_major_version}}-${{ hashFiles('requirements.txt') }}
 
       # - name: Set up build cache
       #   uses: actions/cache/restore@v3
@@ -73,8 +74,23 @@ jobs:
       #     restore-keys: |
       #       mkdocs-material-
 
-      - name: Install dependencies
+      - name: Install os dependencies
         run: sudo apt-get install pngquant
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          activate-environment: true
+          cache-dependency-glob: |
+            pyproject.toml
+
+        # run: uv sync --frozen --all-extras --dev --verbose
+      # - name: Install Requirements
+      #   run: |
+      #     uv sync --frozen --no-dev --verbose
+      #     uv pip show mkdocs
+      #   working-directory: ${{ github.workspace }}
 
       - name: Install Python dependencies
         run: |
@@ -97,9 +113,9 @@ jobs:
 
       - name: Build documentation
         run: |
-          mkdocs --version
+          uv run mkdocs --version
           # https://github.com/facelessuser/pymdown-extensions/issues/2240#issuecomment-1819117598
-          python -m mkdocs build -s
+          uv run python -m mkdocs build -s
           cp ads.txt ./site/
         env:
           MKDOCS_GIT_COMMITTERS_APIKEY: ${{ secrets.GH_TOKEN_FOR_GIT_COMMITTERS }}
