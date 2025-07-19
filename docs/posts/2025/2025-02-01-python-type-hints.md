@@ -175,6 +175,8 @@ def f() -> AliasType:
     ...
 ```
 
+!!! warning "type alias can not be used with isinstance()"
+
 ## Type variable
 
 [From MyPy](https://mypy.readthedocs.io/en/stable/kinds_of_types.html#the-type-of-class-objects): Python 3.12 introduced new syntax to use the `type[C]` and a type variable with an upper bound (see [Type variables with upper bounds](https://mypy.readthedocs.io/en/stable/generics.html#type-variable-upper-bound)).
@@ -536,6 +538,17 @@ concat('a', 'b')    # Okay
 concat(b'a', b'b')  # Okay
 concat(1, 2)        # Error!
 ```
+
+### Annotating decorators
+
+<https://mypy.readthedocs.io/en/stable/generics.html#declaring-decorators>
+
+## Overloading
+
+Use [@overload](https://mypy.readthedocs.io/en/stable/more_types.html#function-overloading) to let  type checkers know that a function can accept different types of arguments and return different types based on those arguments.
+
+!!! note "If there are multiple equally good matching variants (overloaded functions), mypy will select the variant that was defined first."
+    Put always the finest overloaded function at first: https://mypy.readthedocs.io/en/stable/more_types.html#type-checking-the-variants
 
 ## Typing tools
 
