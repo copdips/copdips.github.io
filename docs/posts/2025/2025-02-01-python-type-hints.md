@@ -490,7 +490,6 @@ If a directory contains both a `.py` and a `.pyi` file for the same module, the 
 
 Mypy also ships with two tools for making it easier to create and maintain stubs: [Automatic stub generation (stubgen)](https://mypy.readthedocs.io/en/stable/stubgen.html#stubgen) and [Automatic stub testing (stubtest)](https://mypy.readthedocs.io/en/stable/stubtest.html#stubtest).
 
-
 ```bash title="use stubgen to generate stub files for package my_pkg_dir"
 # default output dir is: out, use -o to change it
 stubgen my_pkg_dir -o stubs
@@ -501,15 +500,52 @@ stubgen my_pkg_dir -o stubs
 pyright --createstub my_pkg_dir
 ```
 
-A common problem with stub files is that they tend to diverge from the actual implementation. Mypy includes the stubtest tool that can automatically check for discrepancies between the stubs and the implementation at runtime.
+A common problem with stub files is that they tend to diverge from the actual implementation. Mypy includes the [stubtest](https://mypy.readthedocs.io/en/stable/stubtest.html#stubtest) tool that can automatically check for discrepancies between the stubs and the implementation at runtime.
 
+```bash
+MYPYPATH=stubs stubtest my_pkg_dir --concise
+```
 
+## Generics
+
+`list`, `set`, `dict`, etc, all the built-in collection classes are all Generics type, as they accept one or more type arguments within [...], which can be arbitrary types.
+For example, the type `dict[int, str]` has the type arguments `int` and `str`, and `list[int]` has the type argument `int`.
+
+### Type variables with value restriction
+
+[MyPy docs](https://mypy.readthedocs.io/en/stable/generics.html#type-variables-with-value-restriction):
+
+```python title="Python 3.12 syntax"
+def concat[S: (str, bytes)](x: S, y: S) -> S:
+    return x + y
+
+concat('a', 'b')    # Okay
+concat(b'a', b'b')  # Okay
+concat(1, 2)        # Error!
+```
+
+```python title="Python 3.11 and earlier syntax"
+from typing import TypeVar
+
+S = TypeVar('S', str, bytes)
+
+def concat(x: S, y: S) -> S:
+    return x + y
+
+concat('a', 'b')    # Okay
+concat(b'a', b'b')  # Okay
+concat(1, 2)        # Error!
+```
 
 ## Typing tools
 
 ### MyPy
 
 Ref. MyPy in [this post](../2021/2021-01-04-python-lint-and-format.md#mypy).
+
+While MyPy may not be the most performant type checker, particularly when integrated into pre-commit hooks, it remains an invaluable learning resource.
+The [MyPy documentation](https://mypy.readthedocs.io/en/stable/index.html) provides comprehensive guidance on writing effective type hints. Understanding its development history and current maintainership adds valuable context to its role in the Python ecosystem.
+And this posts is mainly based on MyPy documentation.
 
 ### Pyright && Pylance
 
@@ -540,4 +576,115 @@ While still in preview, it demonstrates the growing trend of high-performance Py
 The tool integrates smoothly with modern development environments through its [VSCode extension refly-vscode](https://marketplace.visualstudio.com/items?itemName=meta.pyrefly), making it accessible to a wide range of developers.
 Its backing by Meta suggests potential for robust development and long-term support.
 
-Just a quick test, **pyrefly** seems to generate more typing errors than **ty**.
+### ty vs pyrefly
+
+**pyrefly** has very similar output format to **ty**, but after a quick test, it seems that it generates more alerts than **ty** for the same codebase. It doesn't mean **pyrefly** is more powerful or more strict. Sometimes it just generates more false positives as it's still in preview.
+
+And test on a single [Generics](https://mypy.readthedocs.io/en/stable/generics.html#generics) type, both **ty** and **pyrefly** generate the same type errors, but **ty** can point to the exact position of the error, while **pyrefly** only points to a limited position.
+
+Test code:
+
+```python title="mypy_demo.py" linenums="1"
+--8<-- "scripts/2025/mypy_demo.py"
+```
+
+Test results:
+
+=== "ty output" linenums="1"
+
+    ```bash
+    $ ty --version
+    ty 0.0.1-alpha.14
+
+    $ ty check scripts/2025/mypy_demo.py
+    WARN ty is pre-release software and not ready for production use. Expect to encounter bugs, missing features, and fatal errors.
+    error[unsupported-operator]: Operator `+` is unsupported between objects of type `S` and `S`
+    --> scripts/2025/mypy_demo.py:3:12
+      |
+    1 | # https://mypy.readthedocs.io/en/stable/generics.html#type-variables-with-value-restriction
+    2 | def concat[S: (str, bytes)](x: S, y: S) -> S:
+    3 |     return x + y
+      |            ^^^^^
+    4 |
+    5 | concat('a', 'b')    # Okay
+      |
+    info: rule `unsupported-operator` is enabled by default
+
+    error[invalid-argument-type]: Argument to function `concat` is incorrect
+    --> scripts/2025/mypy_demo.py:7:8
+      |
+    5 | concat('a', 'b')    # Okay
+    6 | concat(b'a', b'b')  # Okay
+    7 | concat(1, 2)        # Error!
+      |        ^ Argument type `Literal[1]` does not satisfy constraints of type variable `S`
+      |
+    info: Type variable defined here
+    --> scripts/2025/mypy_demo.py:2:12
+      |
+    1 | # https://mypy.readthedocs.io/en/stable/generics.html#type-variables-with-value-restriction
+    2 | def concat[S: (str, bytes)](x: S, y: S) -> S:
+      |            ^^^^^^^^^^^^^^^
+    3 |     return x + y
+      |
+    info: rule `invalid-argument-type` is enabled by default
+
+    error[invalid-argument-type]: Argument to function `concat` is incorrect
+    --> scripts/2025/mypy_demo.py:7:11
+      |
+    5 | concat('a', 'b')    # Okay
+    6 | concat(b'a', b'b')  # Okay
+    7 | concat(1, 2)        # Error!
+      |           ^ Argument type `Literal[2]` does not satisfy constraints of type variable `S`
+      |
+    info: Type variable defined here
+    --> scripts/2025/mypy_demo.py:2:12
+      |
+    1 | # https://mypy.readthedocs.io/en/stable/generics.html#type-variables-with-value-restriction
+    2 | def concat[S: (str, bytes)](x: S, y: S) -> S:
+      |            ^^^^^^^^^^^^^^^
+    3 |     return x + y
+      |
+    info: rule `invalid-argument-type` is enabled by default
+
+    Found 3 diagnostics
+    ```
+
+=== "pyrefly output" linenums="1"
+
+    ```bash
+    $ pyrefly --version
+    pyrefly 0.23.1
+
+    $ pyrefly check scripts/2025/mypy_demo.py
+    ERROR `+` is not supported between `S` and `S` [bad-argument-type]
+    --> /home/xiang/git/copdips.github.io/scripts/2025/mypy_demo.py:3:12
+      |
+    3 |     return x + y
+      |            ^^^^^
+      |
+    Argument `S` is not assignable to parameter `self` with type `Self@bytes` in function `bytes.__add__`
+    ERROR `+` is not supported between `S` and `S` [bad-argument-type]
+    --> /home/xiang/git/copdips.github.io/scripts/2025/mypy_demo.py:3:12
+      |
+    3 |     return x + y
+      |            ^^^^^
+      |
+    Argument `S` is not assignable to parameter `value` with type `Buffer` in function `bytes.__add__`
+    ERROR `+` is not supported between `S` and `S` [no-matching-overload]
+    --> /home/xiang/git/copdips.github.io/scripts/2025/mypy_demo.py:3:12
+      |
+    3 |     return x + y
+      |            ^^^^^
+      |
+    No matching overload found for function `str.__add__`
+    Possible overloads:
+    (value: LiteralString, /) -> LiteralString [closest match]
+    (value: str, /) -> str
+    ERROR Returned type `bytes | Unknown` is not assignable to declared return type `S` [bad-return]
+    --> /home/xiang/git/copdips.github.io/scripts/2025/mypy_demo.py:3:12
+      |
+    3 |     return x + y
+      |            ^^^^^
+      |
+    INFO errors shown: 4, errors ignored: 0, modules: 1, transitive dependencies: 62, lines: 17,891, time: 0.12s, peak memory: physical 72.1 MiB
+    ```
