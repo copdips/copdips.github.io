@@ -585,14 +585,14 @@ And test on a single [Generics](https://mypy.readthedocs.io/en/stable/generics.h
 Test code:
 
 ```python title="mypy_demo.py" linenums="1"
---8<-- "scripts/2025/mypy_demo.py"
+--8<-- "posts/2025/scripts/mypy_demo.py"
 ```
 
 Test results:
 
-=== "ty output" linenums="1"
+=== "ty output"
 
-    ```bash
+    ```bash linenums="1"
     $ ty --version
     ty 0.0.1-alpha.14
 
@@ -649,9 +649,9 @@ Test results:
     Found 3 diagnostics
     ```
 
-=== "pyrefly output" linenums="1"
+=== "pyrefly output"
 
-    ```bash
+    ```bash linenums="1"
     $ pyrefly --version
     pyrefly 0.23.1
 

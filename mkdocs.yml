@@ -49,7 +49,9 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.magiclink
   - pymdownx.mark
-  - pymdownx.snippets
+  - pymdownx.snippets:
+      base_path: docs
+      check_paths: true
   - pymdownx.superfences:
       custom_fences:
         - class: mermaid
