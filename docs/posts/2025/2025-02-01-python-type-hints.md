@@ -7,7 +7,7 @@ categories:
 comments: true
 date:
   created: 2025-02-01
-  updated: 2025-07-09
+  updated: 2025-08-17
 ---
 
 # Python Type Hints
@@ -353,6 +353,33 @@ class Child(Base):
         return f"<Child(id={self.id}, name='{self.name}', parent_id={self.parent_id})>"
 ```
 
+## abstract abc.ABC vs typing.Protocol
+
+`abc.ABC` enforce the inheritance of abstract methods, requiring subclasses to implement them.
+`typing.Protocol` is only for typing, allowing for structural subtyping without enforcing inheritance.
+
+```python title="typing.Protocol"
+from typing import Protocol
+
+class Shape(Protocol):
+    def area(self) -> float: ...
+
+# no class Circle(Shape) here
+class Circle:
+    def __init__(self, r: float) -> None:
+        self.r = r
+
+    def area(self) -> float:
+        return 3.14159 * self.r * self.r
+
+def print_area(s: Shape) -> None:
+    print(s.area())
+
+c = Circle(10)
+# as c has area() method, it matches Shape protocol, MyPy is happy with that.
+print_area(c)  # ✅ Circle matches Shape structurally
+```
+
 ## Callable and Protocol
 
 [From MyPy](https://mypy.readthedocs.io/en/stable/protocols.html#callback-protocols): We can use [Protocols](https://typing.python.org/en/latest/spec/protocol.html) to define [callable](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable) types with a special [**call**](https://docs.python.org/3/reference/datamodel.html#object.__call__) member:
@@ -545,10 +572,46 @@ concat(1, 2)        # Error!
 
 ## Overloading
 
-Use [@overload](https://mypy.readthedocs.io/en/stable/more_types.html#function-overloading) to let  type checkers know that a function can accept different types of arguments and return different types based on those arguments.
+Use [@overload](https://mypy.readthedocs.io/en/stable/more_types.html#function-overloading) to let type checkers know that a function can accept different types of arguments and return different types based on those arguments.
 
 !!! note "If there are multiple equally good matching variants (overloaded functions), mypy will select the variant that was defined first."
     Put always the finest overloaded function at first: https://mypy.readthedocs.io/en/stable/more_types.html#type-checking-the-variants
+
+### Overloading example
+
+```python title="Overloading __getitem__() method with Python 3.12 syntax"
+# https://mypy.readthedocs.io/en/stable/more_types.html#function-overloading
+from collections.abc import Sequence
+from typing import overload
+
+class MyList[T](Sequence[T]):
+    @overload
+    # replace default value (True) of flag in overload definitions
+    # with ... as a placeholder
+    def __getitem__(self, index: int, flag: bool = ...) -> T:
+      """
+      The variant bodies must all be empty with ellipsis (`...`),
+      `pass` keyword is OK too by not recommended.
+      only the implementation is allowed to contain code.
+      This is because at runtime, the variants are completely ignored:
+      they're overridden by the final implementation function.
+      """
+      ...
+
+
+    @overload
+    # replace default value (True) of flag in overload definitions
+    # with ... as a placeholder
+    def __getitem__(self, index: slice, flag: bool = ...) -> Sequence[T]: ...
+
+    def __getitem__(self, index: int | slice, flag: bool = True) -> T | Sequence[T]:
+        if isinstance(index, int):
+            # Return a T here
+        elif isinstance(index, slice):
+            # Return a sequence of Ts here
+        else:
+            raise TypeError(...)
+```
 
 ## Typing tools
 
