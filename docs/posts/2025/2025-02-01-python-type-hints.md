@@ -7,7 +7,7 @@ categories:
 comments: true
 date:
   created: 2025-02-01
-  updated: 2025-08-17
+  updated: 2025-08-20
 ---
 
 # Python Type Hints
@@ -17,6 +17,8 @@ Python is a dynamically typed language, meaning variable types don't require exp
 Type hints ([PEP 484](https://peps.python.org/pep-0484/)) have been a major focus of recent Python releases, and I was particularly intrigued when I heard about [Guido van Rossum's work on MyPy at Dropbox](https://blog.dropbox.com/topics/company/thank-you--guido), where the team needed robust tooling to migrate their codebase from Python 2 to Python 3.
 
 Today, type hints are essential for modern Python development. They significantly enhance IDE capabilities and AI-powered development tools by providing better code completion, static analysis, and error detection. This mirrors the evolution we've seen with TypeScript's adoption over traditional JavaScript—explicit typing leads to more reliable and maintainable code.
+
+The majority of this post is based on [MyPy documentation](https://mypy.readthedocs.io/).
 
 !!! note "Typed Python vs data science projects"
     We know that type hints are [not very popular among data science projects](https://engineering.fb.com/2024/12/09/developer-tools/typed-python-2024-survey-meta/) for [some reasons](https://typing.python.org/en/latest/guides/typing_anti_pitch.html), but we won't discuss them here.
@@ -612,6 +614,100 @@ class MyList[T](Sequence[T]):
         else:
             raise TypeError(...)
 ```
+
+## Literal and Final
+
+`Literal` types may contain one or more literal `bool`, `int`, `str`, `bytes`, and `enum` values. Which means `Literal[3.14]` is not a valid literal type.
+
+If you find repeating the value of the variable in the type hint to be tedious, you can instead change the variable to be `Final` (see Final names, methods and classes):
+
+```python hl_lines="5 7"
+from typing import Final, Literal
+
+def expects_literal(x: Literal[19]) -> None: pass
+
+c: Final = 19
+
+reveal_type(c)          # Revealed type is "Literal[19]?"
+expects_literal(c)      # ...and this type checks!
+```
+
+Literals containing two or more values are equivalent to the union of those values. So, `Literal[-3, b"foo", MyEnum.A]` is equivalent to `Union[Literal[-3], Literal[b"foo"], Literal[MyEnum.A]]`. So we can has below code:
+
+```python linenums="1" hl_lines="11"
+# https://mypy.readthedocs.io/en/stable/literal_types.html#parameterizing-literals
+from typing import Literal
+
+PrimaryColors = Literal["red", "blue", "yellow"]
+SecondaryColors = Literal["purple", "green", "orange"]
+AllowedColors = Literal[PrimaryColors, SecondaryColors]
+
+def paint(color: AllowedColors) -> None: ...
+
+paint("red")        # Type checks!
+paint("turquoise")  # Does not type check
+```
+
+```shell
+$ mypy docs/posts/2025/scripts/mypy_literal.py
+docs/posts/2025/scripts/mypy_literal.py:11: error: Argument 1 to "paint" has incompatible type "Literal['turquoise']"; expected "Literal['red', 'blue', 'yellow', 'purple', 'green', 'orange']"  [arg-type]
+Found 1 error in 1 file (checked 1 source file)
+```
+
+## Discriminated union types
+
+We can use [Literals](#literal-and-final) to create [discriminated union types](https://mypy.readthedocs.io/en/stable/literal_types.html#tagged-unions) for [type narrowing](https://mypy.readthedocs.io/en/stable/type_narrowing.html).
+
+```py title="Example with TypedDict"
+# https://mypy.readthedocs.io/en/stable/literal_types.html#tagged-unions
+from typing import Literal, TypedDict, Union
+
+class NewJobEvent(TypedDict):
+    tag: Literal["new-job"]
+    job_name: str
+    config_file_path: str
+
+class CancelJobEvent(TypedDict):
+    tag: Literal["cancel-job"]
+    job_id: int
+
+Event = Union[NewJobEvent, CancelJobEvent]
+
+def process_event(event: Event) -> None:
+    # Since we made sure both TypedDicts have a key named 'tag', it's
+    # safe to do 'event["tag"]'. This expression normally has the type
+    # Literal["new-job", "cancel-job"], but the check below will narrow
+    # the type to either Literal["new-job"] or Literal["cancel-job"].
+    #
+    # This in turns narrows the type of 'event' to either NewJobEvent
+    # or CancelJobEvent.
+    if event["tag"] == "new-job":
+        print(event["job_name"])
+    else:
+        print(event["job_id"])
+```
+
+```py title="Example with generics"
+# https://mypy.readthedocs.io/en/stable/literal_types.html#tagged-unions
+class Wrapper[T]:
+    def __init__(self, inner: T) -> None:
+        self.inner = inner
+
+def process(w: Wrapper[int] | Wrapper[str]) -> None:
+    # Doing `if isinstance(w, Wrapper[int])` does not work: isinstance requires
+    # that the second argument always be an *erased* type, with no generics.
+    # This is because generics are a typing-only concept and do not exist at
+    # runtime in a way `isinstance` can always check.
+    #
+    # However, we can side-step this by checking the type of `w.inner` to
+    # narrow `w` itself:
+    if isinstance(w.inner, int):
+        reveal_type(w)  # Revealed type is "Wrapper[int]"
+    else:
+        reveal_type(w)  # Revealed type is "Wrapper[str]"
+```
+
+And check [this Pydantic doc](https://docs.pydantic.dev/latest/concepts/unions/#discriminated-unions-with-str-discriminators) to see how Pydantic use `Field(discriminator='...')` to handle discriminators.
 
 ## Typing tools
 
