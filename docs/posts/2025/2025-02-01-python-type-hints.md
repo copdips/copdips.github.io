@@ -16,7 +16,7 @@ Python is a dynamically typed language, meaning variable types don't require exp
 
 Type hints ([PEP 484](https://peps.python.org/pep-0484/)) have been a major focus of recent Python releases, and I was particularly intrigued when I heard about [Guido van Rossum's work on MyPy at Dropbox](https://blog.dropbox.com/topics/company/thank-you--guido), where the team needed robust tooling to migrate their codebase from Python 2 to Python 3.
 
-Today, type hints are essential for modern Python development. They significantly enhance IDE capabilities and AI-powered development tools by providing better code completion, static analysis, and error detection. This mirrors the evolution we've seen with TypeScript's adoption over traditional JavaScript—explicit typing leads to more reliable and maintainable code.
+Today, type hints are [essential for modern Python development](https://mypy.readthedocs.io/en/stable/faq.html#would-my-project-benefit-from-static-typing). They significantly enhance IDE capabilities and AI-powered development tools by providing better code completion, static analysis, and error detection. This mirrors the evolution we've seen with TypeScript's adoption over traditional JavaScript—explicit typing leads to more reliable and maintainable code.
 
 The majority of this post is based on [MyPy documentation](https://mypy.readthedocs.io/).
 
@@ -24,6 +24,10 @@ The majority of this post is based on [MyPy documentation](https://mypy.readthed
     We know that type hints are [not very popular among data science projects](https://engineering.fb.com/2024/12/09/developer-tools/typed-python-2024-survey-meta/) for [some reasons](https://typing.python.org/en/latest/guides/typing_anti_pitch.html), but we won't discuss them here.
 
 <!-- more -->
+
+## Type hints cheat sheet
+
+Ref: https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
 
 ## typing module vs collections module
 
@@ -509,34 +513,6 @@ def maybe_direction(x: str) -> None:
         print(f"{x} is not a cardinal direction")
 ```
 
-## Stub files
-
-Python [standard library](https://docs.python.org/3/library/index.html) ships its type hints in the [typeshed repo](https://github.com/python/typeshed) with `.pyi` extension.
-
-For third party libraries, you can save stub files along with your code in the same directory, or you can put them in a for e.g. `myproject/stubs` directory, and point it by the env var export `MYPYPATH=~/work/myproject/stubs`.
-
-If a directory contains both a `.py` and a `.pyi` file for the same module, the `.pyi` file takes precedence. This way you can easily add annotations for a module even if you don’t want to modify the source code. This can help you to manually add type hints to third-party libraries that don't have them.
-
-### Generating stub files
-
-Mypy also ships with two tools for making it easier to create and maintain stubs: [Automatic stub generation (stubgen)](https://mypy.readthedocs.io/en/stable/stubgen.html#stubgen) and [Automatic stub testing (stubtest)](https://mypy.readthedocs.io/en/stable/stubtest.html#stubtest).
-
-```bash title="use stubgen to generate stub files for package my_pkg_dir"
-# default output dir is: out, use -o to change it
-stubgen my_pkg_dir -o stubs
-```
-
-```bash title="use pyright to generate stub files for package my_pkg_dir"
-# default output dir is: typings
-pyright --createstub my_pkg_dir
-```
-
-A common problem with stub files is that they tend to diverge from the actual implementation. Mypy includes the [stubtest](https://mypy.readthedocs.io/en/stable/stubtest.html#stubtest) tool that can automatically check for discrepancies between the stubs and the implementation at runtime.
-
-```bash
-MYPYPATH=stubs stubtest my_pkg_dir --concise
-```
-
 ## Generics
 
 `list`, `set`, `dict`, etc, all the built-in collection classes are all Generics type, as they accept one or more type arguments within [...], which can be arbitrary types.
@@ -707,7 +683,35 @@ def process(w: Wrapper[int] | Wrapper[str]) -> None:
         reveal_type(w)  # Revealed type is "Wrapper[str]"
 ```
 
-And check [this Pydantic doc](https://docs.pydantic.dev/latest/concepts/unions/#discriminated-unions-with-str-discriminators) to see how Pydantic use `Field(discriminator='...')` to handle discriminators.
+And check [this Pydantic documentation](https://docs.pydantic.dev/latest/concepts/unions/#discriminated-unions-with-str-discriminators) to see how Pydantic uses `Field(discriminator='...')` to handle discriminated unions.
+
+## Stub files
+
+Python [standard library](https://docs.python.org/3/library/index.html) ships its type hints in the [typeshed repo](https://github.com/python/typeshed) with `.pyi` extension.
+
+For third party libraries, you can save stub files along with your code in the same directory, or you can put them in a for e.g. `myproject/stubs` directory, and point it by the env var export `MYPYPATH=~/work/myproject/stubs`.
+
+If a directory contains both a `.py` and a `.pyi` file for the same module, the `.pyi` file takes precedence. This way you can easily add annotations for a module even if you don't want to modify the source code. This can help you to manually add type hints to third-party libraries that don't have them.
+
+### Generating stub files
+
+Mypy also ships with two tools for making it easier to create and maintain stubs: [Automatic stub generation (stubgen)](https://mypy.readthedocs.io/en/stable/stubgen.html#stubgen) and [Automatic stub testing (stubtest)](https://mypy.readthedocs.io/en/stable/stubtest.html#stubtest).
+
+```bash title="use stubgen to generate stub files for package my_pkg_dir"
+# default output dir is: out, use -o to change it
+stubgen my_pkg_dir -o stubs
+```
+
+```bash title="use pyright to generate stub files for package my_pkg_dir"
+# default output dir is: typings
+pyright --createstub my_pkg_dir
+```
+
+A common problem with stub files is that they tend to diverge from the actual implementation. Mypy includes the [stubtest](https://mypy.readthedocs.io/en/stable/stubtest.html#stubtest) tool that can automatically check for discrepancies between the stubs and the implementation at runtime.
+
+```bash
+MYPYPATH=stubs stubtest my_pkg_dir --concise
+```
 
 ## Typing tools
 
