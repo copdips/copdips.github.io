@@ -45,11 +45,11 @@ Just copied from the [official documentation](https://docs.sqlalchemy.org/en/20/
 ref: https://docs.sqlalchemy.org/en/20/orm/session_api.html#session-and-sessionmaker
 
 ```python hl_lines="11"
-from sqlalchemy import create_engine
+from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import sessionmaker
 
 # an Engine, which the Session will use for connection resources
-engine = create_engine("postgresql+psycopg2://scott:tiger@localhost/")
+engine: Engine = create_engine("postgresql+psycopg2://scott:tiger@localhost/")
 
 Session = sessionmaker(engine)
 with Session() as session:
