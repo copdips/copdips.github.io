@@ -7,22 +7,29 @@ categories:
 comments: true
 date:
   created: 2025-08-26
+  updated: 2025-08-28
 ---
 
 # Python uv cheat sheet
 
-Python [UV](https://docs.astral.sh/uv/) common usage cheat sheet, but doesn't cover all the features.
+Python [uv](https://docs.astral.sh/uv/) common usage cheat sheet, but doesn't cover all the features.
 
 <!-- more -->
 
 ## Init project
 
-```bash
-# init new project with new folder
-uv init my-project -p python3.13
+uv init can have 3 templates: [`--app`](https://docs.astral.sh/uv/concepts/projects/init/#packaged-applications) (by default), [`--lib`](https://docs.astral.sh/uv/concepts/projects/init/#applications) and [`--package`](https://docs.astral.sh/uv/concepts/projects/init/#packaged-applications).
 
-# init an existing project
-uv init -p python3.13
+| Command                            | Description                                                                                                                                                                                      |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `uv init my-project -p python3.13` | Init new project with new folder                                                                                                                                                                 |
+| `uv init -p python3.13`            | Init an existing project with python3.13                                                                                                                                                         |
+| `uv init --lib`                    | Libraries template creates a src folder whereas application template only creates a main.py file                                                                                                 |
+| `uv init --package`                | Init a project with package template, same as libraries but pyproject.toml has a `[project.scripts]` key, so this is for command-line interface you can later run the command by: `uv run pkg-1` |
+
+```toml title="pyproject.toml created by uv init --package pkg-1"
+[project.scripts]
+pkg-1 = "pkg_1:main"
 ```
 
 !!! warning "uv init under a folder with already a pyproject.toml"
@@ -39,7 +46,7 @@ Ref:
 
   > `optional-dependencies` are part of the published metadata for your package, while `dependency-groups` are only visible when working with your package locally
 
-### Add to dependencies
+### Add to project.dependencies as main dependencies
 
 ```bash
 uv add fastapi
@@ -56,10 +63,10 @@ dependencies = [
 ]
 ```
 
-### Add to optional dependencies as extra packages
+### Add to project.optional-dependencies as extra packages
 
 ```bash
-uv add ruff --optional aio
+uv add aiohttp --optional aio
 ```
 
 Could be installed by end users with `uv pip install temp[aio]`
@@ -74,7 +81,7 @@ aio = [
 ]
 ```
 
-### Add to dependency groups
+### Add to dependency-groups for local development
 
 ```bash
 uv add ruff --dev
@@ -98,6 +105,53 @@ typing = [
     "ty>=0.0.1a19",
 ]
 
+```
+
+### Add to dependency sources
+
+[Dependency sources](https://docs.astral.sh/uv/concepts/projects/dependencies/#dependency-sources) are for local development only.
+
+```bash
+uv add git+https://github.com/encode/httpx
+uv add --editable ../temp1/lib_1
+```
+
+```toml
+[project]
+name = "temp"
+...
+[tool.uv.sources]
+httpx = { git = "https://github.com/encode/httpx" }
+lib-1 = { path = "../temp1/lib_1", editable = true }
+```
+
+!!! note
+    For multiple packages in the same repository, [workspaces](https://docs.astral.sh/uv/concepts/projects/workspaces/) may be a better fit.
+
+### Declare conflicting dependencies
+
+uv supports explicit [declaration of conflicting dependency groups](https://docs.astral.sh/uv/concepts/projects/config/#conflicting-dependencies). For example, to declare that the optional-dependency groups extra1 and extra2 are incompatible:
+
+```toml title="pyproject.toml"
+[tool.uv]
+conflicts = [
+    [
+      { extra = "extra1" },
+      { extra = "extra2" },
+    ],
+]
+```
+
+Or, to declare the development dependency groups group1 and group2 incompatible:
+
+```toml title="pyproject.toml"
+[tool.uv]
+conflicts = [
+    [
+      { group = "group1" },
+      { group = "group2" },
+    ],
+]
 ```
 
 ## Install dependencies
@@ -141,40 +195,63 @@ all = [
 
 !!! note "use `uv sync --dry-run` to see what will be the changes"
 
-- Install dependencies only: `uv sync --no-dev` (without any extra nor any group)
-- Install dependencies and `dev` group: `uv sync`
-- Install dependencies and all groups (dependency-groups): `uv sync --all-groups`
-- Install dependencies and all extras (project.optional-dependencies) and `dev` group: `uv sync --all-extras` (`dev` group is by default)
-- Install dependencies and all extras and all groups: `uv sync --all-extras --all-groups`
-- Install dependencies and extra `aio` and `dev` group: `uv sync --extra aio`
-- Install dependencies and extra `aio` but without `dev` group: `uv sync --extra aio --no-dev`
-- Install dependencies and `dev` groups and already installed extraneous packages not declared in pyproject.toml: `uv sync --extra aio --inexact`
+| Command                             | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `uv sync --no-dev`                  | Install [dependencies](https://docs.astral.sh/uv/concepts/projects/dependencies/#project-dependencies) only (without any extra nor any group)                                                                                                                                                                                                                                                                                                                         |
+| `uv sync`                           | Install dependencies and `dev` group, no extras, no other groups than `dev`                                                                                                                                                                                                                                                                                                                                                                                           |
+| `uv sync --all-groups`              | Install dependencies and all groups ([`dependency-groups`](https://docs.astral.sh/uv/concepts/projects/dependencies/#dependency-groups))                                                                                                                                                                                                                                                                                                                              |
+| `uv sync --all-extras`              | Install dependencies and all extras ([`project.optional-dependencies`](https://docs.astral.sh/uv/concepts/projects/dependencies/#optional-dependencies)) and `dev` group (`dev` group is by default)                                                                                                                                                                                                                                                                  |
+| `uv sync --all-extras --all-groups` | Install dependencies and all extras and all groups                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `uv sync --extra aio`               | Install dependencies and extra `aio` and `dev` group                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `uv sync --extra aio --no-dev`      | Install dependencies and extra `aio` but without `dev` group                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `uv sync --extra aio --inexact`     | Install dependencies and `dev` groups and retain already installed [extraneous packages](https://docs.astral.sh/uv/concepts/projects/sync/#retaining-extraneous-packages) not declared in pyproject.toml                                                                                                                                                                                                                                                              |
+| `uv sync --locked --no-dev`         | Ensure install by respecting `uv.lock` (ensure uv.lock won't be changed after uv sync) and raise an error if lock file doesn't confirm with pyproject.toml.<br/><br/>In 🐳 Dockerfile ([official uv Dockerfile example](https://github.com/astral-sh/uv-docker-example/blob/main/Dockerfile)), we often use `uv sync --locked --no-install-project --no-dev`, see [Using uv in Docker](https://docs.astral.sh/uv/guides/integration/docker/) to understand the usage of each parameters. |
+|                                     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 
-- Ensure install by respecting `uv.lock` (ensure uv.lock won't be changed after uv sync) and raise error if lock file doesn't conform with pyproject.toml: `uv sync --locked --no-dev`, in Dockerfile ([official uv Dockerfile example](https://github.com/astral-sh/uv-docker-example/blob/main/Dockerfile)), we often use `uv sync --locked --no-install-project --no-dev`, see [Using uv in Docker](https://docs.astral.sh/uv/guides/integration/docker/) to understand the usage of each parameters.
+```bash
+$ uv sync --locked --no-dev
+Resolved 21 packages in 33ms
+The lockfile at `uv.lock` needs to be updated, but `--locked` was provided.
+To update the lockfile, run `uv lock`.
+```
 
-    ```bash
-    $ uv sync --locked --no-dev
-    Resolved 21 packages in 33ms
-    The lockfile at `uv.lock` needs to be updated, but `--locked` was provided. To update the lockfile, run `uv lock`.
-    ```
+### `--locked` vs `--frozen` vs `--no-sync`
+
+official doc: https://docs.astral.sh/uv/concepts/projects/sync/#automatic-lock-and-sync
+
+`uv.lock` file related:
+
+- `--locked`: If the lockfile is not up-to-date, uv will raise an error instead of updating the lockfile. `--locked` could be considered as `--ensure-locked`.
+- `--frozen`: Use the lockfile without checking if it is up-to-date, no error will be raised.
+
+`venv` related:
+
+- `--no-sync`: Do not update the venv.
 
 ## Dependencies tree
 
-- `uv pip tree`: display the **installed packages** in a tree format.
-- `uv tree`: update `uv.lock` based on `pyproject.toml` and display tree based on `uv.lock`, **no package installation will occur**. `uv tree` displays better than `uv tree pip tree`
-- `uv tree --frozen`: don't update `uv.lock`, just display tree based on the current `uv.lock`
-- `uv tree --locked`: if `uv.lock` is not updated, display a warning message. This command is not very useful.
+| Command            | Description                                                                                                                                                          |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `uv pip tree`      | Display the **installed packages** in a tree format                                                                                                                  |
+| `uv tree`          | Update `uv.lock` based on `pyproject.toml` and display tree based on `uv.lock`, **no package installation will occur**. `uv tree` displays better than `uv pip tree` |
+| `uv tree --frozen` | Don't update `uv.lock`, just display tree based on the current `uv.lock`                                                                                             |
+| `uv tree --locked` | If `uv.lock` is not updated, display a warning message. This command is not very useful                                                                              |
 
 ## List outdated packages
 
-- `uv tree --outdated`: display a list of outdated packages with their latest versions.
+- `uv tree --outdated`: display a list of outdated packages with their latest **public** versions, no matter what `pyproject.toml` declares.
+- [`uv lock --check`](https://docs.astral.sh/uv/concepts/projects/sync/#checking-if-the-lockfile-is-up-to-date): check if `uv.lock` is up-to-date with `pyproject.toml`.
 
 ## Upgrade packages and uv.lock
 
-- `uv lock`: update the `uv.lock` file to match the current state of `pyproject.toml`.
-- `uv lock -U`: update the `uv.lock` file and upgrade all packages to their latest compatible versions.
-- `uv sync`: same as `uv lock` but also installs the dependencies.
-- `uv sync -U`: same as `uv lock -U` but also installs the dependencies.
+[`uv.lock` file](https://docs.astral.sh/uv/concepts/projects/layout/#the-lockfile)can be updated by `uv lock`, `uv sync`, `uv run`, `uv add`, `uv remove`.
+
+| Command      | Description                                                                                                                                                                   |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `uv lock`    | Update the `uv.lock` file to match the current state of `pyproject.toml`                                                                                                      |
+| `uv lock -U` | Update the `uv.lock` file and [upgrade](https://docs.astral.sh/uv/concepts/projects/sync/#upgrading-locked-package-versions) all packages to their latest compatible versions |
+| `uv sync`    | Same as `uv lock` but also installs the dependencies                                                                                                                          |
+| `uv sync -U` | Same as `uv lock -U` but also installs the dependencies                                                                                                                       |
 
 !!! note "`uv lock` vs `uv lock -U` and `uv sync` vs `uv sync -U`"
     If latest version of fastapi is 0.116.1, and pyproject.toml declares fastapi>=0.115.1, and current uv.lock has fastapi==0.115.1. then:
@@ -184,6 +261,18 @@ all = [
 
     Same logic applies to `uv sync` and `uv sync -U`, except for `sync` installing the dependencies too.
 
+    `-U` (`--upgrade` for all packages) or `-P` (`--upgrade-package` for a specific package) respect always the version constraints defined in `pyproject.toml`.
+
 ## Integrations
 
 Check [this doc](https://docs.astral.sh/uv/guides/integration/) for more information on integrations with other tools and platforms (Docker, Jupyter, Github Actions, Pre Commit, PyTorch FastAPI, etc.).
+
+## Build
+
+### Build with rust, C, C++, CPython backend
+
+uv can also [build with extension module by `--build-backend` flag](https://docs.astral.sh/uv/concepts/projects/init/#projects-with-extension-modules) to work with Rust and C, C++, CPython etc.
+
+### Build isolation
+
+uv build isolation is by default, but some packages need to [build against the same version of some packages installed in the project environment](https://docs.astral.sh/uv/concepts/projects/config/#build-isolation). For example, [flask-attn](https://pypi.org/project/flash-attn/), [deepspeed](https://pypi.org/project/deepspeed/), [cchardet](https://pypi.org/project/cchardet/), etc.
