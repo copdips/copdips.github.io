@@ -7,7 +7,7 @@ categories:
 comments: true
 date:
   created: 2025-08-26
-  updated: 2025-08-28
+  updated: 2025-08-30
 ---
 
 # Python uv cheat sheet
@@ -32,8 +32,8 @@ uv init can have 3 templates: [`--app`](https://docs.astral.sh/uv/concepts/proje
 pkg-1 = "pkg_1:main"
 ```
 
-!!! warning "uv init under a folder with already a pyproject.toml"
-    If upper folders has already a `pyproject.toml` file, uv will also add the new project (created by `uv init`) as `[tool.uv.workspace]` members. This cheat sheet doesn't cover that. As that makes uv workspace management more complex. You might need to use `uv sync --active` to install dependencies in the separate venv of the sub module if needed.
+!!! warning "uv init inside an existing package with already a pyproject.toml"
+    If upper folders has already a `pyproject.toml` file, uv will also add the new project (created by `uv init`) as `[tool.uv.workspace]` members. This cheat sheet doesn't cover that yet. As that converts the repo to a [uv workspace](https://docs.astral.sh/uv/concepts/projects/workspaces/#using-workspaces) which is a little bit more complex. You might need to use `uv sync --active` to install dependencies in the separate venv of the sub module if needed.
 
 ## Add dependencies
 
@@ -195,18 +195,18 @@ all = [
 
 !!! note "use `uv sync --dry-run` to see what will be the changes"
 
-| Command                             | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `uv sync --no-dev`                  | Install [dependencies](https://docs.astral.sh/uv/concepts/projects/dependencies/#project-dependencies) only (without any extra nor any group)                                                                                                                                                                                                                                                                                                                         |
-| `uv sync`                           | Install dependencies and `dev` group, no extras, no other groups than `dev`                                                                                                                                                                                                                                                                                                                                                                                           |
-| `uv sync --all-groups`              | Install dependencies and all groups ([`dependency-groups`](https://docs.astral.sh/uv/concepts/projects/dependencies/#dependency-groups))                                                                                                                                                                                                                                                                                                                              |
-| `uv sync --all-extras`              | Install dependencies and all extras ([`project.optional-dependencies`](https://docs.astral.sh/uv/concepts/projects/dependencies/#optional-dependencies)) and `dev` group (`dev` group is by default)                                                                                                                                                                                                                                                                  |
-| `uv sync --all-extras --all-groups` | Install dependencies and all extras and all groups                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| `uv sync --extra aio`               | Install dependencies and extra `aio` and `dev` group                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| `uv sync --extra aio --no-dev`      | Install dependencies and extra `aio` but without `dev` group                                                                                                                                                                                                                                                                                                                                                                                                          |
-| `uv sync --extra aio --inexact`     | Install dependencies and `dev` groups and retain already installed [extraneous packages](https://docs.astral.sh/uv/concepts/projects/sync/#retaining-extraneous-packages) not declared in pyproject.toml                                                                                                                                                                                                                                                              |
+| Command                             | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `uv sync --no-dev`                  | Install [dependencies](https://docs.astral.sh/uv/concepts/projects/dependencies/#project-dependencies) only (without any extra nor any group)                                                                                                                                                                                                                                                                                                                                             |
+| `uv sync`                           | Install dependencies and `dev` group, no extras, no other groups than `dev`                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `uv sync --all-groups`              | Install dependencies and all groups ([`dependency-groups`](https://docs.astral.sh/uv/concepts/projects/dependencies/#dependency-groups))                                                                                                                                                                                                                                                                                                                                                  |
+| `uv sync --all-extras`              | Install dependencies and all extras ([`project.optional-dependencies`](https://docs.astral.sh/uv/concepts/projects/dependencies/#optional-dependencies)) and `dev` group (`dev` group is by default)                                                                                                                                                                                                                                                                                      |
+| `uv sync --all-extras --all-groups` | Install dependencies and all extras and all groups                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `uv sync --extra aio`               | Install dependencies and extra `aio` and `dev` group                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| `uv sync --extra aio --no-dev`      | Install dependencies and extra `aio` but without `dev` group                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `uv sync --extra aio --inexact`     | Install dependencies and `dev` groups and retain already installed [extraneous packages](https://docs.astral.sh/uv/concepts/projects/sync/#retaining-extraneous-packages) not declared in pyproject.toml                                                                                                                                                                                                                                                                                  |
 | `uv sync --locked --no-dev`         | Ensure install by respecting `uv.lock` (ensure uv.lock won't be changed after uv sync) and raise an error if lock file doesn't confirm with pyproject.toml.<br/><br/>In 🐳 Dockerfile ([official uv Dockerfile example](https://github.com/astral-sh/uv-docker-example/blob/main/Dockerfile)), we often use `uv sync --locked --no-install-project --no-dev`, see [Using uv in Docker](https://docs.astral.sh/uv/guides/integration/docker/) to understand the usage of each parameters. |
-|                                     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+|                                     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 
 ```bash
 $ uv sync --locked --no-dev
@@ -276,3 +276,116 @@ uv can also [build with extension module by `--build-backend` flag](https://docs
 ### Build isolation
 
 uv build isolation is by default, but some packages need to [build against the same version of some packages installed in the project environment](https://docs.astral.sh/uv/concepts/projects/config/#build-isolation). For example, [flask-attn](https://pypi.org/project/flash-attn/), [deepspeed](https://pypi.org/project/deepspeed/), [cchardet](https://pypi.org/project/cchardet/), etc.
+
+## Run
+
+### Run single script file with isolated environment
+
+https://docs.astral.sh/uv/concepts/projects/run/#running-scripts
+
+```python title="example.py with inline dependencies"
+# /// script
+# dependencies = [
+#   "httpx",
+# ]
+# ///
+
+import httpx
+print(httpx.__file__)
+```
+
+```bash title="in current venv, httpx is already installed" hl_lines="4"
+$ uv pip show httpx
+Name: httpx
+Version: 0.28.1
+Location: /home/xiang/git/copdips.github.io/.venv/lib/python3.13/site-packages
+Requires: anyio, certifi, httpcore, idna
+Required-by: fastapi-cloud-cli
+```
+
+```bash title="But httpx will still be installed in an isolated environment" hl_lines="3"
+$ uv run example.py
+
+/home/xiang/.cache/uv/environments-v2/example-b91cf8387ef5699e/lib/python3.13/site-packages/httpx/__init__.py
+```
+
+### Run inline script
+
+`uv run --with httpx python -c "import httpx; print(httpx.__file__)"` to run an inline script. `httpx` will be installed in an isolated environment.
+
+## Tools
+
+### uvx and uv tool run and uv run and raw command
+
+`uvx` and `uv tool run` are the same to run command in an isolated environment. They run `uv tool install` in the background
+
+`uv run` is normally used to run a command in the current environment. But will auto upgrade the package based on `pyproject.toml` dependencies constraints. Whereas the raw command will not.
+
+| Command                        | Target  | Effect                                                                                                                                                                                                                                  | Notes                                                                                                                                                                                                                                                                                                                                                                                |
+| ------------------------------ | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `uvx`<br/>or<br/>`uv tool run` | command | Always in an isolated env in user cache, no auto update.<br/><br/>If the tool was previously installed, i.e., via `uv tool install`, the installed version will be used unless a version is requested or the `--isolated` flag is used. | Can run script by `uvx --with ruff python -c "import ruff ; from importlib.metadata import version; print(ruff.__file__); print(version('ruff'))"`                                                                                                                                                                                                                                   |
+| `uvx`<br/>or<br/>`uv tool run` | script  | Not directly supported                                                                                                                                                                                                                  | Can workaround by `uvx --with ruff python example.py`.<br/><br/>[In-script dependencies declaration](https://docs.astral.sh/uv/concepts/projects/run/#running-scripts) is not supported, use `--with`, `--with-requirements`, `--with-executables-from` to [add additional dependencies](https://docs.astral.sh/uv/concepts/tools/#installing-executables-from-additional-packages). |
+| `uv run`                       | command | Use current env, fallback to isolated env in user cache,<br/>could auto upgrade command version based on `pyproject.toml`                                                                                                               |                                                                                                                                                                                                                                                                                                                                                                                      |
+| `uv run`                       | script  | - If no in-script dependencies declared, use current env and auto upgrade dependencies version<br/><br/>- If in-script dependencies declared, use isolated env in user cache                                                            |                                                                                                                                                                                                                                                                                                                                                                                      |
+| `raw run`                      | command | use current env only                                                                                                                                                                                                                    |                                                                                                                                                                                                                                                                                                                                                                                      |
+| `raw run`                      | script  | use current env only                                                                                                                                                                                                                    |                                                                                                                                                                                                                                                                                                                                                                                      |
+
+```bash hl_lines="2 4 11-12 17-18 20-23"
+$ grep ruff pyproject.toml
+    "ruff>=0.12.4",
+
+$ uv pip install ruff==0.12.0
+Resolved 1 package in 7ms
+Uninstalled 1 package in 0.50ms
+Installed 1 package in 3ms
+ - ruff==0.12.4
+ + ruff==0.12.0
+
+$ ruff --version
+ruff 0.12.0
+
+$ uv pip tree | grep ruff
+ruff v0.12.0
+
+$ uv run --no-project ruff --version  # (1)
+ruff 0.12.0
+
+$ uv run ruff --version  # (2)
+Uninstalled 1 package in 0.62ms
+Installed 1 package in 3ms
+ruff 0.12.4
+
+$ ruff --version
+ruff 0.12.4
+
+$ uv pip tree | grep ruff
+ruff v0.12.4
+```
+
+1. `uv run --no-project ruff --version` will use the version of `ruff` installed in the current environment (0.12.0). The `--no-project` flag tells `uv` to [not consider the current project (pyproject.toml)](https://docs.astral.sh/uv/concepts/tools/#relationship-to-uv-run) and its dependencies.
+2. `uv run ruff --version` upgrade automatically ruff version form 0.12.0 to 0.12.4 as constrainted in `pyproject.toml`
+
+!!! note
+    if `pipx` has been used to install a tool, `uv tool install` will fail. The [`--force` flag can be used to override this behavior](https://docs.astral.sh/uv/concepts/tools/#overwriting-executables).
+
+### tools directory
+
+`uv tool dir` to [show the directory where tools](https://docs.astral.sh/uv/concepts/tools/#tools-directory) are installed.
+
+```bash
+$ uv tool dir
+/home/xiang/.local/share/uv/tools
+```
+
+### upgrade
+
+- `uv tool upgrade ruff` to upgrade `ruff`.
+- `uv tool upgrade ruff --reinstall` to upgrade `ruff` and all its dependencies.
+
+### Cleanup
+
+The tool will be installed in an isolated environment in the user's cache directory. Use `uv cache clean` to clean up the cache.
+
+## Workspace
+
+To be continued.
