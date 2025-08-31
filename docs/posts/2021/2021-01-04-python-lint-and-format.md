@@ -7,7 +7,7 @@ categories:
 comments: true
 date:
   created: 2021-01-04
-  updated: 2025-02-22
+  updated: 2025-08-31
 description: Some commands to lint and format Python files
 ---
 
@@ -17,12 +17,14 @@ description: Some commands to lint and format Python files
 
 ## Azure SDK Python Guidelines
 
-[https://azure.github.io/azure-sdk/python_implementation.html](https://azure.github.io/azure-sdk/python_implementation.html)
+- [https://azure.github.io/azure-sdk/python_design.html](https://azure.github.io/azure-sdk/python_design.html)
+- [https://azure.github.io/azure-sdk/python_implementation.html](https://azure.github.io/azure-sdk/python_implementation.html)
 
 ## Lint
 
 - Update 2023-05-21: Replaced flake8, pylint, black and isort by [ruff](https://github.com/charliermarsh/ruff). When replacing pylint, should [add check by mypy](https://beta.ruff.rs/docs/faq/#how-does-ruff-compare-to-pylint).
 - Update 2023-11-07: Bandit could be replaced by ruff too with the support of flake-bandit.
+- Update 2025-08-31: [Ty or Pyrefly](../2025/2025-02-01-python-type-hints.md#typing-tools) (both written in Rust) could be used for type checking.
 
 !!! note
     The only thing ruff can't do at the moment is [type checking](https://docs.astral.sh/ruff/faq/#how-does-ruff-compare-to-mypy-or-pyright-or-pyre).
@@ -43,7 +45,7 @@ ruff check --ignore-noqa --exit-zero
 ```
 
 !!! note "try also `uv pip install`"
-    For `pip install` users, try [uv pip install](https://github.com/astral-sh/uv) from the same author of ruff.
+    For `pip install` users, try [uv pip install](https://github.com/astral-sh/uv) from the same author of ruff. [uv cheat sheet here](../2025/2025-08-26-python-uv-cheat-sheet.md).
 
     A highly opinionated and subjective perspective, but finally, we have a real competitor (or even a replacement) of `pip install`. If you have a private PyPi index, all you need to setup is `export UV_DEFAULT_INDEX=$PIP_INDEX_URL`; otherwise, just add `uv` before `pip install` command.
 
@@ -162,7 +164,53 @@ Found 0 vulnerabilities in 214 packages
 
 Github has already provided, free of charge, the [vulnerable dependencies alert](https://docs.github.com/en/code-security/supply-chain-security/managing-vulnerabilities-in-your-projects-dependencies/about-alerts-for-vulnerable-dependencies).
 
+### mypy
+
+!!! note
+    While mypy is significantly less performant than [modern typing tools written in Rust](../2025/2025-02-01-python-type-hints.md#typing-tools), it remains the gold standard for type checking in Python. As of September 2025, all Rust-based typing tools are still in preview stage.
+
+For projects using SQLAlchemy, consider installing the `sqlalchemy-stubs` plugin to handle SQLAlchemy's dynamic class generation. And also django-stubs, pandas-stubs, types-setuptools, types-requests etc.
+
+Just some personal notes on mypy, though [this post](../2025/2025-02-01-python-type-hints.md) based on the official MyPy documentation.
+
+[mypy config file](https://mypy.readthedocs.io/en/stable/config_file.html):
+
+```ini
+[mypy]
+ignore_missing_imports = True # We recommend using this approach only as a last resort: it's equivalent to adding a # type: ignore to all unresolved imports in your codebase.
+plugins = sqlmypy # sqlalchemy-stubs
+exclude = (?x)(
+    ^venv
+    | ^build
+  )
+```
+
+running mypy:
+
+```bash
+mypy .
+mypy . --exclude [a regular expression that matches file path]
+mypy . --exclude venv[//] # exclude venv folder under the root
+```
+
+!!! warning
+    When using mypy, it would be better to use mypy against to [all files in the project](https://github.com/python/mypy/issues/13916), but not some of them.
+
+#### Auto discover missing stub files
+
+```bash
+# search available stubs, and ask for installation,
+# that can be used to declared the stub packages into requirements files.
+mypy --install-types  .
+
+# for local quick test, we might not care about the requirements files.
+mypy --install-types --non-interactive .
+```
+
 ### pyright
+
+!!! warning
+    Replaced by [ty](#ty). More info about Python typing tools in this [post](../2025/2025-02-01-python-type-hints.md#typing-tools)
 
 faster than mypy.
 
@@ -209,48 +257,10 @@ exclude = []
 - running pyright in other CI Solutions:
   <https://github.com/microsoft/pyright/blob/main/docs/ci-integration.md>
 
-### mypy
-
-For projects having sqlalchemy, we often install the `sqlalchemy-stubs` plugin as sqlalchemy uses some dynamic classes.
-
-And also django-stubs, pandas-stubs, types-setuptools, types-requests etc.
-
-[mypy config file](https://mypy.readthedocs.io/en/stable/config_file.html):
-
-```ini
-[mypy]
-ignore_missing_imports = True # We recommend using this approach only as a last resort: it's equivalent to adding a # type: ignore to all unresolved imports in your codebase.
-plugins = sqlmypy # sqlalchemy-stubs
-exclude = (?x)(
-    ^venv
-    | ^build
-  )
-```
-
-running mypy:
-
-```bash
-mypy .
-mypy . --exclude [a regular expression that matches file path]
-mypy . --exclude venv[//] # exclude venv folder under the root
-```
-
-!!! warning
-
-    When using mypy, it would be better to use mypy against to [all files in the project](https://github.com/python/mypy/issues/13916), but not some of them.
-
-#### Auto discover missing stub files
-
-```bash
-# search available stubs, and ask for installation,
-# that can be used to declared the stub packages into requirements files.
-mypy --install-types  .
-
-# for local quick test, we might not care about the requirements files.
-mypy --install-types --non-interactive .
-```
-
 ### pylyzer
+
+!! warning
+    Replaced by [ty](#ty). The author is working for ty now. More info about Python typing tools in this [post](../2025/2025-02-01-python-type-hints.md#typing-tools).
 
 A fast, feature-rich static code analyzer (type checker) & language server for Python written in Rust. A possible mypy, pyright replacement in the future, currently it's still in the [early stage](https://github.com/mtshiba/pylyzer/issues/59#issuecomment-1851284715).
 
@@ -263,6 +273,16 @@ pylyzer single_python_file.py
 # check entire package
 pylyzer
 ```
+
+### ty
+
+Fast, feature-rich static code analyzer (type checker) & language server for Python written in Rust. It also has a competitor called [pyrefly](https://pyrefly.org/) from Meta. As of September 2025, both are in preview stage yet.
+
+More info about Python typing tools in this [post](../2025/2025-02-01-python-type-hints.md#typing-tools)
+
+### pyrefly
+
+Like ty written in Rust maintained by Meta.
 
 ### ignore lint error in one line
 
@@ -277,9 +297,10 @@ pylyzer
 | bandit           | (2 spaces)# nosec                                                                      |
 | pyright          | (2 spaces)# pyright: ignore [reportOptionalMemberAccess, reportGeneralTypeIssues]      |
 | mypy             | (2 spaces)# type: ignore                                                               |
+| ty               | (2 spaces)# ty: ignore[unresolved-attribute]                                           |
 | multiple linters | (2 spaces)# type: ignore # noqa: {errorIdentifier} # pylint: disable={errorIdentifier} |
 
-To ignore Pylint within a code block
+To ignore Pylint within a code block:
 
 ```python
 
@@ -417,9 +438,12 @@ Hereunder an example of `pyproject.toml` file in my [fastapi-demo](https://githu
 [tool.ruff]
 fix = true
 show-fixes = true
-lint.select = ["ALL"]
-lint.ignore = [
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
     # https://beta.ruff.rs/docs/rules/
+    "T201",   # print found # ! not used in prod
     "D",      # pydocstyle
     "E501",   # line too long, handled by black
     "B008",   # do not perform function calls in argument defaults
@@ -432,6 +456,7 @@ lint.ignore = [
     "COM812", # missing-trailing-comma
     "ISC001", # single-line-implicit-string-concatenation
 ]
+
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = [
     # at least this three should be fine in tests:
@@ -442,11 +467,14 @@ lint.ignore = [
 "tools/**/*.py" = ["ALL"]
 "migrations/**/*.py" = ["ALL"]
 "_local_test/**/*.py" = ["ALL"]
+
 [tool.ruff.lint.isort]
 combine-as-imports = true
 force-wrap-aliases = true
+
 [tool.ruff.lint.pylint]
 max-args = 8
+
 [tool.ruff.lint.pep8-naming]
 classmethod-decorators = ["pydantic.validator"]
 
@@ -501,6 +529,8 @@ init_forbid_extra = true
 init_typed = true
 warn_required_dynamic_aliases = true
 
+[tool.ty.src]
+exclude = ["_local_test", "tools", "migrations", ".venv", "app_sqlalchemy_v1"]
 
 [project]
 name = "fastapi-demo"
@@ -508,10 +538,10 @@ dynamic = ["version", "dependencies", "optional-dependencies"]
 authors = [{ name = "Xiang ZHU", email = "xiang.zhu@outlook.com" }]
 description = "fastapi-demo"
 readme = "README.md"
-requires-python = ">=3.11,<3.13"
+requires-python = ">=3.12,<3.14"
 classifiers = [
     "Operating System :: POSIX :: Linux",
-    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
@@ -620,14 +650,13 @@ pre-commit init-templatedir ~/.git-template
 Hereunder an example of `.pre-commit-config.yaml` file in my [fastapi-demo](https://github.com/copdips/fastapi-demo/blob/main/.pre-commit-config.yaml) repo.
 
 ```yaml title=".pre-commit-config.yaml"
-## Installation:
+# Installation:
 # pip install pre-commit
 # pre-commit install
-# pre-commit autoupdate
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: check-json
         exclude: devcontainer.json
@@ -636,6 +665,10 @@ repos:
       - id: end-of-file-fixer
       - id: trailing-whitespace
       - id: debug-statements
+        # without specifying `language_version: python 3.12`,
+        # it generates SyntaxError: invalid syntax for Python 3.12 new Generic syntax:
+        # class BaseService[T: BaseSQLModel]:
+        # language_version: python 3.12
       - id: requirements-txt-fixer
       - id: detect-private-key
       - id: mixed-line-ending
@@ -657,31 +690,37 @@ repos:
   - repo: https://github.com/pre-commit/pygrep-hooks
     rev: v1.10.0
     hooks:
-      - id: python-check-blanket-type-ignore
+      # - id: python-check-blanket-type-ignore
       - id: python-check-mock-methods
       - id: python-no-log-warn
       - id: python-use-type-annotations
   - repo: local
     hooks:
-      - id: ruff
-        name: ruff
+      - id: ruff-check
+        name: ruff-check
         entry: ruff check --force-exclude
         language: system
-        types: [python, pyi]
+        types_or: [python, pyi, jupyter]
         args: []
         require_serial: true
       - id: ruff-format
         name: ruff-format
         entry: ruff format --force-exclude
         language: system
-        types: [python, pyi]
+        types_or: [python, pyi, jupyter]
         args: []
         require_serial: true
-      - id: pyright
-        name: pyright
-        entry: pyright
+      # - id: pyright
+      #   name: pyright
+      #   entry: pyright
+      #   language: system
+      #   types_or: [python, pyi, jupyter]
+      #   args: []
+      - id: ty
+        name: ty
+        entry: ty check
         language: system
-        types: [python, pyi]
+        types_or: [python, pyi, jupyter]
         args: []
       - id: pytest
         name: pytest
@@ -692,7 +731,7 @@ repos:
         always_run: true
 ```
 
-```yaml title="mypy instead of pyright in .pre-commit-config.yaml"
+```yaml title="use mypy in .pre-commit-config.yaml"
 repos:
   - repo: local
     hooks:
