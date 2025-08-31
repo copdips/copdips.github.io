@@ -134,6 +134,7 @@ plugins:
         - ubuntu
         - unittest
         - vault
+        - vibe-coding
         - video
         - vmware
         - vscode
