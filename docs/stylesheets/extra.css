@@ -2,6 +2,18 @@
   --md-footer-bg-color:  #1368ca;
 } */
 
+/* Force code blocks to wrap long lines */
+/* By default, MkDocs Material uses overflow-x: auto; on code blocks, so very long lines cause a horizontal scrollbar.*/
+/* code block */
+.md-typeset pre>code {
+  /* Wrap long lines */
+  white-space: pre-wrap;
+
+  /* Break words if needed */
+  /* word-break: break-word; */
+}
+
+
 /* inline code */
 .md-typeset p > code {
   background-color: #ececef;
@@ -12,6 +24,7 @@
   color: #c9c6c6;
 }
 @media (prefers-color-scheme: dark) {
+  /* inline code */
   .md-typeset p > code {
     background-color: #ececef;
     color: #000000;
