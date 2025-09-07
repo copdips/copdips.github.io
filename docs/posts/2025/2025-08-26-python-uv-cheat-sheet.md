@@ -4,10 +4,13 @@ authors:
 categories:
 - python
 - package
+- cicd
+- cache
+- github
 comments: true
 date:
   created: 2025-08-26
-  updated: 2025-08-30
+  updated: 2025-09-07
 ---
 
 # Python uv cheat sheet
@@ -33,7 +36,7 @@ pkg-1 = "pkg_1:main"
 ```
 
 !!! warning "uv init inside an existing package with already a pyproject.toml"
-    If upper folders has already a `pyproject.toml` file, uv will also add the new project (created by `uv init`) as `[tool.uv.workspace]` members. This cheat sheet doesn't cover that yet. As that converts the repo to a [uv workspace](https://docs.astral.sh/uv/concepts/projects/workspaces/#using-workspaces) which is a little bit more complex. You might need to use `uv sync --active` to install dependencies in the separate venv of the sub module if needed.
+    If upper folders has already a `pyproject.toml` file, uv will also add the new project (created by `uv init`) as `[tool.uv.workspace]` members. This cheat sheet doesn't cover that yet. As that converts the repo to a [uv workspace](https://docs.astral.sh/uv/concepts/projects/workspaces/#using-workspaces) which is a little bit more complex. You might need to use `uv sync --active` to install dependencies in the active venv.
 
 ## Add dependencies
 
@@ -154,6 +157,64 @@ conflicts = [
 ]
 ```
 
+### tool.uv.environments vs tool.uv.required-environments
+
+[`tool.uv.environments`](https://docs.astral.sh/uv/concepts/resolution/#limited-resolution-environments) forces uv to ==only resolve the dependencies and cache== the defined environments, whereas [`tool.uv.required-environments`](https://docs.astral.sh/uv/concepts/resolution/#required-environments) will only ensure the required environments are always available, but ==other environments (the wheel files) could still be resolved and cached==.
+
+```toml title="pyproject.toml with tool.uv.environments" hl_lines="2"
+[tool.uv]
+environments = [
+    "sys_platform == 'darwin'",
+    "sys_platform == 'linux'",
+]
+```
+
+```toml title="pyproject.toml with tool.uv.required-environments" hl_lines="2"
+[tool.uv]
+required-environments = [
+    "sys_platform == 'darwin' and platform_machine == 'x86_64'"
+]
+```
+
+`tool.uv.required-environments` is useful when some packages (like PyTorch) have only wheels (no [sdist](https://docs.astral.sh/uv/concepts/resolution/#source-distribution)), and its wheels are not available for all platforms.
+
+Example:
+
+Say a package `foo` publishes only linux platform wheels, and no `sdist`:
+
+- `foo-1.0.0-cp311-cp311-manylinux_x86_64.whl`
+
+If you're on Linux, and run `uv add foo`:
+
+- With no `required-environments` → ✅ works (Linux wheel available, resolution succeeds). uv only guarantees installability for your own environment.
+- With `required-environments = ["sys_platform == 'darwin'"]` → ❌ fails (no macOS wheel, and no sdist to build one). With this settings, your colleagues on macOS won't see surprisingly `foo` in the `pyproject.toml`
+
+!!! note "If we have the sdist, that's all right"
+    For packages providing also `sdist` (source distribution), even if no wheel (built distributions) is available for a specific platform, uv can still try to build from `sdist` on the specific platform, so it should work. But as said above, some packages like `pytorch` don't provide `sdist`, only wheels.
+
+!!! note
+    [`--only-binary`](https://docs.astral.sh/uv/pip/compatibility/#-only-binary-enforcement) will restrict to use wheels only, and [`--no-binary`](https://docs.astral.sh/uv/pip/compatibility/#-no-binary-enforcement) will restrict to use `sdist` only.
+
+### Dependency overrides
+
+If you want to install a version of a package that is resolved as conflict with existing dependencies, but you're sure it's compatible or you want to test it intentionally, you can use [dependency overrides](https://docs.astral.sh/uv/concepts/resolution/#dependency-overrides) to force uv to install a specific version of a package.
+
+```toml title="pyproject.toml"
+[tool.uv]
+override-dependencies = [
+
+    # Always install Werkzeug 2.3.0, regardless of whether
+    # transitive dependencies request a different version.
+    "werkzeug==2.3.0",
+
+    # Install pydantic>=2.0 even though
+    # a transitive dependency declares the requirement pydantic>=1.0,<2.0
+    "pydantic>=1.0,<3",
+]
+```
+
+While [constraints](https://docs.astral.sh/uv/concepts/resolution/#dependency-constraints) can only reduce the set of acceptable versions for a package, overrides can expand the set of acceptable versions, providing an escape hatch for erroneous upper version bounds. As with constraints, ==overrides do not add a dependency on the package== and only take effect if the package is requested in a direct or transitive dependency.
+
 ## Install dependencies
 
 ```toml title="pyproject.toml"
@@ -227,6 +288,92 @@ official doc: https://docs.astral.sh/uv/concepts/projects/sync/#automatic-lock-a
 `venv` related:
 
 - `--no-sync`: Do not update the venv.
+                                                            |
+
+### --resolution lowest-direct and --resolution lowest
+
+With `--resolution lowest`, uv will install the lowest possible version for all dependencies, both direct and indirect (transitive). `--resolution lowest`
+
+Alternatively, `--resolution lowest-direct` will use the lowest compatible versions for all direct dependencies, while using the latest compatible versions for all other dependencies. uv will always use the latest versions for build dependencies.
+
+!!! important "testing compatibility"
+    When publishing libraries, it is recommended to separately run tests with `--resolution lowest` or `--resolution lowest-direct` in CI/CD to [ensure compatibility with the declared lower bounds](https://docs.astral.sh/uv/concepts/resolution/#lower-bounds).
+
+!!! warning "set back to default `--resolution highest` after testing"
+    After testing with `--resolution lowest` or `--resolution lowest-direct`, remember to set back to the default `--resolution highest` to avoid potential dependency conflicts in future installations.
+
+`--resolution lowest-direct` is easier than `--resolution lowest` as it only affects direct dependencies, so it is less likely to cause dependency conflicts:
+
+```bash hl_lines="1"
+$ uv sync --resolution lowest
+Ignoring existing lockfile due to change in resolution mode: `highest` vs. `lowest`
+  × Failed to build `idna==0.2`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit status: 1)
+
+      [stderr]
+      Sorry, Python 3 not yet supported
+
+      hint: This usually indicates a problem with the package or the build environment.
+  help: `idna` (v0.2) was included because `temp` (v0.1.0) depends on `httpx` (v0.28.1) which depends on
+        `idna`
+```
+
+Whereas `--resolution lowest-direct` works fine for the same project:
+
+```bash hl_lines="1"
+$ uv sync --resolution lowest-direct
+Ignoring existing lockfile due to change in resolution mode: `highest` vs. `lowest-direct`
+Resolved 26 packages in 330ms
+Uninstalled 3 packages in 10ms
+Installed 3 packages in 9ms
+ - fastapi==0.116.1
+ + fastapi==0.115.1
+ - ruff==0.12.10
+ + ruff==0.12.4
+ - starlette==0.47.3
+ + starlette==0.38.6
+```
+
+### Reproducible builds
+
+- If you're using uv.lock with Dockerfile to build your application, you could use `uv sync --locked --no-install-project --no-dev` to ensure reproducible builds, or even the image itself is reproducible. See [Using uv in Docker](https://docs.astral.sh/uv/guides/integration/docker/) for more information.
+- If you're not using uv.lock, and you previously (on `2025-09-07`) used `uv pip install -r requirements.txt` to install dependencies, and not all the dependencies and transitive dependencies are pinned in `requirements.txt`. One day there's bug in the production, you want to reproduce the same environment as before. One of the ways is to use `uv pip install -r requirements.txt --exclude-newer 2025-09-07` to exclude any package released after `2025-09-07`. See [Reproducible resolutions](https://docs.astral.sh/uv/concepts/resolution/#reproducible-resolutions) for more information. We can also add `exclude-older` in [tool.uv] in `pyproject.toml` to make it permanent.
+
+!!! note
+    An [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339.html) timestamp (e.g., `2006-12-02T02:07:43Z`) and a local date in the same format (e.g., `2006-12-02`) in your system's configured time zone are both supported in `--exclude-newer`
+
+### link-mode: clone, copy, hardlink, symlink
+
+| OS      | Default link-mode     | Fallback          |
+| ------- | --------------------- | ----------------- |
+| Linux   | hardlink              | fallbacks to copy |
+| Windows | hardlink              | fallbacks to copy |
+| MacOS   | clone (copy-on-write) |   unknown         |
+
+Possible values:
+
+- `clone`: Clone (i.e., [copy-on-write](https://en.wikipedia.org/wiki/Copy-on-write)) packages from the wheel into the site-packages directory. With copy-on-write (COW), initially no extra disk space is used as long as the dependencies are cached, we're using shared cache files. But if you modify the code of a package, extra disk space will be used to store the modified files. To ensure your modification to the dependencies won't impact other projects which are using the same dependencies from the shared cache. This mode minimizes disk space usage, but it requires a filesystem that supports copy-on-write, such as Btrfs or APFS. If the filesystem doesn't support copy-on-write, uv will fallback to `copy` mode.
+- `copy`: Copy packages from the wheel into the site-packages directory. ==This is also the default mode for traditional pip install, useful if you want to modify dependencies' code for debugging purpose==.
+- `hardlink`: Hard link packages from the wheel into the site-packages directory. fallbacks to `copy` mode if the cache and the venv are on different filesystems.
+- `symlink`: Symbolically link packages from the wheel into the site-packages directory, use with caution as `uv cache clean` will break all installed packages.
+
+```toml title="pyproject.toml"
+[tool.uv]
+link-mode = "copy"
+```
+
+or `export UV_LINK_MODE=copy` or `--link-mode=copy` in the command line.
+
+### Bytecode compilation
+
+Unlike `pip`, uv does not compile `.py` files to `.pyc` files during installation by default (i.e., uv does not create or populate `__pycache__` directories). To enable bytecode compilation during installs, pass the -`-compile-bytecode` flag to `uv pip install` or `uv pip sync`, or set the environment variable `UV_COMPILE_BYTECODE=1`.
+
+Skipping bytecode compilation can be undesirable in workflows; for example, we recommend enabling bytecode compilation in [Docker builds](https://docs.astral.sh/uv/guides/integration/docker/) to improve startup times (at the cost of increased build times).
+
+### Concurrent install
+
+[As per uv's documentation](https://docs.astral.sh/uv/concepts/cache/#cache-safety), concurrent installations are supported even against the same virtual environment. uv applies a file-based lock to the target virtual environment when installing, to avoid concurrent modifications across processes.
 
 ## Dependencies tree
 
@@ -235,16 +382,18 @@ official doc: https://docs.astral.sh/uv/concepts/projects/sync/#automatic-lock-a
 | `uv pip tree`      | Display the **installed packages** in a tree format                                                                                                                  |
 | `uv tree`          | Update `uv.lock` based on `pyproject.toml` and display tree based on `uv.lock`, **no package installation will occur**. `uv tree` displays better than `uv pip tree` |
 | `uv tree --frozen` | Don't update `uv.lock`, just display tree based on the current `uv.lock`                                                                                             |
-| `uv tree --locked` | If `uv.lock` is not updated, display a warning message. This command is not very useful                                                                              |
+| `uv tree --locked` | If `uv.lock` is not updated, display a warning message. This command is not very useful|
 
 ## List outdated packages
 
-- `uv tree --outdated`: display a list of outdated packages with their latest **public** versions, no matter what `pyproject.toml` declares.
+- `uv tree --outdated` or `uv tree --outdated | grep latest`: display a list of outdated packages with their latest **public** versions, no matter what`pyproject.toml` declares.
 - [`uv lock --check`](https://docs.astral.sh/uv/concepts/projects/sync/#checking-if-the-lockfile-is-up-to-date): check if `uv.lock` is up-to-date with `pyproject.toml`.
 
 ## Upgrade packages and uv.lock
 
-[`uv.lock` file](https://docs.astral.sh/uv/concepts/projects/layout/#the-lockfile)can be updated by `uv lock`, `uv sync`, `uv run`, `uv add`, `uv remove`.
+The only way to change the package version constraints is to edit manually the `pyproject.toml` file directly. After making changes to `pyproject.toml`, you should run `uv sync` to update the venv dependencies and the `uv.lock` file accordingly. Or `uv lock` to update only the `uv.lock` file without changing the venv dependencies.
+
+[`uv.lock` file](https://docs.astral.sh/uv/concepts/projects/layout/#the-lockfile) can be updated by `uv lock`, `uv sync`, `uv run`, `uv add`, `uv remove`.
 
 | Command      | Description                                                                                                                                                                   |
 | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -276,6 +425,25 @@ uv can also [build with extension module by `--build-backend` flag](https://docs
 ### Build isolation
 
 uv build isolation is by default, but some packages need to [build against the same version of some packages installed in the project environment](https://docs.astral.sh/uv/concepts/projects/config/#build-isolation). For example, [flask-attn](https://pypi.org/project/flash-attn/), [deepspeed](https://pypi.org/project/deepspeed/), [cchardet](https://pypi.org/project/cchardet/), etc.
+
+For a list of packages that are known to fail under PEP 517 build isolation, see [#2252](hhttps://github.com/astral-sh/uv/issues/2252).
+
+## Caching
+
+- `uv cache dir`: show the cache directory.
+- `uv cache clean`: clear the cache entirely.
+- `uv cache clean ruff`: clear only the ruff package cache.
+- `uv cache prune`: safely removes all unused cache entries.
+- `uv sync --refresh` or `uv pip install --refresh`: force revalidate cached data for all dependencies, use `--refresh-package ruff` to revalidate only `ruff`.
+
+### Caching in CI
+
+As per [uv's documentation on Caching in continuous integration](https://docs.astral.sh/uv/concepts/cache/#caching-in-continuous-integration), it's recommended to use `uv cache prune --ci` at the end of the CI, to remove all pre-built wheels and unzipped source distributions from the cache, but retain any wheels that were built from source.
+
+There's [an example of using this in Github Actions](https://docs.astral.sh/uv/guides/integration/github/#caching). It also provides `enable-cache: true` to achieve the same effect.
+
+!!! note
+    If using `uv pip`, use `requirements.txt` along with the OS and the Python version instead of `uv.lock` in the cache key. And you may need to set the env var `UV_SYSTEM_PYTHON=1` or add the command line flag `--system` to use the system Python in CI.
 
 ## Run
 
