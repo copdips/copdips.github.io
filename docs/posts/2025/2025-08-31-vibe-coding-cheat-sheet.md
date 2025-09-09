@@ -14,13 +14,41 @@ date:
 
 # Vibe coding cheat sheet
 
-Some useful patterns for Vibe coding. This blog will be regularly updated with new tips and tricks.
+Some useful patterns for Vibe coding. This blog will be regularly updated with new tips.
 
 <!-- more -->
 
-## Github Copilot instructions
+## Github Copilot Instructions
 
-[Azure SDK for Python copilot instructions](https://github.com/Azure/azure-sdk-for-python/blob/main/.github/copilot-instructions.md)
+[Custom instructions](https://code.visualstudio.com/docs/copilot/customization/custom-instructions?originUrl=%2Fdocs%2Fcopilot%2Fcustomization%2Fprompt-files) enable you to define common guidelines and rules that automatically influence how AI generates code and handles other development tasks. Instead of manually including context in every chat prompt, specify custom instructions in a Markdown file to ensure consistent AI responses that align with your coding practices and project requirements.
+
+VSCode supports:
+
+- A single instruction file at `.github/copilot-instructions.md`
+- Multiple instruction files (`domain.instructions.md`) in the `.github/instructions` folder
+
+Examples:
+
+- [Azure SDK for Python copilot instructions](https://github.com/Azure/azure-sdk-for-python/blob/main/.github/copilot-instructions.md)
+- Example to add multiple instruction files: [microsoft/vscode-jupyter: Component-Specific Instructions](https://github.com/microsoft/vscode-jupyter/blob/main/.github/copilot-instructions.md)
+
+## Github Copilot Chat Modes
+
+[VSCode chat modes](https://code.visualstudio.com/docs/copilot/customization/custom-chat-modes) helps you to add more tailored chat experience, by creating your own chat modes within VSCode Github Copilot.
+
+Examples:
+
+- [microsoft/vscode-jupyter: bugix chatmode](https://github.com/microsoft/vscode-jupyter/blob/main/.github/chatmodes/bugfix.chatmode.md)
+- https://github.com/dfinke/awesome-copilot-chatmodes/
+
+## Github Copilot Prompt files
+
+VSCode Github Copilot Prompt helps you to create [reusable prompt templates for Github Copilot chat](https://code.visualstudio.com/docs/copilot/customization/prompt-files) in the `.github/prompts` folder.
+
+Examples:
+
+- [microsoft/vscode-jupyter: prompts](https://github.com/microsoft/vscode-jupyter/tree/main/.github/prompts)
+- [Azure/azure-sdk-for-python: prompts](https://github.com/Azure/azure-sdk-for-python/tree/main/.github/prompts)
 
 ## Claude Code rules
 
