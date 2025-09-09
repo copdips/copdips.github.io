@@ -30,6 +30,7 @@ VSCode supports:
 Examples:
 
 - [Azure SDK for Python copilot instructions](https://github.com/Azure/azure-sdk-for-python/blob/main/.github/copilot-instructions.md)
+- [microsoft/vscode copilot instructions](https://github.com/microsoft/vscode/blob/main/.github/copilot-instructions.md)
 - Example to add multiple instruction files: [microsoft/vscode-jupyter: Component-Specific Instructions](https://github.com/microsoft/vscode-jupyter/blob/main/.github/copilot-instructions.md)
 
 ## Github Copilot Chat Modes
@@ -48,6 +49,7 @@ VSCode Github Copilot Prompt helps you to create [reusable prompt templates for 
 Examples:
 
 - [microsoft/vscode-jupyter: prompts](https://github.com/microsoft/vscode-jupyter/tree/main/.github/prompts)
+- [microsoft/vscode: prompts](https://github.com/microsoft/vscode/tree/main/.github/prompts)
 - [Azure/azure-sdk-for-python: prompts](https://github.com/Azure/azure-sdk-for-python/tree/main/.github/prompts)
 
 ## Claude Code rules
