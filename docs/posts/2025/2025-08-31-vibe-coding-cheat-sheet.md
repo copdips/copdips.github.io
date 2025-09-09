@@ -9,7 +9,7 @@ categories:
 comments: true
 date:
     created: 2025-08-31
-    updated: 2025-09-04
+    updated: 2025-09-09
 ---
 
 # Vibe coding cheat sheet
@@ -52,6 +52,8 @@ Examples:
 
 ## Claude Code rules
 
+[CLAUDE.md](https://www.anthropic.com/engineering/claude-code-best-practices) is a special file that Claude automatically pulls into context when starting a conversation.
+
 Chris Dzombak's [claude code rules](https://www.dzombak.com/blog/2025/08/getting-good-results-from-claude-code/)
 
 ## Other instructions
@@ -65,8 +67,30 @@ Chris Dzombak's [claude code rules](https://www.dzombak.com/blog/2025/08/getting
 
 - Write code in Python 3.13+ syntax.
 - Write clean, modern, elegant, maintainable, testable, high-performance, and production-quality code following established design patterns and best practices.
-- Use modern Python features, such as pathlib over os.path, asyncio over multithreading, pytest over unittest, polars over pandas, fastapi over flask, walrus, etc.
+- Use modern Python features, such as pathlib over os.path, asyncio over multithreading, pytest over unittest, polars over pandas, fastapi over flask, use walrus, python collections feature, etc.
 - Use pydantic v2 if you need data validation and settings management.
 - Use sqlalchemy v2 for database interactions.
 - Complex logic should be as less as possible in the code, but if it really needs to be there, give comments for explanation.
 - Typing is mandatory. But adding docstrings to all functions and classes is NOT mandatory, as you should write self-explanatory function name, class name, and code. But if you think it is necessary, DO add them.
+```
+
+## Use shared AI instruction files across multiple repositories
+
+You can create all the copilot claude instructions files in a folder say `~/.github`
+
+Then you can create symlinks to the files in your project folder:
+
+```bash
+cd /path/to/your/project
+
+mkdir -p .github/instructions
+mkdir -p .github/prompts
+
+ln -s ~/.github/copilot-instructions.md .github/copilot-instructions.md
+ln -s ~/.github/instructions/python.instructions.md .github/instructions/python.instructions.md
+ln -s ~/.github/prompts/python.prompt.md .github/prompts/python.prompt.md
+ln -s ~/.github/CLAUDE.md CLAUDE.md
+
+echo ".github/**/*.md" >> .gitignore
+echo "CLAUDE.md" >> .gitignore
+```
