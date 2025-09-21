@@ -382,3 +382,41 @@ echo $all_folders | tr ' ' '\n' | while read -r folder ; \
 ## bash-git-prompt tweaks
 
 [Some tweaks](../2024/2024-01-05-bash-git-prompt-tweaks.md) I made to [bash-git-prompt](https://github.com/magicmonty/bash-git-prompt). dynamic Python venv path, new var `GIT_MESSAGE`, etc.
+
+## My gitconfig
+
+```bash
+git config --global alias.amend "commit --amend -C HEAD"
+git config --global alias.st "status"
+git config --global alias.co "checkout"
+git config --global alias.ci "commit"
+git config --global alias.unstage "reset HEAD"
+git config --global alias.lga "log --graph --decorate --oneline --all"
+git config --global alias.ll "log --graph --all --pretty=format:'%C(auto)%h%Creset %an: %s - %Creset %C(auto)%d%Creset %C(bold black)(%cr)%Creset %C(bold black)(%ci)%Creset'"
+git config --global alias.sh "show"
+git config --global alias.df "diff"
+git config --global alias.br "branch"
+git config --global alias.cm "checkout main"
+git config --global alias.cd "checkout dev"
+git config --global alias.rum "pull --rebase upstream main"
+git config --global alias.rud "pull --rebase upstream dev"
+git config --global alias.rom "pull --rebase origin main"
+git config --global alias.rod "pull --rebase origin dev"
+
+# git doesn't have a default user level gitignore file
+git config --global core.excludesfile ~/.gitignore
+
+git config --global tag.sort "-v:refname"
+git config --global init.defaultbranch main
+
+git config --global user.name "Xiang ZHU"
+git config --global user.email xiang.zhu@outlook.com
+
+# for Git 2.34 or later, GPG sign commits with SSH key,
+# use `git log --show-signature` to view signature status
+git config --global gpg.format ssh
+git config --global user.signingkey ~/.ssh/id_ed25519.pub
+
+# auto add `-S` when commit
+git config --global commit.gpgsign true
+```
