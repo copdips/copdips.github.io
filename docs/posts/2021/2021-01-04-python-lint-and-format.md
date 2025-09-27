@@ -592,7 +592,13 @@ exclude = [
 
 ```bash
 pip install pre-commit
+
+# pre-commit install by default installs pre-commit hook only:
 pre-commit install
+
+# add --hook-type to add other git hook types:
+pre-commit install --hook-type pre-push
+
 
 ## install the script along with the hook environments in one command
 
@@ -696,16 +702,16 @@ repos:
       - id: python-use-type-annotations
   - repo: local
     hooks:
-      - id: ruff-check
-        name: ruff-check
-        entry: ruff check --force-exclude
+      - id: ruff-format
+        name: ruff-format
+        entry: ruff format --force-exclude
         language: system
         types_or: [python, pyi, jupyter]
         args: []
         require_serial: true
-      - id: ruff-format
-        name: ruff-format
-        entry: ruff format --force-exclude
+      - id: ruff-check
+        name: ruff-check
+        entry: ruff check --force-exclude
         language: system
         types_or: [python, pyi, jupyter]
         args: []
