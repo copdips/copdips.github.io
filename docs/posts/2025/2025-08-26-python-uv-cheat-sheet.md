@@ -10,7 +10,7 @@ categories:
 comments: true
 date:
   created: 2025-08-26
-  updated: 2025-09-07
+  updated: 2025-10-04
 ---
 
 # Python uv cheat sheet
@@ -391,9 +391,20 @@ Skipping bytecode compilation can be undesirable in workflows; for example, we r
 
 ## Upgrade packages and uv.lock
 
-The only way to change the package version constraints is to edit manually the `pyproject.toml` file directly. After making changes to `pyproject.toml`, you should run `uv sync` to update the venv dependencies and the `uv.lock` file accordingly. Or `uv lock` to update only the `uv.lock` file without changing the venv dependencies.
+### Upgrade pyproject.toml
 
-[`uv.lock` file](https://docs.astral.sh/uv/concepts/projects/layout/#the-lockfile) can be updated by `uv lock`, `uv sync`, `uv run`, `uv add`, `uv remove`.
+The only way to change the package version constraints is to edit manually the `pyproject.toml` file directly.
+After making changes to `pyproject.toml`, you should run `uv sync` to upgrade the venv dependencies and the `uv.lock` file accordingly.
+Or `uv lock` to upgrade only the `uv.lock` file without changing the venv dependencies.
+
+!!! note "other semi-automatic ways to upgrade pyproject.toml"
+    Beside above mentioned manual edit of `pyproject.toml` with `uv tree --outdated | grep latest`, we do have some semi-automatic ways to upgrade`pyproject.toml`, like [Github dependabot](https://docs.github.com/en/code-security/getting-started/dependabot-quickstart-guide), or [Renovate](https://docs.renovatebot.com/), they will create PRs to upgrade`pyproject.toml` automatically.
+
+    Or locally in VSCode, the [Dependi extension](https://marketplace.visualstudio.com/items?itemName=fill-labs.dependi) is pretty good, it shows in-line the latest version in the editor, and can upgrade the whole `pyproject.toml`with a click.
+
+### Upgrade uv.lock
+
+[`uv.lock` file](https://docs.astral.sh/uv/concepts/projects/layout/#the-lockfile) can be updated by `uv lock`,`uv sync`,`uv run`,`uv add`,`uv remove`.
 
 | Command      | Description                                                                                                                                                                   |
 | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
