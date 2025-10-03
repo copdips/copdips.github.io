@@ -9,7 +9,7 @@ categories:
 comments: true
 date:
     created: 2025-08-31
-    updated: 2025-09-09
+    updated: 2025-10-04
 ---
 
 # Vibe coding cheat sheet
@@ -18,7 +18,9 @@ Some useful patterns for Vibe coding. This blog will be regularly updated with n
 
 <!-- more -->
 
-## Github Copilot Instructions
+## VSCode Github Copilot
+
+### Github Copilot Instructions
 
 [Custom instructions](https://code.visualstudio.com/docs/copilot/customization/custom-instructions?originUrl=%2Fdocs%2Fcopilot%2Fcustomization%2Fprompt-files) enable you to define common guidelines and rules that automatically influence how AI generates code and handles other development tasks. Instead of manually including context in every chat prompt, specify custom instructions in a Markdown file to ensure consistent AI responses that align with your coding practices and project requirements.
 
@@ -33,7 +35,7 @@ Examples:
 - [microsoft/vscode copilot instructions](https://github.com/microsoft/vscode/blob/main/.github/copilot-instructions.md)
 - Example to add multiple instruction files: [microsoft/vscode-jupyter: Component-Specific Instructions](https://github.com/microsoft/vscode-jupyter/blob/main/.github/copilot-instructions.md)
 
-## Github Copilot Chat Modes
+### Github Copilot Chat Modes
 
 [VSCode chat modes](https://code.visualstudio.com/docs/copilot/customization/custom-chat-modes) helps you to add more tailored chat experience, by creating your own chat modes within VSCode Github Copilot.
 
@@ -42,7 +44,7 @@ Examples:
 - [microsoft/vscode-jupyter: bugix chatmode](https://github.com/microsoft/vscode-jupyter/blob/main/.github/chatmodes/bugfix.chatmode.md)
 - https://github.com/dfinke/awesome-copilot-chatmodes/
 
-## Github Copilot Prompt files
+### Github Copilot Prompt files
 
 VSCode Github Copilot Prompt helps you to create [reusable prompt templates for Github Copilot chat](https://code.visualstudio.com/docs/copilot/customization/prompt-files) in the `.github/prompts` folder.
 
@@ -52,7 +54,23 @@ Examples:
 - [microsoft/vscode: prompts](https://github.com/microsoft/vscode/tree/main/.github/prompts)
 - [Azure/azure-sdk-for-python: prompts](https://github.com/Azure/azure-sdk-for-python/tree/main/.github/prompts)
 
-## Claude Code rules
+## Claude Code
+
+### Claude.md file
+
+We can save the [Claude instructions](https://www.anthropic.com/engineering/claude-code-best-practices) in a file named `CLAUDE.md` in many places, suppose we have a git repository at `~/git/repo`, then we can create the `CLAUDE.md` file in any of these places:
+
+| Location                           | Description                     | Use Case                                                                                             |
+| ---------------------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `~/.claude/CLAUDE.md`              | Home folder                     | Global instructions applied to all Claude sessions across all projects.                              |
+| `~/git/repo/CLAUDE.md`             | Root of your repo (most common) | Share instructions across sessions and with team. Check into git.                                    |
+| `~/git/repo/CLAUDE.local.md`       | Root of your repo (local only)  | Personal instructions not shared with team. Add to `.gitignore`.                                     |
+| `~/git/CLAUDE.md`                  | Parent directory (monorepos)    | Instructions for entire monorepo, automatically pulled when working in subdirectories.               |
+| `~/git/repo/sub_project/CLAUDE.md` | Child directory                 | Specific instructions for `sub_project`, pulled on demand when working with files in that directory. |
+
+### Claude settings.local.json file
+
+### Claude Code rules
 
 [CLAUDE.md](https://www.anthropic.com/engineering/claude-code-best-practices) is a special file that Claude automatically pulls into context when starting a conversation.
 
