@@ -12,7 +12,7 @@ date:
     updated: 2025-10-04
 ---
 
-# Vibe coding cheat sheet
+# Vibe Coding Playbook
 
 Some useful patterns for Vibe coding. This blog will be regularly updated with new tips.
 
