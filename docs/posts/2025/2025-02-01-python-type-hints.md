@@ -231,12 +231,45 @@ class C2:
 
 ```
 
-## Postponed Evaluation of Annotations
+## Forward references
 
-[PEP 563 (Postponed Evaluation of Annotations)](https://peps.python.org/pep-0563/) (also known as Future annotations import) allows you to use `from __future__ import annotations` to defer evaluation of type annotations until they're actually needed. Generally speaking, it turns every annotation into a string. This helps with:
+```python title="Forward reference (in type annotations)"
+def foo(x: MyType):  # MyType not yet defined
+    ...
+class MyType:
+    ...
 
-- [Forward references](https://docs.pydantic.dev/latest/concepts/forward_annotations/)
-- [Circular imports](#import-cycles)
+# NameError: name 'MyType' is not defined
+```
+
+See [how Pydantic solves the forward reference problem](https://docs.pydantic.dev/latest/concepts/forward_annotations/).
+
+## Circular references (import cycles)
+
+See below [resolve import cycles](#resolve-import-cycles-by-pep-563) section for more details.
+
+```python title="Circular reference (in object or module relationships)"
+class A:
+    def __init__(self, b: B):  # refers to B
+        self.b = b
+
+class B:
+    def __init__(self, a: A):  # refers to A
+        self.a = a
+# NameError: name 'B' is not defined
+```
+
+See [how Pydantic solves the circular reference problem](https://docs.pydantic.dev/latest/concepts/forward_annotations/#cyclic-references).
+
+!!! note "A circular reference is a two-way (or multi-way) chain of forward references."
+
+## PEP-563 Postponed Evaluation of Annotations
+
+[PEP 563 (Postponed Evaluation of Annotations)](https://peps.python.org/pep-0563/) (also known as Future annotations import or stringized annotations) allows you to use `from __future__ import annotations` to defer evaluation of type annotations until they're actually needed.
+Generally speaking, it turns every annotation into a string. This helps with:
+
+- [Forward references](#forward-references)
+- [Circular imports](#circular-references-import-cycles)
 - Performance improvements
 
 `from __future__ import annotations` **must be the first executable line** in the file. You can only have shebang and comment lines before it.
@@ -259,7 +292,50 @@ user = User(name="Alice", age=30, friends=[])
     Future annotations import [doesn't support Python3.10 new syntax for union type](https://mypy.readthedocs.io/en/stable/runtime_troubles.html#using-x-y-syntax-for-unions) (e.g., `int | str`), and it also doesn't support the new syntax for type variables with upper bounds (e.g., `type[C]`), neither for some dynamic evaluation of annotations.
     So it's preferable **NOT TO USE** `from __future__ import annotation` as much as possible, just use `string literal annotations` for forward references and circular imports.
 
-## Import cycles
+## PEP-649 Deferred Evaluation of Annotations Using Descriptors
+
+[PEP-563 (stringized annotations)](#pep-563-postponed-evaluation-of-annotations) solved the forward-reference and circular-reference problems for static type analysis users, and also fostered intriguing new uses for annotation metadata. But stringized annotations in turn caused chronic ==problems for runtime users of annotations==. (See why [PEP-563 is pain for runtime users like Pydantic](https://docs.pydantic.dev/latest/internals/resolving_annotations/).).
+
+PEP-649 (String Literal Annotations) is proposed to be added in Python 3.14, it adds a new internal mechanism for ==lazily computing annotations on demand==, via a new object method called `__annotate__`.
+`self.__annotate__()` is called the first time (so called **lazy**) `self.__annotations__` attribute is accessed, and return value is stored in `self.__annotations__` and the result is cached for future accesses.
+This allows annotations to be computed only when needed, and also allows them to be computed in a way that can handle forward references and circular references.
+
+A high-level overview of the mechanism is as follows:
+
+```python
+# https://peps.python.org/pep-0649/#comparison-of-annotation-semantics
+class function:
+    # __annotations__ on a function object is already a
+    # "data descriptor" in Python, we're just changing
+    # what it does
+    @property
+    def __annotations__(self):
+        return self.__annotate__()
+
+# ...
+
+def annotate_foo():
+    return {'x': int, 'y': MyType, 'return': float}
+
+def foo(x = 3, y = "abc"):
+    ...
+
+foo.__annotate__ = annotate_foo
+
+class MyType:
+   ...
+
+foo_y_annotation = foo.__annotations__['y']
+```
+
+> The important change is that the code constructing the annotations dict now lives in a function here, called `annotate_foo()`. But this function isn't called until we ask for the value of `foo.__annotations__`, and we don't do that until after the definition of `MyType`. So this code also runs successfully, and `foo_y_annotation` now has the correct value. The class `MyType` even though `MyType` wasn't defined until after the annotation was defined.
+
+!!! note "The basic idea of PEP-649 was briefly discussed and rejected during the early-days of PEP-563 discussion."
+    https://peps.python.org/pep-0649/#mistaken-rejection-of-this-approach-in-november-2017
+
+## Resolve import cycles by PEP-563
+
+!!! note "PEP-649 (Deferred Evaluation of Annotations Using Descriptors) is proposed to be added in Python 3.14"
 
 [From MyPy](https://mypy.readthedocs.io/en/stable/runtime_troubles.html#import-cycles): If the cycle import is only needed for type annotations:
 
@@ -267,6 +343,18 @@ user = User(name="Alice", age=30, friends=[])
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    # https://peps.python.org/pep-0649/#static-typing-users
+    # Static typing users (mypy, pyright, etc.) often combine PEP 563 with the
+    # if typing.TYPE_CHECKING idiom to prevent their type hints from being loaded at runtime.
+    # With PEP-649 (probably in Python 3.14), static typing users will probably
+    # prefer FORWARDREF or SOURCE format.
+
+    # https://peps.python.org/pep-0649/#runtime-annotation-users
+    # the usage of if typing.TYPE_CHECKING is not compatible with
+    # runtime annotation users (e.g., FastAPI, Pydantic, etc).
+    # With PEP-649 (probably in Python 3.14), Runtime annotation users will most likely
+    # prefer VALUE format, though some (e.g. if they evaluate annotations eagerly in a decorator
+    # and want to support forward references) may also use FORWARDREF format.
     import bar
 
 def listify(arg: 'bar.BarClass') -> 'list[bar.BarClass]':
