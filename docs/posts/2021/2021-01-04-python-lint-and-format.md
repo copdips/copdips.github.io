@@ -622,6 +622,12 @@ pre-commit run black
 ## https://pre-commit.com/index.html#usage-in-continuous-integration
 pre-commit run --all-files
 
+# run on all modified and untracked files
+# -m / --modified: tracked files with unstaged changes
+# -o / --others: untracked files
+# --exclude-standard: respects .gitignore
+pre-commit run --files $(git ls-files -m -o --exclude-standard)
+
 ## check only files which have changed
 pre-commit run --from-ref origin/HEAD --to-ref HEAD
 
