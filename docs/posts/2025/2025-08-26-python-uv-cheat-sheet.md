@@ -568,3 +568,81 @@ The tool will be installed in an isolated environment in the user's cache direct
 ## Workspace
 
 To be continued.
+
+## Migrating from pip requirements files to uv
+
+Say a project uses `requirements.txt` to manage dependencies, there's no setup.py, the build config is declared in the `pyproject.toml` and now we want to migrate to `uv` with `pyproject.toml`.
+
+Before the migration, there're 3 req files:
+
+```bash
+requirements/
+  base.txt
+  dev.txt
+  docs.txt
+```
+
+and they're declared as dynamic dependencies in `pyproject.toml`.
+
+```toml
+[project]
+name = "fastapi-demo"
+dynamic = ["version", "dependencies", "optional-dependencies"]
+
+[tool.setuptools.dynamic]
+version = { file = ["VERSION"] }
+
+[tool.setuptools.dynamic.dependencies]
+file = ["requirements/base.txt"]
+
+[tool.setuptools.dynamic.optional-dependencies]
+dev = { file = ["requirements/dev.txt"] }
+docs = { file = ["requirements/docs.txt"] }
+```
+
+Now need to remove the dynamic dependencies part in `pyproject.toml`, change to static dependencies, like below:
+
+```diff
+[project]
+name = "fastapi-demo"
+- dynamic = ["version", "dependencies", "optional-dependencies"]
++ dynamic = ["version"]
+
+[tool.setuptools.dynamic]
+version = { file = ["VERSION"] }
+
+- [tool.setuptools.dynamic.dependencies]
+- file = ["requirements/base.txt"]
+
+- [tool.setuptools.dynamic.optional-dependencies]
+- dev = { file = ["requirements/dev.txt"] }
+- docs = { file = ["requirements/docs.txt"] }
+```
+
+And run the pip req file to uv migration with following command:
+
+```bash
+rm uv.lock
+
+deactivate && rm -rf .venv
+
+uv venv
+# or: uv venv -p 3.13.9
+
+# Add all base dependencies as main dependencies at once
+grep -v '^#' requirements/base.txt | grep -v '^$' | xargs -I {} uv add {}
+
+# Add all docs dependencies as extra at once
+grep -v '^#' requirements/docs.txt | grep -v '^$' | xargs -I {} uv add --extra docs {}
+
+# Add all dev dependencies as dev group at once
+grep -v '^#' requirements/dev.txt | grep -v '^$' | xargs -I {} uv add --dev {}
+
+rm -rf requirements/
+```
+
+Future full installation could be done by:
+
+```bash
+uv sync --frozen --all-extras --all-groups
+```
