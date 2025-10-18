@@ -80,6 +80,7 @@ plugins:
       post_url_date_format: yyyy/MM
       categories_allowed:
         - ai
+        - ai-coding
         - api
         - ast
         - async
@@ -134,7 +135,6 @@ plugins:
         - ubuntu
         - unittest
         - vault
-        - vibe-coding
         - video
         - vmware
         - vscode
