@@ -12,23 +12,21 @@ ifneq (,$(findstring xterm,${TERM}))
 	NORMAL := $(shell tput -Txterm sgr0)
 endif
 
-install:
+venv:
+	uv venv -p 3.13.9 --allow-existing
+
+install: venv
 	@echo "${BOLD}${YELLOW}install:${NORMAL}"
-	pipx install uv --force
-# 	@if [ ! -d "$(VENV_DIR)" ]; then \
-# 		python3.12 -m venv $(VENV_DIR); \
-# 	fi
-# 	@. $(VENV_DIR)/bin/activate; \
-	uv sync --frozen --verbose
-	@echo "To activate manually, run: ${BOLD}${YELLOW}source $(VENV_DIR)/bin/activate${NORMAL}"; \
+	uv sync --frozen --all-extras --all-groups --verbose
 
 build:
 	@echo "${BOLD}${YELLOW}mkdocs build:${NORMAL}"
-	${PYTHON} -m mkdocs build -s
+# ! mkdocs build needs to get tools folder as module
+	uv run mkdocs build -s
 
 run:
 	@echo "${BOLD}${YELLOW}mkdocs serve:${NORMAL}"
-	${PYTHON} -m mkdocs serve --dirty
+	uv run mkdocs serve --dirty
 
 update-venv:
 	@echo "${BOLD}${YELLOW}update venv:${NORMAL}"
