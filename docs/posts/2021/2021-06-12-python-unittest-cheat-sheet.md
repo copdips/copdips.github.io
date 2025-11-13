@@ -17,6 +17,12 @@ Python unittest and Pytest is a big deal, this post just gives some small & quic
 
 <!-- more -->
 
+## pytest vs python -m pytest
+
+`pytest` does not add the current directory to `sys.path[0]` before execution. This means if you have test helper utilities within the `tests` folder, `pytest` may fail to locate them unless an `__init__.py` file exists in the helper directory.
+
+In contrast, `python -m pytest` implicitly adds the current directory to `sys.path[0]`, allowing it to discover test helper utilities even when the helper folder lacks an `__init__.py` file. For this reason, using `python -m pytest` is generally recommended.
+
 ## check if is in pytest mode
 
 ```python
