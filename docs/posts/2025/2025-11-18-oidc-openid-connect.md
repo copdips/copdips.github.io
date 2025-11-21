@@ -9,12 +9,12 @@ categories:
 comments: true
 date:
     created: 2025-11-18
-    updated: 2025-11-20
+    updated: 2025-11-21
 ---
 
 # OIDC (OpenID Connect)
 
-[OIDC (OpenID Connect)](https://openid.net/connect/) is an **authentication layer** built on top of the OAuth 2.0 protocol (**authorization layer**). It allows Web-based, mobile, and JavaScript clients to verify the identity of end-users based on the authentication performed by an authorization server (aka AS or IdP), as well as to obtain basic profile information about the end-user in an interoperable and REST-like manner. It eliminates storing and managing people's passwords.
+[OIDC (OpenID Connect)](https://openid.net/connect/) is an **authentication layer** (verify identity + obtain profile) built on top of the OAuth2 protocol (**authorization layer**). It allows Web-based, mobile, and JavaScript clients to verify the identity of end-users based on the authentication performed by an authorization server (aka AS or IdP), as well as to obtain basic profile information about the end-user in an interoperable and REST-like manner. It eliminates storing and managing people's passwords.
 
 <!-- more -->
 
@@ -25,10 +25,13 @@ date:
 3. https://auth0.com/blog/application-session-management-best-practices/
 4. https://fusionauth.io/articles/login-authentication-workflows/spa/oauth-authorization-code-grant-sessions-refresh-tokens-cookies
 5. https://fusionauth.io/articles/authentication/how-sso-works
+6. https://datatracker.ietf.org/doc/rfc9700/
+7. https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics
+8. https://datatracker.ietf.org/doc/html/draft-ietf-oauth-browser-based-apps
 
 ## OIDC Flows
 
-Some flows (e.g. Implicit Flow, Password Grant (ROPC), without PKCE) have already been deprecated, below are the recommended flows in 2025:
+Some OAuth 2.0 flows (e.g. [Implicit Flow (token leakage)](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-10#name-removal-of-the-oauth-20-imp), [Resource Owner Password Credentials grant (ROPC)(no MFA support)](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-10#name-differences-from-oauth-20)), or Auth Code Flow without PKCE, have already been deprecated as per OAuth 2.1, below are the recommended flows in 2025:
 
 | Flow                                                  | Purpose                  | Notes                           |
 | ----------------------------------------------------- | ------------------------ | ------------------------------- |
@@ -39,12 +42,14 @@ Some flows (e.g. Implicit Flow, Password Grant (ROPC), without PKCE) have alread
 
 ### Authorization Code Flow + PKCE (Public Client) for SPA
 
-This flow works for a **single audience** (the Downstream API). In some cases, the SPA itself may act as the resource server (e.g., when using FastAPI's auto-generated OpenAPI UI), meaning the audience would be the API backend itself rather than a separate downstream service.
+This flow works for a **single audience** (the Downstream API).
 
 With **PKCE** (Proof Key for Code Exchange), **Authorization Code Injection attacks** are mitigated: even if an attacker steals a valid authorization code, only the original instance that generated the `code_verifier` (the SPA or BFF) can redeem it for tokens, keeping the overall design significantly more robust. And the SPA can securely perform the Authorization Code Flow without a client secret, which is not suitable for public clients like SPAs.
 
-!!! warning "SPA Auth Code flow + PKCE is secure ONLY IF your browser and underlying OS are secure"
+!!! warning "SPA Auth Code flow + PKCE is secure ONLY IF the scripts installed by SPA (via NPM for .e.g.), your browser and underlying OS/transport layers are secure"
     Although with PKCE, the SPA (considered as public client) doesn't need to hold the **client secret**, the main risk factor in SPA+PKCE is XSS attacks, as **access tokens are stored in browser memory/sessionStorage**, which are accessible to JavaScript code running in the browser, including potentially malicious scripts injected via XSS vulnerabilities or browser extensions. Therefore, it's crucial to implement robust security measures to protect against XSS attacks when using this flow.
+
+    The IETF now (as of 2025) recommends the [Backend-For-Frontend (BFF) pattern](#oidc-authorization-code-flow-confidential-client-with-bff-pattern-and-session-cookies) as the gold standard for securing modern web applications, moving all authentication logic from public browser to a confidential server.
 
 **OIDC Authorization Code Flow with PKCE for SPA:**
 
@@ -90,7 +95,7 @@ sequenceDiagram
     User ->> IdP: Enter Password or MFA
 
     IdP ->> Store: Create login_session:<br/>login_session_id=L123<br/>user_id="alice"
-    IdP ->> Store: Link authorization_session A555 → L123
+    IdP ->> Store: Link authorization_session A555 -> L123
 
     %% ============================================================
     %% STEP 4 — USER APPROVES & IdP RETURNS AUTHORIZATION CODE
@@ -107,7 +112,7 @@ sequenceDiagram
     %% STEP 5 — SPA EXCHANGES CODE FOR TOKENS (PKCE)
     %% ============================================================
     rect rgb(200,255,200)
-    Note over SPA: PKCE step — SPA proves origin by sending code_verifier<br/>Private HTTPS channel, NOT exposed in browser URL
+    Note over SPA: PKCE step — with code_verifier<br/>Proves that the party calling /token is the same client that initiated the /authorize request<br/>Private HTTPS channel, NOT exposed in browser URL
     end
 
     SPA ->> IdP: POST /token<br/>grant_type=authorization_code<br/>client_id=my_spa<br/>redirect_uri=https://app/callback<br/>authorization_code=C789<br/>code_verifier=<original random>
@@ -115,13 +120,14 @@ sequenceDiagram
     %% ============================================================
     %% STEP 6 — IdP VALIDATES auth_code + PKCE (NO nonce validation)
     %% ============================================================
-    IdP ->> Store: Lookup C789 → A555 → L123 → user="alice"
+    IdP ->> Store: Lookup C789 -> A555 -> L123 -> user="alice"
     IdP ->> IdP: Validate PKCE:<br/>BASE64URL(SHA256(code_verifier)) == stored code_challenge ?
     Note over IdP: IdP embeds stored nonce N123<br/>into the ID Token claims
 
     %% ============================================================
     %% STEP 7 — IdP ISSUES TOKENS (INCLUDING NONCE)
     %% ============================================================
+    Note over IdP,SPA: ❗Sending high-valued refresh tokens without rotation to unsecure SPAs is strongly discouraged.
     IdP ->> SPA: access_token(aud=https://my-downstream-api)<br/>id_token(sub="alice", nonce=N123)<br/>refresh_token(optional)
 
     %% SPA verifies nonce
@@ -151,7 +157,7 @@ sequenceDiagram
 
     DownstreamAPI ->> DownstreamAPI: Validate token:<br/>- Verify signature via JWKS<br/>- iss == "https://idp"<br/>- aud == "https://my-downstream-api"<br/>- exp not expired<br/>- scope includes read:data
 
-    DownstreamAPI ->> DownstreamAPI: Extract identity from access_token JWT:<br/>sub="alice"<br/>email claim<br/>roles claim<br/><br/>GET /userinfo is not used here as loses performace, and adds coupling to IdP
+    DownstreamAPI ->> DownstreamAPI: Extract identity from access_token JWT:<br/>sub="alice"<br/>email claim<br/>roles claim<br/><br/>GET /userinfo could be used here but hurts performance (one more API call), and adds coupling to IdP.
 
     DownstreamAPI ->> SPA: Return protected JSON for Alice
 ```
@@ -160,22 +166,35 @@ sequenceDiagram
 
 In **BFF (Backend For Frontend)** pattern , **OIDC** is used for initial authentication and obtaining user identity, then **session cookies** are used to maintain the authenticated state within the application.
 
-BFF often employs this combination. This is widely considered the most secure and robust pattern for modern web applications. BFF handles the complex OIDC token flows and securely translates them into a simple, traditional session cookie for the browser. This approach offers several advantages:
+BFF often employs this combination. BFF is one of the strongest patterns for browser-based apps. BFF handles the complex OIDC token flows and securely translates them into a simple, traditional session cookie for the browser. This approach offers several advantages:
 
 - **performance**: avoid sending large 2-4KB JWT on every request, but with ~100 byte cookie.
 - **simplicity**: frontend just needs to include a cookie with its requests, just like in the old days, and doesn't need to manage token refreshing or storage.
 
 !!! note "BFF is considered as a more secure approach compared to SPA+PKCE"
-    As tokens are never exposed to the browser environment, reducing the risk of token theft via XSS attacks.
-    But BFF itself must implement all the measures to prevent Cross-Site Request Forgery (CSRF) attacks.
-    And the SPA must be hosted by the BFF backend due to SameSite cookie for CSRF, which is implemented as a regular web application.
+    As tokens are never exposed to the browser environment, reducing the risk of token theft via XSS attacks. But BFF itself must implement all the measures to prevent Cross-Site Request Forgery (CSRF) attacks (e.g. by requiring a custom header from client). And in practice, the SPA and the BFF backend should share the same site (parent domain) (e.g. `spa.example.com` and `bff.example.com` with a cookie `Domain=example.com`), so that the BFF session cookie is treated as first-party in the browser.
+
+    **Challenge for SPA with cookie**: Even though the cookie is set with `SameSite=Lax` or `SameSite=None`, modern browsers (as of 2025, already done by Safari ITP, Firefox ETP, Chrome is phasing out) block third-party cookies by default. Which means: "When an SPA (on `app.com`) tries to use a hidden iframe to call the IdP (on `auth0.com`), the browser sees `auth0.com` as a third party, browser will simply strip the cookies from that iframe request, even if cookies are set with [SameSite=None](#securing-cookies-in-modern-authentication)".
+
+    **Result**: [hidden iframe often cannot see the IdP session cookie anymore](https://auth0.com/docs/secure/tokens/refresh-tokens/refresh-token-rotation). So [iframe based silent auth](https://auth0.com/docs/authenticate/login/configure-silent-authentication) (`GET /authorize?prompt=none`) breaks in many browsers, and users get randomly kicked out or asked to log in again.
+
+    **Solutions:**
+
+    1. **First-party context authentication with popup or redirect (used by SSO):**
+       Use popup windows or full-page redirects to the IdP instead of hidden iframes. In these flows, the IdP runs in a top-level browsing context (same tab or popup), so its cookies are treated as first-party and are sent normally. This still allows **SSO via the IdP session cookie**, but the navigation is no longer completely invisible to the user.
+
+    2. **Refresh token rotation for SPA session persistence:**
+       Instead of relying on the IdP session cookie for iframe-based silent auth, perform one interactive login (Authorization Code + PKCE) and issue the SPA a **rotating refresh token** with strict idle and absolute lifetimes. The SPA calls `/token` directly to obtain new access tokens, and the refresh token is rotated on every use with reuse detection. This maintains the SPA's session without depending on third-party cookies.
+
+    3. **BFF on the same site (SPA <-> BFF only):**
+       Host the BFF and SPA under the same parent domain (for example, `app.example.com` and `api.example.com` with a cookie `Domain=.example.com`) so that the browser always treats the BFF session cookie as first-party for requests from the SPA. This solves SPA↔BFF cookie issues, but not IdP SSO issues, because external IdPs (Microsoft Entra ID, Auth0, Okta, etc.) typically live on a different domain.
 
 Once the user is authenticated, the BFF can use multiple methods to obtain access tokens for different downstream APIs:
 
 | Method                             | Used For                                          | User Context Provided Directly?              | Multi-API   | Refresh Token Needed |
 | ---------------------------------- | ------------------------------------------------- | -------------------------------------------- | ----------- | -------------------- |
 | **Refresh Token**                  | Standard BFF                                      | ✔ Yes (from IdP, with BFF's access token)    | ✔ Excellent | ✔ Yes                |
-| **Token Exchange (RFC 8693)**      | Best modern multi-API                             | ✔ Yes (delegated, act on behalf of the user) | ✔✔✔ Best    | ❌ No                 |
+| **[Token Exchange (RFC 8693)](https://www.rfc-editor.org/rfc/rfc8693.html)**      | Best modern multi-API                             | ✔ Yes (delegated, act on behalf of the user) | ✔✔✔ Best    | ❌ No                 |
 | **Client Credentials**             | Machine-to-Machine                                | ❌ No                                         | ✔ OK        | ❌ No                 |
 | **JWT Bearer Assertion**           | Server identity                                   | Optional (if user included)                  | ✔ Yes       | ❌ No                 |
 | **mTLS (with X.509 certificates)** | High security internal systems                    | ❌ No                                         | ✔ Yes       | ❌ No                 |
@@ -213,7 +232,7 @@ sequenceDiagram
     %% ============================================================
     %% STEP 1 — BFF GENERATES STATE & PKCE
     %% ============================================================
-    Note over BFF: Generate state, nonce, code_verifier<br/>1.**state** (one-time) for CSRF protection for OIDC/OAuth2, computed by client, and returned by IdP in url query param<br/>2. **nonce** (one-time) for ID token replay protection only for OIDC. computed by client, and returned by IdP in ID token claim<br/>3. **code_verifier** (BFF lifetime) for PKCE for code injection prevention. code_challenge=BASE64URL(SHA256(code_verifier))
+    Note over BFF: Generate state, nonce, code_verifier<br/>1.**state** (one-time use) for CSRF protection for OIDC/OAuth2, computed by BFF, and returned by IdP in url query param<br/>2. **nonce** (one-time use) for ID token replay protection only for OIDC. computed by BFF, and returned by IdP in ID token claim<br/>3. **code_verifier** (one-time use) for PKCE for code injection prevention. code_challenge=BASE64URL(SHA256(code_verifier))
 
     BFF ->> BFFStore: Save pre_session {state, nonce, verifier}
 
@@ -223,7 +242,7 @@ sequenceDiagram
     Note right of Browser: [Vendor Specific] Requesting all possible downstream API scopes upfront.<br/>Refresh Token enables Access Token minting for all authorized resources.
 
     rect rgb(255,245,255)
-    Note over Browser: ⚠️FRONT CHANNEL: Query parameters visible to user agent<br/>code_challenge is sent, but it's the asymetric sha265 of code_verifier.<br/>✅But code_verifier is not sent in insecure /authorize browser call.<br/>code_verifier will be sent by BFF in secure /token out of browser.
+    Note over Browser: ⚠️FRONT CHANNEL: Query parameters visible to user agent<br/>code_challenge is sent, but it's the one-way sha256 hash of code_verifier.<br/>✅code_verifier is not sent in insecure /authorize browser request.<br/>code_verifier will be sent by BFF in secure /token in back-channel out of browser.
     end
 
     Browser ->> IdP: GET /authorize (client_id, state, nonce, scope, code_challenge...)
@@ -233,7 +252,7 @@ sequenceDiagram
     %% ============================================================
     User ->> IdP: Enter Credentials (Consent)
 
-    IdP ->> Browser: Set-Cookie: idp_session=IDPSESS_ABC
+    IdP ->> Browser: 🍪Set-Cookie: idp_session=IDPSESS_ABC
     Note over IdP: 💡 **Session Note:** Flow relies on the BFF Session<br/>the IdP Session Cookie is ignored.
 
     IdP ->> Browser: 302 https://api/callback?code=C444&state=S555
@@ -260,7 +279,7 @@ sequenceDiagram
 
     Note over BFF: 💡If use Stateless BFF (less secure), access_token and refresh_token both will be sent to browser<br/>💡If use hybrid BFF (best trade-off), only access_token is sent to browser, refresh_token is kept in the BFF Redis
 
-    BFF ->> Browser: Set-Cookie: session_id=S333<br/>Domain=api.com HttpOnly Secure SameSite=Lax
+    BFF ->> Browser: 🍪Set-Cookie: session_id=S333<br/>Domain=api.com HttpOnly Secure SameSite=Lax
     Note over Browser: 🔒 **Stateful BFF (most secure)**<br/>Browser **NEVER** sees tokens, but just a session id
 
     Browser ->> WebApp: Redirect to Dashboard
@@ -273,11 +292,12 @@ sequenceDiagram
     BFF ->> BFFStore: Load Session S333
 
     alt Access Token for API-1 Missing or Expired
-        Note over BFF: Minting access_token using refresh_token<br/>(Confidential Client Authentication)<br/><br/>1. BFF checks: Do I have a valid refresh_token?<br/>   → Yes: Use refresh_token to get new access_token (silent)<br/>   → No: Redirect to IdP /authorize<br/><br/>2. Browser redirects to /authorize<br/>   Automatically sends idp_session cookie (from previous login)<br/><br/>3. IdP validates session cookie<br/>   → Valid: Return auth code immediately (SSO, no login UI)<br/>   → Invalid: Show interactive login page<br/><br/>4. BFF exchanges auth code for tokens<br/>   Uses client_secret (confidential client)<br/><br/>🚀In this flow, BFF has a valid refresh_token, allowing it to silently obtain new access tokens without user interaction
+        Note over BFF: FALLBACK FLOW (If Refresh Token Invalid)<br/><br/>1. BFF checks: Do I have a valid refresh_token?<br/>   -> Yes: Use refresh_token to get new access_token (silent Confidential Client Authentication)<br/>   -> No: Redirect (or popup) to IdP /authorize<br/><br/>2. Browser redirects to /authorize<br/>   Automatically sends idp_session cookie (from previous login)<br/><br/>3. IdP validates session cookie<br/>   -> Valid: Return auth code immediately (SSO, no login UI)<br/>   -> Invalid: Show interactive login page<br/><br/>4. BFF exchanges auth code for tokens<br/>   Uses client_secret (confidential client)<br/><br/>🚀In this flow, BFF has a valid refresh_token, allowing it to silently obtain new access tokens without user interaction,<br/>which achieves the effect of SSO (not a real SSO) without needing the browser to bounce back to the IdP.
 
         BFF ->> IdP: POST /token (Refresh Grant)<br/>{grant_type=refresh_token,<br/>refresh_token=RT777,<br/>client_id=my_bff,<br/>client_secret=SECRET,<br/>resource=https://api-1}
 
         IdP ->> BFF: { "access_token": "AT_API1", "refresh_token": "RT888" (optional rotation) }
+        Note over Idp,BFF: 🛡️Recommended: issuing a new refresh token every time the old one is used (rotation)
         BFF ->> BFFStore: Update Session (Save AT_API1, Store RT888 if rotated)
     end
 
@@ -299,6 +319,7 @@ sequenceDiagram
         BFF ->> IdP: POST /token (Refresh Grant)<br/>{grant_type=refresh_token,<br/>refresh_token=RT888,<br/>client_id=my_bff,<br/>client_secret=SECRET,<br/>resource=https://api-2}
 
         IdP ->> BFF: { "access_token": "AT_API2", "refresh_token": "RT999" (optional rotation) }
+        Note over Idp,BFF: 🛡️Recommended: issuing a new refresh token every time the old one is used (rotation)
         Note over BFF: Store AT_API2 in Session
     end
 
@@ -307,48 +328,7 @@ sequenceDiagram
     BFF -->> Browser: Data
 ```
 
-## FAQ
-
-### OIDC vs OpenID vs OpenID 2.0
-
-- **OpenID and OpenID 2.0** (based on XML) are both deprecated.
-
-- **OIDC (OpenID Connect)** is the modern standard driven by the same foundation, which is based on OAuth2 with JWT.
-
-### OIDC vs OAuth2
-
-**In short**: **OIDC** adds authentication (verifying user identity) on top of **OAuth 2.0** as for authorization framework (verifying user access).
-
-| Aspect | OAuth 2.0 | OIDC |
-|--------|-----------|------|
-| **Primary purpose** | Authorization (what can you access?) | Authentication (who are you?) |
-| **Token type** | `access_token` only | `access_token` + `id_token` |
-| **User identity** | Not standardized (indirect via `/userinfo` API call) | Standardized via `id_token` (JWT with claims) |
-| **Use case** | API access delegation | User login + SSO |
-
-!!! note "Indirect authentication with pure OAuth 2.0"
-    It's worth noting that even with pure OAuth 2.0, applications can achieve a form of authentication indirectly: the `access_token` can be used to call an API endpoint (such as `/userinfo`, for e.g. <https://graph.microsoft.com/oidc/userinfo>) on the resource server to retrieve basic user profile information. By obtaining this data, the application can identify the user, match them against its own user database, and establish a local session. But this approach is not standardized and relies on application-specific implementation, which is precisely the gap that OIDC fills with its formal authentication layer.
-
-!!! warning "`id_token` is used by the client application to authenticate the user, not to access resource servers"
-    The `id_token` is intended for the client application (e.g. BFF backend, or the mobile app, or SPA) to verify the user's identity, display the user profile, ensure SSO, and establish a session, etc. It should not be used as a bearer token to access protected resources or APIs. Instead, the `access_token` (with permissions scope) should be used for that purpose.
-
-### access_token vs id_token
-
-| Aspect | access_token | id_token |
-|--------|--------------|----------|
-| **Purpose** | Used to access protected resources (APIs) | Used to authenticate the user to the client application.<br/><br/>Never sent to downstream APIs (resource servers).<br/><br/>Machine-to-Machine Client Credentials flow doesn't have id_token.<br/><br/>OAuth2.0 doesn't define id_token. OIDC (on top of OAuth2.0) does.<br/><br/>OIDC never uses machine-to-machine flow |
-| **Audience** | Intended for resource servers (APIs)<br/><br/>or BFF, SPA if itself is a resource server too | Intended for the client application (e.g., BFF backend, mobile app, SPA) |
-| **Content** | Contains scopes and permissions.<br/><br/>But could contains some common user claims too depends on IdP.<br/><br/>Could get full user profile by calling IdP /userinfo endpoint with access_token | Contains user identity claims (e.g., sub, name, email) |
-| **Format** | Often a JWT, but can be legacy opaque<br/><br/>use opaque token to call /introspect or /userinfo| Always a signed JWT (JWS) or encrypted (JWE) |
-| **Validation** | Validated by resource servers | Validated by the client application |
-
-### OIDC vs SAML
-
-- **SAML** (Security Assertion Markup Language) is an older standard in **XML** for single sign-on (SSO) and identity federation, primarily used in enterprise environments, and **only for web-based applications**.
-
-- **OIDC** is a more modern protocol in **JSON/REST** that is easier to implement and is designed for **web and mobile applications**, could be used for SSO too.
-
-### OIDC vs Cookies
+## Cookies + OIDC
 
 Session cookies are simpler for single-application scenarios, while OIDC is better suited for distributed systems, microservices, and multi-application environments where centralized authentication and SSO are needed.
 
@@ -366,13 +346,13 @@ Session cookies are simpler for single-application scenarios, while OIDC is bett
 
     BFF (Backend For Frontend) pattern often employs this combination. This is widely considered the most secure and robust pattern for modern web applications. BFF handles the complex OIDC token flows and securely translates them into a simple, traditional session cookie for the browser.
 
-    **Session cookie + OIDC hybrid (BFF pattern) with FastAPI and Azure Entra auth flow:**
+    **Session cookie + OIDC hybrid (BFF pattern) with FastAPI and Microsoft Entra ID auth flow:**
 
     ```mermaid
     sequenceDiagram
         participant Browser
         participant BFF as BFF (FastAPI)
-        participant IdP as Azure Entra
+        participant IdP as Microsoft Entra ID
         participant API as Downstream API
 
         Note over Browser,API: Initial Authentication
@@ -386,7 +366,7 @@ Session cookies are simpler for single-application scenarios, while OIDC is bett
         BFF->>IdP: Exchange code for tokens
         IdP->>BFF: id_token + access_token (JWT ~3KB)
         BFF->>BFF: Create session, store tokens
-        BFF->>Browser: Set-Cookie: session_id=abc (~100B)
+        BFF->>Browser: 🍪Set-Cookie: session_id=abc (~100B)
 
         Note over Browser,API: Subsequent Requests (Performance Win)
         Browser->>BFF: GET /api/data<br/>Cookie: session_id=abc (~100B)
@@ -399,7 +379,25 @@ Session cookies are simpler for single-application scenarios, while OIDC is bett
         Note over BFF,API: Selective backend calls = JWTs only when needed
     ```
 
-#### Cookie is still very important in modern web auth
+### Cookie types and storage
+
+| Type                        | How It's Defined                                | Where It's Stored Internally                    | Lifetime / When It Dies                                      | Survives Browser Restart?              | Typical Use                                    | Notes                                                                                  |
+|----------------------------|--------------------------------------------------|-------------------------------------------------|--------------------------------------------------------------|----------------------------------------|-----------------------------------------------|---------------------------------------------------------------------------------------|
+| **Session cookie**         | `Set-Cookie: name=value; Path=/` (no `Expires`/`Max-Age`) | In the **normal profile cookie store** (disk DB + memory cache) | Ends when the **browser session** ends (all normal windows closed)\* | ❓ Depends on browser setting ("restore session")<br/>⚠️ Often YES | Login sessions, CSRF tokens, short-lived state | Conceptually "in-memory", but many browsers persist them to disk and clear on session end. |
+| **Persistent cookie**      | `Set-Cookie: name=value; Expires=...` or `Max-Age=...` | Normal profile cookie store (disk DB + memory cache) | Until `Expires`/`Max-Age` is reached, or user clears site data | ✅ Yes, until expiry                      | "Remember me", long-lived app sessions, prefs | Longer theft window if device is compromised; combine with `Secure`, `HttpOnly`, `SameSite`. |
+| **Private-mode cookie**    | Any `Set-Cookie` inside **private/incognito windows** | **Separate, ephemeral cookie store** for that private session (RAM / temp) | When the **last private/incognito window** is closed          | ❌ No — completely wiped                 | Temporary logins in incognito, testing flows    | Same semantics as session/persistent, but the whole store is destroyed with private session. |
+
+### storage for access token, refresh token, ID token, and session cookie
+
+| Scenario                         | AT (Access Token)                                | RT (Refresh Token)                                            | IDT (ID Token)                                         | App Session (your app)                                               | IdP Session (SSO at IdP)                                      |
+|----------------------------------|--------------------------------------------------|----------------------------------------------------------------|-------------------------------------------------------|------------------------------------------------------------------------|----------------------------------------------------------------|
+| SPA **without BFF** (normal)    | JS **in-memory** only (per tab, lost on refresh) | ❌ **Modern IdPs rarely issue to public clients**, rely on IdP session + short AT<br/><br/>**If IdP insists the issue**: In-memory only (accept no persistence) OR LocalStorage (if using Rotation)<br/>As LocalStorage is the simplest persistent & shared cross tabs storage accessible to JS, and RT needs to be persistent on page refresh<br/>XSS can steal the RT if saved in LocalStorage, but rotation limits damage<br/><br/>**Best solution:** no RT, use IdP session cookie to refresh AT | In-memory, extract user claims once, then discard | ❌ **No server session** — stateless; AT expiry = "session" end, or use short-lived AT + RT for longer sessions | **HttpOnly cookie** on `idp.com` (enables SSO across apps) |
+| SPA **without BFF** (private / incognito) | Same: in-memory only | ❌Modern IdP rarely issue to public clients.<br>In-memory if issued (rare).  | Same: in-memory | ❌ No session (stateless SPA) | IdP cookie exists only in private session, wiped on close |
+| SPA **with BFF** (normal)       | **Never in browser**; BFF holds it in memory/cache for request | **BFF backend only**: DB/Redis with session ID, encrypted at rest | **BFF backend only**, or claims embedded in session object | ✅ **HttpOnly, Secure, SameSite=Lax cookie**: `session_id=abc` on `app.example.com` | **HttpOnly cookie** on `idp.com` (enables SSO between BFF apps) |
+| SPA **with BFF** (private / incognito) | Same: never in browser | Same: BFF backend only | Same: BFF backend | Same: `session_id` cookie dies with private session | IdP cookie lives only for that private session |
+| **Native mobile app** (no BFF)  | **In-memory** in app process (RAM only, never persisted) | ✅ **OS secure storage**: iOS Keychain (with kSecAttrAccessibleWhenUnlockedThisDeviceOnly), Android Keystore (EncryptedSharedPreferences) | In-memory; or secure storage if needed for offline user info | App's session state in memory; RT acts as persistent session token | If using **AppAuth/system browser**: IdP cookie in **isolated browser storage** (app can't access directly) |
+
+### Cookie is still very important in modern web auth
 
 Even with the rise of token-based authentication mechanisms like OIDC and JWT, cookies remain a fundamental component of web authentication. They provide a convenient way to maintain session state, especially in traditional web applications and BFF architectures. Properly secured cookies (using HttpOnly, Secure, SameSite attributes) can effectively mitigate risks such as XSS and CSRF attacks.
 
@@ -412,22 +410,17 @@ When people say *"Cookies are legacy."* they usually mean *"Server-side sessions
 | **Current Status**   | Blocked by default in Safari/Firefox; dying in Chrome | Discouraged for Auth; vulnerable to XSS (Hackers can read it) | Standard & Secure (when using HttpOnly flag)<br/>👍Privacy: stay on one site<br/>👍Security: browser hides the keys |
 | **Key Trend**        | Replacement by Privacy Sandbox / First-party data     | Moving back to Cookies (BFF Pattern) to hide tokens from JS   | Strengthened security via attributes (HttpOnly, Secure, SameSite)
 
-!!! Tip "Token-Mediating Backend pattern"
-    While a BFF can act as an API proxy and session manager, it may become a throughput bottleneck. The [Token-Mediating Backend pattern](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-browser-based-apps#name-token-mediating-backend) addresses this by letting the client browser call downstream APIs directly with short-lived access tokens minted by BFF. This shifts access tokens into the client, so the security posture is weaker unless hardened with mechanisms such as [DPoP (Demonstrating Proof of Possession)](https://auth0.com/blog/oauth2-security-enhancements/#Demonstrating-Proof-of-Possession--DPoP).
-
-    "The more moving parts in auth, the harder it is to attack. 😂"
-
 !!! note "The 'Pendulum Swing': Cookies -> localStorage -> HttpOnly Cookies"
 
     In web development, the pendulum is swinging back.
 
-    - **2000s**: Everyone used Cookies (Secure).
+    - **2000s**: Everyone used **Cookies** (Secure).
 
-    - **2010s**: Everyone switched to Local Storage + JWTs because it was easier for SPAs, purely stateless JWT token. No cookies, no sessions, no CSRF middleware ("The New Way" - Insecure).
+    - **2010s**: Everyone switched to **Local Storage** + JWTs because it was easier for SPAs, purely stateless JWT token. No cookies, no sessions, no CSRF middleware ("The New Way" - Insecure).
 
-    - **2020s**: We realized Local Storage is dangerous (XSS attacks). Now, the industry is moving back to Cookies ("The Legacy Way"), but using them to hold modern JWTs. And with HttpOnly cookies stored in the browser's cookie store (in memory for session cookies or on disk to browser's SQLite DB for e.g. if persistent cookie with the `Expires` or `Max-Age` attribute), they are not accessible to JavaScript, mitigating XSS risks.
+    - **2020s**: We realized Local Storage is dangerous (XSS attacks). Now, the industry is moving back to Cookies ("The Legacy Way"), but using them to hold modern JWTs. And with **HttpOnly cookies** stored in the browser's cookie store (in memory for session cookies or on disk to browser's SQLite DB for e.g. if persistent cookie with the `Expires` or `Max-Age` attribute), they are not accessible to JavaScript, mitigating XSS risks.
 
-#### Securing Cookies in Modern Authentication
+### Securing Cookies in Modern Authentication
 
 !!! warning "It's secure ONLY IF your browser, underlying OS, device, the network layer, even the target servers are secure"
 
@@ -451,7 +444,7 @@ When people say *"Cookies are legacy."* they usually mean *"Server-side sessions
 - `Secure`: This ensures the cookie is only sent over encrypted HTTPS connections. This prevents `man-in-the-middle` attackers from eavesdropping and stealing cookies during transmission. **Attacker cannot read the cookie in transit**.
 - `SameSite`: This attribute helps defeat `CSRF` (Cross-Site Request Forgery) attacks by controlling when cookies are sent with cross-site requests. **Attacker cannot use the cookie**.
 
-    - `SameSite=Lax` (Recommended default): Cookies are sent on same-site requests and top-level navigations (e.g., clicking a link from an email to your site). This provides a good balance of security and usability.
+    - `SameSite=Lax` (Recommended default): Cookies are sent on same-site requests and top-level navigations GET to your site (e.g., clicking a link from an email or Google to your site). This provides a good balance of security and usability. CSRF is still possible for state-changing GET or some POST-via-redirect tricks, so still need server-side CSRF defenses.
     - `SameSite=Strict` (Maximum security): Cookies are only sent in a first-party context.
     - `SameSite=None`: Cookies are sent in all contexts, including third-party. This is sometimes necessary for cross-site features but must be paired with the Secure attribute.
 
@@ -474,10 +467,10 @@ When people say *"Cookies are legacy."* they usually mean *"Server-side sessions
 
         CSRF requires:
 
-        1. Attacker site → triggering a request to victim site
-        2. Browser → auto-attaching cookies
+        1. Attacker site -> triggering a request to victim site
+        2. Browser -> auto-attaching cookies
 
-        SameSite blocks the second step.
+        SameSite blocks the second step if use `SameSite=Strict`. With `SameSite=Lax`, it blocks cross-site POST requests, but allows top-level GET navigations.
 
         Example:
 
@@ -503,18 +496,20 @@ When people say *"Cookies are legacy."* they usually mean *"Server-side sessions
 
         -> 🎉Do NOT send the session cookie🎉
 
-#### HttpOnly Cookies + BFF Pattern: The Modern Best Practice
+### HttpOnly Cookies + BFF Pattern: The Modern Best Practice
 
 A common and secure modern pattern is to ==use an HttpOnly cookie (the container) to transport a JWT token (Stateless BFF) or a session ID (Stateful BFF)==. In this setup, the authentication server issues a token (like a JWT) but instead of sending it to the JavaScript code, it places it inside an HttpOnly cookie. The browser automatically stores the cookie and sends it with every request to your backend, combining the stateless benefits of tokens with the built-in XSS protection of cookies.
 
 | Feature                        | ⚡Stateless BFF                                                   | 🚀Hybrid BFF                                                                                         | 🛡️Stateful BFF                                                                                                    |
 | ------------------------------ | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| **What is inside the Cookie?** | Both access token and refresh token (HttpOnly)            | Short-lived access token JWT (HttpOnly)                                                            | A random opaque session ID<br/>Or a JWT-like session token issued by BFF (not by IdP)<br>both session id and session token could be saved in local memory or a remote Redis cache for scalability                                                                                               |
-| **Where is the JWT?**          | Inside the cookie (browser)                                     | **Stateless** access token in cookie<br/>**Stateful** refresh token + extra context in BFF store                                 | In BFF store (often Redis)                                                                                              |
+| **What is inside the Cookie?** | Both access token and refresh token (HttpOnly)            | Short-lived access token JWT (HttpOnly)                                                            | A random opaque session ID<br/><br/>Or a JWT-like session token issued by BFF (not by IdP)<br/><br/>Both session id and session token could be saved in local memory or a remote Redis cache for scalability                                                                                               |
+| **Where is the JWT?**          | Inside the cookie (browser)                                     | **Stateless** access token in client-side cookie<br/><br/>**Stateful** refresh token + extra context in server-side BFF store                                 | All in server-side BFF store (often Redis)                                                                                              |
 | **Cookie Size**                | Large with access token<br/>(can hit 4 KB limit)                                      | Large with access token<br/>(But trimmed lifetime/claims)                                                           | Tiny (just an cookie session ID)                                                                                                |
-| **Performance**                | Larger cookie + JWT signature verification; no store lookup     | 99% requests are stateless JWT access token checks; occasional store refresh token lookup when minting new access tokens             | Extra Redis/DB lookup each request                                                                               |
+| **Performance**                | Larger cookie + JWT signature verification; no store lookup     | 99% requests are stateless JWT access token checks;<br/><br/>occasional store refresh token lookup when minting new access tokens             | Extra Redis/DB lookup each request                                                                               |
 | **Complexity**                 | Low (no BFF store required)                                      | High (almost the same as Stateful BFF)                               | High (requires durable session store)                                                                            |
-| **Security Verdict**           | ✅ Very good (mitigates XSS/CSRF via HttpOnly/SameSite)<br/>❌long-live refresh token is at client side<br/>❌Cannot revoke tokens immediately         | ✅✅ Balanced: long-live refresh token is at BFF side, fast revocation via store, limited exposure window per short-live access token | ✅✅ Best: full server control over sessions and immediate revocation capability                                   |
+| **Security Verdict**           | ✅ Good enough (mitigates XSS/CSRF via HttpOnly/SameSite)<br/>❌long-live refresh token is at client side<br/>❌Cannot revoke tokens immediately         | ✅✅ Balanced: long-live refresh token is at BFF side, fast revocation via store<br/>❗limited exposure window per short-live access token | ✅✅✅ Best: full server control over sessions and immediate revocation capability                                   |
+
+!!! warning "Refresh Tokens must be stored securely and with a rotation mechanism since they allow a user to remain authenticated essentially forever."
 
 !!! note "Stateless and Stateful BFF hybrid mode with short revocation time"
     In practice, many BFF implementations use a hybrid approach in high-throughput systems (1000 requests/hour/user): they store a **short-lived** (15 min for example) JWT `access_token` inside an HttpOnly cookie for **stateless** authentication, while also maintaining a server-side session store for additional user context, **long-lived** (expires in 7 days for example) `refresh_token`, or other **stateful** data. This hybrid model combines the benefits of both approaches, providing robust security and flexibility.
@@ -524,9 +519,82 @@ A common and secure modern pattern is to ==use an HttpOnly cookie (the container
 
     Hybrid mode is **NOT** useful for light user load (1 requests/hour/user) with short lived access tokens (15 min), use stateful BFF only in that case.
 
-### OIDC vs SSO
+!!! Tip "Token-Mediating Backend pattern"
+    While a BFF can act as an API proxy or mini-IdP and session manager, it may become a throughput bottleneck. The [Token-Mediating Backend pattern](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-browser-based-apps#name-token-mediating-backend) addresses this by letting the client browser call downstream APIs directly with short-lived access tokens minted by BFF. This shifts access tokens into the client, so the security posture is weaker unless hardened with mechanisms such as [DPoP (Demonstrating Proof of Possession)](https://auth0.com/blog/oauth2-security-enhancements/#Demonstrating-Proof-of-Possession--DPoP).
 
-**OIDC** answers *"Who is the user"*, **SSO** is a feature (not a protocol) built **on top of OIDC/JSON or SAML/XML or Kerberos**, providing a standardized way to authenticate users across multiple applications with a single login. SSO uses cookies too shown in above [OIDC vs Cookies](#oidc-vs-cookies) part.
+    "The more moving parts in auth, the harder it is to attack. 😂"
+
+## SSO + OIDC
+
+**OIDC** establishes user identity, while **SSO** is a capability layered atop protocols like OIDC/JSON, SAML/XML, or Kerberos to reuse that identity across apps. ==SSO sessions hinge on IdP-issued [HttpOnly cookies](#securing-cookies-in-modern-authentication) stored in the browser==, the client application doesn't see this cookies, but each time the browser visits the IdP domain, the browser automatically attaches the cookie, allowing the IdP to recognize the user and skip login prompts.
+
+### High level SSO with IdP session cookie flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    %% VISUAL GROUPING
+    box "User's Machine" #fff
+        actor User
+        participant Browser
+    end
+
+    box "Identity Provider" #f3e5f5
+        participant IdP as IdP Server<br/>(auth.idp.com)
+    end
+
+    box "Applications" #e1f5fe
+        participant App1 as App 1<br/>(app1.com)
+        participant App2 as App 2<br/>(app2.com)
+    end
+
+    %% ============================================================
+    %% PHASE 1: LOGGING INTO APP 1 (The Hard Way)
+    %% ============================================================
+    Note over User, App1: 🛑 1. User visits App 1 (Not Logged In)
+
+    User->>App1: Visit App1
+    App1->>Browser: 302 Redirect to IdP /authorize
+
+    Note right of Browser: Browser goes to IdP.<br/>🚫 First login, it has NO cookies for 'auth.idp.com' yet.
+    Browser->>IdP: GET /authorize
+
+    IdP->>Browser: Show Login Form
+    User->>Browser: Type Username / Password (or MFA)
+    Browser->>IdP: Submit Credentials
+
+    rect rgb(200, 255, 200)
+    Note right of IdP: ✅ LOGIN SUCCESS
+    Note right of IdP: IdP creates the "SSO Session"<br/>but won't be used until next app login.
+    IdP->>Browser: 🍪 Set-Cookie: idp_session=SECRET_ID<br/>Domain=auth.idp.com
+    end
+
+    IdP->>Browser: 302 Redirect back to App 1
+    Browser->>App1: Login Complete (App 1 Session Created)
+
+    %% ============================================================
+    %% PHASE 2: LOGGING INTO APP 2 (The SSO Way)
+    %% ============================================================
+    Note over User, App1: 🚀 2. User visits App 2 (SSO Kicks In)
+
+    User->>App2: Visit App2
+    App2->>Browser: 302 Redirect to IdP /authorize
+
+    rect rgb(200, 255, 200)
+    Note right of Browser: 🍪 BROWSER AUTOMATION<br/>The URL matches 'auth.idp.com'.<br/>Browser AUTOMATICALLY attaches the cookie<br/>✅with URL redirect or popup,<br/>(❌legacy hidden iframe SSO if blocked by many browsers)
+
+    Browser->>IdP: GET /authorize<br/>Cookie: idp_session=SECRET_ID
+
+    Note left of IdP: 🔍 IdP checks Cookie... VALID!<br/>"I know this user. Skip password.<br/>😇SSO OK"
+    end
+
+    IdP->>Browser: 302 Redirect back to App 2
+    Browser->>App2: Login Complete (App 2 Session Created)
+
+    Note over User, App2: User is logged in instantly!
+```
+
+### Detailed SSO flow with two BFF apps sharing the same IdP and session store
 
 ```mermaid
 sequenceDiagram
@@ -557,7 +625,7 @@ sequenceDiagram
     User ->> IdP: GET /authorize (state=S1, nonce=N1)
 
     %% NO EXISTING IdP SESSION
-    Note over IdP: No idp_session cookie received →<br/>User not logged in at IdP
+    Note over IdP: No idp_session cookie received -><br/>User not logged in at IdP
 
     User ->> IdP: Enter username/password (interactive login)
 
@@ -566,7 +634,7 @@ sequenceDiagram
     IdP ->> IdPStore: Save LS123
 
     %% **IdP sets its own SSO cookie in browser**
-    IdP ->> User: Set-Cookie: idp_session=IDPSESS_ABC<br>Domain=auth.idp.com<br/>HttpOnly<br/>Secure<br/>SameSite=Lax
+    IdP ->> User: 🍪Set-Cookie: idp_session=IDPSESS_ABC<br>Domain=auth.idp.com<br/>HttpOnly<br/>Secure<br/>SameSite=Lax
 
     %% THEN REDIRECT BACK TO APP1
     IdP ->> User: 302 https://app1/callback?<br/>code=C111&state=S1
@@ -588,10 +656,10 @@ sequenceDiagram
 
     %% CREATE LOCAL APP SESSION
     Note over BFF1: Create local session SESS1<br/>with user + tokens
-    BFF1 ->> BFFStore: Save session SESS1 → { user:alice, tokens }
+    BFF1 ->> BFFStore: Save session SESS1 -> { user:alice, tokens }
 
     %% APP1 SESSION COOKIE
-    BFF1 ->> User: (Stateful BFF) Set-Cookie: session_id=SESS1<br>Domain=bff.company.com<br/>HttpOnly<br/>Secure<br/>SameSite=Lax
+    BFF1 ->> User: 🍪(Stateful BFF) Set-Cookie: session_id=SESS1<br>Domain=bff.company.com<br/>HttpOnly<br/>Secure<br/>SameSite=Lax
 
     User ->> App1: Authenticated (Authorized 🔓)
 
@@ -610,10 +678,10 @@ sequenceDiagram
             Note over BFF2: User already logged into App2<br/>Skip IdP, skip SSO
             BFF2 ->> User: 302 Redirect to App2 home (Authorized)
         else Invalid/expired SESS2
-            Note over BFF2: Session invalid → perform fresh OIDC login
+            Note over BFF2: Session invalid -> perform fresh OIDC login
         end
     else No session_id cookie
-        Note over BFF2: No App2 session → must start OIDC flow
+        Note over BFF2: No App2 session -> must start OIDC flow
     end
 
     %% Only reaches here if LOCAL session doesn't exist
@@ -623,10 +691,10 @@ sequenceDiagram
 
     BFF2 ->> User: 302 Redirect to IdP /authorize?<br/>client_id=app2<br/>state=S2<br/>nonce=N2
 
-    User ->> IdP: GET /authorize?<br/>client_id=app2<br/>&redirect_uri=https://app2/callback<br/>&response_type=code<br/>&scope=openid%20profile%20offline_access<br/>&state=S2<br/>&nonce=N2<br/><br/>Headers<br/>Cookie: idp_session=IDPSESS_ABC
-    Note over User: ❗Send IdP cookie for App2 as SSO login.<br/>No cookie to App1 for first login.
+    Note over User: ❗Send IdP cookie as first-party cookie for App2 as SSO login by a browser popup or redirect.<br/>(Previous first login to App1 didn't has such cookie, so started interactive login)
+    User ->> IdP: GET /authorize?<br/>client_id=app2<br/>&redirect_uri=https://app2/callback<br/>&response_type=code<br/>&scope=openid%20profile%20offline_access<br/>&state=S2<br/>&nonce=N2<br/><br/>Headers<br/>🍪Cookie: idp_session=IDPSESS_ABC
 
-    Note over IdP:  IdP session exists → SKIP login UI<br/>✅ No interactive user login any more (SSO silent login)
+    Note over IdP:  IdP session exists -> SKIP login UI<br/>✅ No interactive user login any more (SSO silent login)
     IdP ->> User: 302 https://app2/callback?code=C222&state=S2
 
     User ->> BFF2: GET /callback?code=C222&state=S2
@@ -647,9 +715,9 @@ sequenceDiagram
 
     %% CREATE SESSION FOR APP2
     Note over BFF2: Create local app session SESS2
-    BFF2 ->> BFFStore: Save session SESS2 → { user:alice, tokens }
+    BFF2 ->> BFFStore: Save session SESS2 -> { user:alice, tokens }
 
-    BFF2 ->> User: Set-Cookie session_id=SESS2
+    BFF2 ->> User: 🍪Set-Cookie session_id=SESS2
 
     User ->> App2: Authenticated instantly (SSO)
 
@@ -663,3 +731,132 @@ sequenceDiagram
 
     Note over IdP: One IdP SSO session:<br/>idp_session=IDPSESS_ABC<br/>powers login-free access for all apps
 ```
+
+## FAQ
+
+### JWT access token example
+
+Official doc: [IETF RFC7519 for JSON Web Token (JWT)](https://datatracker.ietf.org/doc/html/rfc7519)
+
+```json title="raw access_token"
+eyJhbGciOiJFUzI1NiIsImtpZCI6IjllciJ9.eyJhdWQiOiJodHRwczovL2JhY2tlbmQuZXhhbXBsZS5jb20iLCJpc3MiOiJodHRwczovL2FzLmV4YW1wbGUuY29tIiwiZXhwIjoxNDQxOTE3NTkzLCJpYXQiOjE0NDE5MTc1MzMsInN1YiI6ImJkY0BleGFtcGxlLmNvbSIsInNjb3BlIjoiYXBpIn0.40y3ZgQedw6rxf59WlwHDD9jryFOr0_Wh3CGozQBihNBhnXEQgU85AI9x3KmsPottVMLPIWvmDCMy5-kdXjwhw
+```
+
+```json title="decoded access_token"
+{
+  "alg": "ES256",
+  "kid": "9er"
+}.{
+  "aud": "https://backend.example.com",
+  "iss": "https://as.example.com",
+  "exp": 1441917593,
+  "iat": 1441917533,
+  "sub": "bdc@example.com",
+  "scope": "api"
+}.[Signature]
+```
+
+| Claim type | Value                             | Notes                                                                                                                                                                                                                                                                                                                                 |
+|------------|-----------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `aud`      | `https://backend.example.com`     | The `aud` (audience) claim identifies the recipients that the JWT is intended for. Each principal intended to process the JWT MUST identify itself with a value in the audience claim. If the principal processing the claim does not identify itself with a value in the `aud` claim when this claim is present, then the JWT MUST be rejected. [[RFC 7519, Section 4.1.3](https://tools.ietf.org/html/rfc7519#section-4.1.3)] |
+| `iss`      | `https://as.example.com`          | The `iss` (issuer) claim identifies the principal that issued the JWT. The `iss` value is a case-sensitive string containing a StringOrURI value. [[RFC 7519, Section 4.1.1](https://tools.ietf.org/html/rfc7519#section-4.1.1)]                                                                                                                                                                                                   |
+| `exp`      | `Thu Sep 10 2015 22:39:53 GMT+0200 (Central European Summer Time)` | The `exp` (expiration time) claim identifies the expiration time on or after which the JWT MUST NOT be accepted for processing. Implementers MAY allow brief leeway to account for clock skew. [[RFC 7519, Section 4.1.4](https://tools.ietf.org/html/rfc7519#section-4.1.4)]                                                                                                               |
+| `iat`      | `Thu Sep 10 2015 22:38:53 GMT+0200 (Central European Summer Time)` | The `iat` (issued at) claim identifies the time at which the JWT was issued. This claim can be used to determine the age of the JWT. [[RFC 7519, Section 4.1.6](https://tools.ietf.org/html/rfc7519#section-4.1.6)]                                                                                                                                                                         |
+| `sub`      | `bdc@example.com`                 | The `sub` (subject) claim identifies the principal that is the subject of the JWT. The subject value MUST either be scoped to be locally unique in the context of the issuer or be globally unique. [[RFC 7519, Section 4.1.2](https://tools.ietf.org/html/rfc7519#section-4.1.2)]                                                                                                         |
+| `scope`<br/><br/>vendor specific claim, some use `scp`    | `api`                             | String, a space separated list of scopes (space replaced by `%20` in safe encoded URL). Exposed by the resource server (a.k.a `aud` (audience)) for which the client application has requested (and received) consent. Only included for user tokens.|
+
+### PKCE (Proof Key for Code Exchange)
+
+**PKCE** is an extension to the Authorization Code Flow to prevent **Authorization Code Injection attacks**. It is designed for public clients (e.g., SPA, mobile apps) that cannot securely store a client secret.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant SPA as SPA
+    participant Browser as Browser (front-channel)
+    participant IdP as IdP
+
+    SPA->>SPA: Generate code_verifier
+    SPA->>SPA: Derive code_challenge = hash(code_verifier)
+
+    Note over SPA,IdP: ⚠️Unsecure front-channel communication as browser is involved
+    rect rgb(255,230,230)
+        SPA->>Browser: Redirect /authorize?code_challenge=hash<br/>(state, nonce...)
+        Browser->>IdP: GET /authorize (code_challenge visible)
+    end
+
+    IdP->>Browser: 302 redirect with authorization_code
+    Browser->>SPA: Deliver authorization_code
+
+    Note over SPA,IdP: ✅Secure back-channel communication as browser is not involved.<br/>code_verifier is only sent here. Never exposed to browser.
+    rect rgb(230,255,230)
+        SPA->>IdP: POST /token (authorization_code + code_verifier)
+        IdP->>Idp: Validate hash(code_verifier) == code_challenge received earlier ?
+        IdP->>SPA: Issue tokens
+    end
+```
+
+!!! note "PKCE everywhere"
+    - All public clients like SPA/mobile MUST use PKCE
+    - Confidential clients (BFF etc.) SHOULD also use PKCE for enhanced security.
+
+### OIDC vs OpenID vs OpenID 2.0
+
+- **OpenID and OpenID 2.0** (based on XML) are both deprecated.
+
+- **OIDC (OpenID Connect)** is the modern standard driven by the same foundation, which is based on OAuth2 with JWT.
+
+### OIDC vs OAuth2
+
+**In short**: **OIDC** adds authentication (verifying user identity) on top of **OAuth 2.0** as for authorization framework (verifying user access).
+
+| Aspect | OAuth 2.0 | OIDC |
+|--------|-----------|------|
+| **Primary purpose** | Authorization (what can you access?) | Authentication (who are you?) |
+| **Token type** | `access_token` only | `access_token` + `id_token` |
+| **User identity** | Not standardized (indirect via `/userinfo` API call) | Standardized via `id_token` (JWT with claims) |
+| **Use case** | API access delegation | User login + SSO |
+
+!!! note "Indirect authentication with pure OAuth 2.0"
+    It's worth noting that even with pure OAuth 2.0, applications can achieve a form of authentication indirectly: the `access_token` can be used to call an API endpoint (such as `/userinfo`, for e.g. <https://graph.microsoft.com/oidc/userinfo>) on the resource server to retrieve basic user profile information. By obtaining this data, the application can identify the user, match them against its own user database, and establish a local session. But this approach is not standardized and relies on application-specific implementation, which is precisely the gap that OIDC fills with its formal authentication layer.
+
+!!! warning "`id_token` is used by the client application to authenticate the user, not to access resource servers"
+    The `id_token` is intended for the client application (e.g. BFF backend, or the mobile app, or SPA) to verify the user's identity, display the user profile, ensure SSO, and establish a session, etc. It should not be used as a bearer token to access protected resources or APIs. Instead, the `access_token` (with permissions scope) should be used for that purpose.
+
+### access_token vs id_token
+
+| Aspect | access_token | id_token |
+|--------|--------------|----------|
+| **Purpose** | Used to access protected resources (APIs) | Used to authenticate the user to the client application.<br/><br/>Never sent to downstream APIs (resource servers).<br/><br/>Machine-to-Machine Client Credentials flow doesn't have `id_token`.<br/><br/>OAuth2.0 doesn't define `id_token`. OIDC (on top of OAuth2.0) does.<br/><br/>OIDC never uses machine-to-machine flow |
+| **Audience** | Intended for resource servers (APIs)<br/><br/>or BFF, SPA if itself is a resource server too | Intended for the client application (e.g., BFF backend, mobile app, SPA) |
+| **Content** | Contains scopes and permissions.<br/><br/>But could contains some common user claims too depends on IdP.<br/><br/>Could get full user profile by calling IdP `/userinfo` endpoint with access_token | Contains user identity claims (e.g., sub, name, email) |
+| **Format** | Often a JWT, but could be opaque<br/><br/>use opaque token to call `/introspect` or `/userinfo`| Always a signed JWT (JWS) or encrypted (JWE) |
+| **Validation** | Validated by resource servers | Validated by the client application |
+
+### Cookie vs Session vs Session Cookie
+
+| Term | What It Means | Where It Lives | Example |
+|------|---------------|----------------|---------|
+| **Cookie** | Generic HTTP cookie (any type) | Browser cookies | Any cookie (session ID, tracking, prefs, etc.) |
+| **Session** | Server-side session data (user info, auth state) | Backend (Redis, DB, memory) | `{ userId: 123, role: 'admin', loginTime: ... }` |
+| **Session ID** | Unique identifier that references the session | Session cookie (browser) → looked up on backend | `abc123` or `sess:f7e2a1b9c3d4` |
+| **Persistent cookie** | Cookie with explicit expiration date (survives browser restart) | Browser cookies | `Set-Cookie: token=xyz; Max-Age=86400; HttpOnly` |
+| **Session cookie** | Cookie that holds the session ID | Browser cookies | `Set-Cookie: session_id=abc123; HttpOnly` |
+| 💡**Session ID cookie (neutral term)** | Cookie storing session ID (any persistence type) | Browser cookies | Could be session or persistent type |
+
+!!! warning "Session cookie in SSO/BFF is often actually a persistent cookie"
+    In the context of SSO or BFF, the term **Session Cookie** usually:
+
+      - ✅**means**: a cookie used for session management (persistent or non-persistent).
+      - ❌**Not**: a non-persistent cookie that expires at the end of the browser session (on close).
+
+    A more accurate name would be **Session ID Cookie**. Depending on the IdP or BFF implementation, this cookie may be:
+
+      - a **non-persistent session cookie** (no `Expires` / `Max-Age`), or
+      - a **persistent cookie** (with `Expires` / `Max-Age`), e.g. for "remember me" / long-lived SSO.
+
+### OIDC vs SAML
+
+- **SAML** (Security Assertion Markup Language) is an older standard in **XML** for single sign-on (SSO) and identity federation, primarily used in enterprise environments, and **only for web-based applications**.
+
+- **OIDC** is a more modern protocol in **JSON/REST** that is easier to implement and is designed for **web and mobile applications**, could be used for SSO too.
