@@ -20,25 +20,91 @@ date:
 
 ## References
 
-1. https://curity.io/resources/learn/spa-best-practices/
-2. https://curity.io/resources/learn/oauth-cookie-best-practices/
-3. https://auth0.com/blog/application-session-management-best-practices/
-4. https://fusionauth.io/articles/login-authentication-workflows/spa/oauth-authorization-code-grant-sessions-refresh-tokens-cookies
-5. https://fusionauth.io/articles/authentication/how-sso-works
-6. https://datatracker.ietf.org/doc/rfc9700/
-7. https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics
-8. https://datatracker.ietf.org/doc/html/draft-ietf-oauth-browser-based-apps
+1. **OAuth2**: https://learn.microsoft.com/en-us/entra/identity-platform/v2-app-types
+2. **SPA**: https://curity.io/resources/learn/spa-best-practices/
+3. **SPA/SSO**: https://fusionauth.io/articles/login-authentication-workflows/spa/oauth-authorization-code-grant-sessions-refresh-tokens-cookies
+4. **SSO**: https://fusionauth.io/articles/authentication/how-sso-works
+5. **BFF**: https://fusionauth.io/blog/backend-for-frontend
+6. **Cookies**: https://auth0.com/blog/application-session-management-best-practices/
+7. **Cookies**: https://curity.io/resources/learn/oauth-cookie-best-practices/
+8. **RFC9700 - Best Current Practice for OAuth 2.0 Security**: https://datatracker.ietf.org/doc/rfc9700/
+9. **OAuth 2.0 Security (inspired from RFC-9700)**: https://workos.com/blog/oauth-common-attacks-and-how-to-prevent-them
+10. **OAuth 2.0 for Browser-Based Applications (2026) (derived from RFC9700)**: https://datatracker.ietf.org/doc/html/draft-ietf-oauth-browser-based-apps
 
 ## OIDC Flows
 
-Some OAuth 2.0 flows (e.g. [Implicit Flow (token leakage)](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-10#name-removal-of-the-oauth-20-imp), [Resource Owner Password Credentials grant (ROPC)(no MFA support)](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-10#name-differences-from-oauth-20)), or Auth Code Flow without PKCE, have already been deprecated as per OAuth 2.1, below are the recommended flows in 2025:
+| Flow                                                  | Purpose                                   | response_type                              | Notes                                                                                                                                                     |
+| ----------------------------------------------------- | ----------------------------------------- | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ❌Deprecated Implicit Flow                             | SPA, native apps, desktop, mobile         | `token` or `id_token` or `code id_token`, etc.                | `⚠️access_token` exposed in browser URL                                                                                                                       |
+| ❌Deprecated Resource Owner Password Credentials grant | SPA, native apps, desktop, mobile         | — (direct `/token`, no `/authorize`)       | ⚠️User password is given to unsecure client App, but not Identity Provider                                                                                   |
+| ❌Deprecated Authorization Code Flow without PKCE      | SPA, native apps, desktop, mobile         | `code`                                     | ⚠️Without `code_verifier` from PKCE, Identity Provider cannot verify the auth code sent to `/token` is from the original client                               |
+| Authorization Code Flow + PKCE (Public Client)        | Interactive SPA, native apps, desktop, mobile         | `code`                                     | No `client_secret`, uses PKCE                                                                                                                             |
+| Authorization Code Flow + BFF (Confidential Client)<br/>mixed with Client Credentials Flow         | Interactive web backends / BFF                        | `code`                                     | Uses `client_secret`                                                                                                                                       |
+| Client Credentials Flow                               | Non-interactive Machine-to-machine                        | — (direct `/token`, no `/authorize`)       | No user involved                                                                                                                                          |
+| Device Authorization Flow (Device Code)               | Half-interactive TVs, CLI apps, IoT                        | — (POST `/device`, user enters `user_code`) | User logs in on separate device.<br/>Useful when no browser available or with limited input capabilities.<br/>e.g. <https://microsoft.com/devicelogin>    |
 
-| Flow                                                  | Purpose                  | Notes                           |
-| ----------------------------------------------------- | ------------------------ | ------------------------------- |
-| Authorization Code Flow (Confidential Client)  | Web backends / BFF       | Uses client_secret              |
-| Authorization Code Flow + PKCE (Public Client) | SPA, native apps, desktop, mobile | No client_secret, uses PKCE     |
-| Client Credentials Flow                        | Machine-to-machine       | No user involved                |
-| Device Authorization Flow (Device Code)        | TVs, CLI apps, IoT       | User logs in on separate device.<br/>Useful when no browser available or with limited input capabilities.<br/>e.g. <https://microsoft.com/devicelogin> |
+### Deprecated Implicit Flow
+
+1. Initiated by : `GET /authorize?response_type=token&...`, some vendors use `response_type=id_token token&...`.
+2. ❌IdP returns tokens directly in URL fragment (`&access_token=...&...`), which is exposed to browser history, referrers, and potentially malicious scripts.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as User
+    participant SPA as SPA (Browser App)
+    participant Browser as Browser (Front-channel)
+    participant IdP as Identity Provider (AS)
+
+    User ->> SPA: Click "Login"
+
+    rect rgb(255,200,200)
+    SPA ->> Browser: Redirect to<br/>/authorize?response_type=token&...
+    end
+
+    Browser ->> IdP: GET /authorize?response_type=token&...
+
+    User ->> IdP: Enter Password or MFA
+
+    IdP ->> Browser: 302 redirect to<br/>https://app/callback#35;code&access_token=AT123&id_token=IDT456&...
+
+    rect rgb(255,200,200)
+    Note over Browser: ❌Tokens in URL fragment❌<br/>Accessible to browser history, referrers, XSS scripts
+    end
+
+    Browser ->> SPA: SPA receives access_token AT123 and id_token IDT456
+
+    SPA ->> User: Display "Logged in as Alice"
+```
+
+### Deprecated Resource Owner Password Credentials Grant (ROPC)
+
+- ❌User give password to client instead od Authorization Server (IdP), which is insecure and breaks the OAuth2 model.
+- ❌Does not support modern authentication methods like MFA, SSO, etc, as user don't interact with IdP directly.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as User
+    participant Client as Client App
+    participant IdP as Identity Provider (AS)
+
+    rect rgb(255,200,200)
+    User ->> Client: ❌Enter password in Client App UI instead of Identity Provider (AS) UI❌
+    end
+
+    Client ->> IdP: POST /token {<br/>grant_type=password,<br/>username=alice,<br/>password=secret,<br/>client_id=...,<br/>client_secret=...}
+
+    IdP ->> IdP: Validate username & password
+
+    IdP ->> Client: access_token + id_token + refresh_token (optional)
+```
+
+### Deprecated Authorization Code Flow without PKCE (Public Client) for SPA
+
+Same as below [Authorization Code Flow + PKCE (Public Client) for SPA](#authorization-code-flow--pkce-public-client-for-spa), but **without** `code_verifier` provided by PKCE (Proof Key for Code Exchange).
+
+Because the Authorization Code Flow hands the code through the unsecure browser's front channel, an untrusted path, an attacker who intercepts that code can replay it at `/token` and steal tokens ([Authorization Code Injection](https://www.thehacker.recipes/web/config/identity-and-access-management/oauth-2.0#authorization-code-injection)). PKCE prevents this: the SPA generates a `code_verifier`, keeps it secret, and later submits it over the secure back channel, enabling the Identity Provider to confirm that the caller exchanging the code (by `POST /token`) is the same client that initiated `GET /authorize`.
 
 ### Authorization Code Flow + PKCE (Public Client) for SPA
 
@@ -52,6 +118,8 @@ With **PKCE** (Proof Key for Code Exchange), **Authorization Code Injection atta
     The IETF now (as of 2025) recommends the [Backend-For-Frontend (BFF) pattern](#oidc-authorization-code-flow-confidential-client-with-bff-pattern-and-session-cookies) as the gold standard for securing modern web applications, moving all authentication logic from public browser to a confidential server.
 
 **OIDC Authorization Code Flow with PKCE for SPA:**
+
+Initiated by : `GET /authorize?response_type=code&...`
 
 ```mermaid
 sequenceDiagram
@@ -121,14 +189,14 @@ sequenceDiagram
     %% STEP 6 — IdP VALIDATES auth_code + PKCE (NO nonce validation)
     %% ============================================================
     IdP ->> Store: Lookup C789 -> A555 -> L123 -> user="alice"
-    IdP ->> IdP: Validate PKCE:<br/>BASE64URL(SHA256(code_verifier)) == stored code_challenge ?
+    IdP ->> IdP: ✅Validate PKCE:<br/>BASE64URL(SHA256(code_verifier)) == stored code_challenge ?
     Note over IdP: IdP embeds stored nonce N123<br/>into the ID Token claims
 
     %% ============================================================
     %% STEP 7 — IdP ISSUES TOKENS (INCLUDING NONCE)
     %% ============================================================
     Note over IdP,SPA: ❗Sending high-valued refresh tokens without rotation to unsecure SPAs is strongly discouraged.
-    IdP ->> SPA: access_token(aud=https://my-downstream-api)<br/>id_token(sub="alice", nonce=N123)<br/>refresh_token(optional)
+    IdP ->> SPA: access_token(aud=https://my-downstream-api)<br/>id_token(sub="alice", nonce=N123)<br/>refresh_token(optional with rotation or often disabled for SPAs)
 
     %% SPA verifies nonce
     SPA ->> SPA: Validate id_token.nonce == N123 ?
@@ -201,8 +269,6 @@ Once the user is authenticated, the BFF can use multiple methods to obtain acces
 | **API Keys**                       | Same as mTLS but with API key<br/>Legacy / simple | ❌ No                                         | ✔ OK        | ❌ No                 |
 | **Internal Headers / Cookies**     | Service mesh                                      | Optional (propagated)                        | ✔ Yes       | ❌ No                 |
 
-Below is an example sequence diagram illustrating the OIDC Authorization Code Flow with BFF pattern and session cookies, including the use of refresh tokens to obtain access tokens for multiple downstream APIs.
-
 **OIDC Authorization Code Flow with stateful BFF pattern and refresh token grant for multiple Downstream APIs (API-1 and API-2):**
 
 !!! note "the BFF flow could have many variations, below diagram is one of them"
@@ -261,7 +327,7 @@ sequenceDiagram
     %% ============================================================
     %% STEP 4 & 5 — CODE EXCHANGE (BACK-CHANNEL with Full Payload)
     %% ============================================================
-    BFFStore ->> BFF: Laod State, Nounce, PKCE code_verifier
+    BFFStore ->> BFF: Load State, Nonce, PKCE code_verifier
     BFF ->> BFF: Validate State
 
     BFF ->> IdP: 🛑 **Confidential Client Authentication** required<br/>POST /token (Code Exchange)<br/>{grant_type=authorization_code,<br/>code=C444,<br/>client_id=my_bff,<br/>client_secret=SECRET,<br/>code_verifier=VERIFIER}
@@ -297,7 +363,7 @@ sequenceDiagram
         BFF ->> IdP: POST /token (Refresh Grant)<br/>{grant_type=refresh_token,<br/>refresh_token=RT777,<br/>client_id=my_bff,<br/>client_secret=SECRET,<br/>resource=https://api-1}
 
         IdP ->> BFF: { "access_token": "AT_API1", "refresh_token": "RT888" (optional rotation) }
-        Note over Idp,BFF: 🛡️Recommended: issuing a new refresh token every time the old one is used (rotation)
+        Note over Idp,BFF: 🛡️Recommended: issuing a new refresh token every time upon use (rotation)
         BFF ->> BFFStore: Update Session (Save AT_API1, Store RT888 if rotated)
     end
 
@@ -326,6 +392,45 @@ sequenceDiagram
     BFF ->> API2: GET /resource<br/>Authorization: Bearer AT_API2
     API2 -->> BFF: Data
     BFF -->> Browser: Data
+```
+
+### Device Code flow
+
+The Device Authorization Flow (Device Code Flow) is designed for devices with limited input capabilities (e.g., smart TVs, IoT devices) where users cannot easily enter credentials, or for devices without interactive browser capabilities (e.g. CLI). Instead, the device displays a code that the user enters on a separate device (like a smartphone or computer) to authenticate.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant User
+    participant DeviceApp as Device / TV App
+    participant AuthServer as Authorization Server
+    participant Browser as User Browser
+    participant API as Resource Server (API)
+
+    User->>DeviceApp: Open app (no browser / keyboard)
+    DeviceApp->>AuthServer: POST /device_authorization (client_id)
+    AuthServer-->>DeviceApp: ✅device_code, user_code, verification_uri, interval, expires_in
+
+    DeviceApp->>User: Show user_code + verification_uri (e.g. https://auth.example.com/device)
+
+    User->>Browser: Open verification_uri
+    Browser->>AuthServer: GET /device (verification_uri)
+    AuthServer-->>Browser: Login & consent page
+    User->>Browser: Enter username/password (Authenticate)
+    Browser->>AuthServer: Submit credentials
+    AuthServer-->>Browser: Verification page
+    User->>Browser: Enter user_code and approve app
+    Browser->>AuthServer: ✅Submit user_code
+    AuthServer-->>Browser: Success page (You are done)
+
+    loop Poll until authorized or expired
+        DeviceApp->>AuthServer: POST /token (grant_type=device_code, device_code, client_id)
+        AuthServer-->>DeviceApp: authorization_pending or slow_down
+    end
+
+    AuthServer-->>DeviceApp: ✅access_token (+ optional refresh_token)
+    DeviceApp->>API: Call protected APIs (Authorization: Bearer access_token)
+    API-->>DeviceApp: Protected resource response
 ```
 
 ## Cookies + OIDC
@@ -381,11 +486,14 @@ Session cookies are simpler for single-application scenarios, while OIDC is bett
 
 ### Cookie types and storage
 
-| Type                        | How It's Defined                                | Where It's Stored Internally                    | Lifetime / When It Dies                                      | Survives Browser Restart?              | Typical Use                                    | Notes                                                                                  |
-|----------------------------|--------------------------------------------------|-------------------------------------------------|--------------------------------------------------------------|----------------------------------------|-----------------------------------------------|---------------------------------------------------------------------------------------|
-| **Session cookie**         | `Set-Cookie: name=value; Path=/` (no `Expires`/`Max-Age`) | In the **normal profile cookie store** (disk DB + memory cache) | Ends when the **browser session** ends (all normal windows closed)\* | ❓ Depends on browser setting ("restore session")<br/>⚠️ Often YES | Login sessions, CSRF tokens, short-lived state | Conceptually "in-memory", but many browsers persist them to disk and clear on session end. |
-| **Persistent cookie**      | `Set-Cookie: name=value; Expires=...` or `Max-Age=...` | Normal profile cookie store (disk DB + memory cache) | Until `Expires`/`Max-Age` is reached, or user clears site data | ✅ Yes, until expiry                      | "Remember me", long-lived app sessions, prefs | Longer theft window if device is compromised; combine with `Secure`, `HttpOnly`, `SameSite`. |
-| **Private-mode cookie**    | Any `Set-Cookie` inside **private/incognito windows** | **Separate, ephemeral cookie store** for that private session (RAM / temp) | When the **last private/incognito window** is closed          | ❌ No — completely wiped                 | Temporary logins in incognito, testing flows    | Same semantics as session/persistent, but the whole store is destroyed with private session. |
+| Property                     | Session cookie                                                                                                   | Persistent cookie                                                                                                         | Private-mode cookie                                                                                                                       |
+|------------------------------|------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
+| **How It's Defined**         | `Set-Cookie: name=value; Path=/` (no `Expires`/`Max-Age`)                                                        | `Set-Cookie: name=value; Expires=...` or `Max-Age=...`                                                                    | Any `Set-Cookie` inside **private/incognito windows**                                                                                     |
+| **Where It's Stored Internally** | In the **normal profile cookie store** (disk DB + memory cache)                                                  | Normal profile cookie store (disk DB + memory cache)                                                                      | **Separate, ephemeral cookie store** for that private session (RAM / temp)                                                               |
+| **Lifetime / When It Dies**  | Ends when the **browser session** ends (all normal windows closed)\*                                             | Until `Expires`/`Max-Age` is reached, or user clears site data                                                             | When the **last private/incognito window** is closed                                                                                      |
+| **Survives Browser Restart?**| ❓ Depends on browser setting ("restore session")<br/>⚠️ Often YES                                                | ✅ Yes, until expiry                                                                                                       | ❌ No — completely wiped                                                                                                                  |
+| **Typical Use**              | Login sessions, CSRF tokens, short-lived state                                                                   | "Remember me", long-lived app sessions, prefs                                                                              | Temporary logins in incognito, testing flows                                                                                              |
+| **Notes**                    | Conceptually "in-memory", but many browsers persist them to disk and clear on session end.                        | Longer theft window if device is compromised; combine with `Secure`, `HttpOnly`, `SameSite`.                              | Same semantics as session/persistent, but the whole store is destroyed with private session.                                             |
 
 ### storage for access token, refresh token, ID token, and session cookie
 
@@ -408,7 +516,7 @@ When people say *"Cookies are legacy."* they usually mean *"Server-side sessions
 | **Primary Use Case** | Cross-site tracking, ads, retargeting                 | SPA Authentication (JWTs), UI preferences                     | User session management, authentication                                                                               |
 | **Storage Type**     | Third-party cookies<br/><br/>You visit `Shoes.com`, but `Facebook.com` leaves a cookie on your browser to see that you like shoes.                                   | Browser Local Storage (Not a cookie)<br/><br/>Get a token, put it in localStorage,<br/>send it in the Header.                          | First-party cookies, stored in browser's cookie store (in memory if session only, or on disk if persistent cookie)                                                                                                 |
 | **Current Status**   | Blocked by default in Safari/Firefox; dying in Chrome | Discouraged for Auth; vulnerable to XSS (Hackers can read it) | Standard & Secure (when using HttpOnly flag)<br/>👍Privacy: stay on one site<br/>👍Security: browser hides the keys |
-| **Key Trend**        | Replacement by Privacy Sandbox / First-party data     | Moving back to Cookies (BFF Pattern) to hide tokens from JS   | Strengthened security via attributes (HttpOnly, Secure, SameSite)
+| **Key Trend**        | Replacement by Privacy Sandbox / First-party data     | Moving back to Cookies (BFF Pattern) to hide tokens from JS   | Strengthened security via attributes (HttpOnly, Secure, SameSite)|
 
 !!! note "The 'Pendulum Swing': Cookies -> localStorage -> HttpOnly Cookies"
 
@@ -633,7 +741,7 @@ sequenceDiagram
     Note over IdP: Create login_session LS123<br/>Bind to user "alice"
     IdP ->> IdPStore: Save LS123
 
-    %% **IdP sets its own SSO cookie in browser**
+    %% **IdP sets its own SSO session cookie in browser**
     IdP ->> User: 🍪Set-Cookie: idp_session=IDPSESS_ABC<br>Domain=auth.idp.com<br/>HttpOnly<br/>Secure<br/>SameSite=Lax
 
     %% THEN REDIRECT BACK TO APP1
@@ -691,7 +799,7 @@ sequenceDiagram
 
     BFF2 ->> User: 302 Redirect to IdP /authorize?<br/>client_id=app2<br/>state=S2<br/>nonce=N2
 
-    Note over User: ❗Send IdP cookie as first-party cookie for App2 as SSO login by a browser popup or redirect.<br/>(Previous first login to App1 didn't has such cookie, so started interactive login)
+    Note over User: ❗Send IdP cookie (SSO session cookie) as first-party cookie for App2 as SSO login by a browser popup or redirect.<br/>(Previous first login to App1 didn't has such cookie, so started interactive login)
     User ->> IdP: GET /authorize?<br/>client_id=app2<br/>&redirect_uri=https://app2/callback<br/>&response_type=code<br/>&scope=openid%20profile%20offline_access<br/>&state=S2<br/>&nonce=N2<br/><br/>Headers<br/>🍪Cookie: idp_session=IDPSESS_ABC
 
     Note over IdP:  IdP session exists -> SKIP login UI<br/>✅ No interactive user login any more (SSO silent login)
@@ -857,6 +965,67 @@ sequenceDiagram
 
 ### OIDC vs SAML
 
-- **SAML** (Security Assertion Markup Language) is an older standard in **XML** for single sign-on (SSO) and identity federation, primarily used in enterprise environments, and **only for web-based applications**.
+- **SAML** (Security Assertion Markup Language) is an older standard in [**XML** for single sign-on (SSO)](https://fusionauth.io/articles/authentication/how-sso-works#how-saml-sso-works) and identity federation, primarily used in enterprise environments, and **only for web-based applications**.
 
-- **OIDC** is a more modern protocol in **JSON/REST** that is easier to implement and is designed for **web and mobile applications**, could be used for SSO too.
+- **OIDC** is a more modern protocol in **JSON/REST** that is easier to implement and is designed for **web and mobile applications**, could be used for [SSO](#sso-oidc) too.
+
+### SPA (Single Page Application) vs MPA (Multi-page application) vs Web App vs Browser
+
+```mermaid
+graph TD
+    Browser["Browser<br/>(Chrome, Firefox, Safari, Edge)"]
+
+    WebApp["Web App<br/>(Any app accessed via a browser)"]
+
+    subgraph Types_of_Web_Apps["Types of Web Apps"]
+        MPA["MPA<br/>(Multi-page Application / Traditional Web App)<br/><br/>(e.g. Django, Flask+Jinja<br/>Rails, Laravel<br/>Express+Templates)"]
+        Hybrid["Hybrid / Modern Frameworks<br/><br/>(e.g. Next.js (React), Nuxt.js (Vue), SvelteKit (Svelte), Remix (React))"]
+        SPA["SPA<br/>(Single Page Application)<br/><br/>(e.g. React, Vue, Angular, Svelte)"]
+    end
+
+    subgraph Rendering_Models["Rendering Location"]
+        SSR["Server-side Web App (SSR)<br/>(HTML rendered on server)"]
+        CSR["Client-side Web App (CSR)<br/>(HTML/UI rendered in browser via JS)"]
+    end
+
+    %% Relationships: Browser <-> Web App
+    Browser -->|"loads & runs"| WebApp
+
+    %% Web App types
+    WebApp --> MPA
+    WebApp --> Hybrid
+    WebApp --> SPA
+
+    %% Rendering models
+    MPA -->|"typically"| SSR
+    SPA -->|"typically"| CSR
+
+    Hybrid -.->|"1️⃣initial load"| SSR
+    Hybrid -.->|"2️⃣after hydration"| CSR
+
+    style Browser fill:#e1f5ff
+    style WebApp fill:#fff4e1
+    style MPA fill:#f0f0f0
+    style SPA fill:#f0f0f0
+    style Hybrid fill:#e8f5e9
+```
+
+**Core Terms (Architecture & Client):**
+
+- **Web App (SPA + MPA)**: A broader term that encompasses any application accessed via a web browser, including SPAs, multi-page applications (MPAs), and server-rendered applications. Web apps can vary in complexity and architecture.
+- **Browser**: The software application (e.g., Chrome, Firefox, Safari) that users utilize to access web apps (SPA or MPA). The browser handles rendering HTML, executing JavaScript, managing cookies, and facilitating communication between the client and server.
+
+**Rendering Location:**
+
+- **Server-side Web App (SSR)**: The application's UI is generated and assembled into full HTML on the server before being sent to the browser. **Traditional Web Apps (MPAs)** are typically Server-side Web Apps.
+- **Client-side Web App (CSR)**: The server sends minimal HTML and JavaScript, and the UI is **dynamically generated in the browser** using that JavaScript. **SPAs** are typically Client-side Web Apps.
+
+| Feature                     | Traditional Web App (MPA)                                   | Single Page Application (SPA)                                            | Modern Hybrid (Next.js, Nuxt.js, Remix, SvelteKit…)                                                                 |
+|----------------------------|--------------------------------------------------------------|---------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|
+| Primary Rendering          | Server-Side Rendering (SSR)                                 | Client-Side Rendering (CSR)                                              | ✅SSR/SSG for initial request,<br/>then CSR after hydration (often with React/Vue/Svelte Server Components where applicable) |
+| Data Flow                  | Full HTML page <- Server                                     | HTML shell + JS bundle <- Server; data (JSON) via API                    | HTML + data pre-rendered on server (SSR/SSG) <- Server<br/>then JSON/API or loader-based data for client-side navigation |
+| Page Loads                 | Full page reload on every navigation                        | ✅No full page reload; DOM updated dynamically                           | First load: full HTML from server; ✅subsequent navigations use client-side routing (SPA-like, no full reload)         |
+| SEO                        | ✅Very good (content rendered on server, already available for crawlers) | Harder by default; better with SSR, SSG, pre-rendering, or hydration     | ✅Excellent when using SSR/SSG: crawlers see full HTML; good Core Web Vitals with caching/CDN/edge rendering           |
+| Initial Load               | ✅Often fast (server sends ready-to-render HTML)             | Often slower (must download + parse + execute JS bundle before rendering)| ✅Fast and SEO-friendly: pre-rendered HTML + critical data; JS hydrates progressively in the background               |
+| Post-Load UX               | Slower (each action may trigger a full reload)<br/>could be improved with caching/CDN | ✅Very fast / app-like (client-side routing and state)                   | ✅SPA-like UX after hydration: fast client-side transitions + server/data caching strategies                           |
+| Typical Stacks             | Django, Flask + Jinja (Python), Laravel (PHP), Ruby on Rails, Express (Node.js) with templates, ASP.NET | Frontend (JS): React, Vue, Angular, Svelte, etc. consuming APIs (any languages) | Next.js (React), Nuxt.js (Vue), Remix (React), SvelteKit (Svelte), Astro (multi-framework), Qwik City, etc.           |
