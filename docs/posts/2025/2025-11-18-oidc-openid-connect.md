@@ -35,9 +35,9 @@ date:
 
 | Flow                                                  | Purpose                                   | response_type                              | Notes                                                                                                                                                     |
 | ----------------------------------------------------- | ----------------------------------------- | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ❌Deprecated Implicit Flow                             | SPA, native apps, desktop, mobile         | `token` or `id_token` or `code id_token`, etc.                | `⚠️access_token` exposed in browser URL                                                                                                                       |
-| ❌Deprecated Resource Owner Password Credentials grant | SPA, native apps, desktop, mobile         | — (direct `/token`, no `/authorize`)       | ⚠️User password is given to unsecure client App, but not Identity Provider                                                                                   |
-| ❌Deprecated Authorization Code Flow without PKCE      | SPA, native apps, desktop, mobile         | `code`                                     | ⚠️Without `code_verifier` from PKCE, Identity Provider cannot verify the auth code sent to `/token` is from the original client                               |
+| 🚫Deprecated Implicit Flow                             | SPA, native apps, desktop, mobile         | `token` or `id_token` or `code id_token`, etc.                | `⚠️access_token` exposed in browser URL                                                                                                                       |
+| 🚫Deprecated Resource Owner Password Credentials grant | SPA, native apps, desktop, mobile         | — (direct `/token`, no `/authorize`)       | ⚠️User password is given to unsecure client App, but not Identity Provider                                                                                   |
+| 🚫Deprecated Authorization Code Flow without PKCE      | SPA, native apps, desktop, mobile         | `code`                                     | ⚠️Without `code_verifier` from PKCE, Identity Provider cannot verify the auth code sent to `/token` is from the original client                               |
 | Authorization Code Flow + PKCE (Public Client)        | Interactive SPA, native apps, desktop, mobile         | `code`                                     | No `client_secret`, uses PKCE                                                                                                                             |
 | Authorization Code Flow + BFF (Confidential Client)<br/>mixed with Client Credentials Flow         | Interactive web backends / BFF                        | `code`                                     | Uses `client_secret`                                                                                                                                       |
 | Client Credentials Flow                               | Non-interactive Machine-to-machine                        | — (direct `/token`, no `/authorize`)       | No user involved                                                                                                                                          |
@@ -689,7 +689,7 @@ sequenceDiagram
     App2->>Browser: 302 Redirect to IdP /authorize
 
     rect rgb(200, 255, 200)
-    Note right of Browser: 🍪 BROWSER AUTOMATION<br/>The URL matches 'auth.idp.com'.<br/>Browser AUTOMATICALLY attaches the cookie<br/>✅with URL redirect or popup,<br/>(❌legacy hidden iframe SSO if blocked by many browsers)
+    Note right of Browser: 🍪 BROWSER AUTOMATION<br/>The URL matches 'auth.idp.com'.<br/>Browser AUTOMATICALLY attaches the cookie<br/>✅with URL redirect or popup,<br/>(🚫legacy hidden iframe SSO if blocked by many browsers)
 
     Browser->>IdP: GET /authorize<br/>Cookie: idp_session=SECRET_ID
 
