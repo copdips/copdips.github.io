@@ -9,7 +9,7 @@ categories:
 comments: true
 date:
     created: 2025-11-18
-    updated: 2025-11-23
+    updated: 2025-11-24
 ---
 
 # OIDC (OpenID Connect)
@@ -36,13 +36,36 @@ date:
 
 | Flow                                                  | Purpose                                   | response_type                              | Notes                                                                                                                                                     |
 | ----------------------------------------------------- | ----------------------------------------- | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 🚫Deprecated Implicit Flow                             | SPA, native apps, desktop, mobile         | `token` or `id_token` or `code id_token`, etc.                | `⚠️access_token` exposed in browser URL                                                                                                                       |
 | 🚫Deprecated Resource Owner Password Credentials grant | SPA, native apps, desktop, mobile         | — (direct `/token`, no `/authorize`)       | ⚠️User password is given to unsecure client App, but not Identity Provider                                                                                   |
+| 🚫Deprecated Implicit Flow                             | SPA, native apps, desktop, mobile         | `token` or `id_token` or `code id_token`, etc.                | `⚠️access_token` exposed in browser URL                                                                                                                       |
 | 🚫Deprecated Authorization Code Flow without PKCE      | SPA, native apps, desktop, mobile         | `code`                                     | ⚠️Without `code_verifier` from PKCE, Identity Provider cannot verify the auth code sent to `/token` is from the original client                               |
 | Authorization Code Flow + PKCE (Public Client)        | Interactive SPA, native apps, desktop, mobile         | `code`                                     | No `client_secret`, uses PKCE                                                                                                                             |
 | Authorization Code Flow + BFF (Confidential Client)<br/>mixed with Client Credentials Flow         | Interactive web backends / BFF                        | `code`                                     | Uses `client_secret`                                                                                                                                       |
 | Client Credentials Flow                               | Non-interactive Machine-to-machine                        | — (direct `/token`, no `/authorize`)       | No user involved                                                                                                                                          |
 | Device Authorization Flow (Device Code)               | Half-interactive TVs, CLI apps, IoT                        | — (POST `/device`, user enters `user_code`) | User logs in on separate device.<br/>Useful when no browser available or with limited input capabilities.<br/>e.g. <https://microsoft.com/devicelogin>    |
+
+### Deprecated Resource Owner Password Credentials Grant (ROPC)
+
+- ❌User give password to client instead od Authorization Server (IdP), which is insecure and breaks the OAuth2 model.
+- ❌Does not support modern authentication methods like MFA, SSO, etc, as user don't interact with IdP directly.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as User
+    participant Client as Client App
+    participant IdP as Identity Provider (AS)
+
+    rect rgb(255,200,200)
+    User ->> Client: ❌Enter password in Client App UI instead of Identity Provider (AS) UI❌
+    end
+
+    Client ->> IdP: POST /token {<br/>grant_type=password,<br/>username=alice,<br/>password=secret,<br/>client_id=...,<br/>client_secret=...}
+
+    IdP ->> IdP: Validate username & password
+
+    IdP ->> Client: access_token + id_token + refresh_token (optional)
+```
 
 ### Deprecated Implicit Flow
 
@@ -76,29 +99,6 @@ sequenceDiagram
     Browser ->> SPA: SPA receives access_token AT123 and id_token IDT456
 
     SPA ->> User: Display "Logged in as Alice"
-```
-
-### Deprecated Resource Owner Password Credentials Grant (ROPC)
-
-- ❌User give password to client instead od Authorization Server (IdP), which is insecure and breaks the OAuth2 model.
-- ❌Does not support modern authentication methods like MFA, SSO, etc, as user don't interact with IdP directly.
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor User as User
-    participant Client as Client App
-    participant IdP as Identity Provider (AS)
-
-    rect rgb(255,200,200)
-    User ->> Client: ❌Enter password in Client App UI instead of Identity Provider (AS) UI❌
-    end
-
-    Client ->> IdP: POST /token {<br/>grant_type=password,<br/>username=alice,<br/>password=secret,<br/>client_id=...,<br/>client_secret=...}
-
-    IdP ->> IdP: Validate username & password
-
-    IdP ->> Client: access_token + id_token + refresh_token (optional)
 ```
 
 ### Deprecated Authorization Code Flow without PKCE (Public Client) for SPA
@@ -469,6 +469,104 @@ Microsoft Identity Platform's way to refresh `access_token` (often `refresh_toke
         "id_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJhdWQiOiIyZDRkMTFhMi1mODE0LTQ2YTctOD..."
     }
     ```
+
+## OAuth 2.0 User Authentication Security Evolution
+
+!!! note "Very high-level overview of OAuth 2.0 User authentication security evolution"
+    This diagram summarizes the key improvements in OAuth 2.0 security over time. Each step highlights the main actors, interactions, and security enhancements that address vulnerabilities in previous approaches.
+
+    **Not all the actors/steps are shown for simplicity**. For example, the browser is not shown in PKCE and DPoP steps, but it's implied that the client app (SPA or BFF) runs in a browser context. Only the security improvements related actors/steps are highlighted.
+
+    **Not all the OAuth 2.0 flows are shown**. For example, Client Credentials flow for machine-to-machine communication is not included, as it's outside the scope of user authentication evolution.
+
+<div class="oauth-evolution" id="oauth-evolution-1">
+  <script type="application/json">
+  {
+    "steps": [
+      {
+        "label": "ROPC (Deprecated)",
+        "title": "Password Grant (ROPC)",
+        "actors": ["User", "Client App", "Auth Server"],
+        "interactions": [
+          { "from": "User", "to": "Client App", "message": "username + password", "highlight": true, "warning": "Client app sees the password! Compromised app = stolen passwords." },
+          { "from": "Client App", "to": "Auth Server", "message": "POST /token (password)" },
+          { "from": "Auth Server", "to": "Client App", "message": "access_token" }
+        ],
+        "keyImprovement": "Simple direct authentication - but at the cost of exposing passwords to the client application."
+      },
+      {
+        "label": "Implicit (Deprecated)",
+        "title": "Implicit Flow",
+        "comparedTo": "Password Grant",
+        "actors": ["Browser", "SPA", "Auth Server"],
+        "interactions": [
+          { "from": "Browser", "to": "Auth Server", "message": "redirect /authorize?response_type=token" },
+          { "from": "Browser", "to": "Auth Server", "message": "user login", "improvement": true, "fixes": "Auth Server handles password - client never sees it! Users authenticate directly with Auth Server, not the SPA." },
+          { "from": "Auth Server", "to": "Browser", "message": "redirect with #access_token in URL", "highlight": true, "warning": "Tokens in URL fragment! Exposed to browser history, referrers, and XSS scripts. Anyone with access to browser history can steal tokens." },
+          { "from": "Browser", "to": "SPA", "message": "extract token from URL" }
+        ],
+        "keyImprovement": "Auth Server handles password instead of the client app. But tokens are exposed in URL fragments, making them vulnerable to browser history and XSS attacks."
+      },
+      {
+        "label": "Auth Code (Deprecated)",
+        "title": "Authorization Code Flow",
+        "comparedTo": "Implicit Flow",
+        "actors": ["Browser", "Client App", "Auth Server"],
+        "interactions": [
+          { "from": "Browser", "to": "Auth Server", "message": "redirect to /authorize" },
+          { "from": "Browser", "to": "Auth Server", "message": "user login" },
+          { "from": "Auth Server", "to": "Client App", "message": "authorization code", "improvement": true, "fixes": "Code instead of token in URL! Auth Server returns a short-lived authorization code instead of tokens in URL fragment. The code is then exchanged for tokens via secure POST, so tokens never appear in browser history or referrers." },
+          { "from": "Client App", "to": "Auth Server", "message": "exchange code for token", "warning": "Code can be intercepted and stolen without PKCE" },
+          { "from": "Auth Server", "to": "Client App", "message": "access_token" }
+        ],
+        "keyImprovement": "Returns an authorization code instead of tokens in URL fragment. Tokens are obtained via secure back-channel POST to /token endpoint, preventing exposure in browser history and referrers."
+      },
+      {
+        "label": "PKCE",
+        "title": "Authorization Code + PKCE",
+        "comparedTo": "Authorization Code",
+        "actors": ["Client App", "Auth Server"],
+        "interactions": [
+          { "from": "Client App", "to": "Client App", "message": "generate code_verifier" },
+          { "from": "Client App", "to": "Auth Server", "message": "code_challenge (hash)" },
+          { "from": "Auth Server", "to": "Client App", "message": "authorization code" },
+          { "from": "Client App", "to": "Auth Server", "message": "code + code_verifier", "improvement": true, "fixes": "Code verifier proves original client - no code theft! PKCE adds code_verifier proof - only the original client that started the flow can exchange the authorization code. This prevents code interception attacks." },
+          { "from": "Auth Server", "to": "Client App", "message": "access_token (verified)", "warning": "Token stored in browser JavaScript - vulnerable to XSS" }
+        ],
+        "keyImprovement": "PKCE adds code_verifier proof - only the original client that started the flow can exchange the authorization code. This prevents code interception attacks."
+      },
+      {
+        "label": "BFF",
+        "title": "BFF Pattern (Backend for Frontend)",
+        "comparedTo": "PKCE in Browser",
+        "actors": ["Browser", "BFF Server", "Auth Server", "Resource Server"],
+        "interactions": [
+          { "from": "Browser", "to": "BFF Server", "message": "user request" },
+          { "from": "BFF Server", "to": "Auth Server", "message": "OAuth flow (PKCE)" },
+          { "from": "Auth Server", "to": "BFF Server", "message": "tokens (server-side only)" },
+          { "from": "BFF Server", "to": "Browser", "message": "HttpOnly session cookie", "improvement": true, "fixes": "Tokens stay in BFF - browser can't access them. XSS defeated! Tokens never reach the browser - they stay securely in the BFF backend. The browser only gets an HttpOnly session cookie, which JavaScript cannot access. This eliminates XSS token theft." },
+          { "from": "BFF Server", "to": "Resource Server", "message": "Bearer token", "highlight": true, "warning": "If token is stolen from BFF, attacker can replay it" }
+        ],
+        "keyImprovement": "Tokens never reach the browser - they stay securely in the BFF backend. The browser only gets an HttpOnly session cookie, which JavaScript cannot access. This eliminates XSS token theft."
+      },
+      {
+        "label": "DPoP",
+        "title": "DPoP (Demonstrating Proof-of-Possession)",
+        "comparedTo": "BFF Pattern",
+        "actors": ["Client Application (SPA or BFF)", "Auth Server", "Resource Server"],
+        "interactions": [
+          { "from": "Client Application (SPA or BFF)", "to": "Client Application (SPA or BFF)", "message": "generate DPoP key pair" },
+          { "from": "Client Application (SPA or BFF)", "to": "Auth Server", "message": "token request + DPoP proof" },
+          { "from": "Auth Server", "to": "Client Application (SPA or BFF)", "message": "token (bound to key)" },
+          { "from": "Client Application (SPA or BFF)", "to": "Resource Server", "message": "token + DPoP proof", "improvement": true, "fixes": "Token bound to key - stolen token is useless without private key! Tokens are cryptographically bound to the client's private key via DPoP. Even if an attacker steals the token, they cannot use it without the private key to generate valid DPoP proofs. This is sender-constrained authentication." },
+          { "from": "Resource Server", "to": "Resource Server", "message": "verify proof signature" }
+        ],
+        "keyImprovement": "Tokens are cryptographically bound to the client's private key via DPoP. Even if an attacker steals the token, they cannot use it without the private key to generate valid DPoP proofs. This is sender-constrained authentication."
+      }
+    ]
+  }
+  </script>
+</div>
 
 ## BFF Pattern with HttpOnly Cookies: The Modern Best Practice
 

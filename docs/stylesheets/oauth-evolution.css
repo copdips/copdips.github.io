@@ -1,0 +1,710 @@
+/* Main wrapper */
+.oauth-evolution-wrapper {
+  border-radius: 1rem;
+  padding: 2rem 1.5rem;
+  margin: 2rem 0;
+  background: var(--md-code-bg-color);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Navigation container */
+.oauth-evolution-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+/* Navigation arrows */
+.oauth-nav-arrow {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  color: var(--md-primary-fg-color);
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.oauth-nav-arrow:hover {
+  background: var(--md-primary-fg-color);
+  color: var(--md-primary-bg-color);
+  transform: scale(1.1);
+}
+
+.oauth-nav-arrow:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  transform: scale(1);
+}
+
+/* Security level labels for navigation arrows */
+.oauth-nav-arrow:first-of-type::after {
+  content: 'Less Secure';
+  position: absolute;
+  top: -1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.65rem;
+  white-space: nowrap;
+  color: #dc2626;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.oauth-nav-arrow:last-of-type::after {
+  content: 'More Secure';
+  position: absolute;
+  top: -1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.65rem;
+  white-space: nowrap;
+  color: #16a34a;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+/* Timeline container */
+.oauth-evolution-timeline {
+  display: flex;
+  align-items: center;
+  position: relative;
+  flex: 1;
+  max-width: 800px;
+}
+
+/* Timeline line */
+.oauth-timeline-line {
+  position: absolute;
+  top: 50%;
+  left: 0.5rem;
+  right: 0.5rem;
+  height: 2px;
+  background: var(--md-default-fg-color--lightest);
+  z-index: 0;
+}
+
+/* Timeline progress line */
+.oauth-timeline-progress {
+  position: absolute;
+  top: 50%;
+  left: 0.5rem;
+  height: 2px;
+  background: var(--md-primary-fg-color);
+  z-index: 1;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Timeline steps container */
+.oauth-timeline-steps {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+  padding: 0 0.5rem;
+}
+
+/* Individual timeline step */
+.oauth-timeline-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+
+/* Give MORE space between all three deprecated flows with long labels */
+.oauth-timeline-step:nth-child(1),
+.oauth-timeline-step:nth-child(2),
+.oauth-timeline-step:nth-child(3) {
+  margin-right: 2.5rem;
+}
+
+.oauth-timeline-step.active {
+  z-index: 10;
+}
+
+/* Timeline dot */
+.oauth-timeline-dot {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: #d1d5db;
+  border: 3px solid var(--md-default-bg-color);
+  transition: all 0.3s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #374151;
+  box-shadow: 0 0 0 2px var(--md-default-bg-color);
+}
+
+.oauth-timeline-step:hover .oauth-timeline-dot {
+  transform: scale(1.3);
+}
+
+.oauth-timeline-step.active .oauth-timeline-dot {
+  width: 2rem;
+  height: 2rem;
+  background: #3b82f6;
+  color: white;
+  font-size: 0.85rem;
+  z-index: 5;
+}
+
+.oauth-timeline-step.completed .oauth-timeline-dot {
+  background: #3b82f6;
+  color: white;
+}
+
+/* Deprecated flows (first 3) */
+.oauth-timeline-step.deprecated .oauth-timeline-dot {
+  background: repeating-linear-gradient(
+    45deg,
+    #dc2626,
+    #dc2626 10px,
+    #ef4444 10px,
+    #ef4444 20px
+  );
+  color: white;
+  opacity: 1;
+  border: 3px solid var(--md-default-bg-color);
+  box-shadow: 0 0 0 2px var(--md-default-bg-color);
+}
+
+.oauth-timeline-step.deprecated .oauth-timeline-label {
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+.oauth-timeline-step.deprecated.active .oauth-timeline-dot {
+  opacity: 1;
+}
+
+/* Timeline label */
+.oauth-timeline-label {
+  position: absolute;
+  top: 2rem;
+  font-size: 0.6rem;
+  white-space: nowrap;
+  color: var(--md-default-fg-color--light);
+  transition: all 0.3s ease;
+  text-align: center;
+  background: var(--md-code-bg-color);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.2rem;
+  z-index: 4;
+}
+
+.oauth-timeline-step.active .oauth-timeline-label {
+  color: #3b82f6;
+  font-weight: 600;
+  z-index: 11;
+}
+
+/* Timeline full title - hidden in timeline, shown in dedicated area */
+.oauth-timeline-full-title {
+  display: none;
+}
+
+/* Content area with animation */
+.oauth-evolution-content {
+  margin-top: 0.5rem;
+  min-height: 150px;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.oauth-evolution-content.transitioning {
+  opacity: 0;
+}
+
+/* Flow title - Always visible, centered with background */
+.oauth-flow-title {
+  display: block;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+  border: 2px solid #3b82f6;
+  border-radius: 0.25rem;
+  padding: 0.3rem 0.8rem;
+  margin: 0 auto 0.5rem auto;
+  width: fit-content;
+  max-width: 90%;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+  order: 0;
+  align-self: center;
+}
+
+/* Comparison badge - HIDDEN */
+.oauth-comparison {
+  display: none;
+}
+
+/* Sequence Diagram Container */
+.oauth-sequence-diagram {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 0.5rem;
+  position: relative;
+  padding: 0.5rem 0.5rem;
+  min-height: 150px;
+  max-width: 100%;
+  overflow-x: visible;
+  order: 1;
+}
+
+/* Actors row */
+.oauth-actors {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 0.5rem;
+  position: relative;
+  z-index: 3;
+}
+
+.oauth-actor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  position: relative;
+  flex: 1;
+}
+
+/* Adjust spacing for BFF flow (4 actors) - Browser smaller, BFF and Auth Server moved right */
+.oauth-actors .oauth-actor:first-child:nth-last-child(4) {
+  flex: 0.8;
+}
+
+.oauth-actors .oauth-actor:first-child:nth-last-child(4) ~ .oauth-actor:nth-child(2) {
+  flex: 1.1;
+}
+
+.oauth-actors .oauth-actor:first-child:nth-last-child(4) ~ .oauth-actor:nth-child(3),
+.oauth-actors .oauth-actor:first-child:nth-last-child(4) ~ .oauth-actor:nth-child(4) {
+  flex: 1.05;
+}
+
+/* Extra breathing room between Browser and BFF/Auth Server in 4-actor layout */
+.oauth-actors .oauth-actor:first-child:nth-last-child(4) ~ .oauth-actor {
+  margin-left: 0;
+}
+
+.oauth-actors .oauth-actor:first-child:nth-last-child(4) ~ .oauth-actor:nth-child(2) {
+  margin-left: 15%;
+}
+
+.oauth-actors .oauth-actor:first-child:nth-last-child(4) ~ .oauth-actor:nth-child(3) {
+  margin-left: 7%;
+}
+
+.oauth-actors .oauth-actor:first-child:nth-last-child(4) ~ .oauth-actor:nth-child(4) {
+  margin-left: 5%;
+}
+
+.oauth-actor-box {
+  min-width: 70px;
+  padding: 0.4rem 0.6rem;
+  background: linear-gradient(135deg, var(--md-primary-fg-color), var(--md-accent-fg-color));
+  color: white;
+  border-radius: 0.3rem;
+  font-weight: 600;
+  font-size: 0.65rem;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 3;
+}
+
+/* Lifelines - vertical dashed lines extending to bottom */
+.oauth-lifeline {
+  position: absolute;
+  width: 2px;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--md-default-fg-color--lighter) 0,
+    var(--md-default-fg-color--lighter) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+  top: 2.5rem;
+  height: 100px; /* Will be set dynamically by JavaScript */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+/* Interactions container */
+.oauth-interactions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  position: relative;
+  margin-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 0;
+  margin-left: 0;
+  z-index: 2;
+}
+
+/* Single interaction */
+.oauth-interaction {
+  display: flex;
+  align-items: center;
+  position: relative;
+  min-height: 2rem;
+}
+
+/* Step number badge - HIDDEN */
+.oauth-step-number {
+  display: none;
+}
+
+/* Arrow between actors */
+.oauth-arrow {
+  position: absolute;
+  height: 2px;
+  background: var(--md-default-fg-color);
+  display: flex;
+  align-items: center;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+.oauth-arrow::after {
+  content: '▶';
+  position: absolute;
+  right: -6px;
+  font-size: 0.8rem;
+  color: var(--md-default-fg-color);
+}
+
+.oauth-arrow.reverse {
+  height: 2px;
+}
+
+.oauth-arrow.reverse::after {
+  content: '◀';
+  left: -6px;
+  right: auto;
+}
+
+/* Arrow label */
+.oauth-arrow-label {
+  position: absolute;
+  top: -1.3rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--md-code-bg-color);
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.2rem;
+  font-size: 0.6rem;
+  white-space: nowrap;
+  color: var(--md-default-fg-color);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  z-index: 15;
+  border: 1px solid var(--md-default-fg-color--lightest);
+}
+
+/* Highlight box for security-critical step */
+.oauth-interaction.highlight .oauth-arrow {
+  background: #ef4444;
+  height: 3px;
+}
+
+.oauth-interaction.highlight .oauth-arrow::after {
+  color: #ef4444;
+  font-size: 1rem;
+}
+
+.oauth-interaction.highlight .oauth-arrow-label {
+  background: #fef2f2;
+  color: #dc2626;
+  font-weight: 700;
+  border-color: #ef4444;
+}
+
+/* Improvement highlight */
+.oauth-interaction.improvement .oauth-arrow {
+  background: #22c55e;
+  height: 3px;
+}
+
+.oauth-interaction.improvement .oauth-arrow::after {
+  color: #22c55e;
+  font-size: 1rem;
+}
+
+.oauth-interaction.improvement .oauth-arrow-label {
+  background: #f0fdf4;
+  color: #16a34a;
+  font-weight: 700;
+  border-color: #22c55e;
+}
+
+/* Fixed issue indicator */
+.oauth-interaction.fixed .oauth-arrow {
+  background: #22c55e;
+  height: 3px;
+}
+
+.oauth-interaction.fixed .oauth-arrow::after {
+  color: #22c55e;
+  font-size: 1rem;
+}
+
+.oauth-interaction.fixed .oauth-arrow-label {
+  background: #f0fdf4;
+  color: #16a34a;
+  font-weight: 700;
+  border-color: #22c55e;
+}
+
+.oauth-interaction.fixed .oauth-arrow-label::before {
+  content: '✓ Fixed: ';
+  font-weight: 900;
+}
+
+/* Warning note inside diagram */
+.oauth-warning-note {
+  position: relative;
+  right: auto;
+  top: auto;
+  transform: none;
+  width: 100%;
+  max-width: 100%;
+  margin-top: 0.8rem;
+  left: 0;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.05));
+  border: 2px solid #ef4444;
+  border-radius: 0.3rem;
+  padding: 0.5rem;
+  font-size: 0.6rem;
+  line-height: 1.3;
+  color: var(--md-default-fg-color);
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.2);
+  z-index: 4;
+}
+
+.oauth-warning-note::before {
+  content: '⚠️';
+  display: block;
+  font-size: 1rem;
+  margin-bottom: 0.2rem;
+}
+
+.oauth-warning-note-title {
+  font-weight: 700;
+  color: #dc2626;
+  margin-bottom: 0.15rem;
+  font-size: 0.62rem;
+}
+
+/* Fixed note inside diagram */
+.oauth-fixed-note {
+  position: relative;
+  right: auto;
+  top: auto;
+  transform: none;
+  width: 100%;
+  max-width: 100%;
+  margin-top: 0.8rem;
+  left: 0;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.05));
+  border: 2px solid #22c55e;
+  border-radius: 0.3rem;
+  padding: 0.5rem;
+  font-size: 0.6rem;
+  line-height: 1.3;
+  color: var(--md-default-fg-color);
+  box-shadow: 0 2px 6px rgba(34, 197, 94, 0.2);
+  z-index: 4;
+}
+
+.oauth-fixed-note::before {
+  content: '✓';
+  display: block;
+  font-size: 1rem;
+  margin-bottom: 0.2rem;
+  color: #22c55e;
+  font-weight: 900;
+}
+
+.oauth-fixed-note-title {
+  font-weight: 700;
+  color: #16a34a;
+  margin-bottom: 0.15rem;
+  font-size: 0.62rem;
+}
+
+/* Key improvement section - HIDDEN */
+.oauth-key-improvement {
+  display: none;
+}
+
+.oauth-key-improvement-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  color: #16a34a;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.oauth-key-improvement-title::before {
+  content: '🔒';
+  font-size: 0.9rem;
+}
+
+.oauth-key-improvement-text {
+  font-size: 0.7rem;
+  line-height: 1.4;
+  color: var(--md-default-fg-color);
+}
+
+/* Responsive design - notes are already below by default, no media query needed for position change */
+
+@media (max-width: 768px) {
+  .oauth-evolution-wrapper {
+    padding: 1rem 0.5rem;
+  }
+
+  .oauth-sequence-diagram {
+    padding: 0.5rem 0.25rem;
+  }
+
+  .oauth-interactions {
+    padding-left: 0;
+    margin-left: 0;
+    gap: 0.6rem;
+  }
+
+  .oauth-actor-box {
+    min-width: 60px;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.7rem;
+  }
+
+  .oauth-arrow-label {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.4rem;
+  }
+
+  .oauth-flow-title {
+    font-size: 1.1rem;
+  }
+
+  .oauth-key-improvement {
+    padding: 0.5rem;
+    margin-top: 0.6rem;
+  }
+
+  .oauth-key-improvement-title {
+    font-size: 0.7rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .oauth-key-improvement-title::before {
+    font-size: 0.8rem;
+  }
+
+  .oauth-key-improvement-text {
+    font-size: 0.65rem;
+  }
+
+  .oauth-step-number {
+    width: 1.2rem;
+    height: 1.2rem;
+    font-size: 0.65rem;
+    left: -2.25rem;
+  }
+
+  .oauth-timeline-dot {
+    width: 1.2rem;
+    height: 1.2rem;
+    font-size: 0.65rem;
+  }
+
+  .oauth-timeline-step.active .oauth-timeline-dot {
+    width: 1.6rem;
+    height: 1.6rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* Animation keyframes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes drawLifeline {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.oauth-actors {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.oauth-lifeline {
+  animation: drawLifeline 0.8s ease forwards;
+  opacity: 0;
+}
+
+.oauth-interaction {
+  animation: fadeInUp 0.4s ease forwards;
+  opacity: 0;
+}
+
+.oauth-interaction:nth-child(1) { animation-delay: 0.2s; }
+.oauth-interaction:nth-child(2) { animation-delay: 0.35s; }
+.oauth-interaction:nth-child(3) { animation-delay: 0.5s; }
+.oauth-interaction:nth-child(4) { animation-delay: 0.65s; }
+.oauth-interaction:nth-child(5) { animation-delay: 0.8s; }
+.oauth-interaction:nth-child(6) { animation-delay: 0.95s; }
+
+.oauth-key-improvement {
+  animation: fadeInUp 0.5s ease 1.1s forwards;
+  opacity: 0;
+}
+
+.oauth-warning-note,
+.oauth-fixed-note {
+  animation: fadeInUp 0.4s ease forwards;
+  opacity: 0;
+}

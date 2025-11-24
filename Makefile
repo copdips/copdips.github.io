@@ -28,6 +28,10 @@ run:
 	@echo "${BOLD}${YELLOW}mkdocs serve:${NORMAL}"
 	uv run mkdocs serve --dirty
 
+reload-oauth:
+	@echo "${BOLD}${YELLOW}reload oauth animation assets:${NORMAL}"
+	cp /home/xiang/git/copdips.github.io/docs/javascripts/oauth-evolution.js /home/xiang/git/copdips.github.io/site/javascripts/oauth-evolution.js && cp /home/xiang/git/copdips.github.io/docs/stylesheets/oauth-evolution.css /home/xiang/git/copdips.github.io/site/stylesheets/oauth-evolution.css && python3 /home/xiang/git/copdips.github.io/scripts/reload_page.py
+
 update-venv:
 	@echo "${BOLD}${YELLOW}update venv:${NORMAL}"
 # 	${PYTHON} -m pip install -U pip
