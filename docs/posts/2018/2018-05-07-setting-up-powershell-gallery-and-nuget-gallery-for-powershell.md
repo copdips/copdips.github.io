@@ -123,7 +123,7 @@ PoshRSJob                      1.7.4.4          PSGallery        Provides an alt
 
 ```powershell
 # I also add the Trusted switch
-Register-PackageSource -Name Nuget -Location "http://www.nuget.org/api/v2" –ProviderName Nuget -Trusted
+Register-PackageSource -Name Nuget -Location "http://www.nuget.org/api/v2" -ProviderName Nuget -Trusted
 ```
 
 My Nuget client is at v2, so I can only target at Nuget v2 API.

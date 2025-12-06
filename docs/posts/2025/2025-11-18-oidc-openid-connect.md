@@ -36,13 +36,13 @@ date:
 
 | Flow                                                  | Purpose                                   | response_type                              | Notes                                                                                                                                                     |
 | ----------------------------------------------------- | ----------------------------------------- | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 🚫Deprecated Resource Owner Password Credentials grant | SPA, native apps, desktop, mobile         | — (direct `/token`, no `/authorize`)       | ⚠️User password is given to unsecure client App, but not Identity Provider                                                                                   |
+| 🚫Deprecated Resource Owner Password Credentials grant | SPA, native apps, desktop, mobile         | - (direct `/token`, no `/authorize`)       | ⚠️User password is given to unsecure client App, but not Identity Provider                                                                                   |
 | 🚫Deprecated Implicit Flow                             | SPA, native apps, desktop, mobile         | `token` or `id_token` or `code id_token`, etc.                | `⚠️access_token` exposed in browser URL                                                                                                                       |
 | 🚫Deprecated Authorization Code Flow without PKCE      | SPA, native apps, desktop, mobile         | `code`                                     | ⚠️Without `code_verifier` from PKCE, Identity Provider cannot verify the auth code sent to `/token` is from the original client                               |
 | Authorization Code Flow + PKCE (Public Client)        | Interactive SPA, native apps, desktop, mobile         | `code`                                     | No `client_secret`, uses PKCE                                                                                                                             |
 | Authorization Code Flow + BFF (Confidential Client)<br/>mixed with Client Credentials Flow         | Interactive web backends / BFF                        | `code`                                     | Uses `client_secret`                                                                                                                                       |
-| Client Credentials Flow                               | Non-interactive Machine-to-machine                        | — (direct `/token`, no `/authorize`)       | No user involved                                                                                                                                          |
-| Device Authorization Flow (Device Code)               | Half-interactive TVs, CLI apps, IoT                        | — (POST `/device`, user enters `user_code`) | User logs in on separate device.<br/>Useful when no browser available or with limited input capabilities.<br/>e.g. <https://microsoft.com/devicelogin>    |
+| Client Credentials Flow                               | Non-interactive Machine-to-machine                        | - (direct `/token`, no `/authorize`)       | No user involved                                                                                                                                          |
+| Device Authorization Flow (Device Code)               | Half-interactive TVs, CLI apps, IoT                        | - (POST `/device`, user enters `user_code`) | User logs in on separate device.<br/>Useful when no browser available or with limited input capabilities.<br/>e.g. <https://microsoft.com/devicelogin>    |
 
 ### Deprecated Resource Owner Password Credentials Grant (ROPC)
 
@@ -133,12 +133,12 @@ sequenceDiagram
     participant DownstreamAPI as Downstream API (Resource Server)
 
     %% ============================================================
-    %% STEP 0 — SPA PREPARES PKCE + STATE + NONCE
+    %% STEP 0 - SPA PREPARES PKCE + STATE + NONCE
     %% ============================================================
     Note over SPA: SPA creates:<br/>state = S999  <<ONE-TIME>><br/>nonce = N123  <<ONE-TIME>><br/>code_verifier = random <<ONE-TIME>><br/>code_challenge = BASE64URL( SHA256(code_verifier) )<br/><br/>state for CSRF protection for OIDC and OAuth2, returned by IdP in url query param<br/>nonce for ID token replay protection only for OIDC. returned by IdP in ID token claim
 
     %% ============================================================
-    %% STEP 1 — SPA INITIATES AUTHORIZATION REQUEST
+    %% STEP 1 - SPA INITIATES AUTHORIZATION REQUEST
     %% ============================================================
     User ->> SPA: Click "Login"
 
@@ -153,13 +153,13 @@ sequenceDiagram
     Browser ->> IdP: GET /authorize?(client_id, state=S999, nonce=N123,...)
 
     %% ============================================================
-    %% STEP 2 — IdP CREATES AUTHORIZATION SESSION
+    %% STEP 2 - IdP CREATES AUTHORIZATION SESSION
     %% ============================================================
     Note over IdP: Persist request metadata
     IdP ->> Store: Save authorization_session:<br/>authorization_session_id = A555<br/>client_id = my_spa<br/>redirect_uri=https://app/callback<br/>state=S999<br/>nonce=N123<br/>requested_scopes=["openid","read:data"]<br/>requested_audience="https://my-downstream-api"<br/>code_challenge=<stored><br/>login_session_id=null
 
     %% ============================================================
-    %% STEP 3 — USER AUTHENTICATES
+    %% STEP 3 - USER AUTHENTICATES
     %% ============================================================
     User ->> IdP: Enter Password or MFA
 
@@ -167,7 +167,7 @@ sequenceDiagram
     IdP ->> Store: Link authorization_session A555 -> L123
 
     %% ============================================================
-    %% STEP 4 — USER APPROVES & IdP RETURNS AUTHORIZATION CODE
+    %% STEP 4 - USER APPROVES & IdP RETURNS AUTHORIZATION CODE
     %% ============================================================
     IdP ->> Store: Create authorization_code:<br/>authorization_code=C789<br/>authorization_session_id=A555<br/>user="alice"<br/>expires_in=60s
 
@@ -178,23 +178,23 @@ sequenceDiagram
     Browser ->> SPA: SPA receives authorization_code C789 and state=S999
 
     %% ============================================================
-    %% STEP 5 — SPA EXCHANGES CODE FOR TOKENS (PKCE)
+    %% STEP 5 - SPA EXCHANGES CODE FOR TOKENS (PKCE)
     %% ============================================================
     rect rgb(200,255,200)
-    Note over SPA: PKCE step — with code_verifier<br/>Proves that the party calling /token is the same client that initiated the /authorize request<br/>Private HTTPS channel, NOT exposed in browser URL
+    Note over SPA: PKCE step - with code_verifier<br/>Proves that the party calling /token is the same client that initiated the /authorize request<br/>Private HTTPS channel, NOT exposed in browser URL
     end
 
     SPA ->> IdP: POST /token<br/>grant_type=authorization_code<br/>client_id=my_spa<br/>redirect_uri=https://app/callback<br/>authorization_code=C789<br/>code_verifier=<original random>
 
     %% ============================================================
-    %% STEP 6 — IdP VALIDATES auth_code + PKCE (NO nonce validation)
+    %% STEP 6 - IdP VALIDATES auth_code + PKCE (NO nonce validation)
     %% ============================================================
     IdP ->> Store: Lookup C789 -> A555 -> L123 -> user="alice"
     IdP ->> IdP: ✅Validate PKCE:<br/>BASE64URL(SHA256(code_verifier)) == stored code_challenge ?
     Note over IdP: IdP embeds stored nonce N123<br/>into the ID Token claims
 
     %% ============================================================
-    %% STEP 7 — IdP ISSUES TOKENS (INCLUDING NONCE)
+    %% STEP 7 - IdP ISSUES TOKENS (INCLUDING NONCE)
     %% ============================================================
     Note over IdP,SPA: ❗Sending high-valued refresh tokens without rotation to unsecure SPAs is strongly discouraged.
     IdP ->> SPA: access_token(aud=https://my-downstream-api)<br/>id_token(sub="alice", nonce=N123)<br/>refresh_token(optional with rotation or often disabled for SPAs)
@@ -209,7 +209,7 @@ sequenceDiagram
     SPA ->> User: Display "Logged in as Alice"
 
     %% ============================================================
-    %% OPTIONAL STEP — CALL /userinfo FOR EXTRA CLAIMS
+    %% OPTIONAL STEP - CALL /userinfo FOR EXTRA CLAIMS
     %% ============================================================
     SPA ->> IdP: GET /userinfo<br/>Authorization: Bearer <access_token><br/><br/>/userinfo may contain more claims than id_token, and also used for getting updated user info
     IdP ->> SPA: {sub:"alice", email:"alice@example.com", name:"Alice"}
@@ -291,14 +291,14 @@ sequenceDiagram
     participant API2 as Downstream API-2<br/>(Resource Server)
 
     %% ============================================================
-    %% STEP 0 — LOGIN INITIATION
+    %% STEP 0 - LOGIN INITIATION
     %% ============================================================
     Note over User,IdP: First login
     User ->> WebApp: Click "Login"
     WebApp ->> BFF: GET /login
 
     %% ============================================================
-    %% STEP 1 — BFF GENERATES STATE & PKCE
+    %% STEP 1 - BFF GENERATES STATE & PKCE
     %% ============================================================
     Note over BFF: Generate state, nonce, code_verifier<br/>1.**state** (one-time use) for CSRF protection for OIDC/OAuth2, computed by BFF, and returned by IdP in url query param<br/>2. **nonce** (one-time use) for ID token replay protection only for OIDC. computed by BFF, and returned by IdP in ID token claim<br/>3. **code_verifier** (one-time use) for PKCE for code injection prevention. code_challenge=BASE64URL(SHA256(code_verifier))
 
@@ -316,7 +316,7 @@ sequenceDiagram
     Browser ->> IdP: GET /authorize (client_id, state, nonce, scope, code_challenge...)
 
     %% ============================================================
-    %% STEP 2 & 3 — AUTHENTICATION & CODE RETURN
+    %% STEP 2 & 3 - AUTHENTICATION & CODE RETURN
     %% ============================================================
     User ->> IdP: Enter Credentials (Consent)
 
@@ -327,7 +327,7 @@ sequenceDiagram
     Browser ->> BFF: GET /callback?code=C444&state=S555
 
     %% ============================================================
-    %% STEP 4 & 5 — CODE EXCHANGE (BACK-CHANNEL with Full Payload)
+    %% STEP 4 & 5 - CODE EXCHANGE (BACK-CHANNEL with Full Payload)
     %% ============================================================
     BFFStore ->> BFF: Load State, Nonce, PKCE code_verifier
     BFF ->> BFF: Validate State
@@ -338,7 +338,7 @@ sequenceDiagram
     IdP ->> BFF: {<br/>"token_type": "Bearer",<br/>"access_token": "AT_INIT",<br/>"refresh_token": "RT777",<br/>"id_token": "JWT..."<br/>}
 
     %% ============================================================
-    %% STEP 6 — VALIDATION & SESSION CREATION
+    %% STEP 6 - VALIDATION & SESSION CREATION
     %% ============================================================
     BFF ->> BFF: Verify ID Token signature, claims, and ASSERT nonce == N777 ?
 
@@ -353,7 +353,7 @@ sequenceDiagram
     Browser ->> WebApp: Redirect to Dashboard
 
     %% ============================================================
-    %% OPERATIONAL PHASE — CALLING API-1 (Refresh Grant with Full Payload)
+    %% OPERATIONAL PHASE - CALLING API-1 (Refresh Grant with Full Payload)
     %% ============================================================
     Note over User,API1: Post-login: Call API-1
     Browser ->> BFF: GET /api1/data (Cookie S333)
@@ -374,7 +374,7 @@ sequenceDiagram
     BFF -->> Browser: Data
 
     %% ============================================================
-    %% OPERATIONAL PHASE — CALLING API-2 (Reusing RT for New Resource)
+    %% OPERATIONAL PHASE - CALLING API-2 (Reusing RT for New Resource)
     %% ============================================================
     Note over User,API2: Post-login: Call API-2
 
@@ -579,7 +579,7 @@ A modern secure 🤔 (1) pattern is to ==use an HttpOnly cookie (the container) 
 | ------------------------------ | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | **What is inside the Cookie?** | Both access token and refresh token (HttpOnly)            | ✅A random opaque session ID<br/><br/>Or a JWT-like session token issued by BFF (not by IdP)<br/><br/>Both session id and session token could be saved in local memory or a remote Redis cache for scalability                                                                                               | Short-lived access token JWT (HttpOnly)                                                            |
 | **Where is the JWT?**          | Inside the cookie (browser)                                     | ✅All in server-side BFF store (often Redis)                                                                                              | **Stateless** access token in client-side cookie<br/><br/>**Stateful** refresh token + extra context in server-side BFF store                                 |
-| **Cookie Size**                | Large with access token<br/>(can hit 4 KB limit)                                      | ✅Tiny (just an cookie session ID)                                                                                                | Large with access token<br/>(But trimmed lifetime/claims)                                                           |
+| **Cookie Size**                | Large with access token<br/>(can hit 4 KB limit)                                      | ✅Tiny (just an cookie session ID)                                                                                                | Large with access token<br/>(But trimmed lifetime/claims)                                                           |
 | **Performance**                | Larger cookie + JWT signature verification; no store lookup     | Extra Redis/DB lookup each request                                                                               | ✅99% requests are stateless JWT access token checks;<br/><br/>occasional store refresh token lookup when minting new access tokens             |
 | **Complexity**                 | ✅Low (no BFF store required)                                      | High (requires durable session store)                                                                            | High (almost the same as Stateful BFF)                               |
 | **Security Verdict**           | ✅ Good enough (mitigates XSS/CSRF via HttpOnly/SameSite)<br/>❌long-live refresh token is at client side<br/>❌Cannot revoke tokens immediately         | ✅✅✅ Best: full server control over sessions and immediate revocation capability                                   | ✅✅ Balanced: long-live refresh token is at BFF side, fast revocation via store<br/>❗limited exposure window per short-live access token |
@@ -658,7 +658,7 @@ Session cookies are simpler for single-application scenarios, while OIDC is bett
 | **How It's Defined**         | `Set-Cookie: name=value; Path=/` (no `Expires`/`Max-Age`)                                                        | `Set-Cookie: name=value; Expires=...` or `Max-Age=...`                                                                    | Any `Set-Cookie` inside **private/incognito windows**                                                                                     |
 | **Where It's Stored Internally** | In the **normal profile cookie store** (disk DB + memory cache)                                                  | Normal profile cookie store (disk DB + memory cache)                                                                      | **Separate, ephemeral cookie store** for that private session (RAM / temp)                                                               |
 | **Lifetime / When It Dies**  | Ends when the **browser session** ends (all normal windows closed)\*                                             | Until `Expires`/`Max-Age` is reached, or user clears site data                                                             | When the **last private/incognito window** is closed                                                                                      |
-| **Survives Browser Restart?**| ❓ Depends on browser setting ("restore session")<br/>⚠️ Often YES                                                | ✅ Yes, until expiry                                                                                                       | ❌ No — completely wiped                                                                                                                  |
+| **Survives Browser Restart?**| ❓ Depends on browser setting ("restore session")<br/>⚠️ Often YES                                                | ✅ Yes, until expiry                                                                                                       | ❌ No - completely wiped                                                                                                                  |
 | **Typical Use**              | Login sessions, CSRF tokens, short-lived state                                                                   | "Remember me", long-lived app sessions, prefs                                                                              | Temporary logins in incognito, testing flows                                                                                              |
 | **Notes**                    | Conceptually "in-memory", but many browsers persist them to disk and clear on session end.                        | Longer theft window if device is compromised; combine with `Secure`, `HttpOnly`, `SameSite`.                              | Same semantics as session/persistent, but the whole store is destroyed with private session.                                             |
 
@@ -666,7 +666,7 @@ Session cookies are simpler for single-application scenarios, while OIDC is bett
 
 | Scenario                         | AT (Access Token)                                | RT (Refresh Token)                                            | IDT (ID Token)                                         | App Session (your app)                                               | IdP Session (SSO at IdP)                                      |
 |----------------------------------|--------------------------------------------------|----------------------------------------------------------------|-------------------------------------------------------|------------------------------------------------------------------------|----------------------------------------------------------------|
-| SPA **without BFF** (normal)    | JS **in-memory** only (per tab, lost on refresh) | ❌ **Modern IdPs rarely issue to public clients**, rely on IdP session + short AT<br/><br/>**If IdP insists the issue**: In-memory only (accept no persistence) OR LocalStorage (if using Rotation)<br/>As LocalStorage is the simplest persistent & shared cross tabs storage accessible to JS, and RT needs to be persistent on page refresh<br/>XSS can steal the RT if saved in LocalStorage, but rotation limits damage<br/><br/>**Best solution:** no RT, use IdP session cookie to refresh AT | In-memory, extract user claims once, then discard | ❌ **No server session** — stateless; AT expiry = "session" end, or use short-lived AT + RT for longer sessions | **HttpOnly cookie** on `idp.com` (enables SSO across apps) |
+| SPA **without BFF** (normal)    | JS **in-memory** only (per tab, lost on refresh) | ❌ **Modern IdPs rarely issue to public clients**, rely on IdP session + short AT<br/><br/>**If IdP insists the issue**: In-memory only (accept no persistence) OR LocalStorage (if using Rotation)<br/>As LocalStorage is the simplest persistent & shared cross tabs storage accessible to JS, and RT needs to be persistent on page refresh<br/>XSS can steal the RT if saved in LocalStorage, but rotation limits damage<br/><br/>**Best solution:** no RT, use IdP session cookie to refresh AT | In-memory, extract user claims once, then discard | ❌ **No server session** - stateless; AT expiry = "session" end, or use short-lived AT + RT for longer sessions | **HttpOnly cookie** on `idp.com` (enables SSO across apps) |
 | SPA **without BFF** (private / incognito) | Same: in-memory only | ❌Modern IdP rarely issue to public clients.<br>In-memory if issued (rare).  | Same: in-memory | ❌ No session (stateless SPA) | IdP cookie exists only in private session, wiped on close |
 | SPA **with BFF** (normal)       | **Never in browser**; BFF holds it in memory/cache for request | **BFF backend only**: DB/Redis with session ID, encrypted at rest | **BFF backend only**, or claims embedded in session object | ✅ **HttpOnly, Secure, SameSite=Lax cookie**: `session_id=abc` on `app.example.com` | **HttpOnly cookie** on `idp.com` (enables SSO between BFF apps) |
 | SPA **with BFF** (private / incognito) | Same: never in browser | Same: BFF backend only | Same: BFF backend | Same: `session_id` cookie dies with private session | IdP cookie lives only for that private session |
@@ -856,7 +856,7 @@ sequenceDiagram
     participant IdPStore as IdP Store
 
     %% =====================================================================
-    %% FIRST LOGIN — APP1
+    %% FIRST LOGIN - APP1
     %% =====================================================================
 
     User ->> App1: Visit App1 (unauthenticated)
@@ -912,7 +912,7 @@ sequenceDiagram
 
 
     %% =====================================================================
-    %% SECOND LOGIN — APP2 (SSO)
+    %% SECOND LOGIN - APP2 (SSO)
     %% =====================================================================
 
     Note over User,IdpStore: SECOND LOGIN to APP2 with SSO
@@ -970,7 +970,7 @@ sequenceDiagram
 
 
     %% =====================================================================
-    %% RESULT — TWO APP SESSIONS, ONE IdP SESSION
+    %% RESULT - TWO APP SESSIONS, ONE IdP SESSION
     %% =====================================================================
 
     Note over User,App1: User has session_id=SESS1 for App1
@@ -1218,7 +1218,7 @@ graph TD
 - **Server-side Web App (SSR)**: The application's UI is generated and assembled into full HTML on the server before being sent to the browser. **Traditional Web Apps (MPAs)** are typically Server-side Web Apps.
 - **Client-side Web App (CSR)**: The server sends minimal HTML and JavaScript, and the UI is **dynamically generated in the browser** using that JavaScript. **SPAs** are typically Client-side Web Apps.
 
-| Feature                     | Traditional Web App (MPA)                                   | Single Page Application (SPA)                                            | Modern Hybrid (Next.js, Nuxt.js, Remix, SvelteKit…)                                                                 |
+| Feature                     | Traditional Web App (MPA)                                   | Single Page Application (SPA)                                            | Modern Hybrid (Next.js, Nuxt.js, Remix, SvelteKit...)                                                                 |
 |----------------------------|--------------------------------------------------------------|---------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|
 | Primary Rendering          | Server-Side Rendering (SSR)                                 | Client-Side Rendering (CSR)                                              | ✅SSR/SSG for initial request,<br/>then CSR after hydration (often with React/Vue/Svelte Server Components where applicable) |
 | Data Flow                  | Full HTML page <- Server                                     | HTML shell + JS bundle <- Server; data (JSON) via API                    | HTML + data pre-rendered on server (SSR/SSG) <- Server<br/>then JSON/API or loader-based data for client-side navigation |

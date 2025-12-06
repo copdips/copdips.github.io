@@ -16,7 +16,7 @@ Python is a dynamically typed language, meaning variable types don't require exp
 
 Type hints ([PEP 484](https://peps.python.org/pep-0484/)) have been a major focus of recent Python releases, and I was particularly intrigued when I heard about [Guido van Rossum's work on MyPy at Dropbox](https://blog.dropbox.com/topics/company/thank-you--guido), where the team needed robust tooling to migrate their codebase from Python 2 to Python 3.
 
-Today, type hints are [essential for modern Python development](https://mypy.readthedocs.io/en/stable/faq.html#would-my-project-benefit-from-static-typing). They significantly enhance IDE capabilities and AI-powered development tools by providing better code completion, static analysis, and error detection. This mirrors the evolution we've seen with TypeScript's adoption over traditional JavaScript—explicit typing leads to more reliable and maintainable code.
+Today, type hints are [essential for modern Python development](https://mypy.readthedocs.io/en/stable/faq.html#would-my-project-benefit-from-static-typing). They significantly enhance IDE capabilities and AI-powered development tools by providing better code completion, static analysis, and error detection. This mirrors the evolution we've seen with TypeScript's adoption over traditional JavaScript-explicit typing leads to more reliable and maintainable code.
 
 The majority of this post is based on [MyPy documentation](https://mypy.readthedocs.io/).
 
