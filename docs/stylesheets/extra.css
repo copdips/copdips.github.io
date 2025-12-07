@@ -108,11 +108,18 @@ a.md-nav__link:hover {
   padding: 1px 2px;
 }
 
+[data-md-color-scheme="slate"] a.md-nav__link:hover {
+  background-color: #a9b0b9;
+}
 .md-typeset a:hover {
   background-color: #dfe7f5;
   color:hotpink;
 }
 
+[data-md-color-scheme="slate"] .md-typeset a:hover {
+  background-color: #2d333b;
+  color: hotpink;
+}
 
 /* https://github.com/squidfunk/mkdocs-material/discussions/6974#discussioncomment-9083720 */
 
@@ -211,4 +218,23 @@ del.critic {
 /* 表格 */
 .md-typeset table:not([class]) {
   border-radius: var(--base-border-radius); /* 使用全局变量定义边框半径 */
+}
+
+Fix tab hover in dark mode [data-md-color-scheme="slate"] .tabbed-labels label:hover,
+[data-md-color-scheme="slate"] .tabbed-labels--linked label:hover,
+[data-md-color-scheme="slate"] .tabbed-set>.tabbed-labels label:hover {
+  background-color: #30363d !important;
+  color: #e6edf3 !important;
+}
+
+[data-md-color-scheme="slate"] .tabbed-labels label:hover a,
+[data-md-color-scheme="slate"] .tabbed-labels--linked label:hover a,
+[data-md-color-scheme="slate"] .md-typeset .tabbed-labels label:hover a {
+  background-color: #30363d !important;
+  color: #e6edf3 !important;
+}
+
+[data-md-color-scheme="slate"] .tabbed-set input:checked+label {
+  background-color: var(--md-accent-fg-color) !important;
+  color: var(--md-primary-bg-color) !important;
 }
