@@ -18,11 +18,11 @@ I own the `copdips.com` domain, and need to point it at several Vercel apps so t
 * direct https://app1.vercel.app, still works as before
 * direct https://app2.vercel.app, still works as before
 
-In case of redirect, if `app1.vercel.app` serves an HTML file that contains `<link href="/styles.css">`, the browser should load `apps.copdips.com/app1/styles.css`, but not  `apps.copdips.com/styles.css` (the root).
-
 This is a standard **Multi-Tenant Routing with Context Awareness** scenario. To serve both the root domain (`app1.vercel.app`) and the subpath version (`apps.copdips.com/app1`) from the same deployment, each app must become host-aware-effectively detecting whether the request comes through the main router or directly and adjusting asset URLs and links accordingly.
 
 <!-- more -->
+
+In case of redirect, if `app1.vercel.app` serves an HTML file that contains `<link href="/styles.css">`, the browser should load `apps.copdips.com/app1/styles.css`, but not  `apps.copdips.com/styles.css` (the root).
 
 ```mermaid
 graph TD
@@ -106,7 +106,27 @@ On the main domain (`apps.copdips.com`), configure `vercel.json`:
 
 2. For MkDocs Apps
 
-    If your MkDocs site uses `use_directory_urls: true` (hides `.html`), you need explicit `index.html` rewrites:
+    ??? tip "Setting up MkDocs for Vercel"
+        MkDocs projects run smoothly on Vercel too. For a reference implementation, check [fu-sen/Vercel-MkDocs](https://github.com/fu-sen/Vercel-MkDocs). The idea is simple: compile the static site so the output lives under `public/`, and Vercel serves that directory automatically.
+
+        Core steps:
+
+        1. in `package.json`, add a build script to build MkDocs site into `public/` in Vercel:
+            ```json title="package.json in MkDocs App" hl_lines="7"
+            {
+              "name": "mkdocs",
+              "version": "1.0.0",
+              "private": true,
+              "scripts": {
+                "dev": "mkdocs serve",
+                "build": "python3 -m mkdocs build -d public"
+              }
+            }
+            ```
+        2. Add `requirements.txt` to root with all the mkdocs python dependencies. Vercel will auto-install them.
+        3. In Vercel project settings, set **Framework Preset** to **Other** and keep the remaining options at their defaults.
+
+    When `use_directory_urls: true` is enabled in `mkdocs.yml` (so `.html` extensions stay hidden), add explicit `index.html` rewrites as shown below:
 
     ```json title="vercel.json in Router App for MkDocs"
     {
@@ -128,7 +148,7 @@ On the main domain (`apps.copdips.com`), configure `vercel.json`:
     }
     ```
 
-    If using `use_directory_urls: false` (shows `.html`), use the simple SPA config above-no special `index.html` handling needed.
+    If you keep `use_directory_urls: false` (so `.html` remains visible), the basic SPA rewrite setup is enough—no extra `index.html` rules required.
 
     **Note:** `trailingSlash: true` in the router's `vercel.json` works for both React and MkDocs apps.
 
@@ -139,8 +159,6 @@ On the main domain (`apps.copdips.com`), configure `vercel.json`:
 **Dynamic basename** tells React Router where the app lives, so internal links stay scoped correctly.
 
 **Result:** One deployment, multiple URLs. Simple.
-
----
 
 ## Real Example
 
