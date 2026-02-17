@@ -7,7 +7,7 @@ categories:
 comments: true
 date:
   created: 2021-06-12
-  updated: 2024-12-27
+  updated: 2025-02-21
 description: ''
 ---
 
@@ -783,3 +783,28 @@ after_yield_1
 
 [Each atomic operation should be in a separate fixture](https://docs.pytest.org/en/stable/how-to/fixtures.html#safe-fixture-structure) and separating it from other.
 But not a big fixutre with many teardown operations after `yield`.
+
+### no **init**.py files needed in test directories
+
+With `--import-mode=importlib`, pytest can discover test files without needing `__init__.py` files in the test directories. This allows for a cleaner directory structure and avoids issues with same-named test files in different directories.
+
+Without `--import-mode=importlib`, `tests/unit/entrypoints/test_health.py` and `tests/unit/services/test_health.py` both has the same module name `test_health`, which causes import conflicts. With `--import-mode=importlib`, pytest treats them as separate modules based on their file paths, allowing both to coexist without issues.
+
+If `ruff` is used for linting, we can add the following configuration in `pyproject.toml` to ignore the `INP001` error (implicit-namespace-package) for test files, since we don't need `__init__.py` files in test directories.
+
+```toml title="file pyproject.toml"
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = [
+    "S101", # asserts allowed in tests...
+    "INP001",  # implicit-namespace-package
+]
+
+[tool.pytest.ini_options]
+# --import-mode=importlib for same-named test files in different directories
+addopts = """
+    -s
+    -vv
+    --import-mode=importlib
+    """
+asyncio_mode = "auto"
+```
