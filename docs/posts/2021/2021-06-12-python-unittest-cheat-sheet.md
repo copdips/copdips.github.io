@@ -7,7 +7,7 @@ categories:
 comments: true
 date:
   created: 2021-06-12
-  updated: 2025-02-21
+  updated: 2025-02-27
 description: ''
 ---
 
@@ -54,6 +54,13 @@ addopts = """
 # env is enabled by pytest-env
 env = ["TESTING=yes"]
 ```
+
+## Bypass default config
+
+Normally pytest will discover config in `pyproject.toml` or `pytest.ini`, if you want to bypass these settings you can:
+
+- Bypass all the settings by pointing to a null config file: `pytest -c /dev/null...`
+- Bypass specific settings (for .e.g `addopts` and `testpaths`): `pytest -o addopts='' -o testpaths='tests'`
 
 ## asyncio support
 
@@ -139,7 +146,7 @@ addopts = """
     """
 ```
 
-PS: an alternatif: `pdbpp` (successor of `pytest-ipdb`) at: https://github.com/pdbpp/pdbpp
+PS: an alternatif: `pdbpp` (successor of `pytest-ipdb`) at: <https://github.com/pdbpp/pdbpp>
 
 ## export PYTHONBREAKPOINT=ipdb.set_trace
 
@@ -233,6 +240,75 @@ You can use `and`, `or`, and `not`.
 pytest -k "send_http" -v
 pytest -k "not send_http" -v
 pytest -k "send_http or quick" -v
+```
+
+## pytest -s
+
+pytest captures stdout/stderr (including print) by default, and only shows that captured output when it's useful, usually on failures.
+
+For e.g.,by default, we will only see the ouput of `setting up <function test_func2 at 0x785a4a11c180>` for `test_func2` only, not `test_func1`, even the print statement is in the setup_function, which is shared by both `test_func1` and `test_func2`. But with `pytest -s`, we will see the output for both tests.
+
+So by default, without `-s` (same for `--capture=no`), print() output is hidden unless pytest decides to show it (typically for failing tests).
+
+```python
+# content of test_module.py
+
+def setup_function(function):
+    print("setting up", function)
+
+def test_func1():
+    assert True
+
+def test_func2():
+    assert False
+```
+
+Without `-s`, which is the defaut Pytest capture mode, all the print outputs are caapptured by Pytest, and is only displayed for the failed test `test_func2` (lines 16-17):
+
+```bash title="pytest without -s" hl_lines="16-17" linenums="1"
+> pytest test_module.py
+
+collected 2 items
+
+test_module.py .F                                                                                  [100%]
+
+===================== FAILURES =====================
+_____________________ test_func2 ___________________
+
+    def test_func2():
+>       assert False
+E       assert False
+
+test_module.py:10: AssertionError
+------------------ Captured stdout setup -----------
+setting up <function test_func2 at 0x7d7ba8b38180>
+============= short test summary info ==============
+FAILED test_module.py::test_func2 - assert False
+=========== 1 failed, 1 passed in 0.21s ===
+```
+
+With `-s` print on both func1 and func2 are displayed (lines 5,-), as Pytest capture is disabled:
+
+```bash title="pytest -s" hl_lines="5-6" linenums="1"
+> pytest test_module.py -s
+
+collected 2 items
+
+test_module.py setting up <function test_func1 at 0x781fbcc1c0e0>
+.setting up <function test_func2 at 0x781fbcc1c180>
+F
+
+===================== FAILURES =====================
+_____________________ test_func2 ___________________
+
+    def test_func2():
+>       assert False
+E       assert False
+
+test_module.py:10: AssertionError
+============= short test summary info ==============
+FAILED test_module.py::test_func2 - assert False
+=========== 1 failed, 1 passed in 0.16s ============
 ```
 
 ## Failfast
@@ -404,9 +480,9 @@ def test_class_inventory_item():
 
 ### Monkeypatching functions or the property of a class
 
-https://docs.pytest.org/en/stable/monkeypatch.html#simple-example-monkeypatching-functions
+<https://docs.pytest.org/en/stable/monkeypatch.html#simple-example-monkeypatching-functions>
 
-Very similar to Python standard lib `unittest.mock.patch` decorator since Python 3, but `monkeypatch` is a fixture. Some people find `monkeypatch` is less effort to write than `unittest.mock.patch`. Ref. https://github.com/pytest-dev/pytest/issues/4576
+Very similar to Python standard lib `unittest.mock.patch` decorator since Python 3, but `monkeypatch` is a fixture. Some people find `monkeypatch` is less effort to write than `unittest.mock.patch`. Ref. <https://github.com/pytest-dev/pytest/issues/4576>
 
 To use the native `unittest.mock.patch`, use the [`wraps` parameter](https://stackoverflow.com/a/59460964/5095636):
 
@@ -583,7 +659,7 @@ pytest -n auto
 
 ## Ensure each pytest-xdist worker has its own database connection
 
-Based on `worker_id` fixture, possible values are: `gw0`, `gw1`, etc., and `master` if no parallel fixture: https://breadcrumbscollector.tech/posts/running-tests-in-parallel-with-pytest/#worker_id-fixture
+Based on `worker_id` fixture, possible values are: `gw0`, `gw1`, etc., and `master` if no parallel fixture: <https://breadcrumbscollector.tech/posts/running-tests-in-parallel-with-pytest/#worker_id-fixture>
 
 ## Showing the tests durations
 
@@ -616,7 +692,7 @@ mock.patch returns a mock object, a mock object can have whatever attributes and
 # using simple speccing, mock.asssert_called_with() is detected as an error
 >>> mock = Mock(spec=request.Request)
 >>> mock.asssert_called_with()
----------------------------------------------------------------------------
+------------
 AttributeError                            Traceback (most recent call last)
 ...
 AttributeError: Mock object has no attribute 'asssert_called_with'
@@ -761,7 +837,7 @@ def test_bar(fix_w_yield1, fix_w_yield2):
 
 ```bash title="pytest output"
 $ pytest demo_pytest.py
-============= test session starts ===========================
+============= test session starts ==
 platform linux -- Python 3.10.15, pytest-7.4.4, pluggy-1.5.0
 rootdir: /home/xiang/git/demo
 plugins: xdist-3.6.1, cov-3.0.0
@@ -776,7 +852,7 @@ test_bar
 .after_yield_2
 after_yield_1
 
-============== 1 passed in 0.01s ===========================
+============== 1 passed in 0.01s ==
 ```
 
 ### Safe teardowns
