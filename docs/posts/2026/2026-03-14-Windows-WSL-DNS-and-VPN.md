@@ -8,7 +8,7 @@ categories:
 comments: true
 date:
   created: 2026-03-14
-  updated: 2026-03-14
+  updated: 2026-03-15
 description: Windows 11 + WSL 2 DNS tunneling with OpenVPN split tunnel.
 ---
 
@@ -103,11 +103,13 @@ So if your main goal is "WSL should behave like Windows when the VPN connects," 
 
 A split tunnel means only company routes go through the VPN. Your normal internet traffic keeps using the local connection, while internal company names still resolve correctly.
 
+Here is the official OpenVPN Connect split-DNS documentation for mobile clients. The same DNS behavior also matches what this post relies on for Windows split DNS: https://openvpn.net/connect-docs/dns-servers-mobile-behavior.html
+
 ### OpenVPN Client Configuration
 
 Use a client config like this:
 
-```ovpn
+```bash title="part of split-tunnel.ovpn for OpenVPN Community version"
 # Prevent the VPN from replacing your normal internet route
 route-nopull
 
@@ -119,38 +121,52 @@ route 172.16.0.0     255.240.0.0     vpn_gateway
 dhcp-option DNS 10.0.0.1
 dhcp-option DNS 10.0.0.2
 
-# Set the VPN adapter's connection-specific DNS suffix
+# Send DNS queries for company domains to the above VPN DNS servers
 dhcp-option DOMAIN corp.example
-
-# Optional: if your company uses more than one internal suffix
-# dhcp-option DOMAIN-SEARCH eng.corp.example
-# dhcp-option DOMAIN-SEARCH corp.example
+dhcp-option DOMAIN internal.example
 ```
 
-The key line here is `route-nopull`. Without it, many company VPN profiles push a full-tunnel default route, often via `redirect-gateway`, which sends all traffic through the VPN gateway instead of only company traffic.
+### Option `route-nopull`
 
-That usually makes normal internet access slower and more fragile. Public traffic such as Microsoft Teams calls, public Docker image pulls, package downloads, and ordinary web browsing can all end up going through the corporate VPN path even though they do not need to.
+`redirect-gateway` is a common default company VPN config. It pushes a full-tunnel default route, which means it forces to send all traffic through the VPN gateway instead of only company traffic. But that usually makes normal internet access slower and more fragile. Public traffic such as Microsoft Teams calls, public Docker image pulls, package downloads, and ordinary web browsing can all end up going through the corporate VPN path even though they do not need to.
 
-With `route-nopull`, you keep the VPN tunnel itself, but you only add the private routes you actually want to send through it.
+`route-nopull` tells the client not to install server-pushed routes. That is what prevents the VPN from silently turning your split tunnel back into a full tunnel. In a typical split-tunnel setup, this already makes a pushed `redirect-gateway` ineffective, because the server can no longer replace your default route.
 
 !!! note "Manual routes required"
 
     The tradeoff is that you need to know the company private subnets in advance and add them manually. If you miss one, that internal network will stay on your normal local route and will not be reachable through the VPN.
+    Depending on your environment, you may be able to mitigate part of this caveat with domain-based routing instead of relying only on static subnet routes. OpenVPN Access Server documents this here: [Tutorial: Configure Domain Routing in Access Server](https://openvpn.net/as-docs/v3/tutorials/tutorial--domain-routing-in-access-server.html). This requires Access Server 3.1+ and DNS server proxy support.
 
-### Why `dhcp-option DOMAIN` Matters
+### Option `dhcp-option DNS` and `dhcp-option DOMAIN`
 
-`dhcp-option DOMAIN corp.example` does not create Windows NRPT rules by itself. What it does is set the VPN adapter's connection-specific DNS suffix.
+In split-tunnel mode, `dhcp-option DNS` and `dhcp-option DOMAIN` work together. `dhcp-option DNS 10.0.0.1` tells the client which VPN DNS server to use, and repeated `dhcp-option DOMAIN ...` lines tell the client which domain suffixes should be resolved through that VPN DNS server instead of your local DNS path.
+
+This is the OpenVPN Connect split-DNS behavior described in the official docs. In other words, a config like this:
+
+```bash
+dhcp-option DNS 10.0.0.1
+dhcp-option DNS 10.0.0.2
+
+dhcp-option DOMAIN corp.example
+dhcp-option DOMAIN internal.example
+```
+
+means "send DNS for `*.corp.example` and `*.internal.example` to `10.0.0.1` and `10.0.0.2`", all other DNS queries go through the local DNS path.
 
 That matters for two reasons:
 
-- short names like `app` can expand to `app.corp.example`;
-- with WSL DNS tunneling enabled, Windows DNS suffixes are propagated into WSL's `search` line, so Linux tools benefit from the same suffix.
+- `app.corp.example` can be resolved through the VPN DNS servers while unrelated public domains keep using your normal local DNS path;
+- if the first domain is also used as the primary DNS suffix on Windows, short names like `app` can expand to `app.corp.example`, and WSL DNS tunneling can inherit that suffix into WSL's `search` line.
 
-If your VPN already deploys NRPT rules, Windows will still use those rules for `*.corp.example`. The `DOMAIN` option complements NRPT by making suffix search consistent instead of leaving Windows and WSL to guess.
+In practice, repeated `dhcp-option DOMAIN` lines can be used for multiple company domains. That matches the OpenVPN Connect split-DNS behavior described in the official docs, where added domains cause only those domains to use the VPN DNS servers.
 
-This is also why `.local` is a poor example for corporate DNS. `.local` is typically treated as mDNS, not normal unicast DNS, so it can make a healthy VPN setup look broken.
+OpenVPN Access Server docs note that Windows clients might only use the first domain provided in DNS Resolution Zones as the DNS domain suffix. So if short-name expansion matters, put your primary suffix first and verify it with `ipconfig /all` or `Get-DnsClient`.
 
-### How to Find Your VPN DNS Servers
+OpenVPN Connect docs describe split-tunnel DNS this way: if a pushed VPN DNS server is present with no added domains, all DNS requests go to that VPN DNS server; if added domains are present, only DNS requests for those domains go there.
+
+This is also why `.local` is a poor example for corporate DNS. `.local` is typically treated as [mDNS](https://en.wikipedia.org/wiki/.local), not normal unicast DNS, so it can make a healthy VPN setup look broken.
+
+### How to find company VPN DNS servers
 
 To get the correct internal DNS IPs:
 
@@ -160,24 +176,29 @@ To get the correct internal DNS IPs:
 4. Copy the IPs listed under `DNS Servers`.
 5. Reuse those IPs in your split-tunnel config.
 
-### OpenVPN 2.7+ and `pull-filter`
+### OpenVPN Community Client 2.7 and `pull-filter`
 
-`route-nopull` tells the client not to install server-pushed routes and DHCP-style DNS options. That is what prevents the VPN from silently turning your split tunnel back into a full tunnel. In OpenVPN 2.7+, you may still see warnings because the server did push those directives and your client is overriding them.
+This section is about OpenVPN Community Client 2.7 (the latest version as of March 2026) config syntax, not OpenVPN Connect.
 
-`pull-filter ignore` is the cleanup step: it drops matching server-pushed directives before OpenVPN processes them. That keeps the logs quieter and makes it explicit that your local client config is authoritative.
+`pull-filter ignore` is the cleanup step: it drops matching server-pushed directives before OpenVPN processes them. In practice, that keeps the OpenVPN Community client logs quieter and makes it explicit that your local client config is authoritative.
 
-```ovpn
-pull-filter ignore "redirect-gateway"
-pull-filter ignore "route"
-pull-filter ignore "dhcp-option "
+```bash
+pull-filter ignore "dhcp-option"
+pull-filter ignore "route "
 ```
 
 Notes:
 
 - `pull-filter` uses prefix matching.
-- `pull-filter ignore "route"` drops pushed `route`, `route-gateway`, and other route-related directives.
-- `pull-filter ignore "dhcp-option "` drops pushed DNS and domain suffix options so they do not conflict with the values you set locally.
-- Only add these filters if the server really is pushing overlapping directives and you want the local client config to win.
+- With `route-nopull` in place, you normally do not need `pull-filter ignore "redirect-gateway"`, because `route-nopull` already prevents the pushed full-tunnel route from being installed. We still add `pull-filter ignore "dhcp-option"` and `pull-filter ignore "route "` because they stop the OpenVPN Community client from trying to process those pushed options and cluttering the logs with warnings such as:
+
+  ```bash
+  Options error: option 'dhcp-option' cannot be used in this context ([PUSH-OPTIONS])
+  Options error: option 'route' cannot be used in this context ([PUSH-OPTIONS])
+  ```
+
+!!! warning "pay attention to trailing whitespace in `"route "`"
+    Keep the trailing space in `pull-filter ignore "route "`. If you change it to `pull-filter ignore "route"`, it also matches pushed options such as `route-gateway`, which can break manual routes that rely on `vpn_gateway`.
 
 ## Verification
 
@@ -189,11 +210,24 @@ grep -E '^(nameserver|search)' /etc/resolv.conf
 # search home.lan corp.example
 ```
 
+If you use `systemd-resolved`, `/etc/resolv.conf` may instead point to the local stub at `127.0.0.53`. In that case, check the effective upstream DNS server:
+
+```bash
+❯ resolvectl status | grep -A 5 'Global'
+Global
+           Protocols: -LLMNR -mDNS -DNSOverTLS DNSSEC=no/unsupported
+    resolv.conf mode: foreign
+         DNS Servers: 10.255.255.254
+Fallback DNS Servers: 1.1.1.1
+```
+
+That means Linux apps talk to the local stub first, but the real upstream is still WSL's Windows-side DNS tunneling IP (`10.255.255.254`).
+
 Then test name resolution and routing:
 
 - `getent hosts app.corp.example`: confirms that a fully qualified internal name resolves.
 - `getent hosts app`: if you rely on short names, this confirms that the DNS suffix search list is working.
 - `nc -zv app.corp.example 443`: confirms both DNS resolution and reachability over the VPN, if the target app is actually listening on TCP port 443.
-- `curl ifconfig.me`: should still show your normal local public IP, proving that internet traffic is not being forced through the VPN.
+- `curl ifconfig.me`: can be a quick sanity check that public traffic is not being forced through the VPN, but verify that the resolved `ifconfig.me` IP is not itself inside one of your VPN-routed prefixes.
 
-If `/etc/resolv.conf` points at `127.0.0.53` or a manually configured public DNS server instead of `10.255.255.254`, you are not using the modern WSL DNS tunneling path described above.
+If `/etc/resolv.conf` points directly at `10.255.255.254`, you are using the simple WSL DNS tunneling layout. If it points at `127.0.0.53` but `resolvectl status` still shows `10.255.255.254` upstream, you are still using WSL DNS tunneling underneath a local `systemd-resolved` stub.
