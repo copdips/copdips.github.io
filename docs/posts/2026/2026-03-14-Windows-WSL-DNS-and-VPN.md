@@ -113,6 +113,10 @@ Use a client config like this:
 # Prevent the VPN from replacing your normal internet route
 route-nopull
 
+# Keep the active VPN server endpoint on the local internet path
+# this route ensure you can contact the vpn gateway
+route remote_host 255.255.255.255 net_gateway
+
 # Send only company networks through the VPN
 route 10.0.0.0       255.0.0.0       vpn_gateway
 route 172.16.0.0     255.240.0.0     vpn_gateway
@@ -136,6 +140,28 @@ dhcp-option DOMAIN internal.example
 
     The tradeoff is that you need to know the company private subnets in advance and add them manually. If you miss one, that internal network will stay on your normal local route and will not be reachable through the VPN.
     Depending on your environment, you may be able to mitigate part of this caveat with domain-based routing instead of relying only on static subnet routes. OpenVPN Access Server documents this here: [Tutorial: Configure Domain Routing in Access Server](https://openvpn.net/as-docs/v3/tutorials/tutorial--domain-routing-in-access-server.html). This requires Access Server 3.1+ and DNS server proxy support.
+    One more caveat: if one of your company public subnets also contains the VPN server's own public IP, add `route remote_host 255.255.255.255 net_gateway`. That keeps the active VPN endpoint on your local internet route. Without it, a broad route such as `188.65.120.0/21 -> vpn_gateway` can accidentally capture the VPN server itself, send the control channel back into the tunnel, and make the connection flap or die after it comes up.
+
+### Why `route remote_host ... net_gateway` matters
+
+`remote_host` is the active `remote` endpoint IP that OpenVPN is currently connected to. In client mode, OpenVPN updates it to the selected server address, so:
+
+```bash
+route remote_host 255.255.255.255 net_gateway
+```
+
+creates a host route for only that one VPN server IP through your normal local gateway.
+
+That is important when the VPN server IP lives inside a broader company subnet that you also need to send through the tunnel. For example, this combination is valid:
+
+```text
+188.65.121.190/32 -> 192.168.111.1
+188.65.120.0/21   -> 192.168.200.1
+```
+
+The `/32` route is more specific, so Windows keeps the VPN server itself on Wi-Fi while the rest of the `188.65.120.0/21` company range still goes through the VPN.
+
+Do not solve that by sending the whole public company block to `net_gateway`, unless you really want all of it outside the tunnel. Usually you only want the VPN server endpoint itself to stay outside.
 
 ### Option `dhcp-option DNS` and `dhcp-option DOMAIN`
 
