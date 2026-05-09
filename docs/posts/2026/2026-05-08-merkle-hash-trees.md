@@ -6,6 +6,7 @@ categories:
 comments: true
 date:
   created: 2026-05-08
+  updated: 2026-05-09
 description: A summary of the Medium post on Merkle Trees, a core data structure behind blockchain, Git, and distributed systems.
 ---
 
@@ -45,17 +46,20 @@ A [Merkle tree](https://en.wikipedia.org/wiki/Merkle_tree) (also called a **hash
 **Legend:** 📦=Data Block　🟢=Leaf Hash (newly created)
 
 ```
-   📦 Data_A    📦 Data_B    📦 Data_C    📦 Data_D
+   🟢 Hash_A    🟢 Hash_B    🟢 Hash_C    🟢 Hash_D
+       ▲            ▲            ▲            ▲
        │            │            │            │
     SHA256       SHA256       SHA256       SHA256
+       ▲            ▲            ▲            ▲
        │            │            │            │
-       ▼            ▼            ▼            ▼
-   🟢 Hash_A    🟢 Hash_B    🟢 Hash_C    🟢 Hash_D
+   📦 Data_A    📦 Data_B    📦 Data_C    📦 Data_D
 ```
 
 ### Step 2: Pair leaves and combine into branches
 
 **Legend:** 🟢=Leaf Hash　🔷=Branch Hash (newly created)
+
+> 💡 **Order matters.** `SHA256(Hash_A ‖ Hash_B)` is not the same as `SHA256(Hash_B ‖ Hash_A)`, so changing the order of data blocks changes the Merkle root.
 
 ```
               🔷 Branch_AB              🔷 Branch_CD
@@ -169,6 +173,19 @@ Root_Calculated   = SHA256(Branch_AB || Branch_CD_local)
 ## Handling an Odd Number of Blocks
 
 When the leaf count is odd, **duplicate the last block** to make it even, then continue building.
+
+This is one common convention for binary Merkle trees, including Bitcoin-style examples. Under this convention, if you append a new block:
+
+- if the previous leaf count was **even**, the new last block is temporarily duplicated
+- if the previous leaf count was **odd**, the previously duplicated last block is replaced by the new real block
+
+Example:
+
+```text
+3 blocks:  A  B  C      -> duplicate C  -> A  B  C  C
+4 blocks:  A  B  C  D   -> already even -> A  B  C  D
+5 blocks:  A  B  C  D  E -> duplicate E -> A  B  C  D  E  E
+```
 
 **Legend:** 📦=Data　🟢=Leaf Hash　🔷=Branch　🌐=Root　♻️=Duplicated Node
 
