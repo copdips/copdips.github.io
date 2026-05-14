@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="640" viewBox="0 0 820 640" role="img" aria-labelledby="title desc">
+  <title id="title">Consistent hashing ring</title>
+  <desc id="desc">A consistent hashing ring with Node A, Node B, Node C, and Node D. A key named user_42 sits between Node B and Node C, and the first node clockwise is Node C, so Node C owns the key.</desc>
+
+  <defs>
+    <marker id="arrowhead" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L7,3.5 L0,7 z" fill="#d97706"/>
+    </marker>
+    <style>
+      .title { font: 700 24px "Segoe UI", Arial, sans-serif; fill: #0f172a; }
+      .body { font: 16px "Segoe UI", Arial, sans-serif; fill: #334155; }
+      .label { font: 600 17px "Segoe UI", Arial, sans-serif; fill: #0f172a; }
+      .mono { font: 14px Consolas, "SFMono-Regular", monospace; fill: #475569; }
+      .muted { font: 14px "Segoe UI", Arial, sans-serif; fill: #64748b; }
+    </style>
+  </defs>
+
+  <rect x="10" y="10" width="800" height="620" rx="24" fill="#fffdf8" stroke="#e2e8f0" stroke-width="2"/>
+
+  <text x="40" y="55" class="title">Consistent Hash Ring</text>
+  <text x="40" y="84" class="body">Servers and keys share the same hash space. The first node clockwise from the key owns that key.</text>
+
+  <circle cx="315" cy="330" r="190" fill="none" stroke="#64748b" stroke-width="6"/>
+  <text x="253" y="318" class="label">Same hash space</text>
+  <text x="250" y="342" class="muted">0 and 2^160 - 1 wrap around</text>
+
+  <circle cx="125" cy="330" r="7" fill="#94a3b8"/>
+  <line x1="118" y1="330" x2="112" y2="330" stroke="#94a3b8" stroke-width="2"/>
+  <rect x="28" y="312" width="84" height="36" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="40" y="335" class="mono">position 0</text>
+
+  <path d="M 494 294 A 186 186 0 0 1 489 382" fill="none" stroke="#d97706" stroke-width="5" stroke-linecap="round" marker-end="url(#arrowhead)"/>
+  <text x="540" y="332" class="label" fill="#b45309">clockwise</text>
+
+  <circle cx="188" cy="188" r="10" fill="#2563eb"/>
+  <line x1="188" y1="188" x2="160" y2="168" stroke="#94a3b8" stroke-width="2"/>
+  <rect x="42" y="128" width="120" height="58" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="56" y="152" class="label">Node A</text>
+  <text x="56" y="175" class="mono">position 50</text>
+
+  <circle cx="430" cy="167" r="10" fill="#2563eb"/>
+  <line x1="430" y1="167" x2="474" y2="150" stroke="#94a3b8" stroke-width="2"/>
+  <rect x="476" y="115" width="130" height="58" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="490" y="139" class="label">Node B</text>
+  <text x="490" y="162" class="mono">position 130</text>
+
+  <polygon points="496,281 504,289 496,297 488,289" fill="#f59e0b" stroke="#c2410c" stroke-width="1.5"/>
+  <circle cx="496" cy="289" r="16" fill="none" stroke="#fdba74" stroke-width="2"/>
+  <line x1="506" y1="285" x2="548" y2="265" stroke="#f59e0b" stroke-width="2"/>
+  <rect x="550" y="232" width="170" height="68" rx="10" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
+  <text x="564" y="257" class="label">Key: user_42</text>
+  <text x="564" y="280" class="mono">position 175</text>
+
+  <circle cx="488" cy="391" r="12" fill="#16a34a"/>
+  <line x1="500" y1="391" x2="546" y2="391" stroke="#16a34a" stroke-width="2"/>
+  <rect x="548" y="356" width="180" height="78" rx="10" fill="#ecfdf5" stroke="#86efac" stroke-width="1.5"/>
+  <text x="562" y="381" class="label">Node C</text>
+  <text x="562" y="404" class="mono">position 210</text>
+  <text x="562" y="424" class="body">first node clockwise</text>
+
+  <circle cx="235" cy="494" r="10" fill="#2563eb"/>
+  <line x1="235" y1="494" x2="205" y2="515" stroke="#94a3b8" stroke-width="2"/>
+  <rect x="54" y="494" width="140" height="58" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="68" y="518" class="label">Node D</text>
+  <text x="68" y="541" class="mono">position 280</text>
+
+  <path d="M 500 391 C 540 391 555 425 582 455" fill="none" stroke="#16a34a" stroke-width="3"/>
+  <rect x="582" y="438" width="154" height="34" rx="17" fill="#ecfdf5" stroke="#86efac" stroke-width="1.5"/>
+  <text x="598" y="460" class="label" fill="#166534">Owner = Node C</text>
+
+  <g transform="translate(70 586)">
+    <circle cx="0" cy="0" r="7" fill="#2563eb"/>
+    <text x="16" y="5" class="muted">physical node</text>
+
+    <polygon points="160,-7 167,0 160,7 153,0" fill="#f59e0b" stroke="#c2410c" stroke-width="1.2"/>
+    <text x="176" y="5" class="muted">key</text>
+
+    <circle cx="252" cy="0" r="7" fill="#16a34a"/>
+    <text x="268" y="5" class="muted">owner node</text>
+  </g>
+</svg>
