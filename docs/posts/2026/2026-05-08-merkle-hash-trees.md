@@ -12,13 +12,14 @@ description: A summary of the Medium post on Merkle Trees, a core data structure
 
 # Merkle Trees (Hash Trees)
 
-This post is an AI-generated summary of the Medium article [Advanced Algorithms Every Senior Developer Must Know: Part 1 — Merkle Trees](https://medium.com/@mr.sourav.raj/advanced-algorithms-every-senior-developer-must-know-part-1-merkle-trees-c7337f990607). It is intended as a concise reference to the key ideas. The original article includes more detail, explanations, and examples, and is worth reading for full context.
-
-<!-- more -->
+This post is an AI-generated summary of the Medium article [Advanced Algorithms Every Senior Developer Must Know: Part 1 — Merkle Trees](https://medium.com/@mr.sourav.raj/advanced-algorithms-every-senior-developer-must-know-part-1-merkle-trees-c7337f990607) from Sourav Chaurasia. It is intended as a concise reference to the key ideas.
 
 ## What Is a Merkle Tree?
 
-A [Merkle tree](https://en.wikipedia.org/wiki/Merkle_tree) (also called a **hash tree**) is a binary tree structure invented by [Ralph Merkle](https://en.wikipedia.org/wiki/Ralph_Merkle) in 1979. It recursively hashes and combines data blocks to produce a single **root hash**, which serves as a cryptographic fingerprint of the entire dataset.
+A [Merkle tree](https://en.wikipedia.org/wiki/Merkle_tree) (also called a **hash tree**) is a binary tree structure invented by [Ralph Merkle](https://en.wikipedia.org/wiki/Ralph_Merkle) in 1979. It recursively hashes and combines data blocks to produce a single **root hash**, which serves as a cryptographic fingerprint of the entire dataset. It is used in many systems like Bitcoin, Git, IPFS, and Cassandra for efficient data verification and integrity.
+
+<!-- more -->
+
 
 **Legend:** 📦=Data Block　🟢=Leaf Hash　🔷=Branch Hash　🌐=Root Hash
 
@@ -400,6 +401,8 @@ Merkle trees aren't just theory — they power some of the most-used systems on 
 ```
 
 ### 🌐 IPFS / BitTorrent (P2P Networks) — Chunk Verification
+
+!!! note "IPFS stands for "InterPlanetary File System" — a distributed file storage protocol. BitTorrent is a popular P2P file sharing protocol. Both use Merkle trees to verify the integrity of file chunks downloaded from untrusted peers."
 
 **Problem:** You're downloading a 4 GB file from random untrusted peers. How do you detect if any peer sent corrupted or malicious chunks?
 
