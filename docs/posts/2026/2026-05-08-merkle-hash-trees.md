@@ -328,7 +328,7 @@ Merkle trees aren't just theory — they power some of the most-used systems on 
    Instead of:       full 1 MB block (~99.96% bandwidth saved)
 ```
 
-### 📚 Git (Version Control) — Commit Integrity
+### 📚 Git (Version Control) — Commit Integrity sdfsdfsdf
 
 **Problem:** How does Git detect if even a single byte of any file in your repo has been tampered with — across millions of commits?
 
