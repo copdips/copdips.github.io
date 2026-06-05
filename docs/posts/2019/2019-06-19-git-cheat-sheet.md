@@ -6,7 +6,7 @@ categories:
 comments: true
 date:
   created: 2019-06-19
-  updated: 2025-07-12
+  updated: 2026-06-05
 ---
 
 # Git Cheat Sheet
@@ -39,15 +39,16 @@ git config --global alias.rum pull --rebase upstream main
 git config --global alias.rud pull --rebase upstream dev
 git config --global alias.rom pull --rebase origin main
 git config --global alias.rod pull --rebase origin dev
+git config --global alias.sync-pr '!git fetch && git reset --hard @{u}'
 ```
 
 ## ~/.bashrc
 
 ```bash
-alias gitpush='git ci -am "$GIT_MESSAGE" ; git push origin $GIT_BRANCH'
-alias gitamendpush='git add . ; git amend ; git push origin $GIT_BRANCH -f'
-alias gitrebasemain='git cm ; git rom ; git fetch origin --prune ; if [[ $GIT_BRANCH != "main" ]]; then git br -d $GIT_BRANCH; fi'
-alias gitrebasedev='git cd ; git rod ; git fetch origin --prune ; if [[ $GIT_BRANCH != "dev" ]] ; then git br -d $GIT_BRANCH ; fi'
+alias gitpush='git ci -am "$gitmsg" ; git push origin $gitbranch'
+alias gitamendpush='git add . ; git amend ; git push origin $gitbranch -f'
+alias gitrebasemain='git cm ; git rom ; git fetch origin --prune ; if [[ $gitbranch != "main" ]]; then git br -d $gitbranch; fi'
+alias gitrebasedev='git cd ; git rod ; git fetch origin --prune ; if [[ $gitbranch != "dev" ]] ; then git br -d $gitbranch ; fi'
 ```
 
 ## Restore
@@ -381,7 +382,7 @@ echo $all_folders | tr ' ' '\n' | while read -r folder ; \
 
 ## bash-git-prompt tweaks
 
-[Some tweaks](../2024/2024-01-05-bash-git-prompt-tweaks.md) I made to [bash-git-prompt](https://github.com/magicmonty/bash-git-prompt). dynamic Python venv path, new var `GIT_MESSAGE`, etc.
+[Some tweaks](../2024/2024-01-05-bash-git-prompt-tweaks.md) I made to [bash-git-prompt](https://github.com/magicmonty/bash-git-prompt). dynamic Python venv path, new var `gitmsg`, etc.
 
 ## My gitconfig
 
