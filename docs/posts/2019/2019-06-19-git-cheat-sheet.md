@@ -6,7 +6,7 @@ categories:
 comments: true
 date:
   created: 2019-06-19
-  updated: 2026-06-05
+  updated: 2026-08-10
 ---
 
 # Git Cheat Sheet
@@ -47,8 +47,8 @@ git config --global alias.sync-pr '!git fetch && git reset --hard @{u}'
 ```bash
 alias gitpush='git ci -am "$gitmsg" ; git push origin $gitbranch'
 alias gitamendpush='git add . ; git amend ; git push origin $gitbranch -f'
-alias gitrebasemain='git cm ; git rom ; git fetch origin --prune ; if [[ $gitbranch != "main" ]]; then git br -d $gitbranch; fi'
-alias gitrebasedev='git cd ; git rod ; git fetch origin --prune ; if [[ $gitbranch != "dev" ]] ; then git br -d $gitbranch ; fi'
+alias gitrebasemain='git cm ; git rom ; git fetch origin --prune ; if [[ -n "$gitbranch" && "$gitbranch" != "main" ]]; then git diff --quiet "$gitbranch" main && git br -D "$gitbranch" || echo "keep $gitbranch: content differs from main, please confirm"; fi'
+alias gitrebasedev='git cd ; git rod ; git fetch origin --prune ; if [[ -n "$gitbranch" && "$gitbranch" != "dev" ]]; then git diff --quiet "$gitbranch" dev && git br -D "$gitbranch" || echo "keep $gitbranch: content differs from dev, please confirm"; fi'
 ```
 
 ## Restore
