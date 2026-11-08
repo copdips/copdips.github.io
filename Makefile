@@ -20,13 +20,13 @@ install: venv
 	uv sync --frozen --all-extras --all-groups --verbose
 
 build:
-	@echo "${BOLD}${YELLOW}mkdocs build:${NORMAL}"
-# ! mkdocs build needs to get tools folder as module
-	uv run mkdocs build -s
+	@echo "${BOLD}${YELLOW}zensical build:${NORMAL}"
+# ! zensical build needs to get tools folder as module
+	uv run zensical build -s
 
 run:
-	@echo "${BOLD}${YELLOW}mkdocs serve:${NORMAL}"
-	uv run mkdocs serve --dirty
+	@echo "${BOLD}${YELLOW}zensical serve:${NORMAL}"
+	uv run zensical serve
 
 reload-oauth:
 	@echo "${BOLD}${YELLOW}reload oauth animation assets:${NORMAL}"
@@ -43,4 +43,4 @@ update-venv:
 ci-install:
 	@echo "${BOLD}${YELLOW}ci-install:${NORMAL}"
 	uv sync --frozen --verbose
-	uv pip show mkdocs
+	uv pip show zensical

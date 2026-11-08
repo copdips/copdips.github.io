@@ -113,12 +113,9 @@ jobs:
 
       - name: Build documentation
         run: |
-          uv run mkdocs --version
-          # https://github.com/facelessuser/pymdown-extensions/issues/2240#issuecomment-1819117598
-          uv run python -m mkdocs build -s
+          uv run zensical --version
+          uv run zensical build -s
           cp ads.txt ./site/
-        env:
-          MKDOCS_GIT_COMMITTERS_APIKEY: ${{ secrets.GH_TOKEN_FOR_GIT_COMMITTERS }}
 
       # - name: Adjust permissions
       #   run: |
