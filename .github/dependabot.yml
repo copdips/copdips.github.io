@@ -1,9 +1,11 @@
 version: 2
 
 updates:
-  - package-ecosystem: pip
-    # We only want to bump versions of packages in case of security updates, as
-    # we want to keep maximum compatibility - see https://t.ly/INSR_
+  - package-ecosystem: uv
+    # Security updates only (limit 0 disables version updates) to keep maximum
+    # compatibility - see https://t.ly/INSR_. Use the uv ecosystem, not pip: it
+    # updates pyproject.toml and uv.lock together, so `uv sync --frozen` in CI
+    # stays consistent.
     open-pull-requests-limit: 0
     directory: "/"
     labels: []
