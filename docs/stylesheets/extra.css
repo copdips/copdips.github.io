@@ -96,6 +96,14 @@ h1, h2 {
   font-weight: bold;
 }
 
+/* header background: tinted glass instead of plain page color, keep the theme blur */
+.md-header {
+  background-color: hsla(var(--md-hue), 45%, 97%, 0.85);
+}
+[data-md-color-scheme="slate"] .md-header {
+  background-color: hsla(var(--md-hue), 30%, 9%, 0.85);
+}
+
 /* navigation */
 .md-nav__link--active {
   font-weight: bold;
