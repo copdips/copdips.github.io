@@ -23,15 +23,14 @@ edit source -> diff -> apply -> push -> status
 
 ## The Flow
 
-The global agent rules:
-
 ```mermaid
+%%{init: {"flowchart": {"wrappingWidth": 400}}}%%
 flowchart TD
     Remote["Remote<br/>copdips/dotfiles"]
     Source["Source<br/>~/.local/share/chezmoi/<br/>dot_agents/private_AGENTS.md"]
 
     subgraph Destination["Destination"]
-        direction LR
+        direction BT
         Agents["~/.agents/AGENTS.md"]
         Claude["~/.claude/CLAUDE.md"]
         Codex["~/.codex/AGENTS.md"]
