@@ -15,24 +15,29 @@
 
 
 /* inline code */
-.md-typeset p > code {
+.md-typeset :not(pre) > code {
   background-color: #ececef;
   color: #000000;
 }
-[data-md-color-scheme="slate"] .md-typeset p > code {
+[data-md-color-scheme="slate"] .md-typeset :not(pre) > code {
   background-color: #525252;
   color: #c9c6c6;
 }
 @media (prefers-color-scheme: dark) {
   /* inline code */
-  .md-typeset p > code {
+  .md-typeset :not(pre) > code {
     background-color: #ececef;
     color: #000000;
   }
-  [data-md-color-scheme="slate"] .md-typeset p > code {
+  [data-md-color-scheme="slate"] .md-typeset :not(pre) > code {
     background-color: #525252;
     color: #c9c6c6;
   }
+}
+
+/* hl_lines 高亮行: 主题默认 10% alpha 在深色下几乎看不清, 提到 30% */
+[data-md-color-scheme="slate"] {
+  --md-code-hl-color--light: #2977ff4d;
 }
 
 /* https://blog.ktz.me/making-mkdocs-tables-look-like-github-markdown-tables/ */
@@ -46,7 +51,8 @@ th, td {
 }
 
 .md-typeset__table {
-  line-height: 1;
+  /* 1 会让换行后的 inline code 背景框压到相邻行，1.5 与 GitHub 表格一致 */
+  line-height: 1.5;
 }
 
 .md-typeset__table table:not([class]) {
@@ -105,7 +111,6 @@ h1, h2 {
 a.md-nav__link:hover {
   background-color: #dfe7f5;
   border-radius: 7px;
-  padding: 1px 2px;
 }
 
 [data-md-color-scheme="slate"] a.md-nav__link:hover {
@@ -237,4 +242,15 @@ Fix tab hover in dark mode [data-md-color-scheme="slate"] .tabbed-labels label:h
 [data-md-color-scheme="slate"] .tabbed-set input:checked+label {
   background-color: var(--md-accent-fg-color) !important;
   color: var(--md-primary-bg-color) !important;
+}
+
+/* 整页 viewport 滚动条: light 模式下浏览器按 color-scheme: light 画纯白轨道,
+   贴在白色页面上几乎看不见, 这里给轨道和滑块显式配色 (dark 模式保持浏览器默认) */
+html:has(body[data-md-color-scheme="default"]) {
+  scrollbar-color: var(--md-default-fg-color--lighter) var(--md-default-fg-color--lightest);
+}
+
+/* 侧栏作者名是链接, 主题给 .md-typeset a 的默认下划线在这里显得突兀, 去掉 */
+.md-post__authors a {
+  text-decoration: none;
 }

@@ -103,7 +103,7 @@ sequenceDiagram
 
 ### Deprecated Authorization Code Flow without PKCE (Public Client) for SPA
 
-Same as below [Authorization Code Flow + PKCE (Public Client) for SPA](#authorization-code-flow--pkce-public-client-for-spa), but **without** `code_verifier` provided by PKCE (Proof Key for Code Exchange).
+Same as below [Authorization Code Flow + PKCE (Public Client) for SPA](#authorization-code-flow-pkce-public-client-for-spa), but **without** `code_verifier` provided by PKCE (Proof Key for Code Exchange).
 
 Because the Authorization Code Flow hands the code through the unsecure browser's front channel, an untrusted path, an attacker who intercepts that code can replay it at `/token` and steal tokens ([Authorization Code Injection](https://www.thehacker.recipes/web/config/identity-and-access-management/oauth-2.0#authorization-code-injection)). PKCE prevents this: the SPA generates a `code_verifier`, keeps it secret, and later submits it over the secure back channel, enabling the Identity Provider to confirm that the caller exchanging the code (by `POST /token`) is the same client that initiated `GET /authorize`.
 

@@ -41,13 +41,8 @@ flowchart RL
 
     Source -- "chezmoi git push" --> Remote
     Remote -- "chezmoi update<br/>= git pull + apply" --> Source
-    Source -- "chezmoi edit" --> EditLoop
-    EditLoop --> Source
+    Source -- "chezmoi edit" --> Source
     Source -- "chezmoi apply" --> Destination
-
-    %% an invisible node anchors the edit loop, so it stays short
-    EditLoop[" "]
-    style EditLoop fill:transparent,stroke:transparent,color:transparent
 
     classDef entry fill:#dcfce7,stroke:#15803d,color:#14532d,stroke-width:1px;
     classDef state fill:#dbeafe,stroke:#2563eb,color:#1e3a8a,stroke-width:1px;

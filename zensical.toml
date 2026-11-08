@@ -1,0 +1,241 @@
+[project]
+site_name = "A code to remember"
+site_author = "Xiang ZHU"
+site_url = "https://copdips.com"
+
+repo_name = "copdips/copdips.github.io"
+repo_url = "https://github.com/copdips/copdips.github.io"
+edit_uri = "edit/main/docs/"
+
+use_directory_urls = false
+watch = ["tools"]
+
+extra_css = [
+  "stylesheets/extra.css",
+  "stylesheets/oauth-evolution.css",
+]
+extra_javascript = [
+  "https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js",
+  "javascripts/tablesort.js",
+  "javascripts/oauth-evolution.js",
+]
+
+[project.extra.analytics]
+provider = "google"
+property = "G-L9KPHRQNQN"
+
+[project.extra.consent]
+title = "Cookie consent"
+description = """We use cookies to recognize your repeated visits and preferences, as well
+as to measure the effectiveness of our documentation and whether users
+find what they're searching for. With your consent, you're helping us to
+make our documentation better."""
+
+[[project.extra.social]]
+icon = "fontawesome/brands/github"
+link = "https://github.com/copdips"
+
+[[project.extra.social]]
+icon = "fontawesome/brands/linkedin"
+link = "https://www.linkedin.com/in/xiang-zhu-13769311/"
+
+[[project.extra.social]]
+icon = "material/email"
+link = "mailto:xiang.zhu@outlook.com"
+
+# ---------------------------------------------------------------------------
+# Markdown
+# ---------------------------------------------------------------------------
+
+[project.markdown_extensions]
+admonition = {}
+attr_list = {}
+md_in_html = {}
+pymdownx.caret = {}
+pymdownx.details = {}
+pymdownx.inlinehilite = {}
+pymdownx.magiclink = {}
+pymdownx.mark = {}
+pymdownx.tilde = {}
+tables = {}
+toc.permalink = "#"
+
+pymdownx.highlight.anchor_linenums = true
+pymdownx.snippets.base_path = "docs"
+pymdownx.snippets.check_paths = true
+
+pymdownx.superfences.custom_fences = [
+  { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },
+  { name = "md-render", class = "md-render", format = "tools.pymdownx_md_render.md_sub_render" },
+  { name = "csv-path", class = "csv-path", format = "tools.pymdownx_md_render.md_csv_path_render" },
+]
+
+pymdownx.tabbed.alternate_style = true
+pymdownx.tabbed.slugify.object = "pymdownx.slugs.slugify"
+pymdownx.tabbed.slugify.kwds.case = "lower"
+
+# ---------------------------------------------------------------------------
+# Plugins
+# ---------------------------------------------------------------------------
+
+[project.plugins.blog]
+blog_dir = "."
+post_url_date_format = "yyyy/MM"
+categories_allowed = [
+  "ai",
+  "ai-coding",
+  "algo",
+  "api",
+  "ast",
+  "async",
+  "auth",
+  "azure",
+  "backup",
+  "cache",
+  "certificate",
+  "cicd",
+  "container",
+  "database",
+  "databricks",
+  "datetime",
+  "debug",
+  "docker",
+  "elastic",
+  "email",
+  "encoding",
+  "file",
+  "flask",
+  "frontend",
+  "git",
+  "github",
+  "gitlab",
+  "jekyll",
+  "linter",
+  "linux",
+  "markdown",
+  "mcp",
+  "messaging",
+  "migration",
+  "mkdocs",
+  "multiprocessing",
+  "multithreading",
+  "network",
+  "ollama",
+  "package",
+  "pandas",
+  "performance",
+  "pip",
+  "powershell",
+  "process",
+  "proxy",
+  "python",
+  "quart",
+  "redis",
+  "scheduling",
+  "shell",
+  "sonar",
+  "spark",
+  "sqlalchemy",
+  "ssh",
+  "storage",
+  "ubuntu",
+  "unittest",
+  "vault",
+  "video",
+  "vmware",
+  "vscode",
+  "web",
+]
+
+[project.plugins.rss]
+categories = ["categories", "tags"]
+match_path = "posts/.*"
+comments_path = "#__comments"
+
+[project.plugins.rss.date_from_meta]
+as_creation = "date.created"
+
+[project.plugins.search]
+separator = "[\\s\u200b\\-_,:!=\\[\\]()\"`/]+|\\.(?!\\d)|&[lg]t;|(?!\\b)(?=[A-Z][a-z])"
+
+[project.plugins.llmstxt]
+markdown_description = "Notes on Python, Linux, CI/CD, containers, databases and web development."
+full_output = "llms-full.txt"
+
+[project.plugins.llmstxt.sections]
+Pages = ["*.md"]
+
+[project.plugins.autorefs]
+[project.plugins.tags]
+[project.plugins.mkdocs-video]
+[project.plugins.glightbox]
+[project.plugins.social]
+[project.plugins.privacy]
+# giscus derives its widget origin from document.currentScript.src. Localizing
+# client.js makes the widget iframe resolve against this site and 404, so keep
+# giscus external.
+assets_exclude = ["giscus.app/*"]
+
+[project.plugins.optimize]
+# PNG optimization needs pngquant on PATH (sudo apt install pngquant);
+# CI installs it in the "Install os dependencies" step.
+optimize_png = true
+
+[project.plugins.offline]
+[project.plugins.redirects]
+
+[project.plugins.minify]
+minify_html = true
+
+# ---------------------------------------------------------------------------
+# Theme
+# ---------------------------------------------------------------------------
+
+[project.theme]
+custom_dir = "docs/overrides"
+favicon = "assets/favicon.ico"
+logo = "assets/logo.png"
+variant = "modern"
+features = [
+  "content.action.edit",
+  "content.action.view",
+  "content.code.annotate",
+  "content.code.copy",
+  "content.code.select",
+  "content.footnote.tooltips",
+  "content.tabs.link",
+  "content.tooltips",
+  "header.autohide",
+  "navigation.expand",
+  "navigation.footer",
+  "navigation.indexes",
+  "navigation.instant",
+  "navigation.instant.prefetch",
+  "navigation.instant.progress",
+  "navigation.path",
+  "navigation.sections",
+  "navigation.tabs",
+  "navigation.tabs.sticky",
+  "navigation.top",
+  "navigation.tracking",
+  "search.highlight",
+  "toc.follow",
+]
+
+[project.theme.font]
+code = "Roboto Mono"
+text = "Roboto"
+
+[[project.theme.palette]]
+accent = "indigo"
+primary = "indigo"
+scheme = "default"
+toggle.icon = "material/weather-night"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+accent = "indigo"
+primary = "black"
+scheme = "slate"
+toggle.icon = "material/brightness-7"
+toggle.name = "Switch to light mode"
