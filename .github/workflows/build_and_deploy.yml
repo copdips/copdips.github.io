@@ -27,7 +27,7 @@ jobs:
         # Sparse checkout keeps the build fast; root-level files (zensical.toml,
         # pyproject.toml, uv.lock, Makefile) are always included in cone mode.
         # https://squidfunk.github.io/mkdocs-material/blog/2023/09/22/using-git-sparse-checkout-for-faster-documentation-builds/
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           sparse-checkout: |
