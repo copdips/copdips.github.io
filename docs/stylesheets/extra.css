@@ -142,7 +142,8 @@ a.md-nav__link:hover {
 }
 
 /* 高亮样式 */
-.highlight span.filename {
+/* 只匹配非 table 布局 (标题 + pre); 带 linenums 的表格布局用主题默认标题栏 */
+.highlight > span.filename {
   border-bottom: none; /* 取消底部边框 */
   border-radius: var(--base-border-radius); /* 使用全局变量定义边框半径 */
   display: inline;
@@ -154,11 +155,11 @@ a.md-nav__link:hover {
   background-color: #c6c7c9; /* 背景颜色 */
 
 }
-[data-md-color-scheme="slate"] .highlight span.filename {
+[data-md-color-scheme="slate"] .highlight > span.filename {
   background-color: #232c3f; /* 背景颜色 */
 }
 
-.highlight span.filename+pre>code {
+.highlight > span.filename+pre>code {
   border-radius: var(--base-border-radius); /* 使用全局变量定义边框半径 */
   border-top-left-radius: 0; /* 顶部左边框半径 */
 }

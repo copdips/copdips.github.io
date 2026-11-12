@@ -145,6 +145,7 @@ categories_allowed = [
   "vmware",
   "vscode",
   "web",
+  "windows",
 ]
 
 [project.plugins.rss]
