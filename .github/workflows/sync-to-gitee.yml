@@ -25,7 +25,7 @@ jobs:
       #     username: ${{ vars.GITEE_USERNAME }}
       #     password: ${{ secrets.GITEE_PAT }}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - run: |
