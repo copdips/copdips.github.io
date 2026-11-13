@@ -13,6 +13,12 @@ updates:
       interval: weekly
       time: "04:00"
   - package-ecosystem: github-actions
+    # One grouped PR per week: with "Require branches to be up to date before
+    # merging" enabled, separate PRs go stale as soon as the first one merges.
+    groups:
+      github-actions:
+        patterns:
+          - "*"
     open-pull-requests-limit: 10
     directory: "/"
     labels: []
