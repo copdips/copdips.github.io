@@ -1,0 +1,26 @@
+name: Dependabot Auto Merge
+run-name: "🤖[${{ github.workflow }}] - ${{ github.event.pull_request.title }}"
+
+on:
+  pull_request_target:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  enable_auto_merge:
+    # pull_request_target, not pull_request: Dependabot PRs get a read-only
+    # GITHUB_TOKEN on pull_request, and enabling auto-merge needs write.
+    # Safe here because this job never checks out or runs PR code.
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Enable auto-merge
+        # --auto (not a direct merge) so GitHub's own auto-merge performs the
+        # merge: a GITHUB_TOKEN merge would not trigger the push workflow.
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

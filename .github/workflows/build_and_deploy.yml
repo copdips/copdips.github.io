@@ -5,10 +5,12 @@ on:
   push:
     branches:
       - main
+  pull_request:
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}
+  # Per-ref groups, so a pull_request build never cancels a main deploy.
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -17,10 +19,9 @@ permissions:
   id-token: write
 
 jobs:
-  build_and_deploy:
+  build:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    environment: copdips.com
 
     steps:
       - name: Checkout repository
@@ -77,9 +78,18 @@ jobs:
           cp ads.txt ./site/
 
       - name: Upload to GitHub Pages
+        # Pull requests only build; the Pages artifact is uploaded by main pushes.
+        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v5
         with:
           path: site
 
+  deploy:
+    needs: build
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment: copdips.com
+
+    steps:
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v5
