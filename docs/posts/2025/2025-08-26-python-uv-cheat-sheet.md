@@ -10,7 +10,7 @@ categories:
 comments: true
 date:
   created: 2025-08-26
-  updated: 2025-10-04
+  updated: 2026-11-14
 ---
 
 # Python uv cheat sheet
@@ -422,6 +422,95 @@ Or `uv lock` to upgrade only the `uv.lock` file without changing the venv depend
     Same logic applies to `uv sync` and `uv sync -U`, except for `sync` installing the dependencies too.
 
     `-U` (`--upgrade` for all packages) or `-P` (`--upgrade-package` for a specific package) respect always the version constraints defined in `pyproject.toml`.
+
+## Maintaining an application repository
+
+The sections above assume you may publish a package. An **application** (a service, a CLI, a demo API) is installed alone, so it can be stricter: pin every declared dependency with `==` and treat `uv.lock` as the only deployment truth.
+
+### Pin declared dependencies with `==`
+
+```toml title="pyproject.toml"
+[project]
+dependencies = [
+    "fastapi[all]==0.162.7",
+    "pydantic==2.14.3",
+    "uvicorn[standard]==0.41.0",
+]
+```
+
+What this buys:
+
+- `pyproject.toml` answers "which version runs in production?" without opening `uv.lock`.
+- `uv lock --upgrade` can never move a direct dependency: the resolver only sees `==0.162.7`. A direct upgrade needs an explicit `uv add`.
+- Transitive dependencies are still pinned by `uv.lock`, with hashes.
+
+What it does not buy: correctness. A `==` to `==` upgrade can still break (a FastAPI major bump, a release that predates a new Python). Tests and CI remain the gate.
+
+!!! note "`==` is for applications, not libraries"
+    A library must stay compatible with its consumers, so it declares ranges. An application is installed alone, so exact pins are safe.
+
+### The two maintenance loops
+
+| Loop                  | Cadence                | Command                                                          | Files touched             |
+| --------------------- | ---------------------- | ---------------------------------------------------------------- | ------------------------- |
+| Declared dependencies | weekly, or via a bot   | `uv tree --depth 1 --outdated` then `uv add "pkg==version"`      | `pyproject.toml` + `uv.lock` |
+| Transitive dependencies | monthly or quarterly | `uv lock --upgrade`                                              | `uv.lock` only            |
+
+#### Declared dependencies
+
+```bash
+uv tree --depth 1 --outdated
+```
+
+Only the direct dependencies are listed; outdated ones carry `(latest: ...)`:
+
+```text
+fastapi[all] v0.162.4 (latest: v0.162.7)
+pydantic-settings v2.16.2 (latest: v2.16.3)
+scalar-fastapi v1.9.1 (latest: v1.9.3)
+```
+
+`uv pip list --outdated` is the other view: every installed package, declared or transitive. Use it for a full audit; use `uv tree --depth 1 --outdated` when you only care about the contract in `pyproject.toml`.
+
+Upgrade explicitly, as many packages as you need in one command:
+
+```bash
+uv add "fastapi[all]==0.162.7" "pydantic-settings==2.16.3"
+```
+
+`uv add` rewrites the pins and re-locks. `uv lock --upgrade` will not do it: a `==` pinned package is invisible to the upgrade loop.
+
+!!! note "Dependabot and Renovate"
+    Dependabot's `uv` ecosystem rewrites `pyproject.toml` and `uv.lock` together, which is the automated version of this loop. It does not open pull requests for packages that only exist in `uv.lock`; those belong to the transitive loop below.
+
+#### Transitive dependencies
+
+```bash
+uv lock --upgrade --dry-run   # preview, writes nothing
+uv lock --upgrade             # uv.lock only
+uv lock --check               # uv.lock matches pyproject.toml
+uv sync --locked              # install exactly the lock into the venv
+make test                     # the repository's own gate
+```
+
+Things to know:
+
+- `uv lock --upgrade` writes `uv.lock` only. `pyproject.toml` is never edited, and the venv stays stale until `uv sync` or `uv run`.
+- With `==` pins, the dry run lists transitive packages only.
+- Read `git diff uv.lock` before committing: one refresh can jump several majors of a transitive dependency.
+
+### Do not confuse a newer lock with a drift
+
+With a range such as `fastapi>=0.162.4`, `uv lock --upgrade` moves `uv.lock` to `0.162.7` and leaves `pyproject.toml` alone. That is normal: the lock satisfies the range.
+
+A real drift is a lock that violates `pyproject.toml`. Detect it with:
+
+```bash
+uv lock --check     # fails if uv.lock is out of date
+uv sync --locked    # fails instead of silently re-locking
+```
+
+Run one of them in CI, and build images from the lock (`uv sync --frozen` or `uv export --frozen`), so the deployed artifact is the resolved set, not a fresh resolution.
 
 ## Integrations
 
