@@ -451,10 +451,10 @@ What it does not buy: correctness. A `==` to `==` upgrade can still break (a Fas
 
 ### The two maintenance loops
 
-| Loop                  | Cadence                | Command                                                          | Files touched             |
-| --------------------- | ---------------------- | ---------------------------------------------------------------- | ------------------------- |
-| Declared dependencies | weekly, or via a bot   | `uv tree --depth 1 --outdated` then `uv add "pkg==version"`      | `pyproject.toml` + `uv.lock` |
-| Transitive dependencies | monthly or quarterly | `uv lock --upgrade`                                              | `uv.lock` only            |
+| Loop                    | Cadence              | Command                                                     | Files touched                |
+| ----------------------- | -------------------- | ----------------------------------------------------------- | ---------------------------- |
+| Declared dependencies   | weekly, or via a bot | `uv tree --depth 1 --outdated` then `uv add "pkg==version"` | `pyproject.toml` + `uv.lock` |
+| Transitive dependencies | monthly or quarterly | `uv lock --upgrade` then `uv sync --locked`                 | `uv.lock` + venv             |
 
 #### Declared dependencies
 
