@@ -25,12 +25,12 @@ build:
 	uv run zensical build -s
 
 run:
-	@echo "${BOLD}${YELLOW}zensical serve:${NORMAL}"
-	uv run zensical serve
-
-run-fast:
 	@echo "${BOLD}${YELLOW}zensical serve (fast: no rss, social, optimize):${NORMAL}"
 	uv run zensical serve -f zensical.fast.toml
+
+run-complete:
+	@echo "${BOLD}${YELLOW}zensical serve (complete: rss, social, optimize):${NORMAL}"
+	uv run zensical serve
 
 reload-oauth:
 	@echo "${BOLD}${YELLOW}reload oauth animation assets:${NORMAL}"
