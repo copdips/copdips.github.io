@@ -122,9 +122,11 @@ The script asks before changing anything, and re-launches itself elevated throug
 
 <a class="md-button md-button--primary" href="/2026/scripts/fix-bluetooth-headset-audio.ps1" download="fix-bluetooth-headset-audio.ps1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="vertical-align:-3px;margin-right:6px"><path fill="currentColor" d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg>Download fix-bluetooth-headset-audio.ps1</a>
 
-```powershell title="fix-bluetooth-headset-audio.ps1" linenums="1"
---8<-- "posts/2026/scripts/fix-bluetooth-headset-audio.ps1"
-```
+??? example "Full script"
+
+    ```powershell title="fix-bluetooth-headset-audio.ps1" linenums="1"
+    --8<-- "posts/2026/scripts/fix-bluetooth-headset-audio.ps1"
+    ```
 
 ## Limits
 
