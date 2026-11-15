@@ -51,7 +51,7 @@ th, td {
 }
 
 .md-typeset__table {
-  /* 1 会让换行后的 inline code 背景框压到相邻行，1.5 与 GitHub 表格一致 */
+  /* 1 会让换行后的 inline code 背景框压到相邻行, 1.5 与 GitHub 表格一致 */
   line-height: 1.5;
 }
 
@@ -87,6 +87,20 @@ thead > tr {
   color: #0d0d0d;
 }
 
+/* 同一条 hover 规则的暗色版: 否则深色页面上整行闪成浅米色 */
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) tbody tr:hover {
+  background-color: hsla(var(--md-hue), 25%, 18%, 1);
+  color: inherit;
+}
+
+/* 手机屏上表格不压窄列 (inline code 会被从中间断开), 保持内容宽度,
+   由主题运行时套上的 .md-typeset__scrollwrap 横向滚动 */
+@media screen and (max-width: 600px) {
+  .md-typeset table:not([class]) {
+    min-width: max-content;
+  }
+}
+
 h1, h2 {
   font-weight: bold !important;
 }
@@ -111,6 +125,24 @@ h1, h2 {
   /* background-color: #eee; */
 }
 
+/* 亮色下 accent (#526cfe) 压在 accent 药丸背景上只有 3.8:1; 抽屉里的当前项改用正文链接色 (约 6:1) */
+[data-md-color-scheme="default"] .md-nav--primary .md-nav__item .md-nav__link--active {
+  color: var(--md-typeset-a-color);
+}
+
+/* Zensical 给每个可折叠分区都加了 md-toggle--indeterminate, 主题据此把分区展开,
+   手机抽屉于是一次列出 9 个年份 + 50 个分类. 未勾选时按收起处理, 点了才展开.
+   依赖主题的 .md-nav__toggle~.md-nav 结构, 主题改版后这条会静默失效 (分区恢复展开). */
+.md-nav--primary .md-nav__toggle.md-toggle--indeterminate:not(:checked) ~ .md-nav {
+  grid-template-rows: minmax(0.005rem, 0fr);
+  visibility: collapse;
+  opacity: 0;
+}
+
+.md-nav--primary .md-nav__toggle.md-toggle--indeterminate:not(:checked) ~ .md-nav__link .md-nav__icon:after {
+  transform: none;
+}
+
 /* a.md-nav__link {
   padding: 1px 2px;
 }
@@ -126,7 +158,8 @@ a.md-nav__link:hover {
 }
 .md-typeset a:hover {
   background-color: #dfe7f5;
-  color:hotpink;
+  /* hotpink 在这个浅蓝底上只有 2.1:1, 同色相压深一档到 4.7:1 */
+  color: #c2185b;
 }
 
 [data-md-color-scheme="slate"] .md-typeset a:hover {
@@ -234,7 +267,8 @@ del.critic {
   border-radius: var(--base-border-radius); /* 使用全局变量定义边框半径 */
 }
 
-Fix tab hover in dark mode [data-md-color-scheme="slate"] .tabbed-labels label:hover,
+/* Fix tab hover in dark mode */
+[data-md-color-scheme="slate"] .tabbed-labels label:hover,
 [data-md-color-scheme="slate"] .tabbed-labels--linked label:hover,
 [data-md-color-scheme="slate"] .tabbed-set>.tabbed-labels label:hover {
   background-color: #30363d !important;
