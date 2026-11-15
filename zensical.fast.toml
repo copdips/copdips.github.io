@@ -213,7 +213,6 @@ features = [
   "content.tabs.link",
   "content.tooltips",
   "header.autohide",
-  "navigation.expand",
   "navigation.footer",
   "navigation.indexes",
   "navigation.instant",
