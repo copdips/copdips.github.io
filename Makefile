@@ -28,6 +28,10 @@ run:
 	@echo "${BOLD}${YELLOW}zensical serve:${NORMAL}"
 	uv run zensical serve
 
+run-fast:
+	@echo "${BOLD}${YELLOW}zensical serve (fast: no rss, social, optimize):${NORMAL}"
+	uv run zensical serve -f zensical.fast.toml
+
 reload-oauth:
 	@echo "${BOLD}${YELLOW}reload oauth animation assets:${NORMAL}"
 	cp /home/xiang/git/copdips.github.io/docs/javascripts/oauth-evolution.js /home/xiang/git/copdips.github.io/site/javascripts/oauth-evolution.js && cp /home/xiang/git/copdips.github.io/docs/stylesheets/oauth-evolution.css /home/xiang/git/copdips.github.io/site/stylesheets/oauth-evolution.css && python3 /home/xiang/git/copdips.github.io/scripts/reload_page.py
