@@ -9,7 +9,7 @@ date:
 description: "A git worktree is a second checkout of the same repository. Work on another branch in its own folder, commit, then delete the folder: the branch stays and the current checkout never moves."
 ---
 
-# Git Worktree: Another Branch, Without Leaving This One
+# Git Worktree: Work on Another Branch Without Leaving the Current One
 
 You need a change on another branch, but the current one is busy: edited files, a running test, a terminal in the right folder.
 Stashing and switching loses all of that. A second clone copies the history and needs its own remotes.
